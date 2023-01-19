@@ -1,7 +1,7 @@
 package com.sjiwon.anotherart.member.domain;
 
+import com.sjiwon.anotherart.global.exception.AnotherArtException;
 import com.sjiwon.anotherart.member.exception.MemberErrorCode;
-import com.sjiwon.anotherart.member.exception.MemberException;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -45,7 +45,7 @@ public class Address {
 
     private static void validatePostcodeLength(int postcode) {
         if (isInvalidPostcodeLength(postcode)) {
-            throw MemberException.type(MemberErrorCode.INVALID_POST_CODE);
+            throw AnotherArtException.type(MemberErrorCode.INVALID_POST_CODE);
         }
     }
 
@@ -55,7 +55,7 @@ public class Address {
 
     private static void validateAddressIsNotBlank(String defaultAddress, String detailAddress) {
         if (isAddressEmpty(defaultAddress, detailAddress)) {
-            throw MemberException.type(MemberErrorCode.INVALID_ADDRESS);
+            throw AnotherArtException.type(MemberErrorCode.INVALID_ADDRESS);
         }
     }
 

@@ -1,7 +1,7 @@
 package com.sjiwon.anotherart.member.domain;
 
+import com.sjiwon.anotherart.global.exception.AnotherArtException;
 import com.sjiwon.anotherart.member.exception.MemberErrorCode;
-import com.sjiwon.anotherart.member.exception.MemberException;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -33,13 +33,13 @@ public class AvailablePoint {
 
     private static void validatePointAmount(int value) {
         if (value < 0) {
-            throw MemberException.type(MemberErrorCode.INVALID_AVAILABLE_POINTS);
+            throw AnotherArtException.type(MemberErrorCode.INVALID_AVAILABLE_POINTS);
         }
     }
 
     private void verifyUpdateRequest(int value) {
         if (this.value - value < 0) {
-            throw MemberException.type(MemberErrorCode.INVALID_POINT_UPDATE);
+            throw AnotherArtException.type(MemberErrorCode.INVALID_POINT_UPDATE);
         }
     }
 }

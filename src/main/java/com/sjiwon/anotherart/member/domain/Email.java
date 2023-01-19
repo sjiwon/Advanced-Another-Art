@@ -1,7 +1,7 @@
 package com.sjiwon.anotherart.member.domain;
 
+import com.sjiwon.anotherart.global.exception.AnotherArtException;
 import com.sjiwon.anotherart.member.exception.MemberErrorCode;
-import com.sjiwon.anotherart.member.exception.MemberException;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -31,7 +31,7 @@ public class Email {
 
     private static void validateEmailPattern(String value) {
         if (isNotValidPattern(value)) {
-            throw MemberException.type(MemberErrorCode.INVALID_EMAIL_PATTERN);
+            throw AnotherArtException.type(MemberErrorCode.INVALID_EMAIL_PATTERN);
         }
     }
 
