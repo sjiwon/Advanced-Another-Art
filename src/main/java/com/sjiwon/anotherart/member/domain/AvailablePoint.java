@@ -25,10 +25,15 @@ public class AvailablePoint {
         return new AvailablePoint(value);
     }
 
-    public AvailablePoint update(int value) {
+    public AvailablePoint increasePoint(int value) {
         validatePointAmount(value);
-        verifyUpdateRequest(value);
-        return new AvailablePoint(value);
+        return new AvailablePoint(this.value + value);
+    }
+
+    public AvailablePoint decreasePoint(int value) {
+        validatePointAmount(value);
+        verifyDecreaseRequest(value);
+        return new AvailablePoint(this.value - value);
     }
 
     private static void validatePointAmount(int value) {
@@ -37,9 +42,9 @@ public class AvailablePoint {
         }
     }
 
-    private void verifyUpdateRequest(int value) {
+    private void verifyDecreaseRequest(int value) {
         if (this.value - value < 0) {
-            throw AnotherArtException.type(MemberErrorCode.INVALID_POINT_UPDATE);
+            throw AnotherArtException.type(MemberErrorCode.INVALID_POINT_DECREASE);
         }
     }
 }

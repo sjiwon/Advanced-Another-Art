@@ -78,7 +78,11 @@ public class Member {
         this.address = this.address.update(postcode, defaultAddress, detailAddress);
     }
 
-    public void updateAvailablePoint(int point) {
-        this.availablePoint = this.availablePoint.update(point);
+    public void increasePoint(int point) {
+        this.availablePoint = this.availablePoint.increasePoint(point);
+    }
+
+    public void decreasePoint(int point) {
+        this.availablePoint = this.availablePoint.decreasePoint(point);
     }
 }
