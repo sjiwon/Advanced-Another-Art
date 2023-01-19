@@ -1,5 +1,6 @@
 package com.sjiwon.anotherart.art.domain;
 
+import com.sjiwon.anotherart.art.domain.hashtag.Hashtag;
 import com.sjiwon.anotherart.member.domain.Member;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -10,7 +11,10 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -51,6 +55,9 @@ public class Art {
     @JoinColumn(name = "member_id", referencedColumnName = "id", nullable = false, updatable = false)
     private Member member;
 
+    @OneToMany(mappedBy = "art", cascade = {CascadeType.PERSIST}, orphanRemoval = true)
+    private Set<Hashtag> hashtags = new HashSet<>();
+
     @Builder
     private Art(String name, String description, ArtType artType, int price, UploadImage uploadImage, Member member) {
         this.name = name;
@@ -64,6 +71,14 @@ public class Art {
 
     public static Art createArt(String name, String description, ArtType artType, int price, UploadImage uploadImage, Member member) {
         return new Art(name, description, artType, price, uploadImage, member);
+    }
+
+    public void insertHashtags(Set<String> hashtags) {
+        this.getHashtags().addAll(
+                hashtags.stream()
+                        .map(value -> Hashtag.from(this, value))
+                        .collect(Collectors.toSet())
+        );
     }
 
     public void updateDescription(String description) {
