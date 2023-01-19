@@ -1,0 +1,13 @@
+logging:
+  level:
+    org:
+      springframework:
+        jdbc:
+          datasource:
+            DataSourceTransactionManager: DEBUG
+        orm:
+          jpa:
+            JpaTransactionManager: DEBUG
+      hibernate:
+        resource:
+          transaction: DEBUG

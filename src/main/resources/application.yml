@@ -1,0 +1,13 @@
+spring:
+  config:
+    import:
+      - security/application-file.yml
+      - security/application-server.yml
+      - security/application-local-datasource.yml
+      - application-logging.yml
+
+  web:
+    resources:
+      static-locations:
+        - file:src/main/resources/static/
+        - classpath:/static/
