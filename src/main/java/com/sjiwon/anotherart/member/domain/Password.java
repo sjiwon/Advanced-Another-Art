@@ -15,9 +15,14 @@ import java.util.regex.Pattern;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Embeddable
 public class Password {
-    // 글자 제한 -> 8 ~ 30
-    // 알파벳 대소문자, 숫자, 특수문자를 각각 1개 이상 포함
-    private static final String PASSWORD_PATTERN = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@#$%^&+=])[A-Za-z\\d@#$%^&+=]{8,30}$";
+    /**
+     * 1. 적어도 8자리 이상
+     * 2. 하나 이상의 숫자 포함
+     * 3. 하나 이상의 알파벳 소문자 포함
+     * 4. 하나 이상의 알파벳 대문자 포함
+     * 5. 하나 이상의 특수문자 포함 (!, @, #)
+     */
+    private static final String PASSWORD_PATTERN = "^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#])[\\da-zA-Z!@#]{8,}$";
     private static final Pattern PASSWORD_MATCHER = Pattern.compile(PASSWORD_PATTERN);
 
     @Column(name = "password", nullable = false, length = 200)
