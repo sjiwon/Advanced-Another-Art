@@ -24,7 +24,7 @@ public class Member {
     @Column(name = "nickname", nullable = false, unique = true, length = 100)
     private String nickname;
 
-    @Column(name = "login_id", nullable = false, unique = true, updatable = false)
+    @Column(name = "login_id", nullable = false, unique = true, updatable = false, length = 50)
     private String loginId;
 
     @Embedded
@@ -36,31 +36,35 @@ public class Member {
     @Embedded
     private Address address;
 
-    @Column(name = "birth", nullable = false, updatable = false)
-    private LocalDate birth;
+    @Column(name = "phone", nullable = false, unique = true, updatable = false, length = 11)
+    private String phone;
+
+    @Embedded
+    private Email email;
 
     @Embedded
     private AvailablePoint availablePoint;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "role", nullable = false)
+    @Column(name = "role", nullable = false, updatable = false, length = 20)
     private Role role;
 
     @Builder
-    private Member(String name, String nickname, String loginId, Password password, String school, Address address, LocalDate birth) {
+    private Member(String name, String nickname, String loginId, Password password, String school, Address address, String phone, Email email) {
         this.name = name;
         this.nickname = nickname;
         this.loginId = loginId;
         this.password = password;
         this.school = school;
         this.address = address;
-        this.birth = birth;
+        this.phone = phone;
+        this.email = email;
         this.availablePoint = AvailablePoint.from(0);
         this.role = Role.USER;
     }
 
-    public static Member createMember(String name, String nickname, String loginId, Password password, String school, Address address, LocalDate birth) {
-        return new Member(name, nickname, loginId, password, school, address, birth);
+    public static Member createMember(String name, String nickname, String loginId, Password password, String school, Address address, String phone, Email email) {
+        return new Member(name, nickname, loginId, password, school, address, phone, email);
     }
 
     public void changeNickname(String nickname) {

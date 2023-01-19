@@ -17,10 +17,10 @@ import java.util.regex.Pattern;
 public class Password {
     // 글자 제한 -> 8 ~ 30
     // 알파벳 대소문자, 숫자, 특수문자를 각각 1개 이상 포함
-    private static final String PASSWORD_FORMAT = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@#$%^&+=])[A-Za-z\\d@#$%^&+=]{8,30}$";
-    private static final Pattern PASSWORD_PATTERN = Pattern.compile(PASSWORD_FORMAT);
+    private static final String PASSWORD_PATTERN = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@#$%^&+=])[A-Za-z\\d@#$%^&+=]{8,30}$";
+    private static final Pattern PASSWORD_MATCHER = Pattern.compile(PASSWORD_PATTERN);
 
-    @Column(name = "password", nullable = false)
+    @Column(name = "password", nullable = false, length = 200)
     private String value;
 
     private Password(String value) {
@@ -28,22 +28,22 @@ public class Password {
     }
 
     public static Password encrypt(String value, PasswordEncoder encoder) {
-        validatePatternIsValid(value);
+        validatePasswordPattern(value);
         return new Password(encoder.encode(value));
     }
 
     public Password update(String value, PasswordEncoder encoder) {
-        validatePatternIsValid(value);
+        validatePasswordPattern(value);
         return new Password(encoder.encode(value));
     }
 
-    private static void validatePatternIsValid(String value) {
+    private static void validatePasswordPattern(String value) {
         if (isNotValidPattern(value)) {
             throw MemberException.type(MemberErrorCode.INVALID_PASSWORD_PATTERN);
         }
     }
 
     private static boolean isNotValidPattern(String password) {
-        return !PASSWORD_PATTERN.matcher(password).matches();
+        return !PASSWORD_MATCHER.matcher(password).matches();
     }
 }

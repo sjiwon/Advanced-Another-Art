@@ -19,10 +19,10 @@ public class Address {
     @Column(name = "postcode", nullable = false)
     private int postcode;
 
-    @Column(name = "default_address", nullable = false)
+    @Column(name = "default_address", nullable = false, length = 200)
     private String defaultAddress;
 
-    @Column(name = "detail_address", nullable = false)
+    @Column(name = "detail_address", nullable = false, length = 200)
     private String detailAddress;
 
     private Address(int postcode, String defaultAddress, String detailAddress) {
