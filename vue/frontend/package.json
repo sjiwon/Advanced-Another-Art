@@ -1,0 +1,75 @@
+{
+  "name": "frontend",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build",
+    "lint": "vue-cli-service lint",
+    "watch": "vue-cli-service build --watch"
+  },
+  "dependencies": {
+    "@babel/polyfill": "^7.12.1",
+    "@fortawesome/fontawesome-svg-core": "^6.2.1",
+    "@fortawesome/free-brands-svg-icons": "^6.2.1",
+    "@fortawesome/free-regular-svg-icons": "^6.2.1",
+    "@fortawesome/free-solid-svg-icons": "^6.2.1",
+    "@fortawesome/vue-fontawesome": "^3.0.2",
+    "@teachablemachine/image": "^0.8.5",
+    "@tensorflow/tfjs": "^4.1.0",
+    "axios": "^1.2.1",
+    "bootstrap": "^5.2.3",
+    "bootstrap-vue": "^2.23.1",
+    "bootstrap-vue-3": "^0.4.13",
+    "core-js": "^3.8.3",
+    "dayjs": "^1.11.7",
+    "jquery": "^3.6.1",
+    "mdb-vue-ui-kit": "^3.1.1",
+    "vue": "^3.2.45",
+    "vue-persistedstate": "^1.2.5",
+    "vue-router": "^4.1.6",
+    "vue-session": "^1.0.0",
+    "vuetify": "^2.6.12",
+    "vuex": "^4.0.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.12.16",
+    "@babel/eslint-parser": "^7.12.16",
+    "@vue/cli-plugin-babel": "~5.0.0",
+    "@vue/cli-plugin-eslint": "~5.0.0",
+    "@vue/cli-plugin-router": "~5.0.0",
+    "@vue/cli-plugin-vuex": "~5.0.0",
+    "@vue/cli-service": "~5.0.0",
+    "@vue/eslint-config-standard": "^6.1.0",
+    "eslint": "^7.32.0",
+    "eslint-plugin-import": "^2.25.3",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^5.1.0",
+    "eslint-plugin-vue": "^8.0.3",
+    "vue-cli-plugin-bootstrap-vue": "~0.8.2",
+    "vue-cli-plugin-vuetify": "~2.5.8"
+  },
+  "eslintConfig": {
+    "root": true,
+    "env": {
+      "node": true
+    },
+    "extends": [
+      "plugin:vue/vue3-essential",
+      "@vue/standard"
+    ],
+    "parserOptions": {
+      "parser": "@babel/eslint-parser"
+    },
+    "rules": {
+      "space-before-function-paren": "off",
+      "no-trailing-spaces": "off"
+    }
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead",
+    "not ie 11"
+  ]
+}
