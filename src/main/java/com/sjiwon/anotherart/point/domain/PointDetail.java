@@ -37,19 +37,19 @@ public class PointDetail {
     private Member member;
 
     @Builder
-    private PointDetail(PointType pointType, int amount, Member member) {
+    private PointDetail(Member member, PointType pointType, int amount) {
+        this.member = member;
         this.pointType = pointType;
         this.amount = amount;
-        this.member = member;
     }
 
     public static PointDetail createPointDetail(Member member) {
-        return new PointDetail(PointType.JOIN, 0, member);
+        return new PointDetail(member, PointType.JOIN, 0);
     }
 
     public static PointDetail insertPointDetail(Member member, PointType pointType, int dealAmount) {
         updateMemberAvailablePoint(member, pointType, dealAmount);
-        return new PointDetail(pointType, dealAmount, member);
+        return new PointDetail(member, pointType, dealAmount);
     }
 
     private static void updateMemberAvailablePoint(Member member, PointType pointType, int dealAmount) {

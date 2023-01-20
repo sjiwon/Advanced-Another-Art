@@ -59,18 +59,18 @@ public class Art {
     private Set<Hashtag> hashtags = new HashSet<>();
 
     @Builder
-    private Art(String name, String description, ArtType artType, int price, UploadImage uploadImage, Member member) {
+    private Art(Member member, String name, String description, ArtType artType, int price, UploadImage uploadImage) {
+        this.member = member;
         this.name = name;
         this.description = description;
         this.artType = artType;
         this.price = price;
         this.artStatus = ArtStatus.FOR_SALE;
         this.uploadImage = uploadImage;
-        this.member = member;
     }
 
-    public static Art createArt(String name, String description, ArtType artType, int price, UploadImage uploadImage, Member member) {
-        return new Art(name, description, artType, price, uploadImage, member);
+    public static Art createArt(Member member, String name, String description, ArtType artType, int price, UploadImage uploadImage) {
+        return new Art(member, name, description, artType, price, uploadImage);
     }
 
     public void applyHashtags(Set<String> hashtags) {
