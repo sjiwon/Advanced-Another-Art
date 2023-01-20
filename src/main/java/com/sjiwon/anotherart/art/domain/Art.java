@@ -55,7 +55,7 @@ public class Art {
     @JoinColumn(name = "member_id", referencedColumnName = "id", nullable = false, updatable = false)
     private Member member;
 
-    @OneToMany(mappedBy = "art", cascade = {CascadeType.PERSIST}, orphanRemoval = true)
+    @OneToMany(mappedBy = "art", cascade = {CascadeType.PERSIST})
     private Set<Hashtag> hashtags = new HashSet<>();
 
     @Builder
@@ -73,7 +73,7 @@ public class Art {
         return new Art(name, description, artType, price, uploadImage, member);
     }
 
-    public void insertHashtags(Set<String> hashtags) {
+    public void applyHashtags(Set<String> hashtags) {
         this.getHashtags().addAll(
                 hashtags.stream()
                         .map(value -> Hashtag.from(this, value))

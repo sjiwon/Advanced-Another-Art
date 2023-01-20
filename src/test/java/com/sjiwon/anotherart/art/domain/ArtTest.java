@@ -40,7 +40,7 @@ class ArtTest {
     @DisplayName("작품을 생성한다 + 해시태그를 추가한다")
     void test2(){
         Art art = ART_A.toArt(member);
-        art.insertHashtags(new HashSet<>(List.of("고양이", "호랑이", "강아지", "강아지")));
+        art.applyHashtags(new HashSet<>(List.of("A", "B", "C", "D", "E", "E", "E")));
 
         assertAll(
                 () -> assertThat(art.getName()).isEqualTo(ART_A.getName()),
@@ -48,8 +48,8 @@ class ArtTest {
                 () -> assertThat(art.getArtType()).isEqualTo(ART_A.getArtType()),
                 () -> assertThat(art.getArtStatus()).isEqualTo(ArtStatus.FOR_SALE),
                 () -> assertThat(art.getUploadImage().getUploadName()).isEqualTo(ART_A.getUploadName()),
-                () -> assertThat(art.getHashtags().size()).isEqualTo(3),
-                () -> assertThat(art.getHashtags().stream().map(Hashtag::getName)).contains("고양이", "호랑이", "강아지"),
+                () -> assertThat(art.getHashtags().size()).isEqualTo(5),
+                () -> assertThat(art.getHashtags().stream().map(Hashtag::getName).toList()).contains("A", "B", "C", "D", "E"),
                 () -> assertThat(art.getMember().getName()).isEqualTo(member.getName()),
                 () -> assertThat(art.getMember().getNickname()).isEqualTo(member.getNickname()),
                 () -> assertThat(art.getMember().getLoginId()).isEqualTo(member.getLoginId())
