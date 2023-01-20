@@ -12,6 +12,7 @@ import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@DisplayName("Art [Repository Layer] -> ArtRepository 테스트")
 class ArtRepositoryTest extends RepositoryTest {
     @Autowired
     MemberRepository memberRepository;

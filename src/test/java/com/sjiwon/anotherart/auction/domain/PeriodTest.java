@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+@DisplayName("Auction 도메인 {Period VO} 테스트")
 class PeriodTest {
     @Test
     @DisplayName("경매 종료날짜가 시작날짜보다 먼저이면 예외가 발생한다")

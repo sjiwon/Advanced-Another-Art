@@ -9,6 +9,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+@DisplayName("Member 도메인 {AvailablePoint VO} 테스트")
 class AvailablePointTest {
     @ParameterizedTest(name = "{index}: {0}")
     @ValueSource(ints = {-1, -2, -3, -4, -5})

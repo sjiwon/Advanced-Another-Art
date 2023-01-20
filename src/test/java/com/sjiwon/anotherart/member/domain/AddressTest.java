@@ -12,6 +12,7 @@ import java.util.stream.Stream;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+@DisplayName("Member 도메인 {Address VO} 테스트")
 class AddressTest {
     private static final String DEFAULT_ADDRESS = "경기 성남시 분당구 정자일로 95";
     private static final String DETAIL_ADDRESS = "네이버";

@@ -8,6 +8,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+@DisplayName("Member 도메인 {Email VO} 테스트")
 class EmailTest {
     @ParameterizedTest(name = "{index}: {0}")
     @ValueSource(strings = {"", "abc", "@gmail.com", "abc@gmail", "abc@gmail."})

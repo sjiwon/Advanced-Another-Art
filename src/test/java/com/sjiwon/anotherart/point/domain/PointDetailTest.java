@@ -9,6 +9,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@DisplayName("PointDetail 도메인 테스트")
 class PointDetailTest {
     private static final PasswordEncoder ENCODER = PasswordEncoderFactories.createDelegatingPasswordEncoder();
     private static final MemberFixture MEMBER_A = MemberFixture.A;

@@ -21,6 +21,7 @@ import java.time.LocalDateTime;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+@DisplayName("Auction [Repository Layer] -> AuctionRepository 테스트")
 class AuctionRepositoryTest extends RepositoryTest {
     @Autowired
     MemberRepository memberRepository;

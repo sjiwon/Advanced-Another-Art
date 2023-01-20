@@ -14,6 +14,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
+@DisplayName("Art 도메인 테스트")
 class ArtTest {
     private static final Member member = MemberFixture.A.toMember(PasswordEncoderFactories.createDelegatingPasswordEncoder());
     private static final ArtFixture ART_A = ArtFixture.A;
