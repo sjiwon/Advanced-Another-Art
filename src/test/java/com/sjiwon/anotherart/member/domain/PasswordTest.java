@@ -1,11 +1,11 @@
 package com.sjiwon.anotherart.member.domain;
 
+import com.sjiwon.anotherart.common.PasswordEncoderUtils;
 import com.sjiwon.anotherart.global.exception.AnotherArtException;
 import com.sjiwon.anotherart.member.exception.MemberErrorCode;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -13,7 +13,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @DisplayName("Member 도메인 {Password VO} 테스트")
 class PasswordTest {
-    private static final PasswordEncoder ENCODER = PasswordEncoderFactories.createDelegatingPasswordEncoder();
+    private static final PasswordEncoder ENCODER = PasswordEncoderUtils.getEncoder();
 
     @ParameterizedTest(name = "{index}: {0}")
     @ValueSource(strings = {"", "123", "abc", "!@#", "abcde1234!@#", "ABCDE2134!@#$", "ABCabc!@#123^%"})

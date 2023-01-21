@@ -1,12 +1,11 @@
 package com.sjiwon.anotherart.member.domain;
 
+import com.sjiwon.anotherart.common.PasswordEncoderUtils;
 import com.sjiwon.anotherart.common.RepositoryTest;
 import com.sjiwon.anotherart.fixture.MemberFixture;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.factory.PasswordEncoderFactories;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -20,8 +19,6 @@ class MemberRepositoryTest extends RepositoryTest {
 
     @Autowired
     MemberRepository memberRepository;
-
-    private static final PasswordEncoder PASSWORD_ENCODER = PasswordEncoderFactories.createDelegatingPasswordEncoder();
 
     @Test
     @DisplayName("닉네임으로 사용자가 존재하는지 확인한다")
@@ -88,7 +85,7 @@ class MemberRepositoryTest extends RepositoryTest {
     }
 
     private Member createMemberA() {
-        return memberRepository.save(MemberFixture.A.toMember(PASSWORD_ENCODER));
+        return memberRepository.save(MemberFixture.A.toMember(PasswordEncoderUtils.getEncoder()));
     }
 
     private void synchronizePersistenceContext() {

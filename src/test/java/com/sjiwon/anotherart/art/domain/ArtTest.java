@@ -1,12 +1,12 @@
 package com.sjiwon.anotherart.art.domain;
 
 import com.sjiwon.anotherart.art.domain.hashtag.Hashtag;
+import com.sjiwon.anotherart.common.PasswordEncoderUtils;
 import com.sjiwon.anotherart.fixture.ArtFixture;
 import com.sjiwon.anotherart.fixture.MemberFixture;
 import com.sjiwon.anotherart.member.domain.Member;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 
 import java.util.HashSet;
 import java.util.List;
@@ -16,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 @DisplayName("Art 도메인 테스트")
 class ArtTest {
-    private static final Member member = MemberFixture.A.toMember(PasswordEncoderFactories.createDelegatingPasswordEncoder());
+    private static final Member member = MemberFixture.A.toMember(PasswordEncoderUtils.getEncoder());
     private static final ArtFixture ART_A = ArtFixture.A;
 
     @Test

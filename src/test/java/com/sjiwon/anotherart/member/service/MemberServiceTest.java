@@ -1,5 +1,6 @@
 package com.sjiwon.anotherart.member.service;
 
+import com.sjiwon.anotherart.common.PasswordEncoderUtils;
 import com.sjiwon.anotherart.common.ServiceTest;
 import com.sjiwon.anotherart.fixture.MemberFixture;
 import com.sjiwon.anotherart.member.domain.Member;
@@ -9,8 +10,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.springframework.security.crypto.factory.PasswordEncoderFactories;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -29,14 +28,12 @@ class MemberServiceTest extends ServiceTest {
 
     @Mock
     private PointDetailRepository pointDetailRepository;
-
-    private static final PasswordEncoder ENCODER = PasswordEncoderFactories.createDelegatingPasswordEncoder();
     
     @Test
     @DisplayName("사용자에 대한 회원가입을 성공한다")
     void test(){
         // given
-        final Member member = MemberFixture.A.toMember(ENCODER);
+        final Member member = MemberFixture.A.toMember(PasswordEncoderUtils.getEncoder());
         final Long savedMemberId = 1L;
         given(memberRepository.save(member)).willReturn(member);
         ReflectionTestUtils.setField(member, "id", savedMemberId);

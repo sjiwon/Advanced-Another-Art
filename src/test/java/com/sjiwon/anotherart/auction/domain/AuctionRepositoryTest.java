@@ -4,6 +4,7 @@ import com.sjiwon.anotherart.art.domain.Art;
 import com.sjiwon.anotherart.art.domain.ArtRepository;
 import com.sjiwon.anotherart.art.domain.ArtType;
 import com.sjiwon.anotherart.auction.exception.AuctionErrorCode;
+import com.sjiwon.anotherart.common.PasswordEncoderUtils;
 import com.sjiwon.anotherart.common.RepositoryTest;
 import com.sjiwon.anotherart.fixture.ArtFixture;
 import com.sjiwon.anotherart.fixture.MemberFixture;
@@ -14,8 +15,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.factory.PasswordEncoderFactories;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalDateTime;
 
@@ -158,24 +157,20 @@ class AuctionRepositoryTest extends RepositoryTest {
         }
     }
 
-    private PasswordEncoder generatePasswordEncoder() {
-        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
-    }
-
     private Member createMemberA() {
-        Member memberA = MemberFixture.A.toMember(generatePasswordEncoder());
+        Member memberA = MemberFixture.A.toMember(PasswordEncoderUtils.getEncoder());
         memberA.increasePoint(INIT_AVAILABLE_POINT);
         return memberRepository.save(memberA);
     }
 
     private Member createMemberB() {
-        Member memberB = MemberFixture.B.toMember(generatePasswordEncoder());
+        Member memberB = MemberFixture.B.toMember(PasswordEncoderUtils.getEncoder());
         memberB.increasePoint(INIT_AVAILABLE_POINT);
         return memberRepository.save(memberB);
     }
 
     private Member createMemberC() {
-        Member memberC = MemberFixture.C.toMember(generatePasswordEncoder());
+        Member memberC = MemberFixture.C.toMember(PasswordEncoderUtils.getEncoder());
         memberC.increasePoint(INIT_AVAILABLE_POINT);
         return memberRepository.save(memberC);
     }

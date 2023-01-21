@@ -1,5 +1,6 @@
 package com.sjiwon.anotherart.art.domain;
 
+import com.sjiwon.anotherart.common.PasswordEncoderUtils;
 import com.sjiwon.anotherart.common.RepositoryTest;
 import com.sjiwon.anotherart.fixture.ArtFixture;
 import com.sjiwon.anotherart.fixture.MemberFixture;
@@ -8,7 +9,6 @@ import com.sjiwon.anotherart.member.domain.MemberRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -36,11 +36,11 @@ class ArtRepositoryTest extends RepositoryTest {
     }
 
     private Member createMemberA() {
-        return memberRepository.save(MemberFixture.A.toMember(PasswordEncoderFactories.createDelegatingPasswordEncoder()));
+        return memberRepository.save(MemberFixture.A.toMember(PasswordEncoderUtils.getEncoder()));
     }
 
     private Member createMemberB() {
-        return memberRepository.save(MemberFixture.B.toMember(PasswordEncoderFactories.createDelegatingPasswordEncoder()));
+        return memberRepository.save(MemberFixture.B.toMember(PasswordEncoderUtils.getEncoder()));
     }
 
     private Art createArt(Member member) {
