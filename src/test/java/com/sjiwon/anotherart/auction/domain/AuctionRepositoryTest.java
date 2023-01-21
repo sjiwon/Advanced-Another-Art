@@ -15,6 +15,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalDateTime;
 
@@ -33,6 +34,7 @@ class AuctionRepositoryTest extends RepositoryTest {
     AuctionRepository auctionRepository;
 
     private static final Period AUCTION_PERIOD = Period.of(LocalDateTime.now().minusDays(1), LocalDateTime.now().plusDays(1));
+    private static final int INIT_AVAILABLE_POINT = 1_000_000;
 
     @Nested
     @DisplayName("경매 등록")
@@ -65,10 +67,8 @@ class AuctionRepositoryTest extends RepositoryTest {
             assertThat(auction.getArt().getId()).isEqualTo(auctionArt.getId());
             assertThat(auction.getArt().getName()).isEqualTo(auctionArt.getName());
             assertThat(auction.getArt().getArtType()).isEqualTo(ArtType.AUCTION);
-            assertThat(auction.getCurrentBidder().getMember().getId()).isEqualTo(member.getId());
-            assertThat(auction.getCurrentBidder().getMember().getName()).isEqualTo(member.getName());
-            assertThat(auction.getCurrentBidder().getMember().getNickname()).isEqualTo(member.getNickname());
-            assertThat(auction.getCurrentBidder().getBidPrice()).isEqualTo(auctionArt.getPrice());
+            assertThat(auction.getCurrentHighestBidder().isBidderExists()).isFalse();
+            assertThat(auction.getCurrentHighestBidder().getBidPrice()).isEqualTo(auctionArt.getPrice());
         }
     }
 
@@ -91,41 +91,43 @@ class AuctionRepositoryTest extends RepositoryTest {
         }
 
         @Test
-        @DisplayName("경매 최고 입찰자는 연속해서 입찰할 수 없다")
+        @DisplayName("입찰 금액이 부족하면 입찰을 진행할 수 없다")
         void test2(){
             // given
             Member memberA = createMemberA();
             Art auctionArt = createAuctionArt(memberA);
-            Auction oldAuction = initAuction(auctionArt);
+            Auction auction = initAuction(auctionArt);
 
             Member memberB = createMemberB();
             final int previousBidPrice = 150000;
-            Auction previousAuction = oldAuction.applyNewBid(memberB, previousBidPrice);
+            auction.applyNewBid(memberB, previousBidPrice);
+            assertThat(memberB.getAvailablePoint().getValue()).isEqualTo(INIT_AVAILABLE_POINT - previousBidPrice);
 
             // when - then
-            final int bidPrice = 200000;
-            assertThatThrownBy(() -> previousAuction.applyNewBid(memberB, bidPrice))
+            Member memberC = createMemberC();
+            assertThatThrownBy(() -> auction.applyNewBid(memberC, previousBidPrice))
                     .isInstanceOf(AnotherArtException.class)
-                    .hasMessage(AuctionErrorCode.INVALID_DUPLICATE_BID.getMessage());
+                    .hasMessage(AuctionErrorCode.INVALID_BID_PRICE.getMessage());
         }
 
         @Test
-        @DisplayName("입찰 금액이 부족하면 입찰을 진행할 수 없다")
+        @DisplayName("경매 최고 입찰자는 연속해서 입찰할 수 없다")
         void test3(){
             // given
             Member memberA = createMemberA();
             Art auctionArt = createAuctionArt(memberA);
-            Auction oldAuction = initAuction(auctionArt);
+            Auction auction = initAuction(auctionArt);
 
             Member memberB = createMemberB();
             final int previousBidPrice = 150000;
-            Auction previousAuction = oldAuction.applyNewBid(memberB, previousBidPrice);
+            auction.applyNewBid(memberB, previousBidPrice);
+            assertThat(memberB.getAvailablePoint().getValue()).isEqualTo(INIT_AVAILABLE_POINT - previousBidPrice);
 
             // when - then
-            Member memberC = createMemberC();
-            assertThatThrownBy(() -> previousAuction.applyNewBid(memberC, previousBidPrice))
+            final int currentBidPrice = 200000;
+            assertThatThrownBy(() -> auction.applyNewBid(memberB, currentBidPrice))
                     .isInstanceOf(AnotherArtException.class)
-                    .hasMessage(AuctionErrorCode.INVALID_BID_PRICE.getMessage());
+                    .hasMessage(AuctionErrorCode.INVALID_DUPLICATE_BID.getMessage());
         }
 
         @Test
@@ -134,35 +136,48 @@ class AuctionRepositoryTest extends RepositoryTest {
             // given
             Member memberA = createMemberA();
             Art auctionArt = createAuctionArt(memberA);
-            Auction oldAuction = initAuction(auctionArt);
+            Auction auction = initAuction(auctionArt);
 
             Member memberB = createMemberB();
             final int previousBidPrice = 150000;
-            Auction previousAuction = oldAuction.applyNewBid(memberB, previousBidPrice);
+            auction.applyNewBid(memberB, previousBidPrice);
+            assertThat(memberB.getAvailablePoint().getValue()).isEqualTo(INIT_AVAILABLE_POINT - previousBidPrice);
 
             // when - then
             Member memberC = createMemberC();
             final int currentBidPrice = 200000;
-            Auction currentAuction = previousAuction.applyNewBid(memberC, currentBidPrice);
+            auction.applyNewBid(memberC, currentBidPrice);
+            assertThat(memberB.getAvailablePoint().getValue()).isEqualTo(INIT_AVAILABLE_POINT);
+            assertThat(memberC.getAvailablePoint().getValue()).isEqualTo(INIT_AVAILABLE_POINT - currentBidPrice);
 
             // then
-            assertThat(currentAuction.getCurrentBidder().getMember().getId()).isEqualTo(memberC.getId());
-            assertThat(currentAuction.getCurrentBidder().getMember().getName()).isEqualTo(memberC.getName());
-            assertThat(currentAuction.getCurrentBidder().getMember().getNickname()).isEqualTo(memberC.getNickname());
-            assertThat(currentAuction.getCurrentBidder().getBidPrice()).isEqualTo(currentBidPrice);
+            assertThat(auction.getCurrentHighestBidder().getMember().getId()).isEqualTo(memberC.getId());
+            assertThat(auction.getCurrentHighestBidder().getMember().getName()).isEqualTo(memberC.getName());
+            assertThat(auction.getCurrentHighestBidder().getMember().getNickname()).isEqualTo(memberC.getNickname());
+            assertThat(auction.getCurrentHighestBidder().getBidPrice()).isEqualTo(currentBidPrice);
         }
     }
 
+    private PasswordEncoder generatePasswordEncoder() {
+        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
+    }
+
     private Member createMemberA() {
-        return memberRepository.save(MemberFixture.A.toMember(PasswordEncoderFactories.createDelegatingPasswordEncoder()));
+        Member memberA = MemberFixture.A.toMember(generatePasswordEncoder());
+        memberA.increasePoint(INIT_AVAILABLE_POINT);
+        return memberRepository.save(memberA);
     }
 
     private Member createMemberB() {
-        return memberRepository.save(MemberFixture.B.toMember(PasswordEncoderFactories.createDelegatingPasswordEncoder()));
+        Member memberB = MemberFixture.B.toMember(generatePasswordEncoder());
+        memberB.increasePoint(INIT_AVAILABLE_POINT);
+        return memberRepository.save(memberB);
     }
 
     private Member createMemberC() {
-        return memberRepository.save(MemberFixture.C.toMember(PasswordEncoderFactories.createDelegatingPasswordEncoder()));
+        Member memberC = MemberFixture.C.toMember(generatePasswordEncoder());
+        memberC.increasePoint(INIT_AVAILABLE_POINT);
+        return memberRepository.save(memberC);
     }
 
     private Art createAuctionArt(Member member) {

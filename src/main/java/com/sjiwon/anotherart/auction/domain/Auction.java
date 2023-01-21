@@ -1,6 +1,7 @@
 package com.sjiwon.anotherart.auction.domain;
 
 import com.sjiwon.anotherart.art.domain.Art;
+import com.sjiwon.anotherart.auction.domain.record.AuctionRecord;
 import com.sjiwon.anotherart.auction.exception.AuctionErrorCode;
 import com.sjiwon.anotherart.global.exception.AnotherArtException;
 import com.sjiwon.anotherart.member.domain.Member;
@@ -11,7 +12,8 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
-import java.util.Objects;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -27,23 +29,26 @@ public class Auction {
     private Period period;
 
     @Embedded
-    private CurrentBidder currentBidder;
+    private CurrentHighestBidder currentHighestBidder;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @OneToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "art_id", referencedColumnName = "id", nullable = false, updatable = false)
     private Art art;
 
+    @OneToMany(mappedBy = "auction")
+    private List<AuctionRecord> auctionRecords = new ArrayList<>();
+
     @Builder
-    private Auction(Art art, CurrentBidder currentBidder, Period period) {
+    private Auction(Art art, CurrentHighestBidder currentHighestBidder, Period period) {
         this.art = art;
-        this.currentBidder = currentBidder;
+        this.currentHighestBidder = currentHighestBidder;
         this.period = period;
     }
 
     public static Auction initAuction(Art art, Period period) {
         validateArtType(art);
-        CurrentBidder currentBidder = CurrentBidder.of(art.getMember(), art.getPrice());
-        return new Auction(art, currentBidder, period);
+        CurrentHighestBidder currentHighestBidder = CurrentHighestBidder.of(null, art.getPrice());
+        return new Auction(art, currentHighestBidder, period);
     }
 
     private static void validateArtType(Art art) {
@@ -52,13 +57,13 @@ public class Auction {
         }
     }
 
-    public Auction applyNewBid(Member member, int bidPrice) {
-        verifyArtOwnerBid(member.getId());
-        return new Auction(this.art, this.currentBidder.applyNewBid(member, bidPrice), this.period);
+    public void applyNewBid(Member newBidMember, int newBidPrice) {
+        verifyArtOwnerBid(newBidMember.getId());
+        this.currentHighestBidder = this.currentHighestBidder.applyNewBid(newBidMember, newBidPrice);
     }
 
-    private void verifyArtOwnerBid(Long currentBidMemberId) {
-        if (Objects.equals(this.art.getMember().getId(), currentBidMemberId)) {
+    private void verifyArtOwnerBid(Long newBidMemberId) {
+        if (this.art.isArtOwner(newBidMemberId)) {
             throw AnotherArtException.type(AuctionErrorCode.INVALID_OWNER_BID);
         }
     }
