@@ -1,4 +1,5 @@
 DROP TABLE IF EXISTS purchase;
+DROP TABLE IF EXISTS auction_record;
 DROP TABLE IF EXISTS auction;
 DROP TABLE IF EXISTS favorite;
 DROP TABLE IF EXISTS art_hashtag;
@@ -70,8 +71,17 @@ CREATE TABLE auction (
     art_id BIGINT NOT NULL COMMENT '경매 작품 ID (FK)',
     start_date DATETIME NOT NULL COMMENT '경매 시작 날짜',
     end_date DATETIME NOT NULL COMMENT '경매 종료 날짜',
-    member_id BIGINT NOT NULL COMMENT '현재 입찰자 ID (초기값 = 작품 소유자)',
-    bid_price INT NOT NULL COMMENT '현재 입찰가 (초기값 = 작품 가격)',
+    member_id BIGINT NOT NULL COMMENT '최고 입찰자 ID (FK) (초기값 = 작품 소유자)',
+    bid_price INT NOT NULL COMMENT '최고 입찰가 (초기값 = 작품 가격)',
+
+    PRIMARY KEY (id)
+) ENGINE=INNODB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE auction_record (
+    id BIGINT AUTO_INCREMENT,
+    auction_id BIGINT NOT NULL COMMENT '경매 ID (FK)',
+    member_id BIGINT NOT NULL COMMENT '현재 입찰자 ID (FK)',
+    bid_price INT NOT NULL COMMENT '현재 입찰가',
     bid_date DATETIME NOT NULL COMMENT '입찰 날짜',
 
     PRIMARY KEY (id)
@@ -115,6 +125,16 @@ REFERENCES art(id);
 
 ALTER TABLE auction
 ADD CONSTRAINT auction_ibfk2_member_id
+FOREIGN KEY (member_id)
+REFERENCES member(id);
+
+ALTER TABLE auction_record
+ADD CONSTRAINT auction_record_ibfk1_auction_id
+FOREIGN KEY (auction_id)
+REFERENCES auction(id);
+
+ALTER TABLE auction_record
+ADD CONSTRAINT auction_record_ibfk2_member_id
 FOREIGN KEY (member_id)
 REFERENCES member(id);
 
