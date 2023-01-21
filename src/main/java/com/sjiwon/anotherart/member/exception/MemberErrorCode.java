@@ -13,7 +13,11 @@ public enum MemberErrorCode implements ErrorCode {
     INVALID_ADDRESS(HttpStatus.BAD_REQUEST, "MEMBER_003", "주소는 비어있지 않아야 합니다."),
     INVALID_AVAILABLE_POINTS(HttpStatus.BAD_REQUEST, "MEMBER_004", "사용 가능한 포인트는 0원 이상이여야 합니다."),
     INVALID_POINT_DECREASE(HttpStatus.BAD_REQUEST, "MEMBER_005", "포인트가 부족합니다."),
-    INVALID_EMAIL_PATTERN(HttpStatus.BAD_REQUEST, "MEMBER_006", "이메일 형식에 맞지 않습니다.")
+    INVALID_EMAIL_PATTERN(HttpStatus.BAD_REQUEST, "MEMBER_006", "이메일 형식에 맞지 않습니다."),
+    DUPLICATE_NICKNAME(HttpStatus.CONFLICT, "MEMBER_007", "중복된 닉네임입니다."),
+    DUPLICATE_LOGIN_ID(HttpStatus.CONFLICT, "MEMBER_008", "중복된 로그인 아이디입니다."),
+    DUPLICATE_PHONE(HttpStatus.CONFLICT, "MEMBER_009", "중복된 전화번호입니다."),
+    DUPLICATE_EMAIL(HttpStatus.CONFLICT, "MEMBER_010", "중복된 이메일입니다."),
     ;
 
     private final HttpStatus status;
