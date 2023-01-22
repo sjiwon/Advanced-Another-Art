@@ -8,6 +8,3 @@ logging:
         orm:
           jpa:
             JpaTransactionManager: DEBUG
-      hibernate:
-        resource:
-          transaction: DEBUG

@@ -4,15 +4,11 @@ import lombok.Getter;
 
 @Getter
 public class AnotherArtException extends RuntimeException {
-    private final int statusCode;
-    private final String errorCode;
-    private final String message;
+    private final ErrorCode code;
 
     public AnotherArtException(ErrorCode code) {
         super(code.getMessage());
-        statusCode = code.getStatus().value();
-        errorCode = code.getErrorCode();
-        message = code.getMessage();
+        this.code = code;
     }
 
     public static AnotherArtException type(ErrorCode code) {

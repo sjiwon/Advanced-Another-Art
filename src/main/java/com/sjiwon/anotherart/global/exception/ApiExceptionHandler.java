@@ -1,5 +1,6 @@
 package com.sjiwon.anotherart.global.exception;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -8,13 +9,16 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.NoHandlerFoundException;
 
+@Slf4j
 @RestControllerAdvice
 public class ApiExceptionHandler {
     @ExceptionHandler(AnotherArtException.class)
     public ResponseEntity<ErrorResponse> anotherArtException(AnotherArtException exception) {
+        ErrorCode code = exception.getCode();
+        loggingException(code);
         return ResponseEntity
-                .status(exception.getStatusCode())
-                .body(ErrorResponse.from(exception));
+                .status(code.getStatus())
+                .body(ErrorResponse.from(code));
     }
 
     /**
@@ -49,9 +53,15 @@ public class ApiExceptionHandler {
         return convert(GlobalErrorCode.INTERNAL_SERVER_ERROR);
     }
 
-    private ResponseEntity<ErrorResponse> convert(ErrorCode errorCode) {
+    private ResponseEntity<ErrorResponse> convert(ErrorCode code) {
+        loggingException(code);
         return ResponseEntity
-                .status(errorCode.getStatus())
-                .body(ErrorResponse.from(errorCode));
+                .status(code.getStatus())
+                .body(ErrorResponse.from(code));
+    }
+
+    private void loggingException(ErrorCode code) {
+        log.info("statusCode={}, errorCode={}, message={}",
+                code.getStatus(), code.getErrorCode(), code.getMessage());
     }
 }

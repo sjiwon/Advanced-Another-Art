@@ -17,17 +17,7 @@ public class ErrorResponse {
         this.message = code.getMessage();
     }
 
-    private ErrorResponse(int statusCode, String errorCode, String message) {
-        this.statusCode = statusCode;
-        this.errorCode = errorCode;
-        this.message = message;
-    }
-
     public static ErrorResponse from(ErrorCode errorCode) {
         return new ErrorResponse(errorCode);
-    }
-
-    public static ErrorResponse from(AnotherArtException ex) {
-        return new ErrorResponse(ex.getStatusCode(), ex.getErrorCode(), ex.getMessage());
     }
 }
