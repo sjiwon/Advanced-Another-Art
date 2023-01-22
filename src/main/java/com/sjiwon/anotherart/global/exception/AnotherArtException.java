@@ -8,7 +8,7 @@ public class AnotherArtException extends RuntimeException {
     private final String errorCode;
     private final String message;
 
-    protected AnotherArtException(ErrorCode code) {
+    public AnotherArtException(ErrorCode code) {
         super(code.getMessage());
         statusCode = code.getStatus().value();
         errorCode = code.getErrorCode();
