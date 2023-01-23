@@ -14,7 +14,6 @@ import org.springframework.util.StringUtils;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Objects;
 
 public class AjaxAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
     private static final AntPathRequestMatcher DEFAULT_AJAX_LOGIN_URL = new AntPathRequestMatcher("/api/login", "POST");
@@ -41,7 +40,7 @@ public class AjaxAuthenticationFilter extends AbstractAuthenticationProcessingFi
     }
 
     private static boolean isRequestHeaderTypeInvalid(HttpServletRequest request) {
-        return request.getHeader("Content-Type") == null || !Objects.equals(request.getHeader("Content-Type"), "application/json");
+        return request.getHeader("Content-Type") == null || !request.getHeader("Content-Type").contains("application/json");
     }
 
     private void validateLoginRequestValues(MemberLoginRequest user, HttpServletResponse response) {
