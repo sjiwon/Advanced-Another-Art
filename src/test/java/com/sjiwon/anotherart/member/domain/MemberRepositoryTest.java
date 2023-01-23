@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -82,6 +83,25 @@ class MemberRepositoryTest extends RepositoryTest {
         // then
         assertThat(actual1).isTrue();
         assertThat(actual2).isFalse();
+    }
+
+    @Test
+    @DisplayName("로그인 아이디로 사용자를 조회한다")
+    void test5(){
+        // given
+        final Member expectedMember = createMemberA();
+        final String loginId = expectedMember.getLoginId();
+
+        // when
+        Optional<Member> actualMember = memberRepository.findByLoginId(loginId);
+        Optional<Member> emptyMember = memberRepository.findByLoginId("fakeLoginId");
+
+        // then
+        assertThat(emptyMember).isEmpty();
+        assertThat(actualMember).isPresent();
+        assertThat(actualMember.get().getId()).isEqualTo(expectedMember.getId());
+        assertThat(actualMember.get().getName()).isEqualTo(expectedMember.getName());
+        assertThat(actualMember.get().getNickname()).isEqualTo(expectedMember.getNickname());
     }
 
     private Member createMemberA() {
