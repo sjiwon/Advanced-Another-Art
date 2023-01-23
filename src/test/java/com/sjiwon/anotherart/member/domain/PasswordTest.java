@@ -16,7 +16,7 @@ class PasswordTest {
     private static final PasswordEncoder ENCODER = PasswordEncoderUtils.getEncoder();
 
     @ParameterizedTest(name = "{index}: {0}")
-    @ValueSource(strings = {"", "123", "abc", "!@#", "abcde1234!@#", "ABCDE2134!@#$", "ABCabc!@#123^%"})
+    @ValueSource(strings = {"", "123", "abc", "!@#", "Tabc12!", "aaabbbcccdddeeeAAABBBCCCDDDEEE123123123!@#$@!#%!@%!@#$!@#"})
     @DisplayName("형식에 맞지 않는 패스워드면 예외가 발생한다")
     void test1(String value){
         assertThatThrownBy(() -> Password.encrypt(value, ENCODER))

@@ -16,13 +16,9 @@ import java.util.regex.Pattern;
 @Embeddable
 public class Password {
     /**
-     * 1. 적어도 8자리 이상
-     * 2. 하나 이상의 숫자 포함
-     * 3. 하나 이상의 알파벳 소문자 포함
-     * 4. 하나 이상의 알파벳 대문자 포함
-     * 5. 하나 이상의 특수문자 포함 (!, @, #)
+     * 영문 + 숫자 + 특수기호 + 8자 이상 25자 이하
      */
-    private static final String PASSWORD_PATTERN = "^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#])[\\da-zA-Z!@#]{8,}$";
+    private static final String PASSWORD_PATTERN = "^(?=.*[a-zA-Z])(?=.*[!@#$%^&*+=-])(?=.*[0-9]).{8,25}$";
     private static final Pattern PASSWORD_MATCHER = Pattern.compile(PASSWORD_PATTERN);
 
     @Column(name = "password", nullable = false, length = 200)
