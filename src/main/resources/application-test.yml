@@ -3,5 +3,6 @@ spring:
     import:
       - security/application-file.yml
       - security/application-server.yml
+      - security/application-jwt.yml
       - application-test-datasource.yml
       - application-logging.yml

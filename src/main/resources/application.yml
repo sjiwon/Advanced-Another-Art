@@ -4,6 +4,7 @@ spring:
       - security/application-file.yml
       - security/application-server.yml
       - security/application-local-datasource.yml
+      - security/application-jwt.yml
       - application-logging.yml
 
   web:
