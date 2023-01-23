@@ -40,6 +40,9 @@ public class SecurityConfiguration {
         http.csrf().disable();
         http.cors().configurationSource(corsConfigurationSource());
 
+        http.formLogin().disable();
+        http.httpBasic().disable();
+
         http.sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
