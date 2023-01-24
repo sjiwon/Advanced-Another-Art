@@ -3,8 +3,11 @@ package com.sjiwon.anotherart.global.security;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sjiwon.anotherart.global.security.filter.AjaxAuthenticationFilter;
 import com.sjiwon.anotherart.global.security.handler.AjaxAuthenticationFailureHandler;
+import com.sjiwon.anotherart.global.security.handler.AjaxAuthenticationSuccessHandler;
 import com.sjiwon.anotherart.global.security.provider.AjaxAuthenticationProvider;
 import com.sjiwon.anotherart.global.security.service.CustomUserDetailsService;
+import com.sjiwon.anotherart.global.security.token.JwtTokenProvider;
+import com.sjiwon.anotherart.global.security.token.RefreshTokenUtils;
 import com.sjiwon.anotherart.member.domain.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -21,6 +24,7 @@ import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -35,6 +39,8 @@ public class SecurityConfiguration {
     private final MemberRepository memberRepository;
     private final AuthenticationConfiguration authenticationConfiguration;
     private final ObjectMapper objectMapper;
+    private final JwtTokenProvider jwtTokenProvider;
+    private final RefreshTokenUtils refreshTokenUtils;
 
     @Bean
     PasswordEncoder passwordEncoder() {
@@ -72,6 +78,11 @@ public class SecurityConfiguration {
     }
 
     @Bean
+    AuthenticationSuccessHandler ajaxAuthenticationSuccessHandler() {
+        return new AjaxAuthenticationSuccessHandler(jwtTokenProvider, refreshTokenUtils, objectMapper);
+    }
+
+    @Bean
     AuthenticationFailureHandler ajaxAuthenticationFailureHandler() {
         return new AjaxAuthenticationFailureHandler(objectMapper);
     }
@@ -80,6 +91,7 @@ public class SecurityConfiguration {
     AjaxAuthenticationFilter ajaxAuthenticationFilter() throws Exception {
         AjaxAuthenticationFilter authenticationFilter = new AjaxAuthenticationFilter(objectMapper);
         authenticationFilter.setAuthenticationManager(ajaxAuthenticationManager());
+        authenticationFilter.setAuthenticationSuccessHandler(ajaxAuthenticationSuccessHandler());
         authenticationFilter.setAuthenticationFailureHandler(ajaxAuthenticationFailureHandler());
         return authenticationFilter;
     }
