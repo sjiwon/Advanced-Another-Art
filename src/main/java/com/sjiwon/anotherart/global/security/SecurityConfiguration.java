@@ -1,5 +1,6 @@
 package com.sjiwon.anotherart.global.security;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sjiwon.anotherart.global.security.filter.AjaxAuthenticationFilter;
 import com.sjiwon.anotherart.global.security.handler.AjaxAuthenticationFailureHandler;
 import com.sjiwon.anotherart.global.security.provider.AjaxAuthenticationProvider;
@@ -33,6 +34,7 @@ import java.util.List;
 public class SecurityConfiguration {
     private final MemberRepository memberRepository;
     private final AuthenticationConfiguration authenticationConfiguration;
+    private final ObjectMapper objectMapper;
 
     @Bean
     PasswordEncoder passwordEncoder() {
@@ -71,12 +73,12 @@ public class SecurityConfiguration {
 
     @Bean
     AuthenticationFailureHandler ajaxAuthenticationFailureHandler() {
-        return new AjaxAuthenticationFailureHandler();
+        return new AjaxAuthenticationFailureHandler(objectMapper);
     }
 
     @Bean
     AjaxAuthenticationFilter ajaxAuthenticationFilter() throws Exception {
-        AjaxAuthenticationFilter authenticationFilter = new AjaxAuthenticationFilter();
+        AjaxAuthenticationFilter authenticationFilter = new AjaxAuthenticationFilter(objectMapper);
         authenticationFilter.setAuthenticationManager(ajaxAuthenticationManager());
         authenticationFilter.setAuthenticationFailureHandler(ajaxAuthenticationFailureHandler());
         return authenticationFilter;

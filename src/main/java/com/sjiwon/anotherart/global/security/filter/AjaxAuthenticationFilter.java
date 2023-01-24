@@ -17,10 +17,11 @@ import java.io.IOException;
 
 public class AjaxAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
     private static final AntPathRequestMatcher DEFAULT_AJAX_LOGIN_URL = new AntPathRequestMatcher("/api/login", "POST");
-    private final ObjectMapper objectMapper = new ObjectMapper();
+    private final ObjectMapper objectMapper;
 
-    public AjaxAuthenticationFilter() {
+    public AjaxAuthenticationFilter(ObjectMapper objectMapper) {
         super(DEFAULT_AJAX_LOGIN_URL);
+        this.objectMapper = objectMapper;
     }
 
     @Override
