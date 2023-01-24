@@ -6,6 +6,7 @@ spring:
       - security/application-local-datasource.yml
       - security/application-jwt.yml
       - application-logging.yml
+      - application-redis.yml
 
   web:
     resources:

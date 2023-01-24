@@ -6,3 +6,4 @@ spring:
       - security/application-jwt.yml
       - application-test-datasource.yml
       - application-logging.yml
+      - application-redis.yml
