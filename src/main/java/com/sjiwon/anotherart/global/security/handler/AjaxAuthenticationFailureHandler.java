@@ -2,7 +2,7 @@ package com.sjiwon.anotherart.global.security.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sjiwon.anotherart.global.exception.ErrorResponse;
-import com.sjiwon.anotherart.global.security.exception.AnotherArtAuthException;
+import com.sjiwon.anotherart.global.security.exception.AnotherArtAuthenticationException;
 import com.sjiwon.anotherart.member.exception.MemberErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
@@ -26,7 +26,7 @@ public class AjaxAuthenticationFailureHandler implements AuthenticationFailureHa
             errorResponse = ErrorResponse.from(MemberErrorCode.MEMBER_NOT_FOUND);
         } else if (exception instanceof BadCredentialsException) {
             errorResponse = ErrorResponse.from(MemberErrorCode.INVALID_PASSWORD);
-        } else if (exception instanceof AnotherArtAuthException authException) {
+        } else if (exception instanceof AnotherArtAuthenticationException authException) {
             errorResponse = ErrorResponse.from(authException.getCode());
         }
 

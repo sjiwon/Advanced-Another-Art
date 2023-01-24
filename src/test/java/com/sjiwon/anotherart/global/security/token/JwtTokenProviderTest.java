@@ -1,13 +1,10 @@
 package com.sjiwon.anotherart.global.security.token;
 
-import com.sjiwon.anotherart.global.exception.AnotherArtException;
-import com.sjiwon.anotherart.global.security.exception.AuthErrorCode;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @DisplayName("JwtToken -> JwtTokenProvider 테스트")
 class JwtTokenProviderTest {
@@ -68,11 +65,7 @@ class JwtTokenProviderTest {
         // then
         assertThat(accessToken).isNotNull();
         assertThat(refreshToken).isNotNull();
-        assertThatThrownBy(() -> JWT_TOKEN_PROVIDER.isTokenInvalid(accessToken))
-                .isInstanceOf(AnotherArtException.class)
-                .hasMessage(AuthErrorCode.TOKEN_EXPIRED.getMessage());
-        assertThatThrownBy(() -> JWT_TOKEN_PROVIDER.isTokenInvalid(refreshToken))
-                .isInstanceOf(AnotherArtException.class)
-                .hasMessage(AuthErrorCode.TOKEN_EXPIRED.getMessage());
+        assertThat(JWT_TOKEN_PROVIDER.isTokenInvalid(accessToken)).isTrue();
+        assertThat(JWT_TOKEN_PROVIDER.isTokenInvalid(refreshToken)).isTrue();
     }
 }

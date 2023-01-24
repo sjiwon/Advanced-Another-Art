@@ -1,7 +1,7 @@
 package com.sjiwon.anotherart.global.security.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sjiwon.anotherart.global.security.exception.AnotherArtAuthException;
+import com.sjiwon.anotherart.global.security.exception.AnotherArtAuthenticationException;
 import com.sjiwon.anotherart.global.security.exception.AuthErrorCode;
 import com.sjiwon.anotherart.global.security.principal.MemberLoginRequest;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -36,7 +36,7 @@ public class AjaxAuthenticationFilter extends AbstractAuthenticationProcessingFi
 
     private void validateLoginRequestFormat(HttpServletRequest request, HttpServletResponse response) {
         if (isRequestHeaderTypeInvalid(request)) {
-            throw AnotherArtAuthException.type(AuthErrorCode.INVALID_AUTHENTICATION_REQUEST_FORMAT);
+            throw AnotherArtAuthenticationException.type(AuthErrorCode.INVALID_AUTHENTICATION_REQUEST_FORMAT);
         }
     }
 
@@ -46,7 +46,7 @@ public class AjaxAuthenticationFilter extends AbstractAuthenticationProcessingFi
 
     private void validateLoginRequestValues(MemberLoginRequest user, HttpServletResponse response) {
         if (!StringUtils.hasText(user.getLoginId()) || !StringUtils.hasText(user.getLoginPassword())) {
-            throw AnotherArtAuthException.type(AuthErrorCode.INVALID_AUTHENTICATION_REQUEST_VALUE);
+            throw AnotherArtAuthenticationException.type(AuthErrorCode.INVALID_AUTHENTICATION_REQUEST_VALUE);
         }
     }
 }
