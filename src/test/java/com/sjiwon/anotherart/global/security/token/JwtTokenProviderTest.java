@@ -1,8 +1,7 @@
-package com.sjiwon.anotherart.token.utils;
+package com.sjiwon.anotherart.global.security.token;
 
 import com.sjiwon.anotherart.global.exception.AnotherArtException;
 import com.sjiwon.anotherart.global.security.exception.AuthErrorCode;
-import com.sjiwon.anotherart.global.security.token.JwtTokenProvider;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
