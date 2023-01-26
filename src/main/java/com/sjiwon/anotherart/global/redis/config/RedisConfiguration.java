@@ -1,4 +1,4 @@
-package com.sjiwon.anotherart.global.redis;
+package com.sjiwon.anotherart.global.redis.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;

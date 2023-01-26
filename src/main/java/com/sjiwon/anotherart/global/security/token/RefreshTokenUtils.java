@@ -1,5 +1,6 @@
 package com.sjiwon.anotherart.global.security.token;
 
+import com.sjiwon.anotherart.global.redis.service.RedisTokenService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -10,20 +11,24 @@ import javax.servlet.http.HttpServletResponse;
 
 @Component
 public class RefreshTokenUtils {
-    private static final String REFRESH_TOKEN_KEY = "refresh_token";
+    public static final String REFRESH_TOKEN_KEY = "refresh_token";
     private static final long GMT_TO_KST = 60 * 60 * 9;
     private final long refreshTokenValidityInMilliseconds;
+    private final RedisTokenService redisTokenService;
 
-    public RefreshTokenUtils(@Value("${jwt.refresh-token-validity}") final long refreshTokenValidityInMilliseconds) {
+    public RefreshTokenUtils(final RedisTokenService redisTokenService,
+                             @Value("${jwt.refresh-token-validity}") final long refreshTokenValidityInMilliseconds) {
+        this.redisTokenService = redisTokenService;
         this.refreshTokenValidityInMilliseconds = refreshTokenValidityInMilliseconds + GMT_TO_KST;
     }
 
-    public void applyRefreshTokenInCookie(HttpServletResponse response, String refreshToken) {
+    public void applyRefreshTokenInCookieAndRedis(HttpServletResponse response, Long memberId, String refreshToken) {
         Cookie cookie = createRefreshTokenCookie(refreshToken);
         response.setStatus(HttpStatus.OK.value());
         response.setCharacterEncoding("UTF-8");
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.addCookie(cookie);
+        saveRefreshTokenInRedis(memberId, refreshToken);
     }
 
     private Cookie createRefreshTokenCookie(String refreshToken) {
@@ -31,5 +36,9 @@ public class RefreshTokenUtils {
         cookie.setHttpOnly(true);
         cookie.setMaxAge((int) refreshTokenValidityInMilliseconds);
         return cookie;
+    }
+
+    private void saveRefreshTokenInRedis(Long memberId, String refreshToken) {
+        redisTokenService.saveRefreshToken(memberId, refreshToken);
     }
 }

@@ -1,4 +1,4 @@
-package com.sjiwon.anotherart.global.redis;
+package com.sjiwon.anotherart.global.redis.domain;
 
 import lombok.AccessLevel;
 import lombok.Builder;
