@@ -5,6 +5,7 @@ import com.sjiwon.anotherart.common.ObjectMapperUtils;
 import com.sjiwon.anotherart.common.PasswordEncoderUtils;
 import com.sjiwon.anotherart.fixture.MemberFixture;
 import com.sjiwon.anotherart.global.security.exception.AuthErrorCode;
+import com.sjiwon.anotherart.global.security.handler.utils.MemberLoginRequestUtils;
 import com.sjiwon.anotherart.global.security.principal.MemberLoginRequest;
 import com.sjiwon.anotherart.member.domain.MemberRepository;
 import com.sjiwon.anotherart.member.exception.MemberErrorCode;
@@ -64,7 +65,7 @@ class AjaxAuthenticationFailureHandlerTest extends ControllerTest {
     @DisplayName("로그인 요청 시 아이디/비밀번호 값을 비워서 보냄에 따라 예외가 발생한다")
     void test2() throws Exception {
         // given
-        MemberLoginRequest loginRequest = createRequest("", "");
+        MemberLoginRequest loginRequest = MemberLoginRequestUtils.createRequest("", "");
 
         // when - then
         final AuthErrorCode expectedError = AuthErrorCode.INVALID_AUTHENTICATION_REQUEST_VALUE;
@@ -92,7 +93,7 @@ class AjaxAuthenticationFailureHandlerTest extends ControllerTest {
     void test3() throws Exception {
         // given
         createMember();
-        MemberLoginRequest loginRequest = createRequest(WRONG_LOGIN_ID, DEFAULT_LOGIN_PASSWORD);
+        MemberLoginRequest loginRequest = MemberLoginRequestUtils.createRequest(WRONG_LOGIN_ID, DEFAULT_LOGIN_PASSWORD);
 
         // when - then
         final MemberErrorCode expectedError = MemberErrorCode.MEMBER_NOT_FOUND;
@@ -120,7 +121,7 @@ class AjaxAuthenticationFailureHandlerTest extends ControllerTest {
     void test4() throws Exception {
         // given
         createMember();
-        MemberLoginRequest loginRequest = createRequest(DEFAULT_LOGIN_ID, WRONG_LOGIN_PASSWORD);
+        MemberLoginRequest loginRequest = MemberLoginRequestUtils.createRequest(DEFAULT_LOGIN_ID, WRONG_LOGIN_PASSWORD);
 
         // when - then
         final MemberErrorCode expectedError = MemberErrorCode.INVALID_PASSWORD;
@@ -141,13 +142,6 @@ class AjaxAuthenticationFailureHandlerTest extends ControllerTest {
                 .andExpect(jsonPath("$.message").exists())
                 .andExpect(jsonPath("$.message").value(expectedMessage))
                 .andDo(print());
-    }
-
-    private MemberLoginRequest createRequest(String loginId, String loginPassword) {
-        return MemberLoginRequest.builder()
-                .loginId(loginId)
-                .loginPassword(loginPassword)
-                .build();
     }
 
     private void createMember() {
