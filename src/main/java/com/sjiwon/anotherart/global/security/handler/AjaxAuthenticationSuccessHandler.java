@@ -1,10 +1,10 @@
 package com.sjiwon.anotherart.global.security.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sjiwon.anotherart.global.security.handler.response.TokenResponse;
 import com.sjiwon.anotherart.global.security.principal.MemberPrincipal;
-import com.sjiwon.anotherart.global.security.token.JwtTokenProvider;
-import com.sjiwon.anotherart.global.security.token.RefreshTokenUtils;
-import com.sjiwon.anotherart.global.security.token.TokenResponse;
+import com.sjiwon.anotherart.token.utils.JwtTokenProvider;
+import com.sjiwon.anotherart.token.utils.RefreshTokenUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;

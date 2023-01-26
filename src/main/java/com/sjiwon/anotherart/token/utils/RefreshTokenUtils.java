@@ -1,6 +1,6 @@
-package com.sjiwon.anotherart.global.security.token;
+package com.sjiwon.anotherart.token.utils;
 
-import com.sjiwon.anotherart.global.redis.service.RedisTokenService;
+import com.sjiwon.anotherart.token.service.RedisTokenService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -41,4 +41,12 @@ public class RefreshTokenUtils {
     private void saveRefreshTokenInRedis(Long memberId, String refreshToken) {
         redisTokenService.saveRefreshToken(memberId, refreshToken);
     }
+//
+//    public String extractRefreshToken(HttpServletRequest request) {
+//        return Arrays.stream(request.getCookies())
+//                .filter(cookie -> cookie.getName().equals(REFRESH_TOKEN_KEY))
+//                .findFirst()
+//                .map(Cookie::getValue)
+//                .orElse(null);
+//    }
 }

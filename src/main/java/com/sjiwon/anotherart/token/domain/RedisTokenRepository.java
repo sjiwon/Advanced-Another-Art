@@ -1,4 +1,4 @@
-package com.sjiwon.anotherart.global.redis.domain;
+package com.sjiwon.anotherart.token.domain;
 
 import org.springframework.data.repository.CrudRepository;
 

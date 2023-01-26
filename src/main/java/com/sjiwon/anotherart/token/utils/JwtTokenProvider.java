@@ -1,4 +1,4 @@
-package com.sjiwon.anotherart.global.security.token;
+package com.sjiwon.anotherart.token.utils;
 
 import com.sjiwon.anotherart.global.security.exception.AnotherArtAccessDeniedException;
 import com.sjiwon.anotherart.global.security.exception.AuthErrorCode;

@@ -1,7 +1,7 @@
-package com.sjiwon.anotherart.global.redis.service;
+package com.sjiwon.anotherart.token.service;
 
-import com.sjiwon.anotherart.global.redis.domain.RedisRefreshToken;
-import com.sjiwon.anotherart.global.redis.domain.RedisTokenRepository;
+import com.sjiwon.anotherart.token.domain.RedisRefreshToken;
+import com.sjiwon.anotherart.token.domain.RedisTokenRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

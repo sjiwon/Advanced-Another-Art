@@ -1,4 +1,4 @@
-package com.sjiwon.anotherart.global.redis.domain;
+package com.sjiwon.anotherart.token.domain;
 
 import com.sjiwon.anotherart.common.RedisTest;
 import org.junit.jupiter.api.DisplayName;

@@ -1,4 +1,4 @@
-package com.sjiwon.anotherart.global.security.token;
+package com.sjiwon.anotherart.token.utils;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;

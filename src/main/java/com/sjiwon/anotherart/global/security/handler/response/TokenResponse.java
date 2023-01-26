@@ -1,4 +1,4 @@
-package com.sjiwon.anotherart.global.security.token;
+package com.sjiwon.anotherart.global.security.handler.response;
 
 import lombok.AccessLevel;
 import lombok.Builder;
