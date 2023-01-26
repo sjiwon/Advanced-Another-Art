@@ -20,10 +20,7 @@
 - 이 후 모든 요청에 대해서 사용자는 Access Token을 <code>Authorization 헤더</code>에 포함해서 요청을 보내야 한다
 - 사용자는 Refresh Token이 유효하다면 Refresh Token을 통해서 Access Token을 재발급 받을 수 있다
     - <code>RTR (Refresh Token Rotation)</code>전략을 활용해서 Refresh Token으로 Access Token을 발급받는 순간 Refresh Token도 다시 재발급한다
-    - 추가적으로 <code>Silent Refresh</code>를 통해서 서버 내부적으로 Access Token 만료에 대한 판단을 내린다면 암묵적으로 Refresh Token을 통해서 Access Token 재발급
-      - 물론 Access Token 임의 조작에 의한 예외는 처리 대상에서 제외
 - 로그아웃 시 Access Token & Refresh Token은 만료된다
-    - Redis 블랙리스트 활용 예정
 
 ### Refresh Token
 - Refresh Token은 2가지 보관 전략을 고려
