@@ -1,7 +1,5 @@
 package com.sjiwon.anotherart.token.utils;
 
-import com.sjiwon.anotherart.global.security.exception.AnotherArtAccessDeniedException;
-import com.sjiwon.anotherart.global.security.exception.AuthErrorCode;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SecurityException;
@@ -58,22 +56,18 @@ public class JwtTokenProvider {
         );
     }
 
-    public boolean isTokenInvalid(String token) {
+    public boolean isTokenValid(String token) {
         try {
             Jws<Claims> claims = getClaims(token);
             Date expiredDate = claims.getBody().getExpiration();
             Date now = new Date();
-            return expiredDate.before(now);
+            return expiredDate.after(now);
         } catch (ExpiredJwtException e) {
-            /**
-             * 토큰 만료
-             * Filter에서 Refresh Token Validation 후 이후 로직 구현
-             * -> 1. Refresh Token 유효 = Access Token & Refresh Token 재발급
-             * -> 2. Refresh Token 만료 = 사용자 재인증
-             */
-            return true;
-        } catch (SecurityException | MalformedJwtException | UnsupportedJwtException | IllegalArgumentException e) { // 토큰 임의 조작
-            throw AnotherArtAccessDeniedException.type(AuthErrorCode.INVALID_TOKEN);
+            log.info("만료된 토큰");
+            return false;
+        } catch (SecurityException | MalformedJwtException | UnsupportedJwtException | IllegalArgumentException e) {
+            log.info("유효하지 않은 토큰");
+            return false;
         }
     }
 

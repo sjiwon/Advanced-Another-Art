@@ -31,7 +31,7 @@ class JwtTokenProviderTest {
             // then
             assertThat(accessToken).isNotNull();
             assertThat(JWT_TOKEN_PROVIDER.getPayload(accessToken)).isEqualTo(memberId);
-            assertThat(JWT_TOKEN_PROVIDER.isTokenInvalid(accessToken)).isFalse();
+            assertThat(JWT_TOKEN_PROVIDER.isTokenValid(accessToken)).isTrue();
         }
 
         @Test
@@ -46,14 +46,14 @@ class JwtTokenProviderTest {
             // then
             assertThat(refreshToken).isNotNull();
             assertThat(JWT_TOKEN_PROVIDER.getPayload(refreshToken)).isEqualTo(memberId);
-            assertThat(JWT_TOKEN_PROVIDER.isTokenInvalid(refreshToken)).isFalse();
+            assertThat(JWT_TOKEN_PROVIDER.isTokenValid(refreshToken)).isTrue();
         }
     }
 
 
     @Test
-    @DisplayName("발급받은 토큰이 만료됨에 따라 예외가 발생한다")
-    void test() {
+    @DisplayName("발급받은 토큰이 만료되었을 경우에 대한 유효성 검사를 진행한다")
+    void test3() {
         // given
         final JwtTokenProvider JWT_TOKEN_PROVIDER = new JwtTokenProvider(SECRET_KEY, failureAccessTokenValidity, failureRefreshTokenValidity);
         final Long memberId = 1L;
@@ -65,7 +65,25 @@ class JwtTokenProviderTest {
         // then
         assertThat(accessToken).isNotNull();
         assertThat(refreshToken).isNotNull();
-        assertThat(JWT_TOKEN_PROVIDER.isTokenInvalid(accessToken)).isTrue();
-        assertThat(JWT_TOKEN_PROVIDER.isTokenInvalid(refreshToken)).isTrue();
+        assertThat(JWT_TOKEN_PROVIDER.isTokenValid(accessToken)).isFalse();
+        assertThat(JWT_TOKEN_PROVIDER.isTokenValid(refreshToken)).isFalse();
+    }
+    
+    @Test
+    @DisplayName("임의 조작한 토큰에 대해서 유효성 검사를 진행한다")
+    void test4() {
+        // given
+        final JwtTokenProvider JWT_TOKEN_PROVIDER = new JwtTokenProvider(SECRET_KEY, failureAccessTokenValidity, failureRefreshTokenValidity);
+        final Long memberId = 1L;
+
+        // when
+        String invalidAccessToken = JWT_TOKEN_PROVIDER.createAccessToken(memberId) + "fake";
+        String invalidRefreshToken = JWT_TOKEN_PROVIDER.createRefreshToken(memberId) + "fake";
+
+        // then
+        assertThat(invalidAccessToken).isNotNull();
+        assertThat(invalidRefreshToken).isNotNull();
+        assertThat(JWT_TOKEN_PROVIDER.isTokenValid(invalidAccessToken)).isFalse();
+        assertThat(JWT_TOKEN_PROVIDER.isTokenValid(invalidRefreshToken)).isFalse();
     }
 }
