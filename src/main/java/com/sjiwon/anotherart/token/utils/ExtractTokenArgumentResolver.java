@@ -1,5 +1,7 @@
 package com.sjiwon.anotherart.token.utils;
 
+import com.sjiwon.anotherart.global.exception.AnotherArtException;
+import com.sjiwon.anotherart.global.security.exception.AuthErrorCode;
 import org.springframework.core.MethodParameter;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
@@ -17,6 +19,14 @@ public class ExtractTokenArgumentResolver implements HandlerMethodArgumentResolv
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
         HttpServletRequest request = webRequest.getNativeRequest(HttpServletRequest.class);
-        return AuthorizationExtractor.extractToken(request);
+        String token = AuthorizationExtractor.extractToken(request);
+        validateToken(token);
+        return token;
+    }
+
+    private void validateToken(String token) {
+        if (token == null) {
+            throw AnotherArtException.type(AuthErrorCode.INVALID_TOKEN);
+        }
     }
 }
