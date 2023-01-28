@@ -2,13 +2,14 @@ package com.sjiwon.anotherart.global.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sjiwon.anotherart.global.security.filter.AjaxAuthenticationFilter;
+import com.sjiwon.anotherart.global.security.filter.JwtAuthorizationFilter;
 import com.sjiwon.anotherart.global.security.handler.AjaxAuthenticationFailureHandler;
 import com.sjiwon.anotherart.global.security.handler.AjaxAuthenticationSuccessHandler;
 import com.sjiwon.anotherart.global.security.provider.AjaxAuthenticationProvider;
 import com.sjiwon.anotherart.global.security.service.CustomUserDetailsService;
-import com.sjiwon.anotherart.global.security.token.JwtTokenProvider;
-import com.sjiwon.anotherart.global.security.token.RefreshTokenUtils;
 import com.sjiwon.anotherart.member.domain.MemberRepository;
+import com.sjiwon.anotherart.token.service.RedisTokenService;
+import com.sjiwon.anotherart.token.utils.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -40,7 +41,7 @@ public class SecurityConfiguration {
     private final AuthenticationConfiguration authenticationConfiguration;
     private final ObjectMapper objectMapper;
     private final JwtTokenProvider jwtTokenProvider;
-    private final RefreshTokenUtils refreshTokenUtils;
+    private final RedisTokenService redisTokenService;
 
     @Bean
     PasswordEncoder passwordEncoder() {
@@ -79,7 +80,7 @@ public class SecurityConfiguration {
 
     @Bean
     AuthenticationSuccessHandler ajaxAuthenticationSuccessHandler() {
-        return new AjaxAuthenticationSuccessHandler(jwtTokenProvider, refreshTokenUtils, objectMapper);
+        return new AjaxAuthenticationSuccessHandler(jwtTokenProvider, redisTokenService, objectMapper);
     }
 
     @Bean
@@ -97,6 +98,11 @@ public class SecurityConfiguration {
     }
 
     @Bean
+    JwtAuthorizationFilter jwtAuthorizationFilter() {
+        return new JwtAuthorizationFilter(jwtTokenProvider, memberRepository);
+    }
+
+    @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf().disable();
         http.cors().configurationSource(corsConfigurationSource());
@@ -105,6 +111,7 @@ public class SecurityConfiguration {
         http.httpBasic().disable();
 
         http.addFilterAt(ajaxAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(jwtAuthorizationFilter(), AjaxAuthenticationFilter.class);
 
         http.sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
