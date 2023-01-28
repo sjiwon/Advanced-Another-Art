@@ -10,7 +10,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@DisplayName("Redis [Repository Layer] -> RedisTokenRepository 테스트")
+@DisplayName("Token [Redis] -> RedisTokenRepository 테스트")
 class RedisTokenRepositoryTest extends RedisTest {
     @Autowired
     RedisTokenRepository redisTokenRepository;

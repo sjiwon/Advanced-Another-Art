@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@DisplayName("JwtToken -> JwtTokenProvider 테스트")
+@DisplayName("Token [Utils] -> JwtTokenProvider 테스트")
 class JwtTokenProviderTest {
     private static final String SECRET_KEY = "asdjflsadjflj120993i09fa0sdjfjsdAfasjfawjfwjaslfja1120h10hdas80hf0sadhf812e0h01";
     private static final long successAccessTokenValidity = 7200L;

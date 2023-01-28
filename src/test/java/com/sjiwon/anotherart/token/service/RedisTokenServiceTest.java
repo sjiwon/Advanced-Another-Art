@@ -12,7 +12,7 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
-@DisplayName("Redis [Service Layer] -> RedisTokenService 테스트")
+@DisplayName("Token [Redis] -> RedisTokenService 테스트")
 class RedisTokenServiceTest {
     @Autowired
     RedisTokenRepository redisTokenRepository;
