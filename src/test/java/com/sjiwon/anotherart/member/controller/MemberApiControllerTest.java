@@ -43,15 +43,16 @@ class MemberApiControllerTest extends ControllerTest {
             // given
             SignUpRequest signUpRequest = SignUpRequestUtils.createEmptyRequest();
 
-            // when - then
-            final GlobalErrorCode expectedError = GlobalErrorCode.VALIDATION_ERROR;
-            HttpStatus expectedStatus = expectedError.getStatus();
-            String expectedMessage = expectedError.getMessage();
-
+            // when
             MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                     .post(BASE_URL)
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(ObjectMapperUtils.objectToJson(signUpRequest));
+
+            // then
+            final GlobalErrorCode expectedError = GlobalErrorCode.VALIDATION_ERROR;
+            HttpStatus expectedStatus = expectedError.getStatus();
+            String expectedMessage = expectedError.getMessage();
 
             mockMvc.perform(requestBuilder)
                     .andExpect(status().isBadRequest())
@@ -71,15 +72,16 @@ class MemberApiControllerTest extends ControllerTest {
             Member member = createMember();
             SignUpRequest signUpRequest = SignUpRequestUtils.createFailureSignUpRequest(member);
 
-            // when - then
-            final MemberErrorCode expectedError = MemberErrorCode.DUPLICATE_NICKNAME;
-            HttpStatus expectedStatus = expectedError.getStatus();
-            String expectedMessage = expectedError.getMessage();
-
+            // when
             MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                     .post(BASE_URL)
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(ObjectMapperUtils.objectToJson(signUpRequest));
+
+            // then
+            final MemberErrorCode expectedError = MemberErrorCode.DUPLICATE_NICKNAME;
+            HttpStatus expectedStatus = expectedError.getStatus();
+            String expectedMessage = expectedError.getMessage();
 
             mockMvc.perform(requestBuilder)
                     .andExpect(status().isConflict())
@@ -98,12 +100,13 @@ class MemberApiControllerTest extends ControllerTest {
             // given
             SignUpRequest signUpRequest = SignUpRequestUtils.createSuccessSignUpRequest();
 
-            // when - then
+            // when
             MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                     .post(BASE_URL)
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(ObjectMapperUtils.objectToJson(signUpRequest));
 
+            // then
             mockMvc.perform(requestBuilder)
                     .andExpect(status().isCreated())
                     .andExpect(jsonPath("$").doesNotExist())
