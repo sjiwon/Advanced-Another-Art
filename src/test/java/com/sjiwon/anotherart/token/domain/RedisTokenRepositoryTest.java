@@ -16,18 +16,18 @@ class RedisTokenRepositoryTest extends RedisTest {
     RedisTokenRepository redisTokenRepository;
 
     @Test
-    @DisplayName("Redis에 Refresh Token을 저장한 후 memberId릍 통해서 조회한다")
+    @DisplayName("Redis에 Refresh Token을 저장한 후 refreshToken을 통해서 조회한다")
     void test1() {
         // given
         final Long memberId = 1L;
         final String refreshToken = "refresh_token_hello_world";
 
         // when
-        final RedisRefreshToken redisRefreshToken = new RedisRefreshToken(memberId, refreshToken);
+        final RedisRefreshToken redisRefreshToken = new RedisRefreshToken(refreshToken, memberId);
         redisTokenRepository.save(redisRefreshToken);
 
         // then
-        Optional<RedisRefreshToken> findRefreshToken = redisTokenRepository.findById(memberId);
+        Optional<RedisRefreshToken> findRefreshToken = redisTokenRepository.findById(refreshToken);
         assertThat(findRefreshToken).isPresent();
         assertThat(findRefreshToken.get().getMemberId()).isEqualTo(redisRefreshToken.getMemberId());
         assertThat(findRefreshToken.get().getRefreshToken()).isEqualTo(redisRefreshToken.getRefreshToken());
@@ -41,13 +41,13 @@ class RedisTokenRepositoryTest extends RedisTest {
         final String refreshToken = "refresh_token_hello_world";
 
         // when
-        final RedisRefreshToken redisRefreshToken = new RedisRefreshToken(memberId, refreshToken);
+        final RedisRefreshToken redisRefreshToken = new RedisRefreshToken(refreshToken, memberId);
         ReflectionTestUtils.setField(redisRefreshToken, "timeToLive", 2L);
         redisTokenRepository.save(redisRefreshToken);
 
         // then
         Thread.sleep(3000);
-        Optional<RedisRefreshToken> findRefreshToken = redisTokenRepository.findById(memberId);
+        Optional<RedisRefreshToken> findRefreshToken = redisTokenRepository.findById(refreshToken);
         assertThat(findRefreshToken).isEmpty();
     }
 }

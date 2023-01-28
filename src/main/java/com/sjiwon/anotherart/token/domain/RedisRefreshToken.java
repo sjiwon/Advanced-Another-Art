@@ -18,16 +18,16 @@ public class RedisRefreshToken implements Serializable {
     private static final long DEFAULT_TTL = Duration.ofDays(14).toSeconds();
 
     @Id
-    private Long memberId;
-
     private String refreshToken;
+
+    private Long memberId;
 
     @TimeToLive
     private long timeToLive = DEFAULT_TTL;
 
     @Builder
-    public RedisRefreshToken(Long memberId, String refreshToken) {
-        this.memberId = memberId;
+    public RedisRefreshToken(String refreshToken, Long memberId) {
         this.refreshToken = refreshToken;
+        this.memberId = memberId;
     }
 }

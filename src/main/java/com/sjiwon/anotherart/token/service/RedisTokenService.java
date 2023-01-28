@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 public class RedisTokenService {
     private final RedisTokenRepository redisTokenRepository;
 
-    public void saveRefreshToken(Long memberId, String refreshToken) {
+    public void saveRefreshToken(String refreshToken, Long memberId) {
         RedisRefreshToken redisRefreshToken = RedisRefreshToken.builder()
                 .memberId(memberId)
                 .refreshToken(refreshToken)
@@ -18,11 +18,11 @@ public class RedisTokenService {
         redisTokenRepository.save(redisRefreshToken);
     }
 
-    public void deleteRefreshTokenViaMemberId(Long memberId) {
-        redisTokenRepository.deleteById(memberId);
+    public void deleteRefreshToken(String refreshToken) {
+        redisTokenRepository.deleteById(refreshToken);
     }
 
-    public boolean isRefreshTokenExists(Long memberId) {
-        return redisTokenRepository.existsById(memberId);
+    public boolean isRefreshTokenExists(String refreshToken) {
+        return redisTokenRepository.existsById(refreshToken);
     }
 }

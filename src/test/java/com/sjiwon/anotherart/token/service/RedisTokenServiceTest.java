@@ -28,43 +28,43 @@ class RedisTokenServiceTest {
         final String refreshToken = "refresh_token_hello_world";
 
         // when
-        redisTokenService.saveRefreshToken(memberId, refreshToken);
+        redisTokenService.saveRefreshToken(refreshToken, memberId);
 
         // then
-        Optional<RedisRefreshToken> findRefreshToken = redisTokenRepository.findById(memberId);
+        Optional<RedisRefreshToken> findRefreshToken = redisTokenRepository.findById(refreshToken);
         assertThat(findRefreshToken).isPresent();
         assertThat(findRefreshToken.get().getMemberId()).isEqualTo(memberId);
         assertThat(findRefreshToken.get().getRefreshToken()).isEqualTo(refreshToken);
     }
 
     @Test
-    @DisplayName("memberId에 해당하는 Refresh Token을 Redis에서 삭제한다")
+    @DisplayName("Refresh Token을 Redis에서 삭제한다")
     void test2() {
         // given
         final Long memberId = 1L;
         final String refreshToken = "refresh_token_hello_world";
-        redisTokenService.saveRefreshToken(memberId, refreshToken);
+        redisTokenService.saveRefreshToken(refreshToken, memberId);
 
         // when
-        redisTokenService.deleteRefreshTokenViaMemberId(memberId);
+        redisTokenService.deleteRefreshToken(refreshToken);
 
         // then
-        Optional<RedisRefreshToken> findRefreshToken = redisTokenRepository.findById(memberId);
+        Optional<RedisRefreshToken> findRefreshToken = redisTokenRepository.findById(refreshToken);
         assertThat(findRefreshToken).isEmpty();
     }
 
     @Test
-    @DisplayName("memberId에 해당하는 Refresh Token이 Redis에 존재하는지 여부를 확인한다")
+    @DisplayName("Refresh Token이 Redis에 존재하는지 여부를 확인한다")
     void test3() {
         // given
         final Long memberId = 1L;
         final String refreshToken = "refresh_token_hello_world";
-        redisTokenService.saveRefreshToken(memberId, refreshToken);
+        redisTokenService.saveRefreshToken(refreshToken, memberId);
 
         // when
-        final Long fakeMemberId = 100L;
-        boolean actual1 = redisTokenService.isRefreshTokenExists(memberId);
-        boolean actual2 = redisTokenService.isRefreshTokenExists(100L);
+        final String fakeRefreshToken = "fake_refresh_token_hello_world";
+        boolean actual1 = redisTokenService.isRefreshTokenExists(refreshToken);
+        boolean actual2 = redisTokenService.isRefreshTokenExists(fakeRefreshToken);
 
         // then
         assertThat(actual1).isTrue();

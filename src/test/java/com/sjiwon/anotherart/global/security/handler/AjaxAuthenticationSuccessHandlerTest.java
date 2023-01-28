@@ -8,20 +8,15 @@ import com.sjiwon.anotherart.global.security.handler.utils.MemberLoginRequestUti
 import com.sjiwon.anotherart.global.security.principal.MemberLoginRequest;
 import com.sjiwon.anotherart.member.domain.Member;
 import com.sjiwon.anotherart.member.domain.MemberRepository;
-import com.sjiwon.anotherart.token.domain.RedisRefreshToken;
 import com.sjiwon.anotherart.token.domain.RedisTokenRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import java.util.Optional;
-
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -43,7 +38,7 @@ class AjaxAuthenticationSuccessHandlerTest extends ControllerTest {
     private static final String DEFAULT_LOGIN_PASSWORD = MEMBER.getPassword();
 
     @Test
-    @DisplayName("로그인을 성공하면 Access Token은 [HTTP Response Body] Refresh Token은 [HttpOnly Cookie & Redis]에 저장된다")
+    @DisplayName("로그인을 성공하면 Access Token & Refresh Token이 응답으로 제공된다")
     void test() throws Exception {
         // given
         Member member = createMember();
@@ -56,17 +51,10 @@ class AjaxAuthenticationSuccessHandlerTest extends ControllerTest {
                 .contentType(MediaType.APPLICATION_JSON_VALUE);
 
         // then
-        ResultActions apiResult = mockMvc.perform(requestBuilder);
-
-        Optional<RedisRefreshToken> refreshToken = redisTokenRepository.findById(member.getId());
-        assertThat(refreshToken).isPresent();
-        assertThat(refreshToken.get().getMemberId()).isEqualTo(member.getId());
-
-        apiResult
+        mockMvc.perform(requestBuilder)
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.accessToken").exists())
                 .andExpect(jsonPath("$.refreshToken").exists())
-                .andExpect(jsonPath("$.refreshToken").value(refreshToken.get().getRefreshToken()))
                 .andDo(print());
     }
 

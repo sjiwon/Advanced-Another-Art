@@ -25,7 +25,7 @@ public class AjaxAuthenticationSuccessHandler implements AuthenticationSuccessHa
         String accessToken = jwtTokenProvider.createAccessToken(memberId);
         String refreshToken = jwtTokenProvider.createRefreshToken(memberId);
 
-        redisTokenService.saveRefreshToken(memberId, refreshToken);
+        redisTokenService.saveRefreshToken(refreshToken, memberId);
         sendAccessTokenAndRefreshToken(response, accessToken, refreshToken);
     }
 
