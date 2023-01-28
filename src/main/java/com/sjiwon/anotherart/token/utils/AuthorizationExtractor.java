@@ -6,9 +6,10 @@ import lombok.NoArgsConstructor;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Enumeration;
 
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
+
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class AuthorizationExtractor {
-    private static final String AUTHORIZATION = "Authorization";
     private static final String BEARER_TYPE = "Bearer";
 
     public static String extractAccessToken(HttpServletRequest request) {
