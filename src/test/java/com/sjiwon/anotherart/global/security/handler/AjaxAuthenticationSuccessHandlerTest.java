@@ -10,7 +10,6 @@ import com.sjiwon.anotherart.member.domain.Member;
 import com.sjiwon.anotherart.member.domain.MemberRepository;
 import com.sjiwon.anotherart.token.domain.RedisRefreshToken;
 import com.sjiwon.anotherart.token.domain.RedisTokenRepository;
-import com.sjiwon.anotherart.token.utils.RefreshTokenUtils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +23,8 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @DisplayName("Security [Handler] -> AjaxAuthenticationSuccessHandler 테스트")
 class AjaxAuthenticationSuccessHandlerTest extends ControllerTest {
@@ -41,7 +41,6 @@ class AjaxAuthenticationSuccessHandlerTest extends ControllerTest {
     private static final MemberFixture MEMBER = MemberFixture.A;
     private static final String DEFAULT_LOGIN_ID = MEMBER.getLoginId();
     private static final String DEFAULT_LOGIN_PASSWORD = MEMBER.getPassword();
-    private static final String REFRESH_TOKEN_KEY = RefreshTokenUtils.REFRESH_TOKEN_KEY;
 
     @Test
     @DisplayName("로그인을 성공하면 Access Token은 [HTTP Response Body] Refresh Token은 [HttpOnly Cookie & Redis]에 저장된다")
@@ -65,11 +64,9 @@ class AjaxAuthenticationSuccessHandlerTest extends ControllerTest {
 
         apiResult
                 .andExpect(status().isOk())
-                .andExpect(cookie().exists(REFRESH_TOKEN_KEY))
-                .andExpect(cookie().httpOnly(REFRESH_TOKEN_KEY, true))
-                .andExpect(cookie().secure(REFRESH_TOKEN_KEY, false))
-                .andExpect(cookie().value(REFRESH_TOKEN_KEY, refreshToken.get().getRefreshToken()))
                 .andExpect(jsonPath("$.accessToken").exists())
+                .andExpect(jsonPath("$.refreshToken").exists())
+                .andExpect(jsonPath("$.refreshToken").value(refreshToken.get().getRefreshToken()))
                 .andDo(print());
     }
 

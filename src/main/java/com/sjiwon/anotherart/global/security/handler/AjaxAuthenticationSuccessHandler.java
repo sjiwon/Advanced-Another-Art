@@ -3,8 +3,8 @@ package com.sjiwon.anotherart.global.security.handler;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sjiwon.anotherart.global.security.handler.response.TokenResponse;
 import com.sjiwon.anotherart.global.security.principal.MemberPrincipal;
+import com.sjiwon.anotherart.token.service.RedisTokenService;
 import com.sjiwon.anotherart.token.utils.JwtTokenProvider;
-import com.sjiwon.anotherart.token.utils.RefreshTokenUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
@@ -16,7 +16,7 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class AjaxAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
     private final JwtTokenProvider jwtTokenProvider;
-    private final RefreshTokenUtils refreshTokenUtils;
+    private final RedisTokenService redisTokenService;
     private final ObjectMapper objectMapper;
 
     @Override
@@ -25,15 +25,15 @@ public class AjaxAuthenticationSuccessHandler implements AuthenticationSuccessHa
         String accessToken = jwtTokenProvider.createAccessToken(memberId);
         String refreshToken = jwtTokenProvider.createRefreshToken(memberId);
 
-        refreshTokenUtils.applyRefreshTokenInCookieAndRedis(response, memberId, refreshToken);
-        sendAccessToken(response, accessToken);
+        redisTokenService.saveRefreshToken(memberId, refreshToken);
+        sendAccessTokenAndRefreshToken(response, accessToken, refreshToken);
     }
 
     private Long getMemberIdViaPrincipal(Authentication authentication) {
         return ((MemberPrincipal) authentication.getPrincipal()).getUser().getId();
     }
 
-    private void sendAccessToken(HttpServletResponse response, String accessToken) throws IOException {
-        objectMapper.writeValue(response.getWriter(), new TokenResponse(accessToken));
+    private void sendAccessTokenAndRefreshToken(HttpServletResponse response, String accessToken, String refreshToken) throws IOException {
+        objectMapper.writeValue(response.getWriter(), new TokenResponse(accessToken, refreshToken));
     }
 }
