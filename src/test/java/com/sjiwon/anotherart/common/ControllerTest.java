@@ -9,7 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 @SpringBootTest
 @Transactional
 @AutoConfigureMockMvc
-public abstract class ControllerTest {
+public abstract class ControllerTest extends RedisTestContainers {
     @Autowired
     protected ObjectMapper objectMapper;
 }
