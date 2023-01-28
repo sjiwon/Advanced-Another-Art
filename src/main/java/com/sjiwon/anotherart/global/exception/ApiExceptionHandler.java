@@ -61,7 +61,7 @@ public class ApiExceptionHandler {
     }
 
     private void loggingException(ErrorCode code) {
-        log.info("statusCode={}, errorCode={}, message={}",
-                code.getStatus(), code.getErrorCode(), code.getMessage());
+        log.info("statusCode={} || errorCode={} || message={}",
+                code.getStatus().value(), code.getErrorCode(), code.getMessage());
     }
 }
