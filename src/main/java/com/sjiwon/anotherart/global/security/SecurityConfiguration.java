@@ -3,6 +3,7 @@ package com.sjiwon.anotherart.global.security;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sjiwon.anotherart.global.security.filter.AjaxAuthenticationFilter;
 import com.sjiwon.anotherart.global.security.filter.JwtAuthorizationFilter;
+import com.sjiwon.anotherart.global.security.filter.TokenInvalidExceptionTranslationFilter;
 import com.sjiwon.anotherart.global.security.handler.AjaxAuthenticationFailureHandler;
 import com.sjiwon.anotherart.global.security.handler.AjaxAuthenticationSuccessHandler;
 import com.sjiwon.anotherart.global.security.handler.JwtAccessDeniedHandler;
@@ -117,6 +118,11 @@ public class SecurityConfiguration {
     }
 
     @Bean
+    TokenInvalidExceptionTranslationFilter tokenInvalidExceptionTranslationFilter() {
+        return new TokenInvalidExceptionTranslationFilter(jwtAccessDeniedHandler());
+    }
+
+    @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf().disable();
         http.cors().configurationSource(corsConfigurationSource());
@@ -129,6 +135,7 @@ public class SecurityConfiguration {
 
         http.addFilterAt(ajaxAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
         http.addFilterBefore(jwtAuthorizationFilter(), AjaxAuthenticationFilter.class);
+        http.addFilterBefore(tokenInvalidExceptionTranslationFilter(), JwtAuthorizationFilter.class);
 
         http.exceptionHandling()
                 .authenticationEntryPoint(jwtAuthenticationEntryPoint())

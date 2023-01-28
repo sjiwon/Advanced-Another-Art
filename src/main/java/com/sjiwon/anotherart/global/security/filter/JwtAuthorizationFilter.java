@@ -26,15 +26,19 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        String accessToken = AuthorizationExtractor.extractToken(request);
+        String token = AuthorizationExtractor.extractToken(request);
 
-        if (accessToken != null && jwtTokenProvider.isTokenValid(accessToken)) {
-            Long memberId = jwtTokenProvider.getPayload(accessToken);
-            Member member = memberRepository.findById(memberId)
-                    .orElseThrow(() -> AnotherArtAccessDeniedException.type(AuthErrorCode.INVALID_TOKEN));
-            MemberPrincipal principal = new MemberPrincipal(new MemberAuthDto(member));
-            UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(principal, "");
-            SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+        if (token != null) {
+            if (jwtTokenProvider.isTokenValid(token)) {
+                Long memberId = jwtTokenProvider.getPayload(token);
+                Member member = memberRepository.findById(memberId)
+                        .orElseThrow(() -> AnotherArtAccessDeniedException.type(AuthErrorCode.INVALID_TOKEN));
+                MemberPrincipal principal = new MemberPrincipal(new MemberAuthDto(member));
+                UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(principal, "");
+                SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+            } else {
+                throw AnotherArtAccessDeniedException.type(AuthErrorCode.INVALID_TOKEN);
+            }
         }
 
         filterChain.doFilter(request, response);
