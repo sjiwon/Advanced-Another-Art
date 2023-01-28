@@ -18,6 +18,10 @@ repositories {
 	mavenCentral()
 }
 
+ext {
+	set('testcontainersVersion', "1.17.6")
+}
+
 dependencies {
 	// JPA & DB
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
@@ -58,6 +62,13 @@ dependencies {
 	// test
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'
+	testImplementation 'org.testcontainers:junit-jupiter'
+}
+
+dependencyManagement {
+	imports {
+		mavenBom "org.testcontainers:testcontainers-bom:${testcontainersVersion}"
+	}
 }
 
 tasks.named('test') {
