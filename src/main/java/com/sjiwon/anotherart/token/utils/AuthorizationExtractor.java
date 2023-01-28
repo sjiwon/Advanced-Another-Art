@@ -12,7 +12,7 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 public class AuthorizationExtractor {
     private static final String BEARER_TYPE = "Bearer";
 
-    public static String extractAccessToken(HttpServletRequest request) {
+    public static String extractToken(HttpServletRequest request) {
         Enumeration<String> headers = request.getHeaders(AUTHORIZATION);
         while (headers.hasMoreElements()) {
             String value = headers.nextElement();
