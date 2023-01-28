@@ -5,6 +5,8 @@ import com.sjiwon.anotherart.global.security.filter.AjaxAuthenticationFilter;
 import com.sjiwon.anotherart.global.security.filter.JwtAuthorizationFilter;
 import com.sjiwon.anotherart.global.security.handler.AjaxAuthenticationFailureHandler;
 import com.sjiwon.anotherart.global.security.handler.AjaxAuthenticationSuccessHandler;
+import com.sjiwon.anotherart.global.security.handler.JwtAccessDeniedHandler;
+import com.sjiwon.anotherart.global.security.handler.JwtAuthenticationEntryPoint;
 import com.sjiwon.anotherart.global.security.provider.AjaxAuthenticationProvider;
 import com.sjiwon.anotherart.global.security.service.CustomUserDetailsService;
 import com.sjiwon.anotherart.member.domain.MemberRepository;
@@ -23,7 +25,9 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -103,6 +107,16 @@ public class SecurityConfiguration {
     }
 
     @Bean
+    AuthenticationEntryPoint jwtAuthenticationEntryPoint() {
+        return new JwtAuthenticationEntryPoint(objectMapper);
+    }
+
+    @Bean
+    AccessDeniedHandler jwtAccessDeniedHandler() {
+        return new JwtAccessDeniedHandler(objectMapper);
+    }
+
+    @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf().disable();
         http.cors().configurationSource(corsConfigurationSource());
@@ -110,11 +124,15 @@ public class SecurityConfiguration {
         http.formLogin().disable();
         http.httpBasic().disable();
 
+        http.sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+
         http.addFilterAt(ajaxAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
         http.addFilterBefore(jwtAuthorizationFilter(), AjaxAuthenticationFilter.class);
 
-        http.sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+        http.exceptionHandling()
+                .authenticationEntryPoint(jwtAuthenticationEntryPoint())
+                .accessDeniedHandler(jwtAccessDeniedHandler());
 
         return http.build();
     }
