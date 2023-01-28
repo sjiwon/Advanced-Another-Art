@@ -1,4 +1,4 @@
-package com.sjiwon.anotherart.global.security.handler.response;
+package com.sjiwon.anotherart.global.security;
 
 import lombok.AccessLevel;
 import lombok.Builder;

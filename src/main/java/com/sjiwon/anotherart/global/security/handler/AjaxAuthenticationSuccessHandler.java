@@ -1,7 +1,7 @@
 package com.sjiwon.anotherart.global.security.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sjiwon.anotherart.global.security.handler.response.TokenResponse;
+import com.sjiwon.anotherart.global.security.TokenResponse;
 import com.sjiwon.anotherart.global.security.principal.MemberPrincipal;
 import com.sjiwon.anotherart.token.service.RedisTokenService;
 import com.sjiwon.anotherart.token.utils.JwtTokenProvider;
