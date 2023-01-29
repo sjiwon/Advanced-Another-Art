@@ -1,0 +1,14 @@
+= Spring Security Logout Flow
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 2
+
+== 로그아웃
+HTTP Request
+include::{snippets}/SecurityLogout/http-request.adoc[]
+include::{snippets}/SecurityLogout/request-headers.adoc[]
+
+HTTP Response
+include::{snippets}/SecurityLogout/http-response.adoc[]
