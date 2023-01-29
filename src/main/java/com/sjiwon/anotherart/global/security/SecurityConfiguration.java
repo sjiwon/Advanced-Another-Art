@@ -4,10 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sjiwon.anotherart.global.security.filter.AjaxAuthenticationFilter;
 import com.sjiwon.anotherart.global.security.filter.JwtAuthorizationFilter;
 import com.sjiwon.anotherart.global.security.filter.TokenInvalidExceptionTranslationFilter;
-import com.sjiwon.anotherart.global.security.handler.AjaxAuthenticationFailureHandler;
-import com.sjiwon.anotherart.global.security.handler.AjaxAuthenticationSuccessHandler;
-import com.sjiwon.anotherart.global.security.handler.JwtAccessDeniedHandler;
-import com.sjiwon.anotherart.global.security.handler.JwtAuthenticationEntryPoint;
+import com.sjiwon.anotherart.global.security.handler.*;
 import com.sjiwon.anotherart.global.security.provider.AjaxAuthenticationProvider;
 import com.sjiwon.anotherart.global.security.service.CustomUserDetailsService;
 import com.sjiwon.anotherart.member.domain.MemberRepository;
@@ -123,6 +120,11 @@ public class SecurityConfiguration {
     }
 
     @Bean
+    JwtLogoutSuccessHandler jwtLogoutSuccessHandler() {
+        return new JwtLogoutSuccessHandler(redisTokenService);
+    }
+
+    @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf().disable();
         http.cors().configurationSource(corsConfigurationSource());
@@ -136,6 +138,11 @@ public class SecurityConfiguration {
         http.addFilterAt(ajaxAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
         http.addFilterBefore(jwtAuthorizationFilter(), AjaxAuthenticationFilter.class);
         http.addFilterBefore(tokenInvalidExceptionTranslationFilter(), JwtAuthorizationFilter.class);
+
+        http.logout()
+                .logoutUrl("/api/logout")
+                .clearAuthentication(true)
+                .logoutSuccessHandler(jwtLogoutSuccessHandler());
 
         http.exceptionHandling()
                 .authenticationEntryPoint(jwtAuthenticationEntryPoint())
