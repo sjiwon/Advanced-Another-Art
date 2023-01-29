@@ -14,13 +14,14 @@ import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
+import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -49,22 +50,43 @@ class MemberApiControllerTest extends ControllerTest {
 
             // then
             final GlobalErrorCode expectedError = GlobalErrorCode.VALIDATION_ERROR;
-            HttpStatus expectedStatus = expectedError.getStatus();
-            String expectedMessage = expectedError.getMessage();
 
             mockMvc.perform(requestBuilder)
                     .andExpect(status().isBadRequest())
                     .andExpect(jsonPath("$.statusCode").exists())
-                    .andExpect(jsonPath("$.statusCode").value(expectedStatus.value()))
+                    .andExpect(jsonPath("$.statusCode").value(expectedError.getStatus().value()))
                     .andExpect(jsonPath("$.errorCode").exists())
-                    .andExpect(jsonPath("$.errorCode").value(expectedStatus.getReasonPhrase()))
+                    .andExpect(jsonPath("$.errorCode").value(expectedError.getErrorCode()))
                     .andExpect(jsonPath("$.message").exists())
-                    .andExpect(jsonPath("$.message").value(expectedMessage))
-                    .andDo(print());
+                    .andExpect(jsonPath("$.message").value(expectedError.getMessage()))
+                    .andDo(
+                            document(
+                                    "MemberApi/SignUpFailure/case1",
+                                    preprocessRequest(prettyPrint()),
+                                    preprocessResponse(prettyPrint()),
+                                    requestFields(
+                                            fieldWithPath("name").description("이름"),
+                                            fieldWithPath("nickname").description("닉네임"),
+                                            fieldWithPath("loginId").description("로그인 아이디"),
+                                            fieldWithPath("password").description("로그인 비밀번호"),
+                                            fieldWithPath("school").description("재학중인 학교"),
+                                            fieldWithPath("postcode").description("우편번호 (5자리)"),
+                                            fieldWithPath("defaultAddress").description("기본 주소"),
+                                            fieldWithPath("detailAddress").description("상세 주소"),
+                                            fieldWithPath("phone").description("전화번호"),
+                                            fieldWithPath("email").description("이메일")
+                                    ),
+                                    responseFields(
+                                            fieldWithPath("statusCode").description("HTTP 상태 코드"),
+                                            fieldWithPath("errorCode").description("커스텀 예외 코드"),
+                                            fieldWithPath("message").description("예외 메시지")
+                                    )
+                            )
+                    );
         }
 
         @Test
-        @DisplayName("중복되는 값에 의해서 회원가입에 실패한다")
+        @DisplayName("중복되는 값(닉네임)에 의해서 회원가입에 실패한다")
         void test2() throws Exception {
             // given
             Member member = createMember();
@@ -78,18 +100,39 @@ class MemberApiControllerTest extends ControllerTest {
 
             // then
             final MemberErrorCode expectedError = MemberErrorCode.DUPLICATE_NICKNAME;
-            HttpStatus expectedStatus = expectedError.getStatus();
-            String expectedMessage = expectedError.getMessage();
 
             mockMvc.perform(requestBuilder)
                     .andExpect(status().isConflict())
                     .andExpect(jsonPath("$.statusCode").exists())
-                    .andExpect(jsonPath("$.statusCode").value(expectedStatus.value()))
+                    .andExpect(jsonPath("$.statusCode").value(expectedError.getStatus().value()))
                     .andExpect(jsonPath("$.errorCode").exists())
-                    .andExpect(jsonPath("$.errorCode").value(expectedStatus.getReasonPhrase()))
+                    .andExpect(jsonPath("$.errorCode").value(expectedError.getErrorCode()))
                     .andExpect(jsonPath("$.message").exists())
-                    .andExpect(jsonPath("$.message").value(expectedMessage))
-                    .andDo(print());
+                    .andExpect(jsonPath("$.message").value(expectedError.getMessage()))
+                    .andDo(
+                            document(
+                                    "MemberApi/SignUpFailure/case2",
+                                    preprocessRequest(prettyPrint()),
+                                    preprocessResponse(prettyPrint()),
+                                    requestFields(
+                                            fieldWithPath("name").description("이름"),
+                                            fieldWithPath("nickname").description("닉네임"),
+                                            fieldWithPath("loginId").description("로그인 아이디"),
+                                            fieldWithPath("password").description("로그인 비밀번호"),
+                                            fieldWithPath("school").description("재학중인 학교"),
+                                            fieldWithPath("postcode").description("우편번호 (5자리)"),
+                                            fieldWithPath("defaultAddress").description("기본 주소"),
+                                            fieldWithPath("detailAddress").description("상세 주소"),
+                                            fieldWithPath("phone").description("전화번호"),
+                                            fieldWithPath("email").description("이메일")
+                                    ),
+                                    responseFields(
+                                            fieldWithPath("statusCode").description("HTTP 상태 코드"),
+                                            fieldWithPath("errorCode").description("커스텀 예외 코드"),
+                                            fieldWithPath("message").description("예외 메시지")
+                                    )
+                            )
+                    );
         }
 
         @Test
@@ -108,7 +151,25 @@ class MemberApiControllerTest extends ControllerTest {
             mockMvc.perform(requestBuilder)
                     .andExpect(status().isCreated())
                     .andExpect(jsonPath("$").doesNotExist())
-                    .andDo(print());
+                    .andDo(
+                            document(
+                                    "MemberApi/SignUpSuccess",
+                                    preprocessRequest(prettyPrint()),
+                                    preprocessResponse(prettyPrint()),
+                                    requestFields(
+                                            fieldWithPath("name").description("이름"),
+                                            fieldWithPath("nickname").description("닉네임"),
+                                            fieldWithPath("loginId").description("로그인 아이디"),
+                                            fieldWithPath("password").description("로그인 비밀번호"),
+                                            fieldWithPath("school").description("재학중인 학교"),
+                                            fieldWithPath("postcode").description("우편번호 (5자리)"),
+                                            fieldWithPath("defaultAddress").description("기본 주소"),
+                                            fieldWithPath("detailAddress").description("상세 주소"),
+                                            fieldWithPath("phone").description("전화번호"),
+                                            fieldWithPath("email").description("이메일")
+                                    )
+                            )
+                    );
         }
     }
 
