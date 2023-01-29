@@ -3,7 +3,6 @@ package com.sjiwon.anotherart.token.domain;
 import com.sjiwon.anotherart.common.RedisTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.Optional;
@@ -12,9 +11,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("Token [Redis] -> RedisTokenRepository 테스트")
 class RedisTokenRepositoryTest extends RedisTest {
-    @Autowired
-    RedisTokenRepository redisTokenRepository;
-
     @Test
     @DisplayName("Redis에 Refresh Token을 저장한 후 refreshToken을 통해서 조회한다")
     void test1() {

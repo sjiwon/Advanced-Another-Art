@@ -8,7 +8,6 @@ import com.sjiwon.anotherart.global.security.handler.utils.MemberLoginRequestUti
 import com.sjiwon.anotherart.global.security.principal.MemberLoginRequest;
 import com.sjiwon.anotherart.member.domain.Member;
 import com.sjiwon.anotherart.member.domain.MemberRepository;
-import com.sjiwon.anotherart.token.domain.RedisTokenRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,9 +24,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class AjaxAuthenticationSuccessHandlerTest extends ControllerTest {
     @Autowired
     MemberRepository memberRepository;
-
-    @Autowired
-    RedisTokenRepository redisTokenRepository;
 
     @Autowired
     MockMvc mockMvc;
