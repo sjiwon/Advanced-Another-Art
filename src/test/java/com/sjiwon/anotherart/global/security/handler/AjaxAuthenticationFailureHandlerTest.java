@@ -9,9 +9,9 @@ import com.sjiwon.anotherart.global.security.handler.utils.MemberLoginRequestUti
 import com.sjiwon.anotherart.global.security.principal.MemberLoginRequest;
 import com.sjiwon.anotherart.member.domain.MemberRepository;
 import com.sjiwon.anotherart.member.exception.MemberErrorCode;
+import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
@@ -23,12 +23,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @DisplayName("Security [Handler] -> AjaxAuthenticationFailureHandler 테스트")
+@RequiredArgsConstructor
 class AjaxAuthenticationFailureHandlerTest extends ControllerTest {
-    @Autowired
-    MemberRepository memberRepository;
-
-    @Autowired
-    MockMvc mockMvc;
+    private final MockMvc mockMvc;
+    private final MemberRepository memberRepository;
 
     private static final String BASE_URL = "/api/login";
     private static final MemberFixture MEMBER = MemberFixture.A;
@@ -115,7 +113,7 @@ class AjaxAuthenticationFailureHandlerTest extends ControllerTest {
                 .andExpect(jsonPath("$.message").value(expectedMessage))
                 .andDo(print());
     }
-    
+
     @Test
     @DisplayName("비밀번호가 사용자 정보와 일치하지 않음에 따라 예외가 발생한다")
     void test4() throws Exception {

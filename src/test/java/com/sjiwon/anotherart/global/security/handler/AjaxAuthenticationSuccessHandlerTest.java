@@ -8,9 +8,9 @@ import com.sjiwon.anotherart.global.security.handler.utils.MemberLoginRequestUti
 import com.sjiwon.anotherart.global.security.principal.MemberLoginRequest;
 import com.sjiwon.anotherart.member.domain.Member;
 import com.sjiwon.anotherart.member.domain.MemberRepository;
+import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
@@ -21,12 +21,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @DisplayName("Security [Handler] -> AjaxAuthenticationSuccessHandler 테스트")
+@RequiredArgsConstructor
 class AjaxAuthenticationSuccessHandlerTest extends ControllerTest {
-    @Autowired
-    MemberRepository memberRepository;
-
-    @Autowired
-    MockMvc mockMvc;
+    private final MockMvc mockMvc;
+    private final MemberRepository memberRepository;
 
     private static final String BASE_URL = "/api/login";
     private static final MemberFixture MEMBER = MemberFixture.A;

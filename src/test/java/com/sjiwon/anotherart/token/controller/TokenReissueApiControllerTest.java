@@ -8,10 +8,10 @@ import com.sjiwon.anotherart.member.domain.Member;
 import com.sjiwon.anotherart.member.domain.MemberRepository;
 import com.sjiwon.anotherart.token.service.RedisTokenService;
 import com.sjiwon.anotherart.token.utils.JwtTokenProvider;
+import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
@@ -24,18 +24,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @DisplayName("Token [Controller Layer] -> TokenReissueApiController 테스트")
+@RequiredArgsConstructor
 class TokenReissueApiControllerTest extends ControllerTest {
-    @Autowired
-    MockMvc mockMvc;
-
-    @Autowired
-    JwtTokenProvider jwtTokenProvider;
-
-    @Autowired
-    MemberRepository memberRepository;
-
-    @Autowired
-    RedisTokenService redisTokenService;
+    private final MockMvc mockMvc;
+    private final MemberRepository memberRepository;
+    private final JwtTokenProvider jwtTokenProvider;
+    private final RedisTokenService redisTokenService;
 
     private static final String BASE_URL = "/api/token/reissue";
     private static final String BEARER_TOKEN = "Bearer ";

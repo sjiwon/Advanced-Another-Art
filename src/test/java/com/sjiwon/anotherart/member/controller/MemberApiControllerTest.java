@@ -10,10 +10,10 @@ import com.sjiwon.anotherart.member.controller.utils.SignUpRequestUtils;
 import com.sjiwon.anotherart.member.domain.Member;
 import com.sjiwon.anotherart.member.domain.MemberRepository;
 import com.sjiwon.anotherart.member.exception.MemberErrorCode;
+import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
@@ -25,12 +25,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @DisplayName("Member [Controller Layer] -> MemberApiController 테스트")
+@RequiredArgsConstructor
 class MemberApiControllerTest extends ControllerTest {
-    @Autowired
-    MemberRepository memberRepository;
-
-    @Autowired
-    MockMvc mockMvc;
+    private final MockMvc mockMvc;
+    private final MemberRepository memberRepository;
 
     private static final String BASE_URL = "/api/member";
 

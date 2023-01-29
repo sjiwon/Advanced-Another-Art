@@ -7,9 +7,9 @@ import com.sjiwon.anotherart.member.domain.Member;
 import com.sjiwon.anotherart.member.domain.MemberRepository;
 import com.sjiwon.anotherart.token.service.RedisTokenService;
 import com.sjiwon.anotherart.token.utils.JwtTokenProvider;
+import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -21,18 +21,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @DisplayName("Security [Handler] -> JwtLogoutSuccessHandler 테스트")
+@RequiredArgsConstructor
 class JwtLogoutSuccessHandlerTest extends ControllerTest {
-    @Autowired
-    MockMvc mockMvc;
-
-    @Autowired
-    MemberRepository memberRepository;
-
-    @Autowired
-    JwtTokenProvider jwtTokenProvider;
-
-    @Autowired
-    RedisTokenService redisTokenService;
+    private final MockMvc mockMvc;
+    private final MemberRepository memberRepository;
+    private final JwtTokenProvider jwtTokenProvider;
+    private final RedisTokenService redisTokenService;
 
     private static final String BASE_URL = "/api/logout";
     private static final String BEARER_TOKEN = "Bearer ";
