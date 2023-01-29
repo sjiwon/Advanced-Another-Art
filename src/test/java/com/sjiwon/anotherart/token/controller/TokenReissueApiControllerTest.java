@@ -44,12 +44,36 @@ class TokenReissueApiControllerTest extends ControllerTest {
     @DisplayName("토큰 재발급 테스트 [POST /api/token/reissue]")
     class reissueToken {
         @Test
-        @DisplayName("만료된 Refresh Token으로 인해 재발급에 실패한다")
+        @DisplayName("Authorization 헤더에 Refresh Token 없이 토큰 재발급 엔드포인트에 요청을 하면 예외가 발생한다")
         void test1() throws Exception {
+            // when
+            MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                    .post(BASE_URL);
+
+            // then
+            final AuthErrorCode expectedError = AuthErrorCode.INVALID_TOKEN;
+            HttpStatus expectedStatus = expectedError.getStatus();
+            String expectedMessage = expectedError.getMessage();
+
+            mockMvc.perform(requestBuilder)
+                    .andExpect(status().isForbidden())
+                    .andExpect(jsonPath("$.statusCode").exists())
+                    .andExpect(jsonPath("$.statusCode").value(expectedStatus.value()))
+                    .andExpect(jsonPath("$.errorCode").exists())
+                    .andExpect(jsonPath("$.errorCode").value(expectedStatus.getReasonPhrase()))
+                    .andExpect(jsonPath("$.message").exists())
+                    .andExpect(jsonPath("$.message").value(expectedMessage))
+                    .andDo(print());
+        }
+
+        @Test
+        @DisplayName("만료된 Refresh Token으로 인해 재발급에 실패한다")
+        void test2() throws Exception {
             // given
             ReflectionTestUtils.setField(jwtTokenProvider, "refreshTokenValidityInMilliseconds", 0L);
             Member member = createMember();
             String refreshToken = jwtTokenProvider.createRefreshToken(member.getId());
+            redisTokenService.saveRefreshToken(refreshToken, member.getId());
 
             // when
             MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
@@ -74,28 +98,24 @@ class TokenReissueApiControllerTest extends ControllerTest {
         
         @Test
         @DisplayName("RTR 정책에 의해서 이미 사용한 Refresh Token으로 Access Token + Refresh Token 재발급은 불가능하다")
-        void test2() throws Exception {
+        void test3() throws Exception {
             // given
             ReflectionTestUtils.setField(jwtTokenProvider, "refreshTokenValidityInMilliseconds", 1209600L);
             Member member = createMember();
-            String refreshToken = jwtTokenProvider.createRefreshToken(member.getId());
+            String refreshToken = jwtTokenProvider.createRefreshToken(member.getId()); // Redis에 저장하지 않음에 따라 이미 사용했다고 가정
             
             // when
-            MockHttpServletRequestBuilder requestBuilder1 = MockMvcRequestBuilders
+            MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                     .post(BASE_URL)
                     .header(AUTHORIZATION, BEARER_TOKEN + refreshToken);
-            mockMvc.perform(requestBuilder1);
-
-            MockHttpServletRequestBuilder requestBuilder2 = MockMvcRequestBuilders
-                    .post(BASE_URL)
-                    .header(AUTHORIZATION, BEARER_TOKEN + refreshToken);
+            mockMvc.perform(requestBuilder);
 
             // then
             final AuthErrorCode expectedError = AuthErrorCode.INVALID_TOKEN;
             HttpStatus expectedStatus = expectedError.getStatus();
             String expectedMessage = expectedError.getMessage();
 
-            mockMvc.perform(requestBuilder2)
+            mockMvc.perform(requestBuilder)
                     .andExpect(status().isForbidden())
                     .andExpect(jsonPath("$.statusCode").exists())
                     .andExpect(jsonPath("$.statusCode").value(expectedStatus.value()))
@@ -108,7 +128,7 @@ class TokenReissueApiControllerTest extends ControllerTest {
 
         @Test
         @DisplayName("Refresh Token으로 Access Token + Refresh Token 재발급에 성공한다")
-        void test3() throws Exception {
+        void test4() throws Exception {
             // given
             ReflectionTestUtils.setField(jwtTokenProvider, "refreshTokenValidityInMilliseconds", 1209600L);
             Member member = createMember();
