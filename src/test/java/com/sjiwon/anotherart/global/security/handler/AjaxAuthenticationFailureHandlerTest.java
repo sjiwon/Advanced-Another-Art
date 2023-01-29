@@ -12,13 +12,16 @@ import com.sjiwon.anotherart.member.exception.MemberErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
+import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.requestParameters;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -39,8 +42,6 @@ class AjaxAuthenticationFailureHandlerTest extends ControllerTest {
     @DisplayName("올바르지 않은 인증방식에 의해 예외가 발생한다 -> [Content-Type: application/json]")
     void test1() throws Exception {
         final AuthErrorCode expectedError = AuthErrorCode.INVALID_AUTHENTICATION_REQUEST_FORMAT;
-        HttpStatus expectedStatus = expectedError.getStatus();
-        String expectedMessage = expectedError.getMessage();
 
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .post(BASE_URL)
@@ -51,12 +52,27 @@ class AjaxAuthenticationFailureHandlerTest extends ControllerTest {
         mockMvc.perform(requestBuilder)
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.statusCode").exists())
-                .andExpect(jsonPath("$.statusCode").value(expectedStatus.value()))
+                .andExpect(jsonPath("$.statusCode").value(expectedError.getStatus().value()))
                 .andExpect(jsonPath("$.errorCode").exists())
-                .andExpect(jsonPath("$.errorCode").value(expectedStatus.getReasonPhrase()))
+                .andExpect(jsonPath("$.errorCode").value(expectedError.getErrorCode()))
                 .andExpect(jsonPath("$.message").exists())
-                .andExpect(jsonPath("$.message").value(expectedMessage))
-                .andDo(print());
+                .andExpect(jsonPath("$.message").value(expectedError.getMessage()))
+                .andDo(
+                        document(
+                                "SecurityAuthenticationFailure/case1",
+                                preprocessRequest(prettyPrint()),
+                                preprocessResponse(prettyPrint()),
+                                requestParameters(
+                                        parameterWithName("loginId").description("로그인 아이디"),
+                                        parameterWithName("loginPassword").description("로그인 비밀번호")
+                                ),
+                                responseFields(
+                                        fieldWithPath("statusCode").description("HTTP 상태 코드"),
+                                        fieldWithPath("errorCode").description("커스텀 예외 코드"),
+                                        fieldWithPath("message").description("예외 메시지")
+                                )
+                        )
+                );
     }
 
     @Test
@@ -67,8 +83,6 @@ class AjaxAuthenticationFailureHandlerTest extends ControllerTest {
 
         // when - then
         final AuthErrorCode expectedError = AuthErrorCode.INVALID_AUTHENTICATION_REQUEST_VALUE;
-        HttpStatus expectedStatus = expectedError.getStatus();
-        String expectedMessage = expectedError.getMessage();
 
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .post(BASE_URL)
@@ -78,12 +92,27 @@ class AjaxAuthenticationFailureHandlerTest extends ControllerTest {
         mockMvc.perform(requestBuilder)
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.statusCode").exists())
-                .andExpect(jsonPath("$.statusCode").value(expectedStatus.value()))
+                .andExpect(jsonPath("$.statusCode").value(expectedError.getStatus().value()))
                 .andExpect(jsonPath("$.errorCode").exists())
-                .andExpect(jsonPath("$.errorCode").value(expectedStatus.getReasonPhrase()))
+                .andExpect(jsonPath("$.errorCode").value(expectedError.getErrorCode()))
                 .andExpect(jsonPath("$.message").exists())
-                .andExpect(jsonPath("$.message").value(expectedMessage))
-                .andDo(print());
+                .andExpect(jsonPath("$.message").value(expectedError.getMessage()))
+                .andDo(
+                        document(
+                                "SecurityAuthenticationFailure/case2",
+                                preprocessRequest(prettyPrint()),
+                                preprocessResponse(prettyPrint()),
+                                requestFields(
+                                        fieldWithPath("loginId").description("로그인 아이디"),
+                                        fieldWithPath("loginPassword").description("로그인 비밀번호")
+                                ),
+                                responseFields(
+                                        fieldWithPath("statusCode").description("HTTP 상태 코드"),
+                                        fieldWithPath("errorCode").description("커스텀 예외 코드"),
+                                        fieldWithPath("message").description("예외 메시지")
+                                )
+                        )
+                );
     }
 
     @Test
@@ -95,8 +124,6 @@ class AjaxAuthenticationFailureHandlerTest extends ControllerTest {
 
         // when - then
         final MemberErrorCode expectedError = MemberErrorCode.MEMBER_NOT_FOUND;
-        HttpStatus expectedStatus = expectedError.getStatus();
-        String expectedMessage = expectedError.getMessage();
 
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .post(BASE_URL)
@@ -106,12 +133,27 @@ class AjaxAuthenticationFailureHandlerTest extends ControllerTest {
         mockMvc.perform(requestBuilder)
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.statusCode").exists())
-                .andExpect(jsonPath("$.statusCode").value(expectedStatus.value()))
+                .andExpect(jsonPath("$.statusCode").value(expectedError.getStatus().value()))
                 .andExpect(jsonPath("$.errorCode").exists())
-                .andExpect(jsonPath("$.errorCode").value(expectedStatus.getReasonPhrase()))
+                .andExpect(jsonPath("$.errorCode").value(expectedError.getErrorCode()))
                 .andExpect(jsonPath("$.message").exists())
-                .andExpect(jsonPath("$.message").value(expectedMessage))
-                .andDo(print());
+                .andExpect(jsonPath("$.message").value(expectedError.getMessage()))
+                .andDo(
+                        document(
+                                "SecurityAuthenticationFailure/case3",
+                                preprocessRequest(prettyPrint()),
+                                preprocessResponse(prettyPrint()),
+                                requestFields(
+                                        fieldWithPath("loginId").description("로그인 아이디"),
+                                        fieldWithPath("loginPassword").description("로그인 비밀번호")
+                                ),
+                                responseFields(
+                                        fieldWithPath("statusCode").description("HTTP 상태 코드"),
+                                        fieldWithPath("errorCode").description("커스텀 예외 코드"),
+                                        fieldWithPath("message").description("예외 메시지")
+                                )
+                        )
+                );
     }
 
     @Test
@@ -123,8 +165,6 @@ class AjaxAuthenticationFailureHandlerTest extends ControllerTest {
 
         // when - then
         final MemberErrorCode expectedError = MemberErrorCode.INVALID_PASSWORD;
-        HttpStatus expectedStatus = expectedError.getStatus();
-        String expectedMessage = expectedError.getMessage();
 
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .post(BASE_URL)
@@ -134,12 +174,27 @@ class AjaxAuthenticationFailureHandlerTest extends ControllerTest {
         mockMvc.perform(requestBuilder)
                 .andExpect(status().isUnauthorized())
                 .andExpect(jsonPath("$.statusCode").exists())
-                .andExpect(jsonPath("$.statusCode").value(expectedStatus.value()))
+                .andExpect(jsonPath("$.statusCode").value(expectedError.getStatus().value()))
                 .andExpect(jsonPath("$.errorCode").exists())
-                .andExpect(jsonPath("$.errorCode").value(expectedStatus.getReasonPhrase()))
+                .andExpect(jsonPath("$.errorCode").value(expectedError.getErrorCode()))
                 .andExpect(jsonPath("$.message").exists())
-                .andExpect(jsonPath("$.message").value(expectedMessage))
-                .andDo(print());
+                .andExpect(jsonPath("$.message").value(expectedError.getMessage()))
+                .andDo(
+                        document(
+                                "SecurityAuthenticationFailure/case4",
+                                preprocessRequest(prettyPrint()),
+                                preprocessResponse(prettyPrint()),
+                                requestFields(
+                                        fieldWithPath("loginId").description("로그인 아이디"),
+                                        fieldWithPath("loginPassword").description("로그인 비밀번호")
+                                ),
+                                responseFields(
+                                        fieldWithPath("statusCode").description("HTTP 상태 코드"),
+                                        fieldWithPath("errorCode").description("커스텀 예외 코드"),
+                                        fieldWithPath("message").description("예외 메시지")
+                                )
+                        )
+                );
     }
 
     private void createMember() {

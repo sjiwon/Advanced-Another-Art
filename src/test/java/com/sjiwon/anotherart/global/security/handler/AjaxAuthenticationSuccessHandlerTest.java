@@ -16,7 +16,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
+import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -49,7 +51,21 @@ class AjaxAuthenticationSuccessHandlerTest extends ControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.accessToken").exists())
                 .andExpect(jsonPath("$.refreshToken").exists())
-                .andDo(print());
+                .andDo(
+                        document(
+                                "SecurityAuthenticationSuccess",
+                                preprocessRequest(prettyPrint()),
+                                preprocessResponse(prettyPrint()),
+                                requestFields(
+                                        fieldWithPath("loginId").description("로그인 아이디"),
+                                        fieldWithPath("loginPassword").description("로그인 비밀번호")
+                                ),
+                                responseFields(
+                                        fieldWithPath("accessToken").description("발급된 Access Token (Expire - 2시간)"),
+                                        fieldWithPath("refreshToken").description("발급된 Refresh Token (Expire - 2주)")
+                                )
+                        )
+                );
     }
 
     private Member createMember() {

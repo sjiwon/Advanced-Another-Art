@@ -1,0 +1,52 @@
+= Spring Security Authentication Flow
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 2
+
+== 인증 실패
+=== 1. Content-Type 오류
+HTTP Request
+include::{snippets}/SecurityAuthenticationFailure/case1/http-request.adoc[]
+include::{snippets}/SecurityAuthenticationFailure/case1/request-parameters.adoc[]
+
+HTTP Response
+include::{snippets}/SecurityAuthenticationFailure/case1/response-body.adoc[]
+include::{snippets}/SecurityAuthenticationFailure/case1/response-fields.adoc[]
+
+=== 2. 인증 값이 비어있는 경우
+HTTP Request
+include::{snippets}/SecurityAuthenticationFailure/case2/http-request.adoc[]
+include::{snippets}/SecurityAuthenticationFailure/case2/request-fields.adoc[]
+
+HTTP Response
+include::{snippets}/SecurityAuthenticationFailure/case2/response-body.adoc[]
+include::{snippets}/SecurityAuthenticationFailure/case2/response-fields.adoc[]
+
+=== 3. 사용자가 정보가 존재하지 않을 경우
+HTTP Request
+include::{snippets}/SecurityAuthenticationFailure/case3/http-request.adoc[]
+include::{snippets}/SecurityAuthenticationFailure/case3/request-fields.adoc[]
+
+HTTP Response
+include::{snippets}/SecurityAuthenticationFailure/case3/response-body.adoc[]
+include::{snippets}/SecurityAuthenticationFailure/case3/response-fields.adoc[]
+
+=== 4. 비밀번호가 일치하지 않는 경우
+HTTP Request
+include::{snippets}/SecurityAuthenticationFailure/case4/http-request.adoc[]
+include::{snippets}/SecurityAuthenticationFailure/case4/request-fields.adoc[]
+
+HTTP Response
+include::{snippets}/SecurityAuthenticationFailure/case4/response-body.adoc[]
+include::{snippets}/SecurityAuthenticationFailure/case4/response-fields.adoc[]
+
+== 인증 성공
+HTTP Request
+include::{snippets}/SecurityAuthenticationSuccess/http-request.adoc[]
+include::{snippets}/SecurityAuthenticationSuccess/request-fields.adoc[]
+
+HTTP Response
+include::{snippets}/SecurityAuthenticationSuccess/response-body.adoc[]
+include::{snippets}/SecurityAuthenticationSuccess/response-fields.adoc[]

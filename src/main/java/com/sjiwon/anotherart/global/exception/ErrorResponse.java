@@ -13,7 +13,7 @@ public class ErrorResponse {
 
     private ErrorResponse(ErrorCode code) {
         this.statusCode = code.getStatus().value();
-        this.errorCode = code.getStatus().getReasonPhrase();
+        this.errorCode = code.getErrorCode();
         this.message = code.getMessage();
     }
 
