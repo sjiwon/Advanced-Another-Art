@@ -1,0 +1,34 @@
+= 사용자 정보 관련 API
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 2
+
+== 닉네임 수정
+=== 1. 이전에 사용하던 닉네임으로 수정 요청 (실패)
+HTTP Request
+include::{snippets}/MemberApi/ChangeNickname/failure/case1/http-request.adoc[]
+include::{snippets}/MemberApi/ChangeNickname/failure/case1/request-headers.adoc[]
+include::{snippets}/MemberApi/ChangeNickname/failure/case1/request-parameters.adoc[]
+
+HTTP Response
+include::{snippets}/MemberApi/ChangeNickname/failure/case1/response-body.adoc[]
+
+=== 2. 타인이 사용하는 닉네임으로 수정 요청 (실패)
+HTTP Request
+include::{snippets}/MemberApi/ChangeNickname/failure/case2/http-request.adoc[]
+include::{snippets}/MemberApi/ChangeNickname/failure/case2/request-headers.adoc[]
+include::{snippets}/MemberApi/ChangeNickname/failure/case2/request-parameters.adoc[]
+
+HTTP Response
+include::{snippets}/MemberApi/ChangeNickname/failure/case2/response-body.adoc[]
+
+=== 3. 닉네임 수정 성공
+HTTP Request
+include::{snippets}/MemberApi/ChangeNickname/success/http-request.adoc[]
+include::{snippets}/MemberApi/ChangeNickname/success/request-headers.adoc[]
+include::{snippets}/MemberApi/ChangeNickname/success/request-parameters.adoc[]
+
+HTTP Response
+include::{snippets}/MemberApi/ChangeNickname/success/http-response.adoc[]
