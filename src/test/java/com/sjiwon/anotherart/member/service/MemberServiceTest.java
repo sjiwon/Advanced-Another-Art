@@ -63,4 +63,19 @@ class MemberServiceTest extends ServiceTest {
         // then
         assertThat(member.getNickname()).isEqualTo(changeNickname);
     }
+    
+    @Test
+    @DisplayName("사용자의 로그인 아이디를 찾는다")
+    void test3() {
+        // given
+        final Member member = MemberFixture.A.toMember(PasswordEncoderUtils.getEncoder());
+        final Long memberId = 1L;
+        given(memberRepository.findById(memberId)).willReturn(Optional.of(member));
+        
+        // when
+        String loginId = memberService.findLoginIdViaMemberId(memberId);
+
+        // then
+        assertThat(loginId).isEqualTo(member.getLoginId());
+    }
 }

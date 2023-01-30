@@ -57,4 +57,8 @@ public class MemberService {
             throw AnotherArtException.type(MemberErrorCode.NICKNAME_SAME_AS_BEFORE);
         }
     }
+
+    public String findLoginIdViaMemberId(Long memberId) {
+        return getMember(memberId).getLoginId();
+    }
 }
