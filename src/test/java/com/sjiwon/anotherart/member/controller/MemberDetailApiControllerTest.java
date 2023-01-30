@@ -19,6 +19,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
@@ -133,6 +134,7 @@ class MemberDetailApiControllerTest extends ControllerTest {
                                     )
                             )
                     );
+            assertThat(memberA.getNickname()).isNotEqualTo(changeNickname);
         }
 
         @Test
@@ -167,6 +169,7 @@ class MemberDetailApiControllerTest extends ControllerTest {
                                     )
                             )
                     );
+            assertThat(member.getNickname()).isEqualTo(changeNickname);
         }
     }
 
@@ -222,7 +225,7 @@ class MemberDetailApiControllerTest extends ControllerTest {
         }
 
         @Test
-        @DisplayName("인증을 위한 이메일 사용자 정보와 다르면 예외가 발생한다")
+        @DisplayName("인증을 위한 이메일이 사용자 정보와 다르면 예외가 발생한다")
         void test2() throws Exception {
             /// given
             Member member = createMemberA();
@@ -268,7 +271,7 @@ class MemberDetailApiControllerTest extends ControllerTest {
         }
 
         @Test
-        @DisplayName("[Header: Access Token & Body: Name, Email]을 통해서 사용자 아이디를 조회한다")
+        @DisplayName("[Header: Access Token / Body: Name, Email]을 통해서 사용자 아이디를 조회한다")
         void test3() throws Exception {
             // given
             Member member = createMemberA();
