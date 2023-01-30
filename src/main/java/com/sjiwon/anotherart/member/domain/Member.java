@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -68,6 +69,10 @@ public class Member {
 
     public void changeNickname(String nickname) {
         this.nickname = nickname;
+    }
+
+    public boolean isSameNickname(String changeNickname) {
+        return Objects.equals(this.nickname, changeNickname);
     }
 
     public void changePassword(String password, PasswordEncoder encoder) {

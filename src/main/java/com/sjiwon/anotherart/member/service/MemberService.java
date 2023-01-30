@@ -42,11 +42,19 @@ public class MemberService {
     @Transactional
     public void changeNickname(Long memberId, String changeNickname) {
         Member member = getMember(memberId);
+        validateNicknameSameAsBefore(member, changeNickname); // 이전과 동일한 닉네임인지
+        memberValidator.validateDuplicateNickname(changeNickname); // 다른 사람이 사용하고 있는 닉네임인지
         member.changeNickname(changeNickname);
     }
 
     private Member getMember(Long memberId) {
         return memberRepository.findById(memberId)
                 .orElseThrow(() -> AnotherArtException.type(MemberErrorCode.MEMBER_NOT_FOUND));
+    }
+
+    private void validateNicknameSameAsBefore(Member member, String changeNickname) {
+        if (member.isSameNickname(changeNickname)) {
+            throw AnotherArtException.type(MemberErrorCode.NICKNAME_SAME_AS_BEFORE);
+        }
     }
 }

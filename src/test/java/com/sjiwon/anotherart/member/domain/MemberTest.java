@@ -105,4 +105,21 @@ class MemberTest {
         // then
         assertThat(memberA.getAvailablePoint().getValue()).isEqualTo(increasePoint - decreasePoint);
     }
+
+    @Test
+    @DisplayName("이전과 동일한 닉네임인지 검증한다")
+    void test7() {
+        // given
+        Member memberA = MEMBER_A.toMember(PasswordEncoderUtils.getEncoder());
+        final String same = memberA.getNickname();
+        final String diff = memberA.getNickname() + "diff";
+
+        // when
+        boolean actual1 = memberA.isSameNickname(same);
+        boolean actual2 = memberA.isSameNickname(diff);
+
+        // then
+        assertThat(actual1).isTrue();
+        assertThat(actual2).isFalse();
+    }
 }
