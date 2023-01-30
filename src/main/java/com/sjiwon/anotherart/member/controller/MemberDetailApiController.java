@@ -1,6 +1,8 @@
 package com.sjiwon.anotherart.member.controller;
 
 import com.sjiwon.anotherart.global.dto.SimpleWrapper;
+import com.sjiwon.anotherart.member.controller.dto.request.FindIdRequest;
+import com.sjiwon.anotherart.member.domain.Email;
 import com.sjiwon.anotherart.member.service.MemberService;
 import com.sjiwon.anotherart.token.utils.ExtractPayload;
 import io.swagger.annotations.Api;
@@ -9,6 +11,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 @RestController
 @RequiredArgsConstructor
@@ -25,10 +29,10 @@ public class MemberDetailApiController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/find/id")
-    @ApiOperation(value = "아이디 찾기 API", notes = "Access Token의 Payload를 통해서 memberId에 해당하는 사용자의 아이디 찾기")
-    public ResponseEntity<SimpleWrapper<String>> findId(@ExtractPayload Long memberId) {
-        String loginId = memberService.findLoginIdViaMemberId(memberId);
+    @PostMapping("/find/id")
+    @ApiOperation(value = "아이디 찾기 API", notes = "Access Token의 Payload를 통해서 memberId + 이름, 이메일을 통해서 사용자 아이디 찾기")
+    public ResponseEntity<SimpleWrapper<String>> findLoginId(@ExtractPayload Long memberId, @Valid @RequestBody FindIdRequest request) {
+        String loginId = memberService.findLoginId(memberId, request.getName(), Email.from(request.getEmail()));
         return ResponseEntity.ok(new SimpleWrapper<>(loginId));
     }
 }
