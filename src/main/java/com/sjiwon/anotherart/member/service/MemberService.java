@@ -5,6 +5,7 @@ import com.sjiwon.anotherart.global.exception.GlobalErrorCode;
 import com.sjiwon.anotherart.member.domain.Email;
 import com.sjiwon.anotherart.member.domain.Member;
 import com.sjiwon.anotherart.member.domain.MemberRepository;
+import com.sjiwon.anotherart.member.exception.MemberErrorCode;
 import com.sjiwon.anotherart.point.domain.PointDetail;
 import com.sjiwon.anotherart.point.domain.PointDetailRepository;
 import lombok.RequiredArgsConstructor;
@@ -36,5 +37,16 @@ public class MemberService {
             case "email" -> memberValidator.validateDuplicateEmail(Email.from(value));
             default -> throw AnotherArtException.type(GlobalErrorCode.VALIDATION_ERROR);
         }
+    }
+
+    @Transactional
+    public void changeNickname(Long memberId, String changeNickname) {
+        Member member = getMember(memberId);
+        member.changeNickname(changeNickname);
+    }
+
+    private Member getMember(Long memberId) {
+        return memberRepository.findById(memberId)
+                .orElseThrow(() -> AnotherArtException.type(MemberErrorCode.MEMBER_NOT_FOUND));
     }
 }
