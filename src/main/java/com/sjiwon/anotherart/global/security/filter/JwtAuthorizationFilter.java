@@ -10,6 +10,8 @@ import com.sjiwon.anotherart.token.utils.AuthorizationExtractor;
 import com.sjiwon.anotherart.token.utils.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -18,6 +20,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
 
 @RequiredArgsConstructor
 public class JwtAuthorizationFilter extends OncePerRequestFilter {
@@ -34,7 +38,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
                 Member member = memberRepository.findById(memberId)
                         .orElseThrow(() -> AnotherArtAccessDeniedException.type(AuthErrorCode.INVALID_TOKEN));
                 MemberPrincipal principal = new MemberPrincipal(new MemberAuthDto(member));
-                UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(principal, "");
+                UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(principal, "", generateMemberRole());
                 SecurityContextHolder.getContext().setAuthentication(authenticationToken);
             } else {
                 throw AnotherArtAccessDeniedException.type(AuthErrorCode.INVALID_TOKEN);
@@ -42,5 +46,11 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         }
 
         filterChain.doFilter(request, response);
+    }
+
+    private Collection<GrantedAuthority> generateMemberRole() {
+        Collection<GrantedAuthority> authorities = new ArrayList<>();
+        authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
+        return authorities;
     }
 }
