@@ -1,0 +1,42 @@
+= 토큰 재발급 API
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 2
+
+== 재발급 실패
+=== 1.Authorization 헤더에 Refresh Token을 담지 않은 경우
+HTTP Request
+include::{snippets}/TokenApi/ReissueFailure/case1/http-request.adoc[]
+
+HTTP Response
+include::{snippets}/TokenApi/ReissueFailure/case1/response-body.adoc[]
+include::{snippets}/TokenApi/ReissueFailure/case1/response-fields.adoc[]
+
+=== 2. 만료된 Refresh Token일 경우
+HTTP Request
+include::{snippets}/TokenApi/ReissueFailure/case2/http-request.adoc[]
+include::{snippets}/TokenApi/ReissueFailure/case2/request-headers.adoc[]
+
+HTTP Response
+include::{snippets}/TokenApi/ReissueFailure/case2/response-body.adoc[]
+include::{snippets}/TokenApi/ReissueFailure/case2/response-fields.adoc[]
+
+=== 3. RTR정책에 의해 이미 사용된 Refresh Token으로 요청한 경우
+HTTP Request
+include::{snippets}/TokenApi/ReissueFailure/case3/http-request.adoc[]
+include::{snippets}/TokenApi/ReissueFailure/case3/request-headers.adoc[]
+
+HTTP Response
+include::{snippets}/TokenApi/ReissueFailure/case3/response-body.adoc[]
+include::{snippets}/TokenApi/ReissueFailure/case3/response-fields.adoc[]
+
+== 재발급 성공
+HTTP Request
+include::{snippets}/TokenApi/ReissueSuccess/http-request.adoc[]
+include::{snippets}/TokenApi/ReissueSuccess/request-headers.adoc[]
+
+HTTP Response
+include::{snippets}/TokenApi/ReissueSuccess/response-body.adoc[]
+include::{snippets}/TokenApi/ReissueSuccess/response-fields.adoc[]

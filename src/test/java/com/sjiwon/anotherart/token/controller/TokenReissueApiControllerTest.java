@@ -12,14 +12,18 @@ import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpStatus;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
+import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
+import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -46,18 +50,27 @@ class TokenReissueApiControllerTest extends ControllerTest {
 
             // then
             final AuthErrorCode expectedError = AuthErrorCode.INVALID_TOKEN;
-            HttpStatus expectedStatus = expectedError.getStatus();
-            String expectedMessage = expectedError.getMessage();
 
             mockMvc.perform(requestBuilder)
                     .andExpect(status().isForbidden())
                     .andExpect(jsonPath("$.statusCode").exists())
-                    .andExpect(jsonPath("$.statusCode").value(expectedStatus.value()))
+                    .andExpect(jsonPath("$.statusCode").value(expectedError.getStatus().value()))
                     .andExpect(jsonPath("$.errorCode").exists())
-                    .andExpect(jsonPath("$.errorCode").value(expectedStatus.getReasonPhrase()))
+                    .andExpect(jsonPath("$.errorCode").value(expectedError.getErrorCode()))
                     .andExpect(jsonPath("$.message").exists())
-                    .andExpect(jsonPath("$.message").value(expectedMessage))
-                    .andDo(print());
+                    .andExpect(jsonPath("$.message").value(expectedError.getMessage()))
+                    .andDo(
+                            document(
+                                    "TokenApi/ReissueFailure/case1",
+                                    preprocessRequest(prettyPrint()),
+                                    preprocessResponse(prettyPrint()),
+                                    responseFields(
+                                            fieldWithPath("statusCode").description("HTTP 상태 코드"),
+                                            fieldWithPath("errorCode").description("커스텀 예외 코드"),
+                                            fieldWithPath("message").description("예외 메시지")
+                                    )
+                            )
+                    );
         }
 
         @Test
@@ -76,18 +89,30 @@ class TokenReissueApiControllerTest extends ControllerTest {
 
             // then
             final AuthErrorCode expectedError = AuthErrorCode.INVALID_TOKEN;
-            HttpStatus expectedStatus = expectedError.getStatus();
-            String expectedMessage = expectedError.getMessage();
 
             mockMvc.perform(requestBuilder)
                     .andExpect(status().isForbidden())
                     .andExpect(jsonPath("$.statusCode").exists())
-                    .andExpect(jsonPath("$.statusCode").value(expectedStatus.value()))
+                    .andExpect(jsonPath("$.statusCode").value(expectedError.getStatus().value()))
                     .andExpect(jsonPath("$.errorCode").exists())
-                    .andExpect(jsonPath("$.errorCode").value(expectedStatus.getReasonPhrase()))
+                    .andExpect(jsonPath("$.errorCode").value(expectedError.getErrorCode()))
                     .andExpect(jsonPath("$.message").exists())
-                    .andExpect(jsonPath("$.message").value(expectedMessage))
-                    .andDo(print());
+                    .andExpect(jsonPath("$.message").value(expectedError.getMessage()))
+                    .andDo(
+                            document(
+                                    "TokenApi/ReissueFailure/case2",
+                                    preprocessRequest(prettyPrint()),
+                                    preprocessResponse(prettyPrint()),
+                                    requestHeaders(
+                                            headerWithName(AUTHORIZATION).description("Refresh Token")
+                                    ),
+                                    responseFields(
+                                            fieldWithPath("statusCode").description("HTTP 상태 코드"),
+                                            fieldWithPath("errorCode").description("커스텀 예외 코드"),
+                                            fieldWithPath("message").description("예외 메시지")
+                                    )
+                            )
+                    );
         }
         
         @Test
@@ -106,18 +131,30 @@ class TokenReissueApiControllerTest extends ControllerTest {
 
             // then
             final AuthErrorCode expectedError = AuthErrorCode.INVALID_TOKEN;
-            HttpStatus expectedStatus = expectedError.getStatus();
-            String expectedMessage = expectedError.getMessage();
 
             mockMvc.perform(requestBuilder)
                     .andExpect(status().isForbidden())
                     .andExpect(jsonPath("$.statusCode").exists())
-                    .andExpect(jsonPath("$.statusCode").value(expectedStatus.value()))
+                    .andExpect(jsonPath("$.statusCode").value(expectedError.getStatus().value()))
                     .andExpect(jsonPath("$.errorCode").exists())
-                    .andExpect(jsonPath("$.errorCode").value(expectedStatus.getReasonPhrase()))
+                    .andExpect(jsonPath("$.errorCode").value(expectedError.getErrorCode()))
                     .andExpect(jsonPath("$.message").exists())
-                    .andExpect(jsonPath("$.message").value(expectedMessage))
-                    .andDo(print());
+                    .andExpect(jsonPath("$.message").value(expectedError.getMessage()))
+                    .andDo(
+                            document(
+                                    "TokenApi/ReissueFailure/case3",
+                                    preprocessRequest(prettyPrint()),
+                                    preprocessResponse(prettyPrint()),
+                                    requestHeaders(
+                                            headerWithName(AUTHORIZATION).description("Refresh Token")
+                                    ),
+                                    responseFields(
+                                            fieldWithPath("statusCode").description("HTTP 상태 코드"),
+                                            fieldWithPath("errorCode").description("커스텀 예외 코드"),
+                                            fieldWithPath("message").description("예외 메시지")
+                                    )
+                            )
+                    );
         }
 
         @Test
@@ -139,7 +176,20 @@ class TokenReissueApiControllerTest extends ControllerTest {
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.accessToken").exists())
                     .andExpect(jsonPath("$.refreshToken").exists())
-                    .andDo(print());
+                    .andDo(
+                            document(
+                                    "TokenApi/ReissueSuccess",
+                                    preprocessRequest(prettyPrint()),
+                                    preprocessResponse(prettyPrint()),
+                                    requestHeaders(
+                                            headerWithName(AUTHORIZATION).description("Refresh Token")
+                                    ),
+                                    responseFields(
+                                            fieldWithPath("accessToken").description("새로 발급된 Access Token (Expire - 2시간)"),
+                                            fieldWithPath("refreshToken").description("새로 발급된 Refresh Token (Expire - 2주)")
+                                    )
+                            )
+                    );
         }
     }
 
