@@ -107,7 +107,7 @@ class MemberTest {
     }
 
     @Test
-    @DisplayName("이전과 동일한 닉네임인지 검증한다")
+    @DisplayName("동일한 닉네임인지 검증한다")
     void test7() {
         // given
         Member memberA = MEMBER_A.toMember(PasswordEncoderUtils.getEncoder());
@@ -117,6 +117,40 @@ class MemberTest {
         // when
         boolean actual1 = memberA.isSameNickname(same);
         boolean actual2 = memberA.isSameNickname(diff);
+
+        // then
+        assertThat(actual1).isTrue();
+        assertThat(actual2).isFalse();
+    }
+
+    @Test
+    @DisplayName("동일한 이름인지 검증한다")
+    void test8() {
+        // given
+        Member memberA = MEMBER_A.toMember(PasswordEncoderUtils.getEncoder());
+        final String same = memberA.getNickname();
+        final String diff = memberA.getNickname() + "diff";
+
+        // when
+        boolean actual1 = memberA.isSameName(same);
+        boolean actual2 = memberA.isSameName(diff);
+
+        // then
+        assertThat(actual1).isTrue();
+        assertThat(actual2).isFalse();
+    }
+
+    @Test
+    @DisplayName("동일한 이름인지 검증한다")
+    void test9() {
+        // given
+        Member memberA = MEMBER_A.toMember(PasswordEncoderUtils.getEncoder());
+        final Email same = memberA.getEmail();
+        final Email diff = Email.from("diff" + memberA.getEmail().getValue());
+
+        // when
+        boolean actual1 = memberA.isSameEmail(same);
+        boolean actual2 = memberA.isSameEmail(diff);
 
         // then
         assertThat(actual1).isTrue();

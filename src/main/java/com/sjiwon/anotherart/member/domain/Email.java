@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import java.util.Objects;
 import java.util.regex.Pattern;
 
 @Getter
@@ -37,5 +38,9 @@ public class Email {
 
     private static boolean isNotValidPattern(String password) {
         return !EMAIL_MATCHER.matcher(password).matches();
+    }
+
+    public boolean isSameEmail(Email compareEmail) {
+        return Objects.equals(this.value, compareEmail.getValue());
     }
 }

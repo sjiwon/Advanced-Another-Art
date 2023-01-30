@@ -3,8 +3,11 @@ package com.sjiwon.anotherart.member.service;
 import com.sjiwon.anotherart.common.PasswordEncoderUtils;
 import com.sjiwon.anotherart.common.ServiceTest;
 import com.sjiwon.anotherart.fixture.MemberFixture;
+import com.sjiwon.anotherart.global.exception.AnotherArtException;
+import com.sjiwon.anotherart.member.domain.Email;
 import com.sjiwon.anotherart.member.domain.Member;
 import com.sjiwon.anotherart.member.domain.MemberRepository;
+import com.sjiwon.anotherart.member.exception.MemberErrorCode;
 import com.sjiwon.anotherart.point.domain.PointDetailRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,6 +18,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.BDDMockito.given;
 
 @DisplayName("Member [Service Layer] -> MemberService 테스트")
@@ -71,11 +75,20 @@ class MemberServiceTest extends ServiceTest {
         final Member member = MemberFixture.A.toMember(PasswordEncoderUtils.getEncoder());
         final Long memberId = 1L;
         given(memberRepository.findById(memberId)).willReturn(Optional.of(member));
-        
+
         // when
-        String loginId = memberService.findLoginIdViaMemberId(memberId);
+        String loginId = memberService.findLoginId(memberId, member.getName(), member.getEmail());
 
         // then
         assertThat(loginId).isEqualTo(member.getLoginId());
+        assertThatThrownBy(() -> memberService.findLoginId(memberId, member.getName() + "diff", member.getEmail()))
+                .isInstanceOf(AnotherArtException.class)
+                .hasMessage(MemberErrorCode.INVALID_INFORMATION.getMessage());
+        assertThatThrownBy(() -> memberService.findLoginId(memberId, member.getName(), Email.from("diff" + member.getEmail().getValue())))
+                .isInstanceOf(AnotherArtException.class)
+                .hasMessage(MemberErrorCode.INVALID_INFORMATION.getMessage());
+        assertThatThrownBy(() -> memberService.findLoginId(memberId, member.getName() + "diff", Email.from("diff" + member.getEmail().getValue())))
+                .isInstanceOf(AnotherArtException.class)
+                .hasMessage(MemberErrorCode.INVALID_INFORMATION.getMessage());
     }
 }

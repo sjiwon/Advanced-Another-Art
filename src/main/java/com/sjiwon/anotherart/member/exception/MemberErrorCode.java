@@ -21,6 +21,7 @@ public enum MemberErrorCode implements ErrorCode {
     MEMBER_NOT_FOUND(HttpStatus.NOT_FOUND, "MEMBER_011", "사용자 정보가 존재하지 않습니다."),
     INVALID_PASSWORD(HttpStatus.UNAUTHORIZED, "MEMBER_012", "비밀번호가 일치하지 않습니다."),
     NICKNAME_SAME_AS_BEFORE(HttpStatus.CONFLICT, "MEMBER_013", "이전과 동일한 닉네임으로 변경할 수 없습니다"),
+    INVALID_INFORMATION(HttpStatus.BAD_REQUEST, "MEMBER_014", "사용자 정보가 일치하지 않습니다.")
     ;
 
     private final HttpStatus status;

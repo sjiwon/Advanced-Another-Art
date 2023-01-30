@@ -75,6 +75,14 @@ public class Member {
         return Objects.equals(this.nickname, changeNickname);
     }
 
+    public boolean isSameName(String compareName) {
+        return Objects.equals(this.name, compareName);
+    }
+
+    public boolean isSameEmail(Email compareEmail) {
+        return this.email.isSameEmail(compareEmail);
+    }
+
     public void changePassword(String password, PasswordEncoder encoder) {
         this.password = this.password.update(password, encoder);
     }
