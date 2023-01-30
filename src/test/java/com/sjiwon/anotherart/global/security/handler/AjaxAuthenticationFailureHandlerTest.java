@@ -59,7 +59,7 @@ class AjaxAuthenticationFailureHandlerTest extends ControllerTest {
                 .andExpect(jsonPath("$.message").value(expectedError.getMessage()))
                 .andDo(
                         document(
-                                "SecurityAuthenticationFailure/case1",
+                                "Security/Authentication/Failure/Case1",
                                 preprocessRequest(prettyPrint()),
                                 preprocessResponse(prettyPrint()),
                                 requestParameters(
@@ -99,7 +99,7 @@ class AjaxAuthenticationFailureHandlerTest extends ControllerTest {
                 .andExpect(jsonPath("$.message").value(expectedError.getMessage()))
                 .andDo(
                         document(
-                                "SecurityAuthenticationFailure/case2",
+                                "Security/Authentication/Failure/Case2",
                                 preprocessRequest(prettyPrint()),
                                 preprocessResponse(prettyPrint()),
                                 requestFields(
@@ -140,7 +140,7 @@ class AjaxAuthenticationFailureHandlerTest extends ControllerTest {
                 .andExpect(jsonPath("$.message").value(expectedError.getMessage()))
                 .andDo(
                         document(
-                                "SecurityAuthenticationFailure/case3",
+                                "Security/Authentication/Failure/Case3",
                                 preprocessRequest(prettyPrint()),
                                 preprocessResponse(prettyPrint()),
                                 requestFields(
@@ -181,7 +181,7 @@ class AjaxAuthenticationFailureHandlerTest extends ControllerTest {
                 .andExpect(jsonPath("$.message").value(expectedError.getMessage()))
                 .andDo(
                         document(
-                                "SecurityAuthenticationFailure/case4",
+                                "Security/Authentication/Failure/Case4",
                                 preprocessRequest(prettyPrint()),
                                 preprocessResponse(prettyPrint()),
                                 requestFields(

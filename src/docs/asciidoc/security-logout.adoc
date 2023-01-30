@@ -7,8 +7,8 @@
 
 == 로그아웃
 HTTP Request
-include::{snippets}/SecurityLogout/http-request.adoc[]
-include::{snippets}/SecurityLogout/request-headers.adoc[]
+include::{snippets}/Security/Logout/Success/http-request.adoc[]
+include::{snippets}/Security/Logout/Success/request-headers.adoc[]
 
 HTTP Response
-include::{snippets}/SecurityLogout/http-response.adoc[]
+include::{snippets}/Security/Logout/Success/http-response.adoc[]

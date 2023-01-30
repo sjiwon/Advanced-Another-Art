@@ -55,7 +55,7 @@ class JwtLogoutSuccessHandlerTest extends ControllerTest {
                 .andExpect(jsonPath("$").doesNotExist())
                 .andDo(
                         document(
-                                "SecurityLogout",
+                                "Security/Logout/Success",
                                 preprocessRequest(prettyPrint()),
                                 preprocessResponse(prettyPrint()),
                                 requestHeaders(

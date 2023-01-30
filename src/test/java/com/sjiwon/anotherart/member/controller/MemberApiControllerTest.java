@@ -63,7 +63,7 @@ class MemberApiControllerTest extends ControllerTest {
                     .andExpect(jsonPath("$.message").value(expectedError.getMessage()))
                     .andDo(
                             document(
-                                    "MemberApi/SignUpFailure/case1",
+                                    "MemberApi/SignUp/Failure/Case1",
                                     preprocessRequest(prettyPrint()),
                                     preprocessResponse(prettyPrint()),
                                     requestFields(
@@ -113,7 +113,7 @@ class MemberApiControllerTest extends ControllerTest {
                     .andExpect(jsonPath("$.message").value(expectedError.getMessage()))
                     .andDo(
                             document(
-                                    "MemberApi/SignUpFailure/case2",
+                                    "MemberApi/SignUp/Failure/Case2",
                                     preprocessRequest(prettyPrint()),
                                     preprocessResponse(prettyPrint()),
                                     requestFields(
@@ -155,7 +155,7 @@ class MemberApiControllerTest extends ControllerTest {
                     .andExpect(jsonPath("$").doesNotExist())
                     .andDo(
                             document(
-                                    "MemberApi/SignUpSuccess",
+                                    "MemberApi/SignUp/Success",
                                     preprocessRequest(prettyPrint()),
                                     preprocessResponse(prettyPrint()),
                                     requestFields(
@@ -209,7 +209,7 @@ class MemberApiControllerTest extends ControllerTest {
                     .andExpect(jsonPath("$").doesNotExist())
                     .andDo(
                             document(
-                                    "MemberApi/DuplicateCheck/nickname/success",
+                                    "MemberApi/DuplicateCheck/Nickname/Success",
                                     preprocessRequest(prettyPrint()),
                                     preprocessResponse(prettyPrint()),
                                     requestFields(
@@ -230,7 +230,7 @@ class MemberApiControllerTest extends ControllerTest {
                     .andExpect(jsonPath("$.message").value(expectedError.getMessage()))
                     .andDo(
                             document(
-                                    "MemberApi/DuplicateCheck/nickname/failure",
+                                    "MemberApi/DuplicateCheck/Nickname/Failure",
                                     preprocessRequest(prettyPrint()),
                                     preprocessResponse(prettyPrint()),
                                     requestFields(
@@ -275,7 +275,7 @@ class MemberApiControllerTest extends ControllerTest {
                     .andExpect(jsonPath("$").doesNotExist())
                     .andDo(
                             document(
-                                    "MemberApi/DuplicateCheck/loginId/success",
+                                    "MemberApi/DuplicateCheck/LoginId/Success",
                                     preprocessRequest(prettyPrint()),
                                     preprocessResponse(prettyPrint()),
                                     requestFields(
@@ -296,7 +296,7 @@ class MemberApiControllerTest extends ControllerTest {
                     .andExpect(jsonPath("$.message").value(expectedError.getMessage()))
                     .andDo(
                             document(
-                                    "MemberApi/DuplicateCheck/loginId/failure",
+                                    "MemberApi/DuplicateCheck/LoginId/Failure",
                                     preprocessRequest(prettyPrint()),
                                     preprocessResponse(prettyPrint()),
                                     requestFields(
@@ -341,7 +341,7 @@ class MemberApiControllerTest extends ControllerTest {
                     .andExpect(jsonPath("$").doesNotExist())
                     .andDo(
                             document(
-                                    "MemberApi/DuplicateCheck/phone/success",
+                                    "MemberApi/DuplicateCheck/Phone/Success",
                                     preprocessRequest(prettyPrint()),
                                     preprocessResponse(prettyPrint()),
                                     requestFields(
@@ -362,7 +362,7 @@ class MemberApiControllerTest extends ControllerTest {
                     .andExpect(jsonPath("$.message").value(expectedError.getMessage()))
                     .andDo(
                             document(
-                                    "MemberApi/DuplicateCheck/phone/failure",
+                                    "MemberApi/DuplicateCheck/Phone/Failure",
                                     preprocessRequest(prettyPrint()),
                                     preprocessResponse(prettyPrint()),
                                     requestFields(
@@ -407,7 +407,7 @@ class MemberApiControllerTest extends ControllerTest {
                     .andExpect(jsonPath("$").doesNotExist())
                     .andDo(
                             document(
-                                    "MemberApi/DuplicateCheck/email/success",
+                                    "MemberApi/DuplicateCheck/Email/Success",
                                     preprocessRequest(prettyPrint()),
                                     preprocessResponse(prettyPrint()),
                                     requestFields(
@@ -428,7 +428,7 @@ class MemberApiControllerTest extends ControllerTest {
                     .andExpect(jsonPath("$.message").value(expectedError.getMessage()))
                     .andDo(
                             document(
-                                    "MemberApi/DuplicateCheck/email/failure",
+                                    "MemberApi/DuplicateCheck/Email/Failure",
                                     preprocessRequest(prettyPrint()),
                                     preprocessResponse(prettyPrint()),
                                     requestFields(
@@ -471,7 +471,7 @@ class MemberApiControllerTest extends ControllerTest {
                     .andExpect(jsonPath("$.message").value(expectedError.getMessage()))
                     .andDo(
                             document(
-                                    "MemberApi/DuplicateCheck/anonymous",
+                                    "MemberApi/DuplicateCheck/AnonymousFailure",
                                     preprocessRequest(prettyPrint()),
                                     preprocessResponse(prettyPrint()),
                                     requestFields(

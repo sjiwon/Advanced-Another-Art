@@ -53,7 +53,7 @@ class AjaxAuthenticationSuccessHandlerTest extends ControllerTest {
                 .andExpect(jsonPath("$.refreshToken").exists())
                 .andDo(
                         document(
-                                "SecurityAuthenticationSuccess",
+                                "Security/Authentication/Success",
                                 preprocessRequest(prettyPrint()),
                                 preprocessResponse(prettyPrint()),
                                 requestFields(

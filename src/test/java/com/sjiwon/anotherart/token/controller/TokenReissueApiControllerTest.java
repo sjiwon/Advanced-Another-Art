@@ -61,7 +61,7 @@ class TokenReissueApiControllerTest extends ControllerTest {
                     .andExpect(jsonPath("$.message").value(expectedError.getMessage()))
                     .andDo(
                             document(
-                                    "TokenApi/ReissueFailure/case1",
+                                    "TokenApi/Reissue/Failure/Case1",
                                     preprocessRequest(prettyPrint()),
                                     preprocessResponse(prettyPrint()),
                                     responseFields(
@@ -100,7 +100,7 @@ class TokenReissueApiControllerTest extends ControllerTest {
                     .andExpect(jsonPath("$.message").value(expectedError.getMessage()))
                     .andDo(
                             document(
-                                    "TokenApi/ReissueFailure/case2",
+                                    "TokenApi/Reissue/Failure/Case2",
                                     preprocessRequest(prettyPrint()),
                                     preprocessResponse(prettyPrint()),
                                     requestHeaders(
@@ -142,7 +142,7 @@ class TokenReissueApiControllerTest extends ControllerTest {
                     .andExpect(jsonPath("$.message").value(expectedError.getMessage()))
                     .andDo(
                             document(
-                                    "TokenApi/ReissueFailure/case3",
+                                    "TokenApi/Reissue/Failure/Case3",
                                     preprocessRequest(prettyPrint()),
                                     preprocessResponse(prettyPrint()),
                                     requestHeaders(
@@ -178,7 +178,7 @@ class TokenReissueApiControllerTest extends ControllerTest {
                     .andExpect(jsonPath("$.refreshToken").exists())
                     .andDo(
                             document(
-                                    "TokenApi/ReissueSuccess",
+                                    "TokenApi/Reissue/Success",
                                     preprocessRequest(prettyPrint()),
                                     preprocessResponse(prettyPrint()),
                                     requestHeaders(
