@@ -8,36 +8,56 @@
 == 닉네임 수정
 === 1. 이전에 사용하던 닉네임으로 수정 요청 (실패)
 HTTP Request
-include::{snippets}/MemberApi/ChangeNickname/failure/case1/http-request.adoc[]
-include::{snippets}/MemberApi/ChangeNickname/failure/case1/request-headers.adoc[]
-include::{snippets}/MemberApi/ChangeNickname/failure/case1/request-parameters.adoc[]
+include::{snippets}/MemberApi/ChangeNickname/Failure/Case1/http-request.adoc[]
+include::{snippets}/MemberApi/ChangeNickname/Failure/Case1/request-headers.adoc[]
+include::{snippets}/MemberApi/ChangeNickname/Failure/Case1/request-parameters.adoc[]
 
 HTTP Response
-include::{snippets}/MemberApi/ChangeNickname/failure/case1/response-body.adoc[]
+include::{snippets}/MemberApi/ChangeNickname/Failure/Case1/response-body.adoc[]
 
 === 2. 타인이 사용하는 닉네임으로 수정 요청 (실패)
 HTTP Request
-include::{snippets}/MemberApi/ChangeNickname/failure/case2/http-request.adoc[]
-include::{snippets}/MemberApi/ChangeNickname/failure/case2/request-headers.adoc[]
-include::{snippets}/MemberApi/ChangeNickname/failure/case2/request-parameters.adoc[]
+include::{snippets}/MemberApi/ChangeNickname/Failure/Case2/http-request.adoc[]
+include::{snippets}/MemberApi/ChangeNickname/Failure/Case2/request-headers.adoc[]
+include::{snippets}/MemberApi/ChangeNickname/Failure/Case2/request-parameters.adoc[]
 
 HTTP Response
-include::{snippets}/MemberApi/ChangeNickname/failure/case2/response-body.adoc[]
+include::{snippets}/MemberApi/ChangeNickname/Failure/Case2/response-body.adoc[]
 
 === 3. 닉네임 수정 성공
 HTTP Request
-include::{snippets}/MemberApi/ChangeNickname/success/http-request.adoc[]
-include::{snippets}/MemberApi/ChangeNickname/success/request-headers.adoc[]
-include::{snippets}/MemberApi/ChangeNickname/success/request-parameters.adoc[]
+include::{snippets}/MemberApi/ChangeNickname/Success/http-request.adoc[]
+include::{snippets}/MemberApi/ChangeNickname/Success/request-headers.adoc[]
+include::{snippets}/MemberApi/ChangeNickname/Success/request-parameters.adoc[]
 
 HTTP Response
-include::{snippets}/MemberApi/ChangeNickname/success/http-response.adoc[]
+include::{snippets}/MemberApi/ChangeNickname/Success/http-response.adoc[]
 
 == 로그인 아이디 조회
+=== 1. 인증을 위한 사용자 이름 불일치
 HTTP Request
-include::{snippets}/MemberApi/FindId/success/http-request.adoc[]
-include::{snippets}/MemberApi/FindId/success/request-headers.adoc[]
+include::{snippets}/MemberApi/FindId/Failure/Case1/http-request.adoc[]
+include::{snippets}/MemberApi/FindId/Failure/Case1/request-headers.adoc[]
+include::{snippets}/MemberApi/FindId/Failure/Case1/request-fields.adoc[]
 
 HTTP Response
-include::{snippets}/MemberApi/FindId/success/response-body.adoc[]
-include::{snippets}/MemberApi/FindId/success/response-fields.adoc[]
+include::{snippets}/MemberApi/FindId/Failure/Case1/response-body.adoc[]
+
+=== 2. 인증을 위한 사용자 이메일 불일치
+HTTP Request
+include::{snippets}/MemberApi/FindId/Failure/Case2/http-request.adoc[]
+include::{snippets}/MemberApi/FindId/Failure/Case2/request-headers.adoc[]
+include::{snippets}/MemberApi/FindId/Failure/Case2/request-fields.adoc[]
+
+HTTP Response
+include::{snippets}/MemberApi/FindId/Failure/Case2/response-body.adoc[]
+
+=== 3. 아이디 조회 성공
+HTTP Request
+include::{snippets}/MemberApi/FindId/Success/http-request.adoc[]
+include::{snippets}/MemberApi/FindId/Success/request-headers.adoc[]
+include::{snippets}/MemberApi/FindId/Success/request-fields.adoc[]
+
+HTTP Response
+include::{snippets}/MemberApi/FindId/Success/response-body.adoc[]
+include::{snippets}/MemberApi/FindId/Success/response-fields.adoc[]
