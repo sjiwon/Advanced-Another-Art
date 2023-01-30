@@ -32,3 +32,12 @@ include::{snippets}/MemberApi/ChangeNickname/success/request-parameters.adoc[]
 
 HTTP Response
 include::{snippets}/MemberApi/ChangeNickname/success/http-response.adoc[]
+
+== 로그인 아이디 조회
+HTTP Request
+include::{snippets}/MemberApi/FindId/success/http-request.adoc[]
+include::{snippets}/MemberApi/FindId/success/request-headers.adoc[]
+
+HTTP Response
+include::{snippets}/MemberApi/FindId/success/response-body.adoc[]
+include::{snippets}/MemberApi/FindId/success/response-fields.adoc[]

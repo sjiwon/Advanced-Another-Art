@@ -28,7 +28,7 @@ import static org.springframework.restdocs.request.RequestDocumentation.requestP
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@DisplayName("Member [Controller Layer] -> MemberModifyApiController 테스트")
+@DisplayName("Member [Controller Layer] -> MemberDetailApiController 테스트")
 @RequiredArgsConstructor
 class MemberDetailApiControllerTest extends ControllerTest {
     private final MockMvc mockMvc;
@@ -162,6 +162,43 @@ class MemberDetailApiControllerTest extends ControllerTest {
                                     ),
                                     requestParameters(
                                             parameterWithName("changeNickname").description("변경할 닉네임")
+                                    )
+                            )
+                    );
+        }
+    }
+
+    @Nested
+    @DisplayName("사용자의 로그인 아이디를 찾는 테스트 [GET /api/member/find/id]")
+    class findLoginId {
+        private static final String BASE_URL = "/api/member/find/id";
+
+        @Test
+        @DisplayName("Access Token으로 사용자 아이디를 조회한다")
+        void test() throws Exception {
+            // given
+            Member member = createMemberA();
+            String accessToken = jwtTokenProvider.createAccessToken(member.getId());
+
+            // when
+            MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                    .get(BASE_URL)
+                    .header(AUTHORIZATION, BEARER_TOKEN + accessToken);
+
+            // then
+            mockMvc.perform(requestBuilder)
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.value").value(member.getLoginId()))
+                    .andDo(
+                            document(
+                                    "MemberApi/FindId/success",
+                                    preprocessRequest(prettyPrint()),
+                                    preprocessResponse(prettyPrint()),
+                                    requestHeaders(
+                                            headerWithName(AUTHORIZATION).description("Access Token")
+                                    ),
+                                    responseFields(
+                                            fieldWithPath("value").description("사용자 로그인 아이디")
                                     )
                             )
                     );
