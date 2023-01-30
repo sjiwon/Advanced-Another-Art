@@ -13,7 +13,6 @@ include::{snippets}/MemberApi/SignUpFailure/case1/request-fields.adoc[]
 
 HTTP Response
 include::{snippets}/MemberApi/SignUpFailure/case1/response-body.adoc[]
-include::{snippets}/MemberApi/SignUpFailure/case1/response-fields.adoc[]
 
 === 2. 중복되는 값(닉네임)이 포함되어 있는 경우
 ===== 닉네임 / 로그인 아이디 / 전화번호 / 이메일
@@ -23,7 +22,6 @@ include::{snippets}/MemberApi/SignUpFailure/case2/request-fields.adoc[]
 
 HTTP Response
 include::{snippets}/MemberApi/SignUpFailure/case2/response-body.adoc[]
-include::{snippets}/MemberApi/SignUpFailure/case2/response-fields.adoc[]
 
 == 회원가입 성공
 HTTP Request
