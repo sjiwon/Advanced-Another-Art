@@ -3,10 +3,10 @@ package com.sjiwon.anotherart.member.controller.utils;
 import com.sjiwon.anotherart.member.controller.dto.request.AuthForResetPasswordRequest;
 
 public class AuthForResetPasswordRequestUtils {
-    public static AuthForResetPasswordRequest createRequest(String loginId, String name, String email) {
+    public static AuthForResetPasswordRequest createRequest(String name, String loginId, String email) {
         return AuthForResetPasswordRequest.builder()
-                .loginId(loginId)
                 .name(name)
+                .loginId(loginId)
                 .email(email)
                 .build();
     }

@@ -93,24 +93,24 @@ class MemberServiceTest extends ServiceTest {
     }
 
     @Test
-    @DisplayName("로그인 아이디, 이름, 이메일에 해당하는 사용자가 존재하는지 확인한다")
+    @DisplayName("이름, 로그인 아이디, 이메일에 해당하는 사용자가 존재하는지 확인한다")
     void test4() {
         // given
         final Member member = MemberFixture.A.toMember(PasswordEncoderUtils.getEncoder());
-        final String loginId = member.getLoginId();
         final String name = member.getName();
+        final String loginId = member.getLoginId();
         final Email email = member.getEmail();
-        given(memberRepository.existsByLoginIdAndNameAndEmail(loginId, name, email)).willReturn(true);
+        given(memberRepository.existsByNameAndLoginIdAndEmail(name, loginId, email)).willReturn(true);
 
         // when - then
-        assertDoesNotThrow(() -> memberService.authMemberForResetPassword(loginId, name, email));
-        assertThatThrownBy(() -> memberService.authMemberForResetPassword(loginId + "diff", name, email))
+        assertDoesNotThrow(() -> memberService.authMemberForResetPassword(name, loginId, email));
+        assertThatThrownBy(() -> memberService.authMemberForResetPassword(name + "diff", loginId, email))
                 .isInstanceOf(AnotherArtException.class)
                 .hasMessage(MemberErrorCode.MEMBER_NOT_FOUND.getMessage());
-        assertThatThrownBy(() -> memberService.authMemberForResetPassword(loginId, name + "diff", email))
+        assertThatThrownBy(() -> memberService.authMemberForResetPassword(name, loginId + "diff", email))
                 .isInstanceOf(AnotherArtException.class)
                 .hasMessage(MemberErrorCode.MEMBER_NOT_FOUND.getMessage());
-        assertThatThrownBy(() -> memberService.authMemberForResetPassword(loginId, name, Email.from("diff" + email.getValue())))
+        assertThatThrownBy(() -> memberService.authMemberForResetPassword(name, loginId, Email.from("diff" + email.getValue())))
                 .isInstanceOf(AnotherArtException.class)
                 .hasMessage(MemberErrorCode.MEMBER_NOT_FOUND.getMessage());
     }

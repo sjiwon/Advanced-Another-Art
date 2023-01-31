@@ -129,20 +129,20 @@ class MemberRepositoryTest extends RepositoryTest {
     }
 
     @Test
-    @DisplayName("로그인 아이디, 이름, 이메일에 해당하는 사용자가 있는지 확인한다")
+    @DisplayName("이름, 로그인 아이디, 이메일에 해당하는 사용자가 있는지 확인한다")
     void test7() {
         // given
         final Member expectedMember = createMemberA();
-        final String loginId = expectedMember.getLoginId();
         final String name = expectedMember.getName();
+        final String loginId = expectedMember.getLoginId();
         final Email email = expectedMember.getEmail();
         synchronizePersistenceContext();
 
         // when
-        boolean actual1 = memberRepository.existsByLoginIdAndNameAndEmail(loginId, name, email);
-        boolean actual2 = memberRepository.existsByLoginIdAndNameAndEmail(loginId + "diff", name, email);
-        boolean actual3 = memberRepository.existsByLoginIdAndNameAndEmail(loginId, name + "diff", email);
-        boolean actual4 = memberRepository.existsByLoginIdAndNameAndEmail(loginId, name, Email.from("diff" + email.getValue()));
+        boolean actual1 = memberRepository.existsByNameAndLoginIdAndEmail(name, loginId, email);
+        boolean actual2 = memberRepository.existsByNameAndLoginIdAndEmail(name + "diff", loginId, email);
+        boolean actual3 = memberRepository.existsByNameAndLoginIdAndEmail(name, loginId + "diff", email);
+        boolean actual4 = memberRepository.existsByNameAndLoginIdAndEmail(name, loginId, Email.from("diff" + email.getValue()));
 
         // then
         assertThat(actual1).isTrue();

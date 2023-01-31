@@ -64,8 +64,8 @@ public class MemberService {
         return member.getLoginId();
     }
 
-    public void authMemberForResetPassword(String loginId, String name, Email email) {
-        if (!memberRepository.existsByLoginIdAndNameAndEmail(loginId, name, email)) {
+    public void authMemberForResetPassword(String name, String loginId, Email email) {
+        if (!memberRepository.existsByNameAndLoginIdAndEmail(name, loginId, email)) {
             throw AnotherArtException.type(MemberErrorCode.MEMBER_NOT_FOUND);
         }
     }

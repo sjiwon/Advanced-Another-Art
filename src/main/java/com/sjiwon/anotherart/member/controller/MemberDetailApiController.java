@@ -40,7 +40,7 @@ public class MemberDetailApiController {
     @PostMapping("/reset/password/auth")
     @ApiOperation(value = "비밀번호 재설정 간 사용자 인증 API", notes = "로그인 아이디, 이름, 이메일을 통해서 비밀번호 재설정 프로세스 간 사용자 인증")
     public ResponseEntity<Void> authMemberForResetPassword(@Valid @RequestBody AuthForResetPasswordRequest request) {
-        memberService.authMemberForResetPassword(request.getLoginId(), request.getName(), Email.from(request.getEmail()));
+        memberService.authMemberForResetPassword(request.getName(), request.getLoginId(), Email.from(request.getEmail()));
         return ResponseEntity.noContent().build();
     }
 }

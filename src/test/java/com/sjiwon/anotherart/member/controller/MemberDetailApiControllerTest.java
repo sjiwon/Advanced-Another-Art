@@ -306,7 +306,7 @@ class MemberDetailApiControllerTest extends ControllerTest {
         void test1() throws Exception {
             // given
             Member member = createMemberA();
-            AuthForResetPasswordRequest request = AuthForResetPasswordRequestUtils.createRequest(member.getLoginId() + "diff", member.getName(), member.getEmail().getValue());
+            AuthForResetPasswordRequest request = AuthForResetPasswordRequestUtils.createRequest(member.getName() + "diff", member.getLoginId(), member.getEmail().getValue());
 
             // when
             MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
@@ -330,8 +330,8 @@ class MemberDetailApiControllerTest extends ControllerTest {
                                     preprocessRequest(prettyPrint()),
                                     preprocessResponse(prettyPrint()),
                                     requestFields(
-                                            fieldWithPath("loginId").description("사용자 로그인 아이디"),
                                             fieldWithPath("name").description("사용자 이름"),
+                                            fieldWithPath("loginId").description("사용자 로그인 아이디"),
                                             fieldWithPath("email").description("사용자 이메일")
                                     ),
                                     responseFields(
@@ -348,7 +348,7 @@ class MemberDetailApiControllerTest extends ControllerTest {
         void test2() throws Exception {
             // given
             Member member = createMemberA();
-            AuthForResetPasswordRequest request = AuthForResetPasswordRequestUtils.createRequest(member.getLoginId(), member.getName(), member.getEmail().getValue());
+            AuthForResetPasswordRequest request = AuthForResetPasswordRequestUtils.createRequest(member.getName(), member.getLoginId(), member.getEmail().getValue());
 
             // when
             MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
@@ -366,8 +366,8 @@ class MemberDetailApiControllerTest extends ControllerTest {
                                     preprocessRequest(prettyPrint()),
                                     preprocessResponse(prettyPrint()),
                                     requestFields(
-                                            fieldWithPath("loginId").description("사용자 로그인 아이디"),
                                             fieldWithPath("name").description("사용자 이름"),
+                                            fieldWithPath("loginId").description("사용자 로그인 아이디"),
                                             fieldWithPath("email").description("사용자 이메일")
                                     )
                             )
