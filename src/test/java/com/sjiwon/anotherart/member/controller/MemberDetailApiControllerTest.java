@@ -4,7 +4,9 @@ import com.sjiwon.anotherart.common.ControllerTest;
 import com.sjiwon.anotherart.common.ObjectMapperUtils;
 import com.sjiwon.anotherart.common.PasswordEncoderUtils;
 import com.sjiwon.anotherart.fixture.MemberFixture;
+import com.sjiwon.anotherart.member.controller.dto.request.AuthForResetPasswordRequest;
 import com.sjiwon.anotherart.member.controller.dto.request.FindIdRequest;
+import com.sjiwon.anotherart.member.controller.utils.AuthForResetPasswordRequestUtils;
 import com.sjiwon.anotherart.member.controller.utils.FindIdRequestUtils;
 import com.sjiwon.anotherart.member.domain.Member;
 import com.sjiwon.anotherart.member.domain.MemberRepository;
@@ -288,6 +290,85 @@ class MemberDetailApiControllerTest extends ControllerTest {
                                     ),
                                     responseFields(
                                             fieldWithPath("value").description("사용자 로그인 아이디")
+                                    )
+                            )
+                    );
+        }
+    }
+
+    @Nested
+    @DisplayName("비밀번호 재설정을 위한 사용자 인증 테스트 [POST /api/member/reset/password/auth]")
+    class authMemberForResetPassword {
+        private static final String BASE_URL = "/api/member/reset/password/auth";
+
+        @Test
+        @DisplayName("요청으로 보낸 정보와 일치하는 사용자가 존재하지 않음에 따라 예외가 발생한다")
+        void test1() throws Exception {
+            // given
+            Member member = createMemberA();
+            AuthForResetPasswordRequest request = AuthForResetPasswordRequestUtils.createRequest(member.getLoginId() + "diff", member.getName(), member.getEmail().getValue());
+
+            // when
+            MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                    .post(BASE_URL)
+                    .content(ObjectMapperUtils.objectToJson(request))
+                    .contentType(MediaType.APPLICATION_JSON);
+
+            // then
+            final MemberErrorCode expectedError = MemberErrorCode.MEMBER_NOT_FOUND;
+            mockMvc.perform(requestBuilder)
+                    .andExpect(status().isNotFound())
+                    .andExpect(jsonPath("$.statusCode").exists())
+                    .andExpect(jsonPath("$.statusCode").value(expectedError.getStatus().value()))
+                    .andExpect(jsonPath("$.errorCode").exists())
+                    .andExpect(jsonPath("$.errorCode").value(expectedError.getErrorCode()))
+                    .andExpect(jsonPath("$.message").exists())
+                    .andExpect(jsonPath("$.message").value(expectedError.getMessage()))
+                    .andDo(
+                            document(
+                                    "MemberApi/AuthMemberForResetPassword/Failure",
+                                    preprocessRequest(prettyPrint()),
+                                    preprocessResponse(prettyPrint()),
+                                    requestFields(
+                                            fieldWithPath("loginId").description("사용자 로그인 아이디"),
+                                            fieldWithPath("name").description("사용자 이름"),
+                                            fieldWithPath("email").description("사용자 이메일")
+                                    ),
+                                    responseFields(
+                                            fieldWithPath("statusCode").description("HTTP 상태 코드"),
+                                            fieldWithPath("errorCode").description("커스텀 예외 코드"),
+                                            fieldWithPath("message").description("예외 메시지")
+                                    )
+                            )
+                    );
+        }
+
+        @Test
+        @DisplayName("인증을 성공적으로 완료한다")
+        void test2() throws Exception {
+            // given
+            Member member = createMemberA();
+            AuthForResetPasswordRequest request = AuthForResetPasswordRequestUtils.createRequest(member.getLoginId(), member.getName(), member.getEmail().getValue());
+
+            // when
+            MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                    .post(BASE_URL)
+                    .content(ObjectMapperUtils.objectToJson(request))
+                    .contentType(MediaType.APPLICATION_JSON);
+
+            // then
+            mockMvc.perform(requestBuilder)
+                    .andExpect(status().isNoContent())
+                    .andExpect(jsonPath("$").doesNotExist())
+                    .andDo(
+                            document(
+                                    "MemberApi/AuthMemberForResetPassword/Success",
+                                    preprocessRequest(prettyPrint()),
+                                    preprocessResponse(prettyPrint()),
+                                    requestFields(
+                                            fieldWithPath("loginId").description("사용자 로그인 아이디"),
+                                            fieldWithPath("name").description("사용자 이름"),
+                                            fieldWithPath("email").description("사용자 이메일")
                                     )
                             )
                     );

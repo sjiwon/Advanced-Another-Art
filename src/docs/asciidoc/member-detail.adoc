@@ -58,3 +58,20 @@ include::{snippets}/MemberApi/FindId/Success/request-fields.adoc[]
 HTTP Response
 include::{snippets}/MemberApi/FindId/Success/response-body.adoc[]
 include::{snippets}/MemberApi/FindId/Success/response-fields.adoc[]
+
+== 비밀번호 재설정 간 사용자 인증
+=== 1. 인증 정보 불일치에 따른 예외
+HTTP Request
+include::{snippets}/MemberApi/AuthMemberForResetPassword/Failure/http-request.adoc[]
+include::{snippets}/MemberApi/AuthMemberForResetPassword/Failure/request-fields.adoc[]
+
+HTTP Response
+include::{snippets}/MemberApi/AuthMemberForResetPassword/Failure/response-body.adoc[]
+
+=== 2. 인증 성공
+HTTP Request
+include::{snippets}/MemberApi/AuthMemberForResetPassword/Success/http-request.adoc[]
+include::{snippets}/MemberApi/AuthMemberForResetPassword/Success/request-fields.adoc[]
+
+HTTP Response
+include::{snippets}/MemberApi/AuthMemberForResetPassword/Success/http-response.adoc[]
