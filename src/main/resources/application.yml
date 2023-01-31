@@ -2,14 +2,9 @@ spring:
   config:
     import:
       - security/application-file.yml
-      - security/application-server.yml
-      - security/application-local-datasource.yml
       - security/application-jwt.yml
+      - security/application-local-datasource.yml
+      - application-server.yml
       - application-logging.yml
+      - application-static-resources.yml
       - application-redis.yml
-
-  web:
-    resources:
-      static-locations:
-        - file:src/main/resources/static/
-        - classpath:/static/

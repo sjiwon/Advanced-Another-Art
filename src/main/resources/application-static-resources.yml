@@ -1,0 +1,6 @@
+spring:
+  web:
+    resources:
+      static-locations:
+        - file:src/main/resources/static/
+        - classpath:/static/
