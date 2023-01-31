@@ -3,6 +3,7 @@ package com.sjiwon.anotherart.member.controller;
 import com.sjiwon.anotherart.global.dto.SimpleWrapper;
 import com.sjiwon.anotherart.member.controller.dto.request.AuthForResetPasswordRequest;
 import com.sjiwon.anotherart.member.controller.dto.request.FindIdRequest;
+import com.sjiwon.anotherart.member.controller.dto.request.ResetPasswordRequest;
 import com.sjiwon.anotherart.member.domain.Email;
 import com.sjiwon.anotherart.member.service.MemberService;
 import com.sjiwon.anotherart.token.utils.ExtractPayload;
@@ -41,6 +42,13 @@ public class MemberDetailApiController {
     @ApiOperation(value = "비밀번호 재설정 간 사용자 인증 API", notes = "로그인 아이디, 이름, 이메일을 통해서 비밀번호 재설정 프로세스 간 사용자 인증")
     public ResponseEntity<Void> authMemberForResetPassword(@Valid @RequestBody AuthForResetPasswordRequest request) {
         memberService.authMemberForResetPassword(request.getName(), request.getLoginId(), Email.from(request.getEmail()));
+        return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/reset/password")
+    @ApiOperation(value = "비밀번호 재설정 API", notes = "로그인 아이디에 해당하는 사용자의 비밀번호를 변경")
+    public ResponseEntity<Void> resetPassword(@Valid @RequestBody ResetPasswordRequest request) {
+        memberService.resetPassword(request.getLoginId(), request.getChangePassword());
         return ResponseEntity.noContent().build();
     }
 }
