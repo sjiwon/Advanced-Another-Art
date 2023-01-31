@@ -9,6 +9,7 @@ import com.sjiwon.anotherart.member.exception.MemberErrorCode;
 import com.sjiwon.anotherart.point.domain.PointDetail;
 import com.sjiwon.anotherart.point.domain.PointDetailRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,6 +20,7 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final MemberValidator memberValidator;
     private final PointDetailRepository pointDetailRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Transactional
     public Long signUp(Member member) {
@@ -41,13 +43,13 @@ public class MemberService {
 
     @Transactional
     public void changeNickname(Long memberId, String changeNickname) {
-        Member member = getMember(memberId);
+        Member member = getMemberById(memberId);
         validateNicknameSameAsBefore(member, changeNickname); // 이전과 동일한 닉네임인지
         memberValidator.validateDuplicateNickname(changeNickname); // 다른 사람이 사용하고 있는 닉네임인지
         member.changeNickname(changeNickname);
     }
 
-    private Member getMember(Long memberId) {
+    private Member getMemberById(Long memberId) {
         return memberRepository.findById(memberId)
                 .orElseThrow(() -> AnotherArtException.type(MemberErrorCode.MEMBER_NOT_FOUND));
     }
@@ -59,14 +61,29 @@ public class MemberService {
     }
 
     public String findLoginId(String name, Email email) {
-        Member member = memberRepository.findByNameAndEmail(name, email)
-                .orElseThrow(() -> AnotherArtException.type(MemberErrorCode.MEMBER_NOT_FOUND));
+        Member member = getMemberByNameAndEmail(name, email);
         return member.getLoginId();
+    }
+
+    private Member getMemberByNameAndEmail(String name, Email email) {
+        return memberRepository.findByNameAndEmail(name, email)
+                .orElseThrow(() -> AnotherArtException.type(MemberErrorCode.MEMBER_NOT_FOUND));
     }
 
     public void authMemberForResetPassword(String name, String loginId, Email email) {
         if (!memberRepository.existsByNameAndLoginIdAndEmail(name, loginId, email)) {
             throw AnotherArtException.type(MemberErrorCode.MEMBER_NOT_FOUND);
         }
+    }
+
+    @Transactional
+    public void resetPassword(String loginId, String changePassword) {
+        Member member = getMemberByLoginId(loginId);
+        member.changePassword(changePassword, passwordEncoder);
+    }
+
+    private Member getMemberByLoginId(String loginId) {
+        return memberRepository.findByLoginId(loginId)
+                .orElseThrow(() -> AnotherArtException.type(MemberErrorCode.MEMBER_NOT_FOUND));
     }
 }

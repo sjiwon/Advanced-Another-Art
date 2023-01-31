@@ -1,5 +1,7 @@
 package com.sjiwon.anotherart.member.domain;
 
+import com.sjiwon.anotherart.global.exception.AnotherArtException;
+import com.sjiwon.anotherart.member.exception.MemberErrorCode;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -83,8 +85,11 @@ public class Member {
         return this.email.isSameEmail(compareEmail);
     }
 
-    public void changePassword(String password, PasswordEncoder encoder) {
-        this.password = this.password.update(password, encoder);
+    public void changePassword(String changePassword, PasswordEncoder encoder) {
+        if (this.password.isSamePassword(changePassword, encoder)) {
+            throw AnotherArtException.type(MemberErrorCode.PASSWORD_SAME_AS_BEFORE);
+        }
+        this.password = this.password.update(changePassword, encoder);
     }
 
     public void changeAddress(int postcode, String defaultAddress, String detailAddress) {

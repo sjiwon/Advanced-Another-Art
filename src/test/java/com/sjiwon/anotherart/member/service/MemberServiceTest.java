@@ -13,6 +13,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.Optional;
@@ -36,11 +37,13 @@ class MemberServiceTest extends ServiceTest {
     @Mock
     private PointDetailRepository pointDetailRepository;
 
+    private static final PasswordEncoder ENCODER = PasswordEncoderUtils.getEncoder();
+
     @Test
     @DisplayName("사용자에 대한 회원가입을 성공한다")
     void test1() {
         // given
-        final Member member = MemberFixture.A.toMember(PasswordEncoderUtils.getEncoder());
+        final Member member = MemberFixture.A.toMember(ENCODER);
         final Long savedMemberId = 1L;
         given(memberRepository.save(member)).willReturn(member);
         ReflectionTestUtils.setField(member, "id", savedMemberId);
@@ -57,7 +60,7 @@ class MemberServiceTest extends ServiceTest {
     @DisplayName("사용자의 닉네임을 수정한다")
     void test2() {
         // given
-        final Member member = MemberFixture.A.toMember(PasswordEncoderUtils.getEncoder());
+        final Member member = MemberFixture.A.toMember(ENCODER);
         final Long memberId = 1L;
         final String changeNickname = member.getNickname() + "hello world";
         given(memberRepository.findById(memberId)).willReturn(Optional.of(member));
@@ -73,7 +76,7 @@ class MemberServiceTest extends ServiceTest {
     @DisplayName("이름, 이메일에 해당되는 사용자의 로그인 아이디를 찾는다")
     void test3() {
         // given
-        final Member member = MemberFixture.A.toMember(PasswordEncoderUtils.getEncoder());
+        final Member member = MemberFixture.A.toMember(ENCODER);
         given(memberRepository.findByNameAndEmail(member.getName(), member.getEmail())).willReturn(Optional.of(member));
 
         // when
@@ -96,7 +99,7 @@ class MemberServiceTest extends ServiceTest {
     @DisplayName("이름, 로그인 아이디, 이메일에 해당하는 사용자가 존재하는지 확인한다")
     void test4() {
         // given
-        final Member member = MemberFixture.A.toMember(PasswordEncoderUtils.getEncoder());
+        final Member member = MemberFixture.A.toMember(ENCODER);
         final String name = member.getName();
         final String loginId = member.getLoginId();
         final Email email = member.getEmail();

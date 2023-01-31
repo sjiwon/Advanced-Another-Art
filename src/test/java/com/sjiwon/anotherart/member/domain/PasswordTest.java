@@ -4,6 +4,7 @@ import com.sjiwon.anotherart.common.PasswordEncoderUtils;
 import com.sjiwon.anotherart.global.exception.AnotherArtException;
 import com.sjiwon.anotherart.member.exception.MemberErrorCode;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -36,5 +37,22 @@ class PasswordTest {
 
         // then
         assertThat(ENCODER.matches(value, updatePassword.getValue())).isTrue();
+    }
+
+    @Test
+    @DisplayName("이전과 동일한 비밀번호인지 검증한다")
+    void test3() {
+        // given
+        Password password = Password.encrypt("abcABC123!@#", ENCODER);
+        String comparePassword1 = "abcABC123!@#";
+        String comparePassword2 = "abcABC1234!@#";
+
+        // when
+        boolean actual1 = password.isSamePassword(comparePassword1, ENCODER);
+        boolean actual2 = password.isSamePassword(comparePassword2, ENCODER);
+
+        // then
+        assertThat(actual1).isTrue();
+        assertThat(actual2).isFalse();
     }
 }

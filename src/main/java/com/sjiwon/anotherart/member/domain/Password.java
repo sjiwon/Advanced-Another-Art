@@ -47,4 +47,8 @@ public class Password {
     private static boolean isNotValidPattern(String password) {
         return !PASSWORD_MATCHER.matcher(password).matches();
     }
+
+    public boolean isSamePassword(String comparePassword, PasswordEncoder encoder) {
+        return encoder.matches(comparePassword, this.value);
+    }
 }
