@@ -19,6 +19,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.BDDMockito.given;
 
 @DisplayName("Member [Service Layer] -> MemberService 테스트")
@@ -69,7 +70,7 @@ class MemberServiceTest extends ServiceTest {
     }
     
     @Test
-    @DisplayName("사용자의 로그인 아이디를 찾는다")
+    @DisplayName("이름, 이메일에 해당되는 사용자의 로그인 아이디를 찾는다")
     void test3() {
         // given
         final Member member = MemberFixture.A.toMember(PasswordEncoderUtils.getEncoder());
@@ -87,6 +88,29 @@ class MemberServiceTest extends ServiceTest {
                 .isInstanceOf(AnotherArtException.class)
                 .hasMessage(MemberErrorCode.MEMBER_NOT_FOUND.getMessage());
         assertThatThrownBy(() -> memberService.findLoginId(member.getName() + "diff", Email.from("diff" + member.getEmail().getValue())))
+                .isInstanceOf(AnotherArtException.class)
+                .hasMessage(MemberErrorCode.MEMBER_NOT_FOUND.getMessage());
+    }
+
+    @Test
+    @DisplayName("로그인 아이디, 이름, 이메일에 해당하는 사용자가 존재하는지 확인한다")
+    void test4() {
+        // given
+        final Member member = MemberFixture.A.toMember(PasswordEncoderUtils.getEncoder());
+        final String loginId = member.getLoginId();
+        final String name = member.getName();
+        final Email email = member.getEmail();
+        given(memberRepository.existsByLoginIdAndNameAndEmail(loginId, name, email)).willReturn(true);
+
+        // when - then
+        assertDoesNotThrow(() -> memberService.authMemberForResetPassword(loginId, name, email));
+        assertThatThrownBy(() -> memberService.authMemberForResetPassword(loginId + "diff", name, email))
+                .isInstanceOf(AnotherArtException.class)
+                .hasMessage(MemberErrorCode.MEMBER_NOT_FOUND.getMessage());
+        assertThatThrownBy(() -> memberService.authMemberForResetPassword(loginId, name + "diff", email))
+                .isInstanceOf(AnotherArtException.class)
+                .hasMessage(MemberErrorCode.MEMBER_NOT_FOUND.getMessage());
+        assertThatThrownBy(() -> memberService.authMemberForResetPassword(loginId, name, Email.from("diff" + email.getValue())))
                 .isInstanceOf(AnotherArtException.class)
                 .hasMessage(MemberErrorCode.MEMBER_NOT_FOUND.getMessage());
     }

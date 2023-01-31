@@ -91,6 +91,7 @@ class MemberRepositoryTest extends RepositoryTest {
         // given
         final Member expectedMember = createMemberA();
         final String loginId = expectedMember.getLoginId();
+        synchronizePersistenceContext();
 
         // when
         Optional<Member> actualMember = memberRepository.findByLoginId(loginId);
@@ -111,6 +112,7 @@ class MemberRepositoryTest extends RepositoryTest {
         final Member expectedMember = createMemberA();
         final String name = expectedMember.getName();
         final Email email = expectedMember.getEmail();
+        synchronizePersistenceContext();
 
         // when
         Optional<Member> emptyMember1 = memberRepository.findByNameAndEmail(name + "fake", email);
@@ -124,6 +126,29 @@ class MemberRepositoryTest extends RepositoryTest {
         assertThat(actualMember.get().getId()).isEqualTo(expectedMember.getId());
         assertThat(actualMember.get().getName()).isEqualTo(expectedMember.getName());
         assertThat(actualMember.get().getNickname()).isEqualTo(expectedMember.getNickname());
+    }
+
+    @Test
+    @DisplayName("로그인 아이디, 이름, 이메일에 해당하는 사용자가 있는지 확인한다")
+    void test7() {
+        // given
+        final Member expectedMember = createMemberA();
+        final String loginId = expectedMember.getLoginId();
+        final String name = expectedMember.getName();
+        final Email email = expectedMember.getEmail();
+        synchronizePersistenceContext();
+
+        // when
+        boolean actual1 = memberRepository.existsByLoginIdAndNameAndEmail(loginId, name, email);
+        boolean actual2 = memberRepository.existsByLoginIdAndNameAndEmail(loginId + "diff", name, email);
+        boolean actual3 = memberRepository.existsByLoginIdAndNameAndEmail(loginId, name + "diff", email);
+        boolean actual4 = memberRepository.existsByLoginIdAndNameAndEmail(loginId, name, Email.from("diff" + email.getValue()));
+
+        // then
+        assertThat(actual1).isTrue();
+        assertThat(actual2).isFalse();
+        assertThat(actual3).isFalse();
+        assertThat(actual4).isFalse();
     }
 
     private Member createMemberA() {
