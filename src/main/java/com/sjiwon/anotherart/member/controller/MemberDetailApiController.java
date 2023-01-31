@@ -30,9 +30,9 @@ public class MemberDetailApiController {
     }
 
     @PostMapping("/find/id")
-    @ApiOperation(value = "아이디 찾기 API", notes = "Access Token의 Payload를 통해서 memberId + 이름, 이메일을 통해서 사용자 아이디 찾기")
-    public ResponseEntity<SimpleWrapper<String>> findLoginId(@ExtractPayload Long memberId, @Valid @RequestBody FindIdRequest request) {
-        String loginId = memberService.findLoginId(memberId, request.getName(), Email.from(request.getEmail()));
+    @ApiOperation(value = "아이디 찾기 API", notes = "이름, 이메일을 통해서 사용자 아이디 찾기")
+    public ResponseEntity<SimpleWrapper<String>> findLoginId(@Valid @RequestBody FindIdRequest request) {
+        String loginId = memberService.findLoginId(request.getName(), Email.from(request.getEmail()));
         return ResponseEntity.ok(new SimpleWrapper<>(loginId));
     }
 }

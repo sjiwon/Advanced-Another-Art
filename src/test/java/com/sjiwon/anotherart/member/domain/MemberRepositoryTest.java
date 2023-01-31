@@ -104,6 +104,28 @@ class MemberRepositoryTest extends RepositoryTest {
         assertThat(actualMember.get().getNickname()).isEqualTo(expectedMember.getNickname());
     }
 
+    @Test
+    @DisplayName("이름, 이메일로 사용자를 조회한다")
+    void test6() {
+        // given
+        final Member expectedMember = createMemberA();
+        final String name = expectedMember.getName();
+        final Email email = expectedMember.getEmail();
+
+        // when
+        Optional<Member> emptyMember1 = memberRepository.findByNameAndEmail(name + "fake", email);
+        Optional<Member> emptyMember2 = memberRepository.findByNameAndEmail(name, Email.from("fake" + email.getValue()));
+        Optional<Member> actualMember = memberRepository.findByNameAndEmail(name, email);
+
+        // then
+        assertThat(emptyMember1).isEmpty();
+        assertThat(emptyMember2).isEmpty();
+        assertThat(actualMember).isPresent();
+        assertThat(actualMember.get().getId()).isEqualTo(expectedMember.getId());
+        assertThat(actualMember.get().getName()).isEqualTo(expectedMember.getName());
+        assertThat(actualMember.get().getNickname()).isEqualTo(expectedMember.getNickname());
+    }
+
     private Member createMemberA() {
         return memberRepository.save(MemberFixture.A.toMember(PasswordEncoderUtils.getEncoder()));
     }

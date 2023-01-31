@@ -73,22 +73,21 @@ class MemberServiceTest extends ServiceTest {
     void test3() {
         // given
         final Member member = MemberFixture.A.toMember(PasswordEncoderUtils.getEncoder());
-        final Long memberId = 1L;
-        given(memberRepository.findById(memberId)).willReturn(Optional.of(member));
+        given(memberRepository.findByNameAndEmail(member.getName(), member.getEmail())).willReturn(Optional.of(member));
 
         // when
-        String loginId = memberService.findLoginId(memberId, member.getName(), member.getEmail());
+        String loginId = memberService.findLoginId(member.getName(), member.getEmail());
 
         // then
         assertThat(loginId).isEqualTo(member.getLoginId());
-        assertThatThrownBy(() -> memberService.findLoginId(memberId, member.getName() + "diff", member.getEmail()))
+        assertThatThrownBy(() -> memberService.findLoginId(member.getName() + "diff", member.getEmail()))
                 .isInstanceOf(AnotherArtException.class)
-                .hasMessage(MemberErrorCode.INVALID_INFORMATION.getMessage());
-        assertThatThrownBy(() -> memberService.findLoginId(memberId, member.getName(), Email.from("diff" + member.getEmail().getValue())))
+                .hasMessage(MemberErrorCode.MEMBER_NOT_FOUND.getMessage());
+        assertThatThrownBy(() -> memberService.findLoginId(member.getName(), Email.from("diff" + member.getEmail().getValue())))
                 .isInstanceOf(AnotherArtException.class)
-                .hasMessage(MemberErrorCode.INVALID_INFORMATION.getMessage());
-        assertThatThrownBy(() -> memberService.findLoginId(memberId, member.getName() + "diff", Email.from("diff" + member.getEmail().getValue())))
+                .hasMessage(MemberErrorCode.MEMBER_NOT_FOUND.getMessage());
+        assertThatThrownBy(() -> memberService.findLoginId(member.getName() + "diff", Email.from("diff" + member.getEmail().getValue())))
                 .isInstanceOf(AnotherArtException.class)
-                .hasMessage(MemberErrorCode.INVALID_INFORMATION.getMessage());
+                .hasMessage(MemberErrorCode.MEMBER_NOT_FOUND.getMessage());
     }
 }

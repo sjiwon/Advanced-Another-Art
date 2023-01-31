@@ -58,15 +58,9 @@ public class MemberService {
         }
     }
 
-    public String findLoginId(Long memberId, String name, Email email) {
-        Member member = getMember(memberId);
-        validateMemberWithNameANdEmail(member, name, email);
+    public String findLoginId(String name, Email email) {
+        Member member = memberRepository.findByNameAndEmail(name, email)
+                .orElseThrow(() -> AnotherArtException.type(MemberErrorCode.MEMBER_NOT_FOUND));
         return member.getLoginId();
-    }
-
-    private void validateMemberWithNameANdEmail(Member member, String name, Email email) {
-        if (!member.isSameName(name) || !member.isSameEmail(email)) {
-            throw AnotherArtException.type(MemberErrorCode.INVALID_INFORMATION);
-        }
     }
 }

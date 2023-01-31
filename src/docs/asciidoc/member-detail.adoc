@@ -34,19 +34,17 @@ HTTP Response
 include::{snippets}/MemberApi/ChangeNickname/Success/http-response.adoc[]
 
 == 로그인 아이디 조회
-=== 1. 인증을 위한 사용자 이름 불일치
+=== 1. 요청으로 보낸 이름에 대한 사용자 정보가 없는 경우
 HTTP Request
 include::{snippets}/MemberApi/FindId/Failure/Case1/http-request.adoc[]
-include::{snippets}/MemberApi/FindId/Failure/Case1/request-headers.adoc[]
 include::{snippets}/MemberApi/FindId/Failure/Case1/request-fields.adoc[]
 
 HTTP Response
 include::{snippets}/MemberApi/FindId/Failure/Case1/response-body.adoc[]
 
-=== 2. 인증을 위한 사용자 이메일 불일치
+=== 2. 요청으로 보낸 이메일에 대한 사용자 정보가 없는 경우
 HTTP Request
 include::{snippets}/MemberApi/FindId/Failure/Case2/http-request.adoc[]
-include::{snippets}/MemberApi/FindId/Failure/Case2/request-headers.adoc[]
 include::{snippets}/MemberApi/FindId/Failure/Case2/request-fields.adoc[]
 
 HTTP Response
@@ -55,7 +53,6 @@ include::{snippets}/MemberApi/FindId/Failure/Case2/response-body.adoc[]
 === 3. 아이디 조회 성공
 HTTP Request
 include::{snippets}/MemberApi/FindId/Success/http-request.adoc[]
-include::{snippets}/MemberApi/FindId/Success/request-headers.adoc[]
 include::{snippets}/MemberApi/FindId/Success/request-fields.adoc[]
 
 HTTP Response

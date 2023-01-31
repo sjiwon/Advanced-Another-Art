@@ -179,24 +179,22 @@ class MemberDetailApiControllerTest extends ControllerTest {
         private static final String BASE_URL = "/api/member/find/id";
 
         @Test
-        @DisplayName("인증을 위한 이름이 사용자 정보와 다르면 예외가 발생한다")
+        @DisplayName("요청으로 보낸 이름, 이메일에 대한 사용자 정보가 존재하지 않으면 예외가 발생한다 (이름 불일치)")
         void test1() throws Exception {
             /// given
             Member member = createMemberA();
-            String accessToken = jwtTokenProvider.createAccessToken(member.getId());
             FindIdRequest request = FindIdRequestUtils.createRequest(member.getName() + "diff", member.getEmail().getValue());
 
             // when
             MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                     .post(BASE_URL)
-                    .header(AUTHORIZATION, BEARER_TOKEN + accessToken)
                     .content(ObjectMapperUtils.objectToJson(request))
                     .contentType(MediaType.APPLICATION_JSON);
 
             // then
-            final MemberErrorCode expectedError = MemberErrorCode.INVALID_INFORMATION;
+            final MemberErrorCode expectedError = MemberErrorCode.MEMBER_NOT_FOUND;
             mockMvc.perform(requestBuilder)
-                    .andExpect(status().isBadRequest())
+                    .andExpect(status().isNotFound())
                     .andExpect(jsonPath("$.statusCode").exists())
                     .andExpect(jsonPath("$.statusCode").value(expectedError.getStatus().value()))
                     .andExpect(jsonPath("$.errorCode").exists())
@@ -208,9 +206,6 @@ class MemberDetailApiControllerTest extends ControllerTest {
                                     "MemberApi/FindId/Failure/Case1",
                                     preprocessRequest(prettyPrint()),
                                     preprocessResponse(prettyPrint()),
-                                    requestHeaders(
-                                            headerWithName(AUTHORIZATION).description("Access Token")
-                                    ),
                                     requestFields(
                                             fieldWithPath("name").description("사용자 이름"),
                                             fieldWithPath("email").description("사용자 이메일")
@@ -225,24 +220,22 @@ class MemberDetailApiControllerTest extends ControllerTest {
         }
 
         @Test
-        @DisplayName("인증을 위한 이메일이 사용자 정보와 다르면 예외가 발생한다")
+        @DisplayName("요청으로 보낸 이름, 이메일에 대한 사용자 정보가 존재하지 않으면 예외가 발생한다 (이메일 불일치)")
         void test2() throws Exception {
             /// given
             Member member = createMemberA();
-            String accessToken = jwtTokenProvider.createAccessToken(member.getId());
             FindIdRequest request = FindIdRequestUtils.createRequest(member.getName(), "diff" + member.getEmail().getValue());
 
             // when
             MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                     .post(BASE_URL)
-                    .header(AUTHORIZATION, BEARER_TOKEN + accessToken)
                     .content(ObjectMapperUtils.objectToJson(request))
                     .contentType(MediaType.APPLICATION_JSON);
 
             // then
-            final MemberErrorCode expectedError = MemberErrorCode.INVALID_INFORMATION;
+            final MemberErrorCode expectedError = MemberErrorCode.MEMBER_NOT_FOUND;
             mockMvc.perform(requestBuilder)
-                    .andExpect(status().isBadRequest())
+                    .andExpect(status().isNotFound())
                     .andExpect(jsonPath("$.statusCode").exists())
                     .andExpect(jsonPath("$.statusCode").value(expectedError.getStatus().value()))
                     .andExpect(jsonPath("$.errorCode").exists())
@@ -254,9 +247,6 @@ class MemberDetailApiControllerTest extends ControllerTest {
                                     "MemberApi/FindId/Failure/Case2",
                                     preprocessRequest(prettyPrint()),
                                     preprocessResponse(prettyPrint()),
-                                    requestHeaders(
-                                            headerWithName(AUTHORIZATION).description("Access Token")
-                                    ),
                                     requestFields(
                                             fieldWithPath("name").description("사용자 이름"),
                                             fieldWithPath("email").description("사용자 이메일")
@@ -271,17 +261,15 @@ class MemberDetailApiControllerTest extends ControllerTest {
         }
 
         @Test
-        @DisplayName("[Header: Access Token / Body: Name, Email]을 통해서 사용자 아이디를 조회한다")
+        @DisplayName("이름, 이메일을 통해서 사용자 아이디를 조회한다")
         void test3() throws Exception {
             // given
             Member member = createMemberA();
-            String accessToken = jwtTokenProvider.createAccessToken(member.getId());
             FindIdRequest request = FindIdRequestUtils.createRequest(member.getName(), member.getEmail().getValue());
 
             // when
             MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                     .post(BASE_URL)
-                    .header(AUTHORIZATION, BEARER_TOKEN + accessToken)
                     .content(ObjectMapperUtils.objectToJson(request))
                     .contentType(MediaType.APPLICATION_JSON);
 
@@ -294,9 +282,6 @@ class MemberDetailApiControllerTest extends ControllerTest {
                                     "MemberApi/FindId/Success",
                                     preprocessRequest(prettyPrint()),
                                     preprocessResponse(prettyPrint()),
-                                    requestHeaders(
-                                            headerWithName(AUTHORIZATION).description("Access Token")
-                                    ),
                                     requestFields(
                                             fieldWithPath("name").description("사용자 이름"),
                                             fieldWithPath("email").description("사용자 이메일")
