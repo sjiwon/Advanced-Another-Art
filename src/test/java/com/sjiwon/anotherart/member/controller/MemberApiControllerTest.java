@@ -9,6 +9,7 @@ import com.sjiwon.anotherart.member.controller.dto.request.DuplicateCheckRequest
 import com.sjiwon.anotherart.member.controller.dto.request.SignUpRequest;
 import com.sjiwon.anotherart.member.controller.utils.DuplicateCheckRequestUtils;
 import com.sjiwon.anotherart.member.controller.utils.SignUpRequestUtils;
+import com.sjiwon.anotherart.member.domain.Email;
 import com.sjiwon.anotherart.member.domain.Member;
 import com.sjiwon.anotherart.member.domain.MemberRepository;
 import com.sjiwon.anotherart.member.exception.MemberErrorCode;
@@ -21,6 +22,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
@@ -172,6 +174,9 @@ class MemberApiControllerTest extends ControllerTest {
                                     )
                             )
                     );
+            assertThat(memberRepository.existsByLoginId(signUpRequest.getLoginId())).isTrue();
+            assertThat(memberRepository.existsByNickname(signUpRequest.getNickname())).isTrue();
+            assertThat(memberRepository.existsByEmail(Email.from(signUpRequest.getEmail()))).isTrue();
         }
     }
 
