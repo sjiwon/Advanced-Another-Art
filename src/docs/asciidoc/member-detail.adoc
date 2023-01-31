@@ -75,3 +75,20 @@ include::{snippets}/MemberApi/AuthMemberForResetPassword/Success/request-fields.
 
 HTTP Response
 include::{snippets}/MemberApi/AuthMemberForResetPassword/Success/http-response.adoc[]
+
+== 비밀번호 재설정
+=== 1. 이전과 동일한 비밀번호에 의한 예외
+HTTP Request
+include::{snippets}/MemberApi/ResetPassword/Failure/http-request.adoc[]
+include::{snippets}/MemberApi/ResetPassword/Failure/request-fields.adoc[]
+
+HTTP Response
+include::{snippets}/MemberApi/ResetPassword/Failure/response-body.adoc[]
+
+=== 2. 재설정 성공
+HTTP Request
+include::{snippets}/MemberApi/ResetPassword/Success/http-request.adoc[]
+include::{snippets}/MemberApi/ResetPassword/Success/request-fields.adoc[]
+
+HTTP Response
+include::{snippets}/MemberApi/ResetPassword/Success/http-response.adoc[]

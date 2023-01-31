@@ -6,8 +6,10 @@ import com.sjiwon.anotherart.common.PasswordEncoderUtils;
 import com.sjiwon.anotherart.fixture.MemberFixture;
 import com.sjiwon.anotherart.member.controller.dto.request.AuthForResetPasswordRequest;
 import com.sjiwon.anotherart.member.controller.dto.request.FindIdRequest;
+import com.sjiwon.anotherart.member.controller.dto.request.ResetPasswordRequest;
 import com.sjiwon.anotherart.member.controller.utils.AuthForResetPasswordRequestUtils;
 import com.sjiwon.anotherart.member.controller.utils.FindIdRequestUtils;
+import com.sjiwon.anotherart.member.controller.utils.ResetPasswordRequestUtils;
 import com.sjiwon.anotherart.member.domain.Member;
 import com.sjiwon.anotherart.member.domain.MemberRepository;
 import com.sjiwon.anotherart.member.exception.MemberErrorCode;
@@ -369,6 +371,87 @@ class MemberDetailApiControllerTest extends ControllerTest {
                                             fieldWithPath("name").description("사용자 이름"),
                                             fieldWithPath("loginId").description("사용자 로그인 아이디"),
                                             fieldWithPath("email").description("사용자 이메일")
+                                    )
+                            )
+                    );
+        }
+    }
+
+    @Nested
+    @DisplayName("비밀번호 재설정 테스트 [POST /api/member/reset/password]")
+    class resetPassword {
+        private static final String BASE_URL = "/api/member/reset/password";
+
+        @Test
+        @DisplayName("이전과 동일한 비밀번호로 재설정하면 예외가 발생한다")
+        void test1() throws Exception {
+            // given
+            Member member = createMemberA();
+            String loginId = member.getLoginId();
+            String chnagePassword = MemberFixture.A.getPassword();
+            ResetPasswordRequest request = ResetPasswordRequestUtils.createRequest(loginId, chnagePassword);
+
+            // when
+            MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                    .post(BASE_URL)
+                    .content(ObjectMapperUtils.objectToJson(request))
+                    .contentType(MediaType.APPLICATION_JSON);
+
+            // then
+            final MemberErrorCode expectedError = MemberErrorCode.PASSWORD_SAME_AS_BEFORE;
+            mockMvc.perform(requestBuilder)
+                    .andExpect(status().isConflict())
+                    .andExpect(jsonPath("$.statusCode").exists())
+                    .andExpect(jsonPath("$.statusCode").value(expectedError.getStatus().value()))
+                    .andExpect(jsonPath("$.errorCode").exists())
+                    .andExpect(jsonPath("$.errorCode").value(expectedError.getErrorCode()))
+                    .andExpect(jsonPath("$.message").exists())
+                    .andExpect(jsonPath("$.message").value(expectedError.getMessage()))
+                    .andDo(
+                            document(
+                                    "MemberApi/ResetPassword/Failure",
+                                    preprocessRequest(prettyPrint()),
+                                    preprocessResponse(prettyPrint()),
+                                    requestFields(
+                                            fieldWithPath("loginId").description("사용자 로그인 아이디"),
+                                            fieldWithPath("changePassword").description("변경할 비밀번호")
+                                    ),
+                                    responseFields(
+                                            fieldWithPath("statusCode").description("HTTP 상태 코드"),
+                                            fieldWithPath("errorCode").description("커스텀 예외 코드"),
+                                            fieldWithPath("message").description("예외 메시지")
+                                    )
+                            )
+                    );
+        }
+
+        @Test
+        @DisplayName("비밀번호 재설정에 성공한다")
+        void test2() throws Exception {
+            // given
+            Member member = createMemberA();
+            String loginId = member.getLoginId();
+            String chnagePassword = MemberFixture.A.getPassword() + "456";
+            ResetPasswordRequest request = ResetPasswordRequestUtils.createRequest(loginId, chnagePassword);
+
+            // when
+            MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                    .post(BASE_URL)
+                    .content(ObjectMapperUtils.objectToJson(request))
+                    .contentType(MediaType.APPLICATION_JSON);
+
+            // then
+            mockMvc.perform(requestBuilder)
+                    .andExpect(status().isNoContent())
+                    .andExpect(jsonPath("$").doesNotExist())
+                    .andDo(
+                            document(
+                                    "MemberApi/ResetPassword/Success",
+                                    preprocessRequest(prettyPrint()),
+                                    preprocessResponse(prettyPrint()),
+                                    requestFields(
+                                            fieldWithPath("loginId").description("사용자 로그인 아이디"),
+                                            fieldWithPath("changePassword").description("변경할 비밀번호")
                                     )
                             )
                     );
