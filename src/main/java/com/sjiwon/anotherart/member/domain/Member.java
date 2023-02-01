@@ -1,6 +1,7 @@
 package com.sjiwon.anotherart.member.domain;
 
 import com.sjiwon.anotherart.global.exception.AnotherArtException;
+import com.sjiwon.anotherart.member.domain.point.PointDetail;
 import com.sjiwon.anotherart.member.exception.MemberErrorCode;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -9,6 +10,8 @@ import lombok.NoArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Getter
@@ -50,6 +53,9 @@ public class Member {
     @Enumerated(EnumType.STRING)
     @Column(name = "role", nullable = false, updatable = false, length = 20)
     private Role role;
+
+    @OneToMany(mappedBy = "member")
+    private List<PointDetail> pointDetails = new ArrayList<>();
 
     @Builder
     private Member(String name, String nickname, String loginId, Password password, String school, Address address, String phone, Email email) {
@@ -102,5 +108,19 @@ public class Member {
 
     public void decreasePoint(int point) {
         this.availablePoint = this.availablePoint.decreasePoint(point);
+    }
+
+    public int getTotalPoints() {
+        int result = 0;
+
+        for (PointDetail pointDetail : pointDetails) {
+            if (pointDetail.isPointIncreaseType()) {
+                result += pointDetail.getAmount();
+            } else {
+                result -= pointDetail.getAmount();
+            }
+        }
+
+        return result;
     }
 }

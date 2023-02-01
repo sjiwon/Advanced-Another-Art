@@ -41,6 +41,8 @@ public class PointDetail {
         this.member = member;
         this.pointType = pointType;
         this.amount = amount;
+
+        member.getPointDetails().add(this);
     }
 
     public static PointDetail createPointDetail(Member member) {
@@ -57,5 +59,9 @@ public class PointDetail {
             case CHARGE, SOLD -> member.increasePoint(dealAmount);
             default -> member.decreasePoint(dealAmount);
         }
+    }
+
+    public boolean isPointIncreaseType() {
+        return this.pointType == PointType.CHARGE || this.pointType == PointType.SOLD;
     }
 }
