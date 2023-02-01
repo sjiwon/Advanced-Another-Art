@@ -1,4 +1,4 @@
-package com.sjiwon.anotherart.point.domain;
+package com.sjiwon.anotherart.member.domain.point;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

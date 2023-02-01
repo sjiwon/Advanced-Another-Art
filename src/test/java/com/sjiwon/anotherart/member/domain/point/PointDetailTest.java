@@ -1,4 +1,4 @@
-package com.sjiwon.anotherart.point.domain;
+package com.sjiwon.anotherart.member.domain.point;
 
 import com.sjiwon.anotherart.fixture.MemberFixture;
 import com.sjiwon.anotherart.member.domain.Member;
