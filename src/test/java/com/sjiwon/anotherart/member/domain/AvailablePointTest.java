@@ -17,7 +17,7 @@ class AvailablePointTest {
     void test1(int value) {
         assertThatThrownBy(() -> AvailablePoint.from(value))
                 .isInstanceOf(AnotherArtException.class)
-                .hasMessage(MemberErrorCode.INVALID_AVAILABLE_POINTS.getMessage());
+                .hasMessage(MemberErrorCode.INVALID_POINT_RANGE.getMessage());
     }
 
     @ParameterizedTest(name = "{index}: {0} 증가")

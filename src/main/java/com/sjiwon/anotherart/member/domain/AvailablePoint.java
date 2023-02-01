@@ -38,7 +38,7 @@ public class AvailablePoint {
 
     private static void validatePointAmount(int value) {
         if (value < 0) {
-            throw AnotherArtException.type(MemberErrorCode.INVALID_AVAILABLE_POINTS);
+            throw AnotherArtException.type(MemberErrorCode.INVALID_POINT_RANGE);
         }
     }
 

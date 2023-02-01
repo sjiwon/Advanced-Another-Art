@@ -24,6 +24,11 @@ public class MemberPointService {
         pointDetailRepository.save(PointDetail.insertPointDetail(member, PointType.CHARGE, chargeAmount));
     }
 
+    public void refundPoint(Long memberId, int refundAmount) {
+        Member member = getMemberById(memberId);
+        pointDetailRepository.save(PointDetail.insertPointDetail(member, PointType.REFUND, refundAmount));
+    }
+
     private Member getMemberById(Long memberId) {
         return memberRepository.findById(memberId)
                 .orElseThrow(() -> AnotherArtException.type(MemberErrorCode.MEMBER_NOT_FOUND));
