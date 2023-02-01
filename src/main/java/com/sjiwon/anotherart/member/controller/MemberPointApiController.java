@@ -27,4 +27,12 @@ public class MemberPointApiController {
         memberPointService.chargePoint(memberId, chargeAmount);
         return ResponseEntity.noContent().build();
     }
+
+    @PreAuthorize("hasRole('USER')")
+    @PostMapping("/refund")
+    @ApiOperation(value = "포인트 환불 API", notes = "포인트 환불을 위한 API")
+    public ResponseEntity<Void> refundPoint(@ExtractPayload Long memberId, @RequestParam int refundAmount) {
+        memberPointService.refundPoint(memberId, refundAmount);
+        return ResponseEntity.noContent().build();
+    }
 }
