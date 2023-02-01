@@ -22,3 +22,30 @@ include::{snippets}/MemberApi/ChargePoint/Success/request-parameters.adoc[]
 
 HTTP Response
 include::{snippets}/MemberApi/ChargePoint/Success/http-response.adoc[]
+
+== 포인트 환불
+=== 1. Access Token이 없음에 따라 포인트 환불 실패
+HTTP Request
+include::{snippets}/MemberApi/RefundPoint/Failure/Case1/http-request.adoc[]
+include::{snippets}/MemberApi/RefundPoint/Failure/Case1/request-parameters.adoc[]
+
+HTTP Response
+include::{snippets}/MemberApi/RefundPoint/Failure/Case1/response-body.adoc[]
+
+=== 2. 보유 포인트 부족에 따른 포인트 환불 실패
+HTTP Request
+include::{snippets}/MemberApi/RefundPoint/Failure/Case2/http-request.adoc[]
+include::{snippets}/MemberApi/RefundPoint/Failure/Case2/request-headers.adoc[]
+include::{snippets}/MemberApi/RefundPoint/Failure/Case2/request-parameters.adoc[]
+
+HTTP Response
+include::{snippets}/MemberApi/RefundPoint/Failure/Case2/response-body.adoc[]
+
+=== 3. 포인트 환불 성공
+HTTP Request
+include::{snippets}/MemberApi/RefundPoint/Success/http-request.adoc[]
+include::{snippets}/MemberApi/RefundPoint/Success/request-headers.adoc[]
+include::{snippets}/MemberApi/RefundPoint/Success/request-parameters.adoc[]
+
+HTTP Response
+include::{snippets}/MemberApi/RefundPoint/Success/http-response.adoc[]

@@ -9,6 +9,7 @@ import com.sjiwon.anotherart.member.domain.MemberRepository;
 import com.sjiwon.anotherart.member.domain.point.PointDetail;
 import com.sjiwon.anotherart.member.domain.point.PointDetailRepository;
 import com.sjiwon.anotherart.member.domain.point.PointType;
+import com.sjiwon.anotherart.member.exception.MemberErrorCode;
 import com.sjiwon.anotherart.token.utils.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.DisplayName;
@@ -47,7 +48,7 @@ class MemberPointApiControllerTest extends ControllerTest {
     private static final String BEARER_TOKEN = "Bearer ";
 
     @Nested
-    @DisplayName("사용자 포인트 충전 테스트 [PATCH /api/member/point/charge]")
+    @DisplayName("사용자 포인트 충전 테스트 [POST /api/member/point/charge]")
     class chargePoint {
         private static final String BASE_URL = "/api/member/point/charge";
 
@@ -151,9 +152,193 @@ class MemberPointApiControllerTest extends ControllerTest {
         }
     }
 
+    @Nested
+    @DisplayName("사용자 포인트 환불 테스트 [POST /api/member/point/refund]")
+    class refundPoint {
+        private static final String BASE_URL = "/api/member/point/refund";
+
+        @Test
+        @DisplayName("Access Token이 없음에 따라 포인트 환불이 불가능하다")
+        void test1() throws Exception {
+            // given
+            final int chargeAmount = 10000;
+            Member member = signUpAndChargePoint(chargeAmount);
+            final int initAmount = member.getAvailablePoint().getValue();
+            final int refundAmount = 15000;
+
+            // when
+            MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                    .post(BASE_URL)
+                    .param("refundAmount", String.valueOf(refundAmount))
+                    .contentType(MediaType.APPLICATION_FORM_URLENCODED);
+
+            // then
+            final AuthErrorCode expectedError = AuthErrorCode.INVALID_TOKEN;
+            mockMvc.perform(requestBuilder)
+                    .andExpect(status().isForbidden())
+                    .andExpect(jsonPath("$.statusCode").exists())
+                    .andExpect(jsonPath("$.statusCode").value(expectedError.getStatus().value()))
+                    .andExpect(jsonPath("$.errorCode").exists())
+                    .andExpect(jsonPath("$.errorCode").value(expectedError.getErrorCode()))
+                    .andExpect(jsonPath("$.message").exists())
+                    .andExpect(jsonPath("$.message").value(expectedError.getMessage()))
+                    .andDo(
+                            document(
+                                    "MemberApi/RefundPoint/Failure/Case1",
+                                    preprocessRequest(prettyPrint()),
+                                    preprocessResponse(prettyPrint()),
+                                    requestParameters(
+                                            parameterWithName("refundAmount").description("환불할 포인트 금액")
+                                    ),
+                                    responseFields(
+                                            fieldWithPath("statusCode").description("HTTP 상태 코드"),
+                                            fieldWithPath("errorCode").description("커스텀 예외 코드"),
+                                            fieldWithPath("message").description("예외 메시지")
+                                    )
+                            )
+                    );
+            List<PointDetail> pointDetails = pointDetailRepository.findAll();
+            assertThat(pointDetails.size()).isEqualTo(2);
+
+            PointDetail joinDetail = pointDetails.get(0);
+            PointDetail chargeDetail = pointDetails.get(1);
+            assertThat(joinDetail.getMember().getId()).isEqualTo(member.getId());
+            assertThat(joinDetail.getPointType()).isEqualTo(PointType.JOIN);
+            assertThat(joinDetail.getAmount()).isEqualTo(0);
+            assertThat(chargeDetail.getMember().getId()).isEqualTo(member.getId());
+            assertThat(chargeDetail.getPointType()).isEqualTo(PointType.CHARGE);
+            assertThat(chargeDetail.getAmount()).isEqualTo(chargeAmount);
+
+            assertThat(member.getAvailablePoint().getValue()).isEqualTo(initAmount);
+            assertThat(member.getTotalPoints()).isEqualTo(initAmount);
+        }
+        
+        @Test
+        @DisplayName("보유한 포인트가 부족함에 따라 포인트 환불이 불가능하다")
+        void test2() throws Exception {
+            // given
+            final int chargeAmount = 10000;
+            Member member = signUpAndChargePoint(chargeAmount);
+            String accessToken = jwtTokenProvider.createAccessToken(member.getId());
+            final int initAmount = member.getAvailablePoint().getValue();
+            final int refundAmount = 15000;
+
+            // when
+            MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                    .post(BASE_URL)
+                    .header(AUTHORIZATION, BEARER_TOKEN + accessToken)
+                    .param("refundAmount", String.valueOf(refundAmount))
+                    .contentType(MediaType.APPLICATION_FORM_URLENCODED);
+
+            // then
+            final MemberErrorCode expectedError = MemberErrorCode.INVALID_POINT_DECREASE;
+            mockMvc.perform(requestBuilder)
+                    .andExpect(status().isBadRequest())
+                    .andExpect(jsonPath("$.statusCode").exists())
+                    .andExpect(jsonPath("$.statusCode").value(expectedError.getStatus().value()))
+                    .andExpect(jsonPath("$.errorCode").exists())
+                    .andExpect(jsonPath("$.errorCode").value(expectedError.getErrorCode()))
+                    .andExpect(jsonPath("$.message").exists())
+                    .andExpect(jsonPath("$.message").value(expectedError.getMessage()))
+                    .andDo(
+                            document(
+                                    "MemberApi/RefundPoint/Failure/Case2",
+                                    preprocessRequest(prettyPrint()),
+                                    preprocessResponse(prettyPrint()),
+                                    requestHeaders(
+                                            headerWithName(AUTHORIZATION).description("Access Token")
+                                    ),
+                                    requestParameters(
+                                            parameterWithName("refundAmount").description("환불할 포인트 금액")
+                                    ),
+                                    responseFields(
+                                            fieldWithPath("statusCode").description("HTTP 상태 코드"),
+                                            fieldWithPath("errorCode").description("커스텀 예외 코드"),
+                                            fieldWithPath("message").description("예외 메시지")
+                                    )
+                            )
+                    );
+            List<PointDetail> pointDetails = pointDetailRepository.findAll();
+            assertThat(pointDetails.size()).isEqualTo(2);
+
+            PointDetail joinDetail = pointDetails.get(0);
+            PointDetail chargeDetail = pointDetails.get(1);
+            assertThat(joinDetail.getMember().getId()).isEqualTo(member.getId());
+            assertThat(joinDetail.getPointType()).isEqualTo(PointType.JOIN);
+            assertThat(joinDetail.getAmount()).isEqualTo(0);
+            assertThat(chargeDetail.getMember().getId()).isEqualTo(member.getId());
+            assertThat(chargeDetail.getPointType()).isEqualTo(PointType.CHARGE);
+            assertThat(chargeDetail.getAmount()).isEqualTo(chargeAmount);
+
+            assertThat(member.getAvailablePoint().getValue()).isEqualTo(initAmount);
+            assertThat(member.getTotalPoints()).isEqualTo(initAmount);
+        }
+        
+        @Test
+        @DisplayName("포인트 환불에 성공한다")
+        void test3() throws Exception {
+            // given
+            final int chargeAmount = 20000;
+            Member member = signUpAndChargePoint(chargeAmount);
+            String accessToken = jwtTokenProvider.createAccessToken(member.getId());
+            final int initAmount = member.getAvailablePoint().getValue();
+            final int refundAmount = 15000;
+
+            // when
+            MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                    .post(BASE_URL)
+                    .header(AUTHORIZATION, BEARER_TOKEN + accessToken)
+                    .param("refundAmount", String.valueOf(refundAmount))
+                    .contentType(MediaType.APPLICATION_FORM_URLENCODED);
+
+            // then
+            mockMvc.perform(requestBuilder)
+                    .andExpect(status().isNoContent())
+                    .andExpect(jsonPath("$").doesNotExist())
+                    .andDo(
+                            document(
+                                    "MemberApi/RefundPoint/Success",
+                                    preprocessRequest(prettyPrint()),
+                                    preprocessResponse(prettyPrint()),
+                                    requestHeaders(
+                                            headerWithName(AUTHORIZATION).description("Access Token")
+                                    ),
+                                    requestParameters(
+                                            parameterWithName("refundAmount").description("환불할 포인트 금액")
+                                    )
+                            )
+                    );
+            List<PointDetail> pointDetails = pointDetailRepository.findAll();
+            assertThat(pointDetails.size()).isEqualTo(3);
+
+            PointDetail joinDetail = pointDetails.get(0);
+            PointDetail chargeDetail = pointDetails.get(1);
+            PointDetail refundDetail = pointDetails.get(2);
+            assertThat(joinDetail.getMember().getId()).isEqualTo(member.getId());
+            assertThat(joinDetail.getPointType()).isEqualTo(PointType.JOIN);
+            assertThat(joinDetail.getAmount()).isEqualTo(0);
+            assertThat(chargeDetail.getMember().getId()).isEqualTo(member.getId());
+            assertThat(chargeDetail.getPointType()).isEqualTo(PointType.CHARGE);
+            assertThat(chargeDetail.getAmount()).isEqualTo(chargeAmount);
+            assertThat(refundDetail.getMember().getId()).isEqualTo(member.getId());
+            assertThat(refundDetail.getPointType()).isEqualTo(PointType.REFUND);
+            assertThat(refundDetail.getAmount()).isEqualTo(refundAmount);
+
+            assertThat(member.getAvailablePoint().getValue()).isEqualTo(initAmount - refundAmount);
+            assertThat(member.getTotalPoints()).isEqualTo(initAmount - refundAmount);
+        }
+    }
+
     private Member signUpMember() {
         Member member = memberRepository.save(MemberFixture.A.toMember(ENCODER));
         pointDetailRepository.save(PointDetail.createPointDetail(member));
+        return member;
+    }
+
+    private Member signUpAndChargePoint(int chargeAmount) {
+        Member member = memberRepository.save(MemberFixture.A.toMember(ENCODER));
+        pointDetailRepository.save(PointDetail.createPointDetail(member));
+        pointDetailRepository.save(PointDetail.insertPointDetail(member, PointType.CHARGE, chargeAmount));
         return member;
     }
 }
