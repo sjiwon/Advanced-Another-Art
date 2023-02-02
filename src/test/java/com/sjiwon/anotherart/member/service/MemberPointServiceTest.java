@@ -5,7 +5,6 @@ import com.sjiwon.anotherart.common.ServiceTest;
 import com.sjiwon.anotherart.fixture.MemberFixture;
 import com.sjiwon.anotherart.global.exception.AnotherArtException;
 import com.sjiwon.anotherart.member.domain.Member;
-import com.sjiwon.anotherart.member.domain.MemberRepository;
 import com.sjiwon.anotherart.member.domain.point.PointDetailRepository;
 import com.sjiwon.anotherart.member.exception.MemberErrorCode;
 import org.junit.jupiter.api.DisplayName;
@@ -14,8 +13,6 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.security.crypto.password.PasswordEncoder;
-
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -26,7 +23,7 @@ class MemberPointServiceTest extends ServiceTest {
     MemberPointService memberPointService;
 
     @Mock
-    MemberRepository memberRepository;
+    MemberFindService memberFindService;
 
     @Mock
     PointDetailRepository pointDetailRepository;
@@ -41,7 +38,7 @@ class MemberPointServiceTest extends ServiceTest {
         final Long memberId = 1L;
         final int initAmount = member.getAvailablePoint().getValue();
         final int chargeAmount = 15000;
-        given(memberRepository.findById(memberId)).willReturn(Optional.of(member));
+        given(memberFindService.findById(memberId)).willReturn(member);
 
         // when
         memberPointService.chargePoint(memberId, chargeAmount);
@@ -62,7 +59,7 @@ class MemberPointServiceTest extends ServiceTest {
             final Long memberId = 1L;
             final int initAmount = member.getAvailablePoint().getValue();
             final int refundAmount = 15000;
-            given(memberRepository.findById(memberId)).willReturn(Optional.of(member));
+            given(memberFindService.findById(memberId)).willReturn(member);
 
             // when - then
             assertThatThrownBy(() -> memberPointService.refundPoint(memberId, refundAmount))
@@ -79,7 +76,7 @@ class MemberPointServiceTest extends ServiceTest {
             final Long memberId = 1L;
             final int initAmount = member.getAvailablePoint().getValue();
             final int refundAmount = 15000;
-            given(memberRepository.findById(memberId)).willReturn(Optional.of(member));
+            given(memberFindService.findById(memberId)).willReturn(member);
 
             // when
             memberPointService.refundPoint(memberId, refundAmount);
