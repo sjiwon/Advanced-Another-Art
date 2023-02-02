@@ -3,6 +3,7 @@ package com.sjiwon.anotherart.global.security;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sjiwon.anotherart.global.security.filter.AjaxAuthenticationFilter;
 import com.sjiwon.anotherart.global.security.filter.JwtAuthorizationFilter;
+import com.sjiwon.anotherart.global.security.filter.LogoutExceptionTranslationFilter;
 import com.sjiwon.anotherart.global.security.filter.TokenInvalidExceptionTranslationFilter;
 import com.sjiwon.anotherart.global.security.handler.*;
 import com.sjiwon.anotherart.global.security.provider.AjaxAuthenticationProvider;
@@ -29,6 +30,7 @@ import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.logout.LogoutFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -125,6 +127,11 @@ public class SecurityConfiguration {
     }
 
     @Bean
+    LogoutExceptionTranslationFilter logoutExceptionTranslationFilter() {
+        return new LogoutExceptionTranslationFilter(jwtAccessDeniedHandler());
+    }
+
+    @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf().disable();
         http.cors().configurationSource(corsConfigurationSource());
@@ -138,6 +145,7 @@ public class SecurityConfiguration {
         http.addFilterAt(ajaxAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
         http.addFilterBefore(jwtAuthorizationFilter(), AjaxAuthenticationFilter.class);
         http.addFilterBefore(tokenInvalidExceptionTranslationFilter(), JwtAuthorizationFilter.class);
+        http.addFilterBefore(logoutExceptionTranslationFilter(), LogoutFilter.class);
 
         http.logout()
                 .logoutUrl("/api/logout")

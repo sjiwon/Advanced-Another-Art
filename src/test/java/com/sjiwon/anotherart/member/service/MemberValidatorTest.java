@@ -11,7 +11,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
@@ -93,7 +92,7 @@ class MemberValidatorTest extends ServiceTest {
     @DisplayName("중복 통합 테스트")
     void test5(){
         // given
-        final Member member = MemberFixture.A.toMember(PasswordEncoderFactories.createDelegatingPasswordEncoder());
+        final Member member = MemberFixture.A.toMember();
         given(memberRepository.existsByNickname(member.getNickname())).willReturn(false);
         given(memberRepository.existsByLoginId(member.getLoginId())).willReturn(false);
         given(memberRepository.existsByPhone(member.getPhone())).willReturn(false);

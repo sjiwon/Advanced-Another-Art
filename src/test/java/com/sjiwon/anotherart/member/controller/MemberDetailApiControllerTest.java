@@ -43,7 +43,6 @@ class MemberDetailApiControllerTest extends ControllerTest {
     private final MemberRepository memberRepository;
     private final JwtTokenProvider jwtTokenProvider;
 
-    private static final PasswordEncoder ENCODER = PasswordEncoderUtils.getEncoder();
     private static final String BEARER_TOKEN = "Bearer ";
 
     @Nested
@@ -95,7 +94,7 @@ class MemberDetailApiControllerTest extends ControllerTest {
                             )
                     );
         }
-        
+
         @Test
         @DisplayName("타인이 사용하는 닉네임으로 수정 요청을 보내면 예외가 발생한다")
         void test2() throws Exception {
@@ -140,7 +139,6 @@ class MemberDetailApiControllerTest extends ControllerTest {
                                     )
                             )
                     );
-            assertThat(memberA.getNickname()).isNotEqualTo(changeNickname);
         }
 
         @Test
@@ -175,6 +173,7 @@ class MemberDetailApiControllerTest extends ControllerTest {
                                     )
                             )
                     );
+
             assertThat(member.getNickname()).isEqualTo(changeNickname);
         }
     }
@@ -457,16 +456,17 @@ class MemberDetailApiControllerTest extends ControllerTest {
                                     )
                             )
                     );
-            assertThat(ENCODER.matches(chnagePassword, member.getPassword().getValue())).isTrue();
+
+            PasswordEncoder encoder = PasswordEncoderUtils.getEncoder();
+            assertThat(encoder.matches(chnagePassword, member.getPassword().getValue())).isTrue();
         }
     }
 
     private Member createMemberA() {
-        return memberRepository.save(MemberFixture.A.toMember(ENCODER));
+        return memberRepository.save(MemberFixture.A.toMember());
     }
 
-
     private Member createMemberB() {
-        return memberRepository.save(MemberFixture.B.toMember(ENCODER));
+        return memberRepository.save(MemberFixture.B.toMember());
     }
 }

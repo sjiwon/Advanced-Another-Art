@@ -1,12 +1,12 @@
 package com.sjiwon.anotherart.fixture;
 
+import com.sjiwon.anotherart.common.PasswordEncoderUtils;
 import com.sjiwon.anotherart.member.domain.Address;
 import com.sjiwon.anotherart.member.domain.Email;
 import com.sjiwon.anotherart.member.domain.Member;
 import com.sjiwon.anotherart.member.domain.Password;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.UUID;
 
@@ -26,12 +26,12 @@ public enum MemberFixture {
     private final String defaultAddress;
     private final String detailAddress;
 
-    public Member toMember(PasswordEncoder encoder) {
+    public Member toMember() {
         return Member.builder()
                 .name(name)
                 .nickname(nickname)
                 .loginId(loginId)
-                .password(Password.encrypt(password, encoder))
+                .password(Password.encrypt(password, PasswordEncoderUtils.getEncoder()))
                 .school("경기대학교")
                 .address(Address.of(postcode, defaultAddress, detailAddress))
                 .phone(generateRandomPhoneNumber())

@@ -1,7 +1,6 @@
 package com.sjiwon.anotherart.token.controller;
 
 import com.sjiwon.anotherart.common.ControllerTest;
-import com.sjiwon.anotherart.common.PasswordEncoderUtils;
 import com.sjiwon.anotherart.fixture.MemberFixture;
 import com.sjiwon.anotherart.global.security.exception.AuthErrorCode;
 import com.sjiwon.anotherart.member.domain.Member;
@@ -35,12 +34,13 @@ class TokenReissueApiControllerTest extends ControllerTest {
     private final JwtTokenProvider jwtTokenProvider;
     private final RedisTokenService redisTokenService;
 
-    private static final String BASE_URL = "/api/token/reissue";
     private static final String BEARER_TOKEN = "Bearer ";
 
     @Nested
     @DisplayName("토큰 재발급 테스트 [POST /api/token/reissue]")
     class reissueToken {
+        private static final String BASE_URL = "/api/token/reissue";
+
         @Test
         @DisplayName("Authorization 헤더에 Refresh Token 없이 토큰 재발급 엔드포인트에 요청을 하면 예외가 발생한다")
         void test1() throws Exception {
@@ -50,7 +50,6 @@ class TokenReissueApiControllerTest extends ControllerTest {
 
             // then
             final AuthErrorCode expectedError = AuthErrorCode.INVALID_TOKEN;
-
             mockMvc.perform(requestBuilder)
                     .andExpect(status().isForbidden())
                     .andExpect(jsonPath("$.statusCode").exists())
@@ -89,7 +88,6 @@ class TokenReissueApiControllerTest extends ControllerTest {
 
             // then
             final AuthErrorCode expectedError = AuthErrorCode.INVALID_TOKEN;
-
             mockMvc.perform(requestBuilder)
                     .andExpect(status().isForbidden())
                     .andExpect(jsonPath("$.statusCode").exists())
@@ -131,7 +129,6 @@ class TokenReissueApiControllerTest extends ControllerTest {
 
             // then
             final AuthErrorCode expectedError = AuthErrorCode.INVALID_TOKEN;
-
             mockMvc.perform(requestBuilder)
                     .andExpect(status().isForbidden())
                     .andExpect(jsonPath("$.statusCode").exists())
@@ -194,6 +191,6 @@ class TokenReissueApiControllerTest extends ControllerTest {
     }
 
     private Member createMember() {
-        return memberRepository.save(MemberFixture.A.toMember(PasswordEncoderUtils.getEncoder()));
+        return memberRepository.save(MemberFixture.A.toMember());
     }
 }

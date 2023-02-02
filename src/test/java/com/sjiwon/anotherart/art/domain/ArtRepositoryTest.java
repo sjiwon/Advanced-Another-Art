@@ -1,6 +1,5 @@
 package com.sjiwon.anotherart.art.domain;
 
-import com.sjiwon.anotherart.common.PasswordEncoderUtils;
 import com.sjiwon.anotherart.common.RepositoryTest;
 import com.sjiwon.anotherart.fixture.ArtFixture;
 import com.sjiwon.anotherart.fixture.MemberFixture;
@@ -15,10 +14,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DisplayName("Art [Repository Layer] -> ArtRepository 테스트")
 class ArtRepositoryTest extends RepositoryTest {
     @Autowired
-    MemberRepository memberRepository;
+    ArtRepository artRepository;
 
     @Autowired
-    ArtRepository artRepository;
+    MemberRepository memberRepository;
 
     @Test
     @DisplayName("작품 소유자인지 검증한다")
@@ -36,11 +35,11 @@ class ArtRepositoryTest extends RepositoryTest {
     }
 
     private Member createMemberA() {
-        return memberRepository.save(MemberFixture.A.toMember(PasswordEncoderUtils.getEncoder()));
+        return memberRepository.save(MemberFixture.A.toMember());
     }
 
     private Member createMemberB() {
-        return memberRepository.save(MemberFixture.B.toMember(PasswordEncoderUtils.getEncoder()));
+        return memberRepository.save(MemberFixture.B.toMember());
     }
 
     private Art createArt(Member member) {

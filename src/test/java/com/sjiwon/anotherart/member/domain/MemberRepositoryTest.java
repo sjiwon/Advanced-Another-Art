@@ -1,6 +1,5 @@
 package com.sjiwon.anotherart.member.domain;
 
-import com.sjiwon.anotherart.common.PasswordEncoderUtils;
 import com.sjiwon.anotherart.common.RepositoryTest;
 import com.sjiwon.anotherart.fixture.MemberFixture;
 import org.junit.jupiter.api.DisplayName;
@@ -152,7 +151,7 @@ class MemberRepositoryTest extends RepositoryTest {
     }
 
     private Member createMemberA() {
-        return memberRepository.save(MemberFixture.A.toMember(PasswordEncoderUtils.getEncoder()));
+        return memberRepository.save(MemberFixture.A.toMember());
     }
 
     private void synchronizePersistenceContext() {

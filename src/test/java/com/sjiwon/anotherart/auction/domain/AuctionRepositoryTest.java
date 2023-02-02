@@ -4,7 +4,6 @@ import com.sjiwon.anotherart.art.domain.Art;
 import com.sjiwon.anotherart.art.domain.ArtRepository;
 import com.sjiwon.anotherart.art.domain.ArtType;
 import com.sjiwon.anotherart.auction.exception.AuctionErrorCode;
-import com.sjiwon.anotherart.common.PasswordEncoderUtils;
 import com.sjiwon.anotherart.common.RepositoryTest;
 import com.sjiwon.anotherart.fixture.ArtFixture;
 import com.sjiwon.anotherart.fixture.MemberFixture;
@@ -24,13 +23,13 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 @DisplayName("Auction [Repository Layer] -> AuctionRepository 테스트")
 class AuctionRepositoryTest extends RepositoryTest {
     @Autowired
+    AuctionRepository auctionRepository;
+
+    @Autowired
     MemberRepository memberRepository;
 
     @Autowired
     ArtRepository artRepository;
-
-    @Autowired
-    AuctionRepository auctionRepository;
 
     private static final Period AUCTION_PERIOD = Period.of(LocalDateTime.now().minusDays(1), LocalDateTime.now().plusDays(1));
     private static final int INIT_AVAILABLE_POINT = 1_000_000;
@@ -142,7 +141,7 @@ class AuctionRepositoryTest extends RepositoryTest {
             auction.applyNewBid(memberB, previousBidPrice);
             assertThat(memberB.getAvailablePoint().getValue()).isEqualTo(INIT_AVAILABLE_POINT - previousBidPrice);
 
-            // when - then
+            // when
             Member memberC = createMemberC();
             final int currentBidPrice = 200000;
             auction.applyNewBid(memberC, currentBidPrice);
@@ -158,19 +157,19 @@ class AuctionRepositoryTest extends RepositoryTest {
     }
 
     private Member createMemberA() {
-        Member memberA = MemberFixture.A.toMember(PasswordEncoderUtils.getEncoder());
+        Member memberA = MemberFixture.A.toMember();
         memberA.increasePoint(INIT_AVAILABLE_POINT);
         return memberRepository.save(memberA);
     }
 
     private Member createMemberB() {
-        Member memberB = MemberFixture.B.toMember(PasswordEncoderUtils.getEncoder());
+        Member memberB = MemberFixture.B.toMember();
         memberB.increasePoint(INIT_AVAILABLE_POINT);
         return memberRepository.save(memberB);
     }
 
     private Member createMemberC() {
-        Member memberC = MemberFixture.C.toMember(PasswordEncoderUtils.getEncoder());
+        Member memberC = MemberFixture.C.toMember();
         memberC.increasePoint(INIT_AVAILABLE_POINT);
         return memberRepository.save(memberC);
     }

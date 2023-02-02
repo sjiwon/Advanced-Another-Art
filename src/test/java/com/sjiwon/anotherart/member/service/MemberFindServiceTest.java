@@ -1,6 +1,5 @@
 package com.sjiwon.anotherart.member.service;
 
-import com.sjiwon.anotherart.common.PasswordEncoderUtils;
 import com.sjiwon.anotherart.common.ServiceTest;
 import com.sjiwon.anotherart.fixture.MemberFixture;
 import com.sjiwon.anotherart.global.exception.AnotherArtException;
@@ -12,7 +11,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Optional;
 
@@ -28,13 +26,11 @@ class MemberFindServiceTest extends ServiceTest {
     @Mock
     private MemberRepository memberRepository;
 
-    private static final PasswordEncoder ENCODER = PasswordEncoderUtils.getEncoder();
-
     @Test
     @DisplayName("ID(PK)로 사용자 조회하기")
     void test1() {
         // given
-        final Member member = MemberFixture.A.toMember(ENCODER);
+        final Member member = MemberFixture.A.toMember();
         final Long memberId = 1L;
         given(memberRepository.findById(memberId)).willReturn(Optional.ofNullable(member));
 
@@ -56,7 +52,7 @@ class MemberFindServiceTest extends ServiceTest {
     @DisplayName("로그인 아이디로 사용자 조회하기")
     void test2() {
         // given
-        final Member member = MemberFixture.A.toMember(ENCODER);
+        final Member member = MemberFixture.A.toMember();
         final String loginId = member.getLoginId();
         given(memberRepository.findByLoginId(loginId)).willReturn(Optional.ofNullable(member));
 
@@ -78,7 +74,7 @@ class MemberFindServiceTest extends ServiceTest {
     @DisplayName("이름, 이메일로 사용자 조회하기")
     void test3() {
         // given
-        final Member member = MemberFixture.A.toMember(ENCODER);
+        final Member member = MemberFixture.A.toMember();
         final String name = member.getName();
         final Email email = member.getEmail();
         given(memberRepository.findByNameAndEmail(name, email)).willReturn(Optional.ofNullable(member));

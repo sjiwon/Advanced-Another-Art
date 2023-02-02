@@ -20,7 +20,7 @@ class MemberTest {
     @Test
     @DisplayName("멤버를 생성한다")
     void test1() {
-        Member memberA = MEMBER_A.toMember(ENCODER);
+        Member memberA = MEMBER_A.toMember();
 
         assertAll(
                 () -> assertThat(memberA.getName()).isEqualTo(MEMBER_A.getName()),
@@ -39,7 +39,7 @@ class MemberTest {
     @DisplayName("닉네임을 변경한다")
     void test2() {
         // given
-        Member memberA = MEMBER_A.toMember(ENCODER);
+        Member memberA = MEMBER_A.toMember();
 
         // when
         final String changeNickname = "닉네임 변경";
@@ -53,7 +53,7 @@ class MemberTest {
     @DisplayName("비밀번호를 변경한다")
     void test3() {
         // given
-        Member memberA = MEMBER_A.toMember(ENCODER);
+        Member memberA = MEMBER_A.toMember();
         final String samePassword = MEMBER_A.getPassword();
         final String diffPassword = MEMBER_A.getPassword() + "456";
 
@@ -71,7 +71,7 @@ class MemberTest {
     @DisplayName("주소를 변경한다")
     void test4() {
         // given
-        Member memberA = MEMBER_A.toMember(ENCODER);
+        Member memberA = MEMBER_A.toMember();
 
         // when
         final int changePostcode = 98765;
@@ -89,7 +89,7 @@ class MemberTest {
     @DisplayName("사용 가능 포인트를 증가시킨다")
     void test5() {
         // given
-        Member memberA = MEMBER_A.toMember(ENCODER);
+        Member memberA = MEMBER_A.toMember();
 
         // when
         final int increasePoint = 10000;
@@ -103,7 +103,7 @@ class MemberTest {
     @DisplayName("사용 가능 포인트를 감소시킨다")
     void test6() {
         // given
-        Member memberA = MEMBER_A.toMember(ENCODER);
+        Member memberA = MEMBER_A.toMember();
         final int increasePoint = 10000;
         memberA.increasePoint(increasePoint);
 
@@ -119,7 +119,7 @@ class MemberTest {
     @DisplayName("동일한 닉네임인지 검증한다")
     void test7() {
         // given
-        Member memberA = MEMBER_A.toMember(ENCODER);
+        Member memberA = MEMBER_A.toMember();
         final String same = memberA.getNickname();
         final String diff = memberA.getNickname() + "diff";
 
@@ -136,7 +136,7 @@ class MemberTest {
     @DisplayName("동일한 이름인지 검증한다")
     void test8() {
         // given
-        Member memberA = MEMBER_A.toMember(ENCODER);
+        Member memberA = MEMBER_A.toMember();
         final String same = memberA.getNickname();
         final String diff = memberA.getNickname() + "diff";
 
@@ -153,7 +153,7 @@ class MemberTest {
     @DisplayName("동일한 이름인지 검증한다")
     void test9() {
         // given
-        Member memberA = MEMBER_A.toMember(ENCODER);
+        Member memberA = MEMBER_A.toMember();
         final Email same = memberA.getEmail();
         final Email diff = Email.from("diff" + memberA.getEmail().getValue());
 

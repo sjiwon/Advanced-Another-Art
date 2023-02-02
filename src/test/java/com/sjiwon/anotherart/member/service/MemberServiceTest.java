@@ -1,19 +1,16 @@
 package com.sjiwon.anotherart.member.service;
 
-import com.sjiwon.anotherart.common.PasswordEncoderUtils;
 import com.sjiwon.anotherart.common.ServiceTest;
 import com.sjiwon.anotherart.fixture.MemberFixture;
 import com.sjiwon.anotherart.global.exception.AnotherArtException;
 import com.sjiwon.anotherart.member.domain.Email;
 import com.sjiwon.anotherart.member.domain.Member;
 import com.sjiwon.anotherart.member.domain.MemberRepository;
-import com.sjiwon.anotherart.member.domain.point.PointDetailRepository;
 import com.sjiwon.anotherart.member.exception.MemberErrorCode;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -35,16 +32,11 @@ class MemberServiceTest extends ServiceTest {
     @Mock
     private MemberRepository memberRepository;
 
-    @Mock
-    private PointDetailRepository pointDetailRepository;
-
-    private static final PasswordEncoder ENCODER = PasswordEncoderUtils.getEncoder();
-
     @Test
     @DisplayName("사용자에 대한 회원가입을 성공한다")
     void test1() {
         // given
-        final Member member = MemberFixture.A.toMember(ENCODER);
+        final Member member = MemberFixture.A.toMember();
         final Long savedMemberId = 1L;
         given(memberRepository.save(member)).willReturn(member);
         ReflectionTestUtils.setField(member, "id", savedMemberId);
@@ -61,7 +53,7 @@ class MemberServiceTest extends ServiceTest {
     @DisplayName("사용자의 닉네임을 수정한다")
     void test2() {
         // given
-        final Member member = MemberFixture.A.toMember(ENCODER);
+        final Member member = MemberFixture.A.toMember();
         final Long memberId = 1L;
         final String changeNickname = member.getNickname() + "hello world";
         given(memberFindService.findById(memberId)).willReturn(member);
@@ -77,7 +69,7 @@ class MemberServiceTest extends ServiceTest {
     @DisplayName("이름, 이메일에 해당되는 사용자의 로그인 아이디를 찾는다")
     void test3() {
         // given
-        final Member member = MemberFixture.A.toMember(ENCODER);
+        final Member member = MemberFixture.A.toMember();
         given(memberFindService.findByNameAndEmail(member.getName(), member.getEmail())).willReturn(member);
 
         // when
@@ -91,7 +83,7 @@ class MemberServiceTest extends ServiceTest {
     @DisplayName("이름, 로그인 아이디, 이메일에 해당하는 사용자가 존재하는지 확인한다")
     void test4() {
         // given
-        final Member member = MemberFixture.A.toMember(ENCODER);
+        final Member member = MemberFixture.A.toMember();
         final String name = member.getName();
         final String loginId = member.getLoginId();
         final Email email = member.getEmail();

@@ -1,8 +1,8 @@
 package com.sjiwon.anotherart.global.security.handler;
 
 import com.sjiwon.anotherart.common.ControllerTest;
-import com.sjiwon.anotherart.common.PasswordEncoderUtils;
 import com.sjiwon.anotherart.fixture.MemberFixture;
+import com.sjiwon.anotherart.global.security.exception.AuthErrorCode;
 import com.sjiwon.anotherart.member.domain.Member;
 import com.sjiwon.anotherart.member.domain.MemberRepository;
 import com.sjiwon.anotherart.token.service.RedisTokenService;
@@ -20,6 +20,8 @@ import static org.springframework.restdocs.headers.HeaderDocumentation.headerWit
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
+import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -33,11 +35,44 @@ class JwtLogoutSuccessHandlerTest extends ControllerTest {
 
     private static final String BASE_URL = "/api/logout";
     private static final String BEARER_TOKEN = "Bearer ";
-    private static final MemberFixture MEMBER = MemberFixture.A;
 
     @Test
-    @DisplayName("로그아웃은 Authorization 헤더에 Refresh Token을 담아서 요청해야 하고 로그아웃이 성공하면 Redis에 존재하는 해당 Refresh Token이 삭제된다")
-    void test() throws Exception {
+    @DisplayName("Authorization 헤더에 Refresh Token이 없으면 로그아웃에 실패한다")
+    void test1() throws Exception {
+        // given
+        Member member = createMember();
+        
+        // when
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                .post(BASE_URL);
+        
+        // then
+        final AuthErrorCode expectedError = AuthErrorCode.INVALID_TOKEN;
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.statusCode").exists())
+                .andExpect(jsonPath("$.statusCode").value(expectedError.getStatus().value()))
+                .andExpect(jsonPath("$.errorCode").exists())
+                .andExpect(jsonPath("$.errorCode").value(expectedError.getErrorCode()))
+                .andExpect(jsonPath("$.message").exists())
+                .andExpect(jsonPath("$.message").value(expectedError.getMessage()))
+                .andDo(
+                        document(
+                                "Security/Logout/Failure",
+                                preprocessRequest(prettyPrint()),
+                                preprocessResponse(prettyPrint()),
+                                responseFields(
+                                        fieldWithPath("statusCode").description("HTTP 상태 코드"),
+                                        fieldWithPath("errorCode").description("커스텀 예외 코드"),
+                                        fieldWithPath("message").description("예외 메시지")
+                                )
+                        )
+                );
+    }
+    
+    @Test
+    @DisplayName("Authorization Header에 Refresh Token이 존재하면 로그아웃에 성공하고 Redis에 존재하는 해당 Refresh Token이 삭제된다")
+    void test2() throws Exception {
         // given
         Member member = createMember();
         String refreshToken = jwtTokenProvider.createRefreshToken(member.getId());
@@ -63,10 +98,11 @@ class JwtLogoutSuccessHandlerTest extends ControllerTest {
                                 )
                         )
                 );
+
         assertThat(redisTokenService.isRefreshTokenExists(refreshToken)).isFalse();
     }
 
     private Member createMember() {
-        return memberRepository.save(MEMBER.toMember(PasswordEncoderUtils.getEncoder()));
+        return memberRepository.save(MemberFixture.A.toMember());
     }
 }

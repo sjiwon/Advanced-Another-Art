@@ -1,7 +1,6 @@
 package com.sjiwon.anotherart.member.controller;
 
 import com.sjiwon.anotherart.common.ControllerTest;
-import com.sjiwon.anotherart.common.PasswordEncoderUtils;
 import com.sjiwon.anotherart.fixture.MemberFixture;
 import com.sjiwon.anotherart.global.security.exception.AuthErrorCode;
 import com.sjiwon.anotherart.member.domain.Member;
@@ -16,7 +15,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -44,7 +42,6 @@ class MemberPointApiControllerTest extends ControllerTest {
     private final JwtTokenProvider jwtTokenProvider;
     private final PointDetailRepository pointDetailRepository;
 
-    private static final PasswordEncoder ENCODER = PasswordEncoderUtils.getEncoder();
     private static final String BEARER_TOKEN = "Bearer ";
 
     @Nested
@@ -91,6 +88,8 @@ class MemberPointApiControllerTest extends ControllerTest {
                                     )
                             )
                     );
+
+            // 포인트 내역 -> 충전 실패에 따라 회원가입 내역만 존재
             List<PointDetail> pointDetails = pointDetailRepository.findAll();
             assertThat(pointDetails.size()).isEqualTo(1);
             assertThat(pointDetails.get(0).getMember().getId()).isEqualTo(member.getId());
@@ -135,14 +134,16 @@ class MemberPointApiControllerTest extends ControllerTest {
                             )
                     );
 
+            // 포인트 내역 -> 충전 성공에 따라 회원가입 + 충전 내역 존재
             List<PointDetail> pointDetails = pointDetailRepository.findAll();
             assertThat(pointDetails.size()).isEqualTo(2);
 
             PointDetail joinDetail = pointDetails.get(0);
-            PointDetail chargeDetail = pointDetails.get(1);
             assertThat(joinDetail.getMember().getId()).isEqualTo(member.getId());
             assertThat(joinDetail.getPointType()).isEqualTo(PointType.JOIN);
             assertThat(joinDetail.getAmount()).isEqualTo(0);
+
+            PointDetail chargeDetail = pointDetails.get(1);
             assertThat(chargeDetail.getMember().getId()).isEqualTo(member.getId());
             assertThat(chargeDetail.getPointType()).isEqualTo(PointType.CHARGE);
             assertThat(chargeDetail.getAmount()).isEqualTo(chargeAmount);
@@ -197,14 +198,17 @@ class MemberPointApiControllerTest extends ControllerTest {
                                     )
                             )
                     );
+            
+            // 포인트 내역 -> 환불 실패에 따라 회원가입 + 충전 내역만 존재
             List<PointDetail> pointDetails = pointDetailRepository.findAll();
             assertThat(pointDetails.size()).isEqualTo(2);
 
             PointDetail joinDetail = pointDetails.get(0);
-            PointDetail chargeDetail = pointDetails.get(1);
             assertThat(joinDetail.getMember().getId()).isEqualTo(member.getId());
             assertThat(joinDetail.getPointType()).isEqualTo(PointType.JOIN);
             assertThat(joinDetail.getAmount()).isEqualTo(0);
+
+            PointDetail chargeDetail = pointDetails.get(1);
             assertThat(chargeDetail.getMember().getId()).isEqualTo(member.getId());
             assertThat(chargeDetail.getPointType()).isEqualTo(PointType.CHARGE);
             assertThat(chargeDetail.getAmount()).isEqualTo(chargeAmount);
@@ -258,14 +262,17 @@ class MemberPointApiControllerTest extends ControllerTest {
                                     )
                             )
                     );
+
+            // 포인트 내역 -> 환불 실패에 따라 회원가입 + 충전 내역만 존재
             List<PointDetail> pointDetails = pointDetailRepository.findAll();
             assertThat(pointDetails.size()).isEqualTo(2);
 
             PointDetail joinDetail = pointDetails.get(0);
-            PointDetail chargeDetail = pointDetails.get(1);
             assertThat(joinDetail.getMember().getId()).isEqualTo(member.getId());
             assertThat(joinDetail.getPointType()).isEqualTo(PointType.JOIN);
             assertThat(joinDetail.getAmount()).isEqualTo(0);
+
+            PointDetail chargeDetail = pointDetails.get(1);
             assertThat(chargeDetail.getMember().getId()).isEqualTo(member.getId());
             assertThat(chargeDetail.getPointType()).isEqualTo(PointType.CHARGE);
             assertThat(chargeDetail.getAmount()).isEqualTo(chargeAmount);
@@ -308,18 +315,22 @@ class MemberPointApiControllerTest extends ControllerTest {
                                     )
                             )
                     );
+
+            // 포인트 내역 -> 환불 성공에 따라 회원가입 + 충전 + 환불 내역 존재
             List<PointDetail> pointDetails = pointDetailRepository.findAll();
             assertThat(pointDetails.size()).isEqualTo(3);
 
             PointDetail joinDetail = pointDetails.get(0);
-            PointDetail chargeDetail = pointDetails.get(1);
-            PointDetail refundDetail = pointDetails.get(2);
             assertThat(joinDetail.getMember().getId()).isEqualTo(member.getId());
             assertThat(joinDetail.getPointType()).isEqualTo(PointType.JOIN);
             assertThat(joinDetail.getAmount()).isEqualTo(0);
+
+            PointDetail chargeDetail = pointDetails.get(1);
             assertThat(chargeDetail.getMember().getId()).isEqualTo(member.getId());
             assertThat(chargeDetail.getPointType()).isEqualTo(PointType.CHARGE);
             assertThat(chargeDetail.getAmount()).isEqualTo(chargeAmount);
+
+            PointDetail refundDetail = pointDetails.get(2);
             assertThat(refundDetail.getMember().getId()).isEqualTo(member.getId());
             assertThat(refundDetail.getPointType()).isEqualTo(PointType.REFUND);
             assertThat(refundDetail.getAmount()).isEqualTo(refundAmount);
@@ -330,11 +341,11 @@ class MemberPointApiControllerTest extends ControllerTest {
     }
 
     private Member signUpMember() {
-        return memberRepository.save(MemberFixture.A.toMember(ENCODER));
+        return memberRepository.save(MemberFixture.A.toMember());
     }
 
     private Member signUpAndChargePoint(int chargeAmount) {
-        Member member = memberRepository.save(MemberFixture.A.toMember(ENCODER));
+        Member member = memberRepository.save(MemberFixture.A.toMember());
         pointDetailRepository.save(PointDetail.insertPointDetail(member, PointType.CHARGE, chargeAmount));
         return member;
     }

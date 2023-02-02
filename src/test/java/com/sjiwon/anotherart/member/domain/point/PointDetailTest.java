@@ -4,21 +4,16 @@ import com.sjiwon.anotherart.fixture.MemberFixture;
 import com.sjiwon.anotherart.member.domain.Member;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.security.crypto.factory.PasswordEncoderFactories;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("PointDetail 도메인 테스트")
 class PointDetailTest {
-    private static final PasswordEncoder ENCODER = PasswordEncoderFactories.createDelegatingPasswordEncoder();
-    private static final MemberFixture MEMBER_A = MemberFixture.A;
-
     @Test
     @DisplayName("회원가입한 멤버의 포인트 내역")
     void test1(){
         // given
-        Member memberA = MEMBER_A.toMember(ENCODER);
+        Member memberA = MemberFixture.A.toMember();
 
         // when
         PointDetail pointDetail = PointDetail.createPointDetail(memberA);
@@ -32,7 +27,7 @@ class PointDetailTest {
     @DisplayName("포인트 충전 후 멤버의 포인트 내역")
     void test2(){
         // given
-        Member memberA = MEMBER_A.toMember(ENCODER);
+        Member memberA = MemberFixture.A.toMember();
 
         // when
         final int chargeAmount = 10000;
@@ -49,7 +44,7 @@ class PointDetailTest {
     @DisplayName("포인트 환불 후 멤버의 포인트 내역")
     void test3(){
         // given
-        Member memberA = MEMBER_A.toMember(ENCODER);
+        Member memberA = MemberFixture.A.toMember();
         final int increasePoint = 10000;
         memberA.increasePoint(increasePoint);
 
@@ -68,7 +63,7 @@ class PointDetailTest {
     @DisplayName("작품 구매 후 멤버의 포인트 내역")
     void test4(){
         // given
-        Member memberA = MEMBER_A.toMember(ENCODER);
+        Member memberA = MemberFixture.A.toMember();
         final int increasePoint = 10000;
         memberA.increasePoint(increasePoint);
 
@@ -87,7 +82,7 @@ class PointDetailTest {
     @DisplayName("작품 판매 후 멤버의 포인트 내역")
     void test5(){
         // given
-        Member memberA = MEMBER_A.toMember(ENCODER);
+        Member memberA = MemberFixture.A.toMember();
         final int increasePoint = 10000;
         memberA.increasePoint(increasePoint);
 

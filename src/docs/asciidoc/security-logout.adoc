@@ -6,6 +6,14 @@
 :toclevels: 2
 
 == 로그아웃
+=== 1. Authorization 헤더에 Refresh Token이 없음에 따라 로그아웃 실패
+HTTP Request
+include::{snippets}/Security/Logout/Failure/http-request.adoc[]
+
+HTTP Response
+include::{snippets}/Security/Logout/Failure/response-body.adoc[]
+
+=== 2. 로그아웃 성공
 HTTP Request
 include::{snippets}/Security/Logout/Success/http-request.adoc[]
 include::{snippets}/Security/Logout/Success/request-headers.adoc[]

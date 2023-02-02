@@ -2,7 +2,6 @@ package com.sjiwon.anotherart.global.security.handler;
 
 import com.sjiwon.anotherart.common.ControllerTest;
 import com.sjiwon.anotherart.common.ObjectMapperUtils;
-import com.sjiwon.anotherart.common.PasswordEncoderUtils;
 import com.sjiwon.anotherart.fixture.MemberFixture;
 import com.sjiwon.anotherart.global.security.exception.AuthErrorCode;
 import com.sjiwon.anotherart.global.security.handler.utils.MemberLoginRequestUtils;
@@ -41,14 +40,15 @@ class AjaxAuthenticationFailureHandlerTest extends ControllerTest {
     @Test
     @DisplayName("올바르지 않은 인증방식에 의해 예외가 발생한다 -> [Content-Type: application/json]")
     void test1() throws Exception {
-        final AuthErrorCode expectedError = AuthErrorCode.INVALID_AUTHENTICATION_REQUEST_FORMAT;
-
+        // given
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .post(BASE_URL)
                 .param("loginId", DEFAULT_LOGIN_ID)
                 .param("loginPassword", DEFAULT_LOGIN_PASSWORD)
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE);
 
+        // when - then
+        final AuthErrorCode expectedError = AuthErrorCode.INVALID_AUTHENTICATION_REQUEST_FORMAT;
         mockMvc.perform(requestBuilder)
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.statusCode").exists())
@@ -81,14 +81,14 @@ class AjaxAuthenticationFailureHandlerTest extends ControllerTest {
         // given
         MemberLoginRequest loginRequest = MemberLoginRequestUtils.createRequest("", "");
 
-        // when - then
-        final AuthErrorCode expectedError = AuthErrorCode.INVALID_AUTHENTICATION_REQUEST_VALUE;
-
+        // when
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .post(BASE_URL)
                 .content(ObjectMapperUtils.objectToJson(loginRequest))
                 .contentType(MediaType.APPLICATION_JSON_VALUE);
 
+        // then
+        final AuthErrorCode expectedError = AuthErrorCode.INVALID_AUTHENTICATION_REQUEST_VALUE;
         mockMvc.perform(requestBuilder)
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.statusCode").exists())
@@ -122,14 +122,14 @@ class AjaxAuthenticationFailureHandlerTest extends ControllerTest {
         createMember();
         MemberLoginRequest loginRequest = MemberLoginRequestUtils.createRequest(WRONG_LOGIN_ID, DEFAULT_LOGIN_PASSWORD);
 
-        // when - then
-        final MemberErrorCode expectedError = MemberErrorCode.MEMBER_NOT_FOUND;
-
+        // when
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .post(BASE_URL)
                 .content(ObjectMapperUtils.objectToJson(loginRequest))
                 .contentType(MediaType.APPLICATION_JSON_VALUE);
 
+        // then
+        final MemberErrorCode expectedError = MemberErrorCode.MEMBER_NOT_FOUND;
         mockMvc.perform(requestBuilder)
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.statusCode").exists())
@@ -163,14 +163,14 @@ class AjaxAuthenticationFailureHandlerTest extends ControllerTest {
         createMember();
         MemberLoginRequest loginRequest = MemberLoginRequestUtils.createRequest(DEFAULT_LOGIN_ID, WRONG_LOGIN_PASSWORD);
 
-        // when - then
-        final MemberErrorCode expectedError = MemberErrorCode.INVALID_PASSWORD;
-
+        // when
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .post(BASE_URL)
                 .content(ObjectMapperUtils.objectToJson(loginRequest))
                 .contentType(MediaType.APPLICATION_JSON_VALUE);
 
+        // then
+        final MemberErrorCode expectedError = MemberErrorCode.INVALID_PASSWORD;
         mockMvc.perform(requestBuilder)
                 .andExpect(status().isUnauthorized())
                 .andExpect(jsonPath("$.statusCode").exists())
@@ -198,6 +198,6 @@ class AjaxAuthenticationFailureHandlerTest extends ControllerTest {
     }
 
     private void createMember() {
-        memberRepository.save(MEMBER.toMember(PasswordEncoderUtils.getEncoder()));
+        memberRepository.save(MEMBER.toMember());
     }
 }

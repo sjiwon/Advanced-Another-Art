@@ -1,5 +1,7 @@
 package com.sjiwon.anotherart.global.security.handler;
 
+import com.sjiwon.anotherart.global.security.exception.AnotherArtAccessDeniedException;
+import com.sjiwon.anotherart.global.security.exception.AuthErrorCode;
 import com.sjiwon.anotherart.token.service.RedisTokenService;
 import com.sjiwon.anotherart.token.utils.AuthorizationExtractor;
 import lombok.RequiredArgsConstructor;
@@ -8,6 +10,7 @@ import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
+import org.springframework.util.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -28,7 +31,14 @@ public class JwtLogoutSuccessHandler implements LogoutSuccessHandler {
 
     private void removeRefreshTokenInRedis(HttpServletRequest request) {
         String refreshToken = AuthorizationExtractor.extractToken(request);
+        validateRefreshToken(refreshToken);
         redisTokenService.deleteRefreshToken(refreshToken);
+    }
+
+    private void validateRefreshToken(String refreshToken) {
+        if (!StringUtils.hasText(refreshToken)) {
+            throw AnotherArtAccessDeniedException.type(AuthErrorCode.INVALID_TOKEN);
+        }
     }
 
     private void clearSecurityContextHolder() {

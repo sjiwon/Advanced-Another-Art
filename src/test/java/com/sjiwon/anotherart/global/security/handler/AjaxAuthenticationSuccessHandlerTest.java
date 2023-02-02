@@ -2,11 +2,9 @@ package com.sjiwon.anotherart.global.security.handler;
 
 import com.sjiwon.anotherart.common.ControllerTest;
 import com.sjiwon.anotherart.common.ObjectMapperUtils;
-import com.sjiwon.anotherart.common.PasswordEncoderUtils;
 import com.sjiwon.anotherart.fixture.MemberFixture;
 import com.sjiwon.anotherart.global.security.handler.utils.MemberLoginRequestUtils;
 import com.sjiwon.anotherart.global.security.principal.MemberLoginRequest;
-import com.sjiwon.anotherart.member.domain.Member;
 import com.sjiwon.anotherart.member.domain.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.DisplayName;
@@ -34,10 +32,10 @@ class AjaxAuthenticationSuccessHandlerTest extends ControllerTest {
     private static final String DEFAULT_LOGIN_PASSWORD = MEMBER.getPassword();
 
     @Test
-    @DisplayName("로그인을 성공하면 Access Token & Refresh Token이 응답으로 제공된다")
+    @DisplayName("로그인을 성공하면 Access Token & Refresh Token이 발급된다")
     void test() throws Exception {
         // given
-        Member member = createMember();
+        createMember();
         MemberLoginRequest loginRequest = MemberLoginRequestUtils.createRequest(DEFAULT_LOGIN_ID, DEFAULT_LOGIN_PASSWORD);
 
         // when
@@ -68,7 +66,7 @@ class AjaxAuthenticationSuccessHandlerTest extends ControllerTest {
                 );
     }
 
-    private Member createMember() {
-        return memberRepository.save(MEMBER.toMember(PasswordEncoderUtils.getEncoder()));
+    private void createMember() {
+        memberRepository.save(MEMBER.toMember());
     }
 }

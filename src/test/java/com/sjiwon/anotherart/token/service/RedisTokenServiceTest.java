@@ -15,10 +15,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DisplayName("Token [Redis] -> RedisTokenService 테스트")
 class RedisTokenServiceTest {
     @Autowired
-    RedisTokenRepository redisTokenRepository;
+    RedisTokenService redisTokenService;
 
     @Autowired
-    RedisTokenService redisTokenService;
+    RedisTokenRepository redisTokenRepository;
 
     @Test
     @DisplayName("memberId, RefreshToken을 통해서 Redis에 RedisRefreshToken을 저장한다")

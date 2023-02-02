@@ -2,7 +2,6 @@ package com.sjiwon.anotherart.member.controller;
 
 import com.sjiwon.anotherart.common.ControllerTest;
 import com.sjiwon.anotherart.common.ObjectMapperUtils;
-import com.sjiwon.anotherart.common.PasswordEncoderUtils;
 import com.sjiwon.anotherart.fixture.MemberFixture;
 import com.sjiwon.anotherart.global.exception.GlobalErrorCode;
 import com.sjiwon.anotherart.member.controller.dto.request.DuplicateCheckRequest;
@@ -174,6 +173,7 @@ class MemberApiControllerTest extends ControllerTest {
                                     )
                             )
                     );
+
             assertThat(memberRepository.existsByLoginId(signUpRequest.getLoginId())).isTrue();
             assertThat(memberRepository.existsByNickname(signUpRequest.getNickname())).isTrue();
             assertThat(memberRepository.existsByEmail(Email.from(signUpRequest.getEmail()))).isTrue();
@@ -494,6 +494,6 @@ class MemberApiControllerTest extends ControllerTest {
     }
 
     private Member createMember() {
-        return memberRepository.save(MemberFixture.A.toMember(PasswordEncoderUtils.getEncoder()));
+        return memberRepository.save(MemberFixture.A.toMember());
     }
 }

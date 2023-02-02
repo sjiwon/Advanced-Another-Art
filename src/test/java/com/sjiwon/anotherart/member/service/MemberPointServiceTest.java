@@ -1,6 +1,5 @@
 package com.sjiwon.anotherart.member.service;
 
-import com.sjiwon.anotherart.common.PasswordEncoderUtils;
 import com.sjiwon.anotherart.common.ServiceTest;
 import com.sjiwon.anotherart.fixture.MemberFixture;
 import com.sjiwon.anotherart.global.exception.AnotherArtException;
@@ -12,7 +11,6 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -28,13 +26,11 @@ class MemberPointServiceTest extends ServiceTest {
     @Mock
     PointDetailRepository pointDetailRepository;
 
-    private static final PasswordEncoder ENCODER = PasswordEncoderUtils.getEncoder();
-
     @Test
     @DisplayName("포인트 충전을 진행한다")
     void test1() {
         // given
-        Member member = MemberFixture.A.toMember(ENCODER);
+        Member member = MemberFixture.A.toMember();
         final Long memberId = 1L;
         final int initAmount = member.getAvailablePoint().getValue();
         final int chargeAmount = 15000;
@@ -54,7 +50,7 @@ class MemberPointServiceTest extends ServiceTest {
         @DisplayName("부족한 포인트로 인해 환불에 실패한다")
         void test1() {
             // given
-            Member member = MemberFixture.A.toMember(ENCODER);
+            Member member = MemberFixture.A.toMember();
             member.increasePoint(10000);
             final Long memberId = 1L;
             final int initAmount = member.getAvailablePoint().getValue();
@@ -71,7 +67,7 @@ class MemberPointServiceTest extends ServiceTest {
         @DisplayName("포인트 환불을 성공한다")
         void test2() {
             // given
-            Member member = MemberFixture.A.toMember(ENCODER);
+            Member member = MemberFixture.A.toMember();
             member.increasePoint(20000);
             final Long memberId = 1L;
             final int initAmount = member.getAvailablePoint().getValue();
