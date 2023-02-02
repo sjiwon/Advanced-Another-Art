@@ -23,14 +23,14 @@ public enum ArtFixture {
     private final int price;
     private final String uploadName;
 
-    public Art toArt(Member member) {
+    public Art toArt(Member artOwner) {
         return Art.builder()
                 .name(name)
                 .description(description)
                 .artType(artType)
                 .price(price)
                 .uploadImage(UploadImage.of(uploadName, generateRandomStorageName()))
-                .member(member)
+                .owner(artOwner)
                 .build();
     }
 

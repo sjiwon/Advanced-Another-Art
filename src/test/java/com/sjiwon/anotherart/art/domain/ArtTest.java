@@ -31,9 +31,9 @@ class ArtTest {
                 () -> assertThat(art.getArtStatus()).isEqualTo(ArtStatus.FOR_SALE),
                 () -> assertThat(art.getUploadImage().getUploadName()).isEqualTo(ART_A.getUploadName()),
                 () -> assertThat(art.getHashtags().size()).isEqualTo(0),
-                () -> assertThat(art.getMember().getName()).isEqualTo(member.getName()),
-                () -> assertThat(art.getMember().getNickname()).isEqualTo(member.getNickname()),
-                () -> assertThat(art.getMember().getLoginId()).isEqualTo(member.getLoginId())
+                () -> assertThat(art.getOwner().getName()).isEqualTo(member.getName()),
+                () -> assertThat(art.getOwner().getNickname()).isEqualTo(member.getNickname()),
+                () -> assertThat(art.getOwner().getLoginId()).isEqualTo(member.getLoginId())
         );
     }
 
@@ -51,9 +51,9 @@ class ArtTest {
                 () -> assertThat(art.getUploadImage().getUploadName()).isEqualTo(ART_A.getUploadName()),
                 () -> assertThat(art.getHashtags().size()).isEqualTo(5),
                 () -> assertThat(art.getHashtags().stream().map(Hashtag::getName).toList()).contains("A", "B", "C", "D", "E"),
-                () -> assertThat(art.getMember().getName()).isEqualTo(member.getName()),
-                () -> assertThat(art.getMember().getNickname()).isEqualTo(member.getNickname()),
-                () -> assertThat(art.getMember().getLoginId()).isEqualTo(member.getLoginId())
+                () -> assertThat(art.getOwner().getName()).isEqualTo(member.getName()),
+                () -> assertThat(art.getOwner().getNickname()).isEqualTo(member.getNickname()),
+                () -> assertThat(art.getOwner().getLoginId()).isEqualTo(member.getLoginId())
         );
     }
     

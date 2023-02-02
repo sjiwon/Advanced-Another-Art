@@ -53,14 +53,14 @@ public class Art {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "member_id", referencedColumnName = "id", nullable = false, updatable = false)
-    private Member member;
+    private Member owner;
 
     @OneToMany(mappedBy = "art", cascade = {CascadeType.PERSIST})
     private Set<Hashtag> hashtags = new HashSet<>();
 
     @Builder
-    private Art(Member member, String name, String description, ArtType artType, int price, UploadImage uploadImage) {
-        this.member = member;
+    private Art(Member owner, String name, String description, ArtType artType, int price, UploadImage uploadImage) {
+        this.owner = owner;
         this.name = name;
         this.description = description;
         this.artType = artType;
@@ -90,7 +90,7 @@ public class Art {
     }
 
     public boolean isArtOwner(Long memberId) {
-        return Objects.equals(this.member.getId(), memberId);
+        return Objects.equals(this.owner.getId(), memberId);
     }
 
     public boolean isSoldOut() {
