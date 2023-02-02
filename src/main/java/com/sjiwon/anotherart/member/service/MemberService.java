@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class MemberService {
     private final MemberRepository memberRepository;
     private final MemberValidator memberValidator;
+    private final MemberFindService memberFindService;
     private final PointDetailRepository pointDetailRepository;
     private final PasswordEncoder passwordEncoder;
 
@@ -43,15 +44,10 @@ public class MemberService {
 
     @Transactional
     public void changeNickname(Long memberId, String changeNickname) {
-        Member member = getMemberById(memberId);
+        Member member = memberFindService.findById(memberId);
         validateNicknameSameAsBefore(member, changeNickname); // 이전과 동일한 닉네임인지
         memberValidator.validateDuplicateNickname(changeNickname); // 다른 사람이 사용하고 있는 닉네임인지
         member.changeNickname(changeNickname);
-    }
-
-    private Member getMemberById(Long memberId) {
-        return memberRepository.findById(memberId)
-                .orElseThrow(() -> AnotherArtException.type(MemberErrorCode.MEMBER_NOT_FOUND));
     }
 
     private void validateNicknameSameAsBefore(Member member, String changeNickname) {
@@ -61,13 +57,8 @@ public class MemberService {
     }
 
     public String findLoginId(String name, Email email) {
-        Member member = getMemberByNameAndEmail(name, email);
+        Member member = memberFindService.findByNameAndEmail(name, email);
         return member.getLoginId();
-    }
-
-    private Member getMemberByNameAndEmail(String name, Email email) {
-        return memberRepository.findByNameAndEmail(name, email)
-                .orElseThrow(() -> AnotherArtException.type(MemberErrorCode.MEMBER_NOT_FOUND));
     }
 
     public void authMemberForResetPassword(String name, String loginId, Email email) {
@@ -78,12 +69,7 @@ public class MemberService {
 
     @Transactional
     public void resetPassword(String loginId, String changePassword) {
-        Member member = getMemberByLoginId(loginId);
+        Member member = memberFindService.findByLoginId(loginId);
         member.changePassword(changePassword, passwordEncoder);
-    }
-
-    private Member getMemberByLoginId(String loginId) {
-        return memberRepository.findByLoginId(loginId)
-                .orElseThrow(() -> AnotherArtException.type(MemberErrorCode.MEMBER_NOT_FOUND));
     }
 }
