@@ -5,8 +5,6 @@ import com.sjiwon.anotherart.global.exception.GlobalErrorCode;
 import com.sjiwon.anotherart.member.domain.Email;
 import com.sjiwon.anotherart.member.domain.Member;
 import com.sjiwon.anotherart.member.domain.MemberRepository;
-import com.sjiwon.anotherart.member.domain.point.PointDetail;
-import com.sjiwon.anotherart.member.domain.point.PointDetailRepository;
 import com.sjiwon.anotherart.member.exception.MemberErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -20,16 +18,12 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final MemberValidator memberValidator;
     private final MemberFindService memberFindService;
-    private final PointDetailRepository pointDetailRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Transactional
     public Long signUp(Member member) {
         memberValidator.validateDuplicateResources(member);
-        Member savedMember = memberRepository.save(member);
-        pointDetailRepository.save(PointDetail.createPointDetail(savedMember));
-
-        return savedMember.getId();
+        return memberRepository.save(member).getId();
     }
 
     public void duplicateCheck(String resource, String value) {

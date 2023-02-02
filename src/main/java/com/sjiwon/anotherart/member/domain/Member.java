@@ -54,7 +54,7 @@ public class Member {
     @Column(name = "role", nullable = false, updatable = false, length = 20)
     private Role role;
 
-    @OneToMany(mappedBy = "member")
+    @OneToMany(mappedBy = "member", cascade = CascadeType.PERSIST)
     private List<PointDetail> pointDetails = new ArrayList<>();
 
     @Builder
@@ -69,6 +69,7 @@ public class Member {
         this.email = email;
         this.availablePoint = AvailablePoint.from(0);
         this.role = Role.USER;
+        this.pointDetails.add(PointDetail.createPointDetail(this));
     }
 
     public static Member createMember(String name, String nickname, String loginId, Password password, String school, Address address, String phone, Email email) {
