@@ -97,7 +97,7 @@ public class Art {
         return this.artStatus == ArtStatus.SOLD_OUT;
     }
 
-    public boolean isNotAuctionType() {
-        return this.artType != ArtType.AUCTION;
+    public boolean isAuctionType() {
+        return this.artType == ArtType.AUCTION;
     }
 }

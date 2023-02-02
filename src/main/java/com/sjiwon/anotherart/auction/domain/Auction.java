@@ -52,7 +52,7 @@ public class Auction {
     }
 
     private static void validateArtType(Art art) {
-        if (art.isNotAuctionType()) {
+        if (!art.isAuctionType()) {
             throw AnotherArtException.type(AuctionErrorCode.INVALID_ART_TYPE);
         }
     }
