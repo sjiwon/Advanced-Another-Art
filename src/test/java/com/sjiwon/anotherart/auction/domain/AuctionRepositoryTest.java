@@ -2,6 +2,7 @@ package com.sjiwon.anotherart.auction.domain;
 
 import com.sjiwon.anotherart.art.domain.Art;
 import com.sjiwon.anotherart.art.domain.ArtRepository;
+import com.sjiwon.anotherart.art.domain.ArtStatus;
 import com.sjiwon.anotherart.art.domain.ArtType;
 import com.sjiwon.anotherart.auction.exception.AuctionErrorCode;
 import com.sjiwon.anotherart.common.RepositoryTest;
@@ -154,6 +155,29 @@ class AuctionRepositoryTest extends RepositoryTest {
             assertThat(auction.getCurrentHighestBidder().getMember().getNickname()).isEqualTo(memberC.getNickname());
             assertThat(auction.getCurrentHighestBidder().getBidPrice()).isEqualTo(currentBidPrice);
         }
+    }
+
+    @Test
+    @DisplayName("작품 ID에 해당하는 경매 정보를 조회한다")
+    void test5() {
+        // given
+        Member owner = createMemberA();
+        Art auctionArt = createAuctionArt(owner);
+        Auction auction = initAuction(auctionArt);
+
+        // when
+        Auction findAuction = auctionRepository.findByArtId(auctionArt.getId());
+
+        // then
+        assertThat(findAuction.getCurrentHighestBidder().getMember()).isNull();
+        assertThat(findAuction.getCurrentHighestBidder().getBidPrice()).isEqualTo(auctionArt.getPrice());
+        assertThat(findAuction.getArt().getId()).isEqualTo(auctionArt.getId());
+        assertThat(findAuction.getArt().getName()).isEqualTo(auctionArt.getName());
+        assertThat(findAuction.getArt().getArtStatus()).isEqualTo(ArtStatus.FOR_SALE);
+        assertThat(findAuction.getArt().getArtType()).isEqualTo(ArtType.AUCTION);
+        assertThat(findAuction.getArt().getOwner().getId()).isEqualTo(owner.getId());
+        assertThat(findAuction.getArt().getOwner().getName()).isEqualTo(owner.getName());
+        assertThat(findAuction.getArt().getOwner().getNickname()).isEqualTo(owner.getNickname());
     }
 
     private Member createMemberA() {
