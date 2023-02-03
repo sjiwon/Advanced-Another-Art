@@ -14,6 +14,7 @@ import java.util.UUID;
 public enum ArtFixture {
     A("A", "A", ArtType.AUCTION, 100000, "A.png"),
     B("B", "B", ArtType.GENERAL, 100000, "B.png"),
+    B_BMP("B", "B", ArtType.GENERAL, 100000, "B_BMP.bmp"),
     C("C", "C", ArtType.AUCTION, 100000, "C.png"),
     ;
 
