@@ -1,5 +1,6 @@
 package com.sjiwon.anotherart.global.annotation;
 
+import com.sjiwon.anotherart.art.exception.ArtRequestValidationMessage;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.ConstraintValidator;
@@ -11,11 +12,13 @@ public class ArtImageValidator implements ConstraintValidator<ValidArtImage, Mul
 
     @Override
     public boolean isValid(MultipartFile file, ConstraintValidatorContext context) {
-        if (!isSupportedContentType(file.getContentType())) {
-            context.buildConstraintViolationWithTemplate("지원하지 않는 이미지 포맷입니다. [png / jpg / jpeg]");
+        if (file.isEmpty()) {
+            return false;
+        } else if (!isSupportedContentType(file.getContentType())) {
+            context.buildConstraintViolationWithTemplate(ArtRequestValidationMessage.Registration.ART_FILE_FORMAT);
             return false;
         }
-        return !file.isEmpty();
+        return true;
     }
 
     private boolean isSupportedContentType(String contentType) {

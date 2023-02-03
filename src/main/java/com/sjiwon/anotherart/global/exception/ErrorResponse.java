@@ -1,11 +1,13 @@
 package com.sjiwon.anotherart.global.exception;
 
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
+@AllArgsConstructor
 public class ErrorResponse {
     private int statusCode;
     private String errorCode;
@@ -19,5 +21,9 @@ public class ErrorResponse {
 
     public static ErrorResponse from(ErrorCode errorCode) {
         return new ErrorResponse(errorCode);
+    }
+
+    public static ErrorResponse of(ErrorCode errorCode, String message) {
+        return new ErrorResponse(errorCode.getStatus().value(), errorCode.getErrorCode(), message);
     }
 }

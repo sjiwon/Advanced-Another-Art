@@ -5,7 +5,18 @@ import com.sjiwon.anotherart.member.domain.Member;
 
 public class SignUpRequestUtils {
     public static SignUpRequest createEmptyRequest() {
-        return SignUpRequest.builder().build();
+        return SignUpRequest.builder()
+                .name(null)
+                .nickname(null)
+                .loginId(null)
+                .password(null)
+                .school(null)
+                .postcode(null)
+                .defaultAddress(null)
+                .detailAddress(null)
+                .phone(null)
+                .email(null)
+                .build();
     }
 
     public static SignUpRequest createFailureSignUpRequest(Member member) {

@@ -1,7 +1,9 @@
 package com.sjiwon.anotherart.global.exception;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -25,8 +27,12 @@ public class ApiExceptionHandler {
      * 요청 데이터 Validation 전용 ExceptionHandler
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ErrorResponse> methodArgumentNotValidException() {
-        return convert(GlobalErrorCode.VALIDATION_ERROR);
+    public ResponseEntity<ErrorResponse> methodArgumentNotValidException(MethodArgumentNotValidException e) {
+        StringBuffer buffer = new StringBuffer();
+        for (FieldError error : e.getBindingResult().getFieldErrors()) {
+            buffer.append(error.getDefaultMessage()).append("\n");
+        }
+        return convert(GlobalErrorCode.VALIDATION_ERROR, buffer.toString());
     }
 
     /**
@@ -60,8 +66,20 @@ public class ApiExceptionHandler {
                 .body(ErrorResponse.from(code));
     }
 
+    private ResponseEntity<ErrorResponse> convert(ErrorCode code, String message) {
+        loggingException(code, message);
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(ErrorResponse.of(code, message));
+    }
+
     private void loggingException(ErrorCode code) {
         log.info("statusCode={} || errorCode={} || message={}",
                 code.getStatus().value(), code.getErrorCode(), code.getMessage());
+    }
+
+    private void loggingException(ErrorCode code, String message) {
+        log.info("statusCode={} || errorCode={} || message={}",
+                code.getStatus().value(), code.getErrorCode(), message);
     }
 }

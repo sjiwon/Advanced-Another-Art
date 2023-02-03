@@ -53,7 +53,6 @@ class MemberApiControllerTest extends ControllerTest {
 
             // then
             final GlobalErrorCode expectedError = GlobalErrorCode.VALIDATION_ERROR;
-
             mockMvc.perform(requestBuilder)
                     .andExpect(status().isBadRequest())
                     .andExpect(jsonPath("$.statusCode").exists())
@@ -61,7 +60,6 @@ class MemberApiControllerTest extends ControllerTest {
                     .andExpect(jsonPath("$.errorCode").exists())
                     .andExpect(jsonPath("$.errorCode").value(expectedError.getErrorCode()))
                     .andExpect(jsonPath("$.message").exists())
-                    .andExpect(jsonPath("$.message").value(expectedError.getMessage()))
                     .andDo(
                             document(
                                     "MemberApi/SignUp/Failure/Case1",
@@ -103,7 +101,6 @@ class MemberApiControllerTest extends ControllerTest {
 
             // then
             final MemberErrorCode expectedError = MemberErrorCode.DUPLICATE_NICKNAME;
-
             mockMvc.perform(requestBuilder)
                     .andExpect(status().isConflict())
                     .andExpect(jsonPath("$.statusCode").exists())
