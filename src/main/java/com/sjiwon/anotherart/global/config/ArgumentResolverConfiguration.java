@@ -1,7 +1,7 @@
 package com.sjiwon.anotherart.global.config;
 
-import com.sjiwon.anotherart.token.utils.ExtractPayloadArgumentResolver;
-import com.sjiwon.anotherart.token.utils.ExtractTokenArgumentResolver;
+import com.sjiwon.anotherart.global.annotation.ExtractPayloadArgumentResolver;
+import com.sjiwon.anotherart.global.annotation.ExtractTokenArgumentResolver;
 import com.sjiwon.anotherart.token.utils.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;

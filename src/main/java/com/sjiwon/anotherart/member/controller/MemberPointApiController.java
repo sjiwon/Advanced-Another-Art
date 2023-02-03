@@ -1,8 +1,8 @@
 package com.sjiwon.anotherart.member.controller;
 
 
+import com.sjiwon.anotherart.global.annotation.ExtractPayload;
 import com.sjiwon.anotherart.member.service.MemberPointService;
-import com.sjiwon.anotherart.token.utils.ExtractPayload;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;

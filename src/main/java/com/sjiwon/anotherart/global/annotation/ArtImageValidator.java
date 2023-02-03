@@ -1,4 +1,4 @@
-package com.sjiwon.anotherart.art.utils;
+package com.sjiwon.anotherart.global.annotation;
 
 import org.springframework.web.multipart.MultipartFile;
 

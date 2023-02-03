@@ -1,8 +1,8 @@
 package com.sjiwon.anotherart.token.controller;
 
+import com.sjiwon.anotherart.global.annotation.ExtractToken;
 import com.sjiwon.anotherart.global.security.TokenResponse;
 import com.sjiwon.anotherart.token.service.TokenReissueService;
-import com.sjiwon.anotherart.token.utils.ExtractToken;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;

@@ -1,12 +1,12 @@
 package com.sjiwon.anotherart.member.controller;
 
+import com.sjiwon.anotherart.global.annotation.ExtractPayload;
 import com.sjiwon.anotherart.global.dto.SimpleWrapper;
 import com.sjiwon.anotherart.member.controller.dto.request.AuthForResetPasswordRequest;
 import com.sjiwon.anotherart.member.controller.dto.request.FindIdRequest;
 import com.sjiwon.anotherart.member.controller.dto.request.ResetPasswordRequest;
 import com.sjiwon.anotherart.member.domain.Email;
 import com.sjiwon.anotherart.member.service.MemberService;
-import com.sjiwon.anotherart.token.utils.ExtractPayload;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
