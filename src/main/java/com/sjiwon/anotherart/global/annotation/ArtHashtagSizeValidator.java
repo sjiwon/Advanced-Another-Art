@@ -25,7 +25,7 @@ public class ArtHashtagSizeValidator implements ConstraintValidator<ValidArtHash
     }
 
     private boolean isHashtagSizeNotEnough(List<String> hashtags) {
-        return hashtags.size() <= minSize;
+        return hashtags == null || hashtags.size() <= minSize;
     }
 
     private boolean isHashtagSizeOverflow(List<String> hashtags) {
