@@ -13,21 +13,23 @@ public class ArtHashtagSizeValidator implements ConstraintValidator<ValidArtHash
     @Override
     public boolean isValid(List<String> hashtags, ConstraintValidatorContext context) {
         if (isHashtagSizeNotEnough(hashtags)) {
-            context.buildConstraintViolationWithTemplate(String.format(ArtRequestValidationMessage.Registration.ART_HASHTAG_LIST_MIN, minSize));
+            context.disableDefaultConstraintViolation();
+            context.buildConstraintViolationWithTemplate(String.format(ArtRequestValidationMessage.Registration.ART_HASHTAG_LIST_MIN, minSize)).addConstraintViolation();
             return false;
         } else if (isHashtagSizeOverflow(hashtags)) {
-            context.buildConstraintViolationWithTemplate(String.format(ArtRequestValidationMessage.Registration.ART_HASHTAG_LIST_MAX, maxSize));
+            context.disableDefaultConstraintViolation();
+            context.buildConstraintViolationWithTemplate(String.format(ArtRequestValidationMessage.Registration.ART_HASHTAG_LIST_MAX, maxSize)).addConstraintViolation();
             return false;
         }
         return true;
     }
 
     private boolean isHashtagSizeNotEnough(List<String> hashtags) {
-        return minSize <= hashtags.size();
+        return hashtags.size() <= minSize;
     }
 
     private boolean isHashtagSizeOverflow(List<String> hashtags) {
-        return hashtags.size() <= maxSize;
+        return maxSize <= hashtags.size();
     }
 
     @Override
