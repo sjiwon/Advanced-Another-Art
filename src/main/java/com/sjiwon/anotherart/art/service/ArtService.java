@@ -9,6 +9,7 @@ import com.sjiwon.anotherart.art.service.dto.request.ArtRegisterRequestDto;
 import com.sjiwon.anotherart.auction.domain.Auction;
 import com.sjiwon.anotherart.auction.domain.AuctionRepository;
 import com.sjiwon.anotherart.auction.domain.Period;
+import com.sjiwon.anotherart.auction.domain.record.AuctionRecordRepository;
 import com.sjiwon.anotherart.global.exception.AnotherArtException;
 import com.sjiwon.anotherart.global.exception.GlobalErrorCode;
 import com.sjiwon.anotherart.member.domain.Member;
@@ -33,6 +34,7 @@ public class ArtService {
     private final HashtagRepository hashtagRepository;
     private final MemberFindService memberFindService;
     private final AuctionRepository auctionRepository;
+    private final AuctionRecordRepository auctionRecordRepository;
 
     @Value("${file.dir}")
     private String fileDir;
@@ -93,5 +95,39 @@ public class ArtService {
         Art art = artFindService.findById(artId);
         hashtagRepository.deleteByArtId(artId);
         art.applyHashtags(new HashSet<>(hashtagList));
+    }
+
+    @Transactional
+    public void deleteArt(Long memberId, Long artId) {
+        Art art = artFindService.findById(artId);
+        validateArtOwner(art, memberId);
+        executeDeleteArt(art);
+    }
+
+    private void validateArtOwner(Art art, Long memberId) {
+        if (!art.isArtOwner(memberId)) {
+            throw AnotherArtException.type(ArtErrorCode.INVALID_ART_DELETE_BY_ANONYMOUS);
+        }
+    }
+
+    private void executeDeleteArt(Art art) {
+        validateSaleProcess(art);
+        if (art.isAuctionType()) {
+            validateAuctionArtBidRecord(art);
+        }
+        hashtagRepository.deleteByArtId(art.getId());
+        artRepository.deleteById(art.getId());
+    }
+
+    private void validateSaleProcess(Art art) {
+        if (art.isSoldOut()) {
+            throw AnotherArtException.type(ArtErrorCode.ALREADY_SALE);
+        }
+    }
+
+    private void validateAuctionArtBidRecord(Art art) {
+        if (auctionRecordRepository.existsAuctionRecordByArtId(art.getId())) {
+            throw AnotherArtException.type(ArtErrorCode.ALREADY_BID_EXISTS);
+        }
     }
 }
