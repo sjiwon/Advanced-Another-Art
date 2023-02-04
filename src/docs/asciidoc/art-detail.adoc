@@ -35,6 +35,7 @@ include::{snippets}/ArtApi/DuplicateCheck/Success/http-response.adoc[]
 === 1. Authorization 헤더에 Access Token이 없음에 따른 예외
 HTTP Request
 include::{snippets}/ArtApi/ChangeDescription/Failure/http-request.adoc[]
+include::{snippets}/ArtApi/ChangeDescription/Failure/path-parameters.adoc[]
 include::{snippets}/ArtApi/ChangeDescription/Failure/request-fields.adoc[]
 
 HTTP Response
@@ -43,7 +44,47 @@ include::{snippets}/ArtApi/ChangeDescription/Failure/response-body.adoc[]
 === 2. 작품 설명 수정 성공
 include::{snippets}/ArtApi/ChangeDescription/Success/http-request.adoc[]
 include::{snippets}/ArtApi/ChangeDescription/Success/request-headers.adoc[]
+include::{snippets}/ArtApi/ChangeDescription/Success/path-parameters.adoc[]
 include::{snippets}/ArtApi/ChangeDescription/Success/request-fields.adoc[]
 
 HTTP Response
 include::{snippets}/ArtApi/ChangeDescription/Success/http-response.adoc[]
+
+== 작품 해시태그 수정
+=== 1. Authorization 헤더에 Access Token이 없음에 따른 예외
+HTTP Request
+include::{snippets}/ArtApi/UpdateHashtags/Failure/Case1/http-request.adoc[]
+include::{snippets}/ArtApi/UpdateHashtags/Failure/Case1/path-parameters.adoc[]
+include::{snippets}/ArtApi/UpdateHashtags/Failure/Case1/request-fields.adoc[]
+
+HTTP Response
+include::{snippets}/ArtApi/UpdateHashtags/Failure/Case1/response-body.adoc[]
+
+=== 2. 업데이트 하려는 해시태그의 개수가 최소 개수(1개)보다 적음에 따른 예외
+HTTP Request
+include::{snippets}/ArtApi/UpdateHashtags/Failure/Case2/http-request.adoc[]
+include::{snippets}/ArtApi/UpdateHashtags/Failure/Case2/request-headers.adoc[]
+include::{snippets}/ArtApi/UpdateHashtags/Failure/Case2/path-parameters.adoc[]
+include::{snippets}/ArtApi/UpdateHashtags/Failure/Case2/request-fields.adoc[]
+
+HTTP Response
+include::{snippets}/ArtApi/UpdateHashtags/Failure/Case2/response-body.adoc[]
+
+=== 3. 업데이트 하려는 해시태그의 개수가 최대 개수(10개)보다 많음에 따른 예외
+HTTP Request
+include::{snippets}/ArtApi/UpdateHashtags/Failure/Case3/http-request.adoc[]
+include::{snippets}/ArtApi/UpdateHashtags/Failure/Case3/request-headers.adoc[]
+include::{snippets}/ArtApi/UpdateHashtags/Failure/Case3/path-parameters.adoc[]
+include::{snippets}/ArtApi/UpdateHashtags/Failure/Case3/request-fields.adoc[]
+
+HTTP Response
+include::{snippets}/ArtApi/UpdateHashtags/Failure/Case3/response-body.adoc[]
+
+=== 4. 해시태그 수정 성공
+include::{snippets}/ArtApi/UpdateHashtags/Success/http-request.adoc[]
+include::{snippets}/ArtApi/UpdateHashtags/Success/request-headers.adoc[]
+include::{snippets}/ArtApi/UpdateHashtags/Success/path-parameters.adoc[]
+include::{snippets}/ArtApi/UpdateHashtags/Success/request-fields.adoc[]
+
+HTTP Response
+include::{snippets}/ArtApi/UpdateHashtags/Success/http-response.adoc[]
