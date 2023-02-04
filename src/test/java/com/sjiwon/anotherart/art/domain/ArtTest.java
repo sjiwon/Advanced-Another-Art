@@ -64,7 +64,7 @@ class ArtTest {
         
         // when
         final String updateDescription = "Hello World";
-        art.updateDescription(updateDescription);
+        art.changeDescription(updateDescription);
         
         // then
         assertThat(art.getDescription()).isEqualTo(updateDescription);
@@ -79,7 +79,7 @@ class ArtTest {
         
         // when
         final ArtStatus updateArtStatus = ArtStatus.SOLD_OUT;
-        art.updateArtStatus(updateArtStatus);
+        art.changeArtStatus(updateArtStatus);
         
         // then
         assertThat(art.getArtStatus()).isEqualTo(updateArtStatus);

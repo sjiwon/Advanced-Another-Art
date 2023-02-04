@@ -26,6 +26,7 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class ArtService {
     private final ArtRepository artRepository;
+    private final ArtFindService artFindService;
     private final MemberFindService memberFindService;
     private final AuctionRepository auctionRepository;
 
@@ -75,5 +76,11 @@ public class ArtService {
 
     private boolean isAlreadyExistsName(String artName) {
         return artRepository.existsByName(artName);
+    }
+
+    @Transactional
+    public void changeDescription(Long artId, String changeDescription) {
+        Art art = artFindService.findById(artId);
+        art.changeDescription(changeDescription);
     }
 }

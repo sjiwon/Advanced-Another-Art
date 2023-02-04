@@ -88,11 +88,11 @@ public class Art {
                 .collect(Collectors.toList());
     }
 
-    public void updateDescription(String description) {
+    public void changeDescription(String description) {
         this.description = description;
     }
 
-    public void updateArtStatus(ArtStatus artStatus) {
+    public void changeArtStatus(ArtStatus artStatus) {
         this.artStatus = artStatus;
     }
 
