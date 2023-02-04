@@ -1,8 +1,10 @@
 package com.sjiwon.anotherart.global.exception;
 
+import com.sjiwon.anotherart.global.security.exception.AuthErrorCode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.BindException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
@@ -25,6 +27,11 @@ public class ApiExceptionHandler {
         return ResponseEntity
                 .status(code.getStatus())
                 .body(ErrorResponse.from(code));
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<ErrorResponse> accessDeniedException() {
+        return convert(AuthErrorCode.INVALID_TOKEN);
     }
 
     /**
