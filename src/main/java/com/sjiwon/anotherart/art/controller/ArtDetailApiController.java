@@ -1,5 +1,6 @@
 package com.sjiwon.anotherart.art.controller;
 
+import com.sjiwon.anotherart.art.controller.dto.request.ChangeArtDescriptionRequest;
 import com.sjiwon.anotherart.art.service.ArtService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -7,6 +8,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 import static org.springframework.http.MediaType.APPLICATION_FORM_URLENCODED_VALUE;
 
@@ -26,10 +29,10 @@ public class ArtDetailApiController {
     }
 
     @PreAuthorize("hasRole('USER')")
-    @PatchMapping(value = "/{artId}/description", consumes = APPLICATION_FORM_URLENCODED_VALUE)
+    @PatchMapping("/{artId}/description")
     @ApiOperation(value = "작품 설명 수정 API", notes = "작품 설명을 수정하는 API")
-    public ResponseEntity<Void> changeDescription(@PathVariable Long artId, @RequestParam String changeDescription) {
-        artService.changeDescription(artId, changeDescription);
+    public ResponseEntity<Void> changeDescription(@PathVariable Long artId, @Valid @RequestBody ChangeArtDescriptionRequest request) {
+        artService.changeDescription(artId, request.getChangeDescription());
         return ResponseEntity.noContent().build();
     }
 }

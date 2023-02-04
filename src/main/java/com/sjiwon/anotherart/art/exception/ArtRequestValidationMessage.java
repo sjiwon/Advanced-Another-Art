@@ -12,4 +12,8 @@ public class ArtRequestValidationMessage {
         public static final String ART_HASHTAG_LIST_MAX = "작품은 최대 %d개의 해시태그를 가질 수 있습니다.";
         public static final String AUCTION_ART_START_DATE = "경매 시작 날짜는 현재 시간 이후여야 합니다.";
     }
+
+    public static class ChangeArtInfo {
+        public static final String CHANGE_DESCRIPTION = "변경할 작품 설명은 필수입니다.";
+    }
 }
