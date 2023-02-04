@@ -82,6 +82,11 @@ public class Art {
         );
     }
 
+    public void updateHashtags(Set<String> hashtags) {
+        this.getHashtags().clear();
+        applyHashtags(hashtags);
+    }
+
     public List<String> getHashtagList() {
         return this.hashtags.stream()
                 .map(Hashtag::getName)

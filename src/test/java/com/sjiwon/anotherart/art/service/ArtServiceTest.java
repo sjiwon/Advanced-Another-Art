@@ -15,10 +15,14 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
+import java.util.HashSet;
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.lenient;
 
 @DisplayName("Art [Service Layer] -> ArtService 테스트")
 class ArtServiceTest extends ServiceTest {
@@ -68,5 +72,24 @@ class ArtServiceTest extends ServiceTest {
 
         // then
         assertThat(art.getDescription()).isEqualTo(changeDescription);
+    }
+    
+    @Test
+    @DisplayName("작품의 해시태그를 업데이트한다")
+    void test3() {
+        // given
+        final Member owner = MemberFixture.A.toMember();
+        final Art art = ArtFixture.A.toArt(owner);
+        final Long artId = 1L;
+        final List<String> initHashtags = List.of("A", "B", "C", "D", "E");
+        art.applyHashtags(new HashSet<>(initHashtags));
+        lenient().when(artFindService.findById(artId)).thenReturn(art);
+
+        // when
+        final List<String> updateHashtags = List.of("A", "B", "C", "F", "E", "T", "Y", "H");
+        art.updateHashtags(new HashSet<>(updateHashtags));
+        
+        // then
+        assertThat(art.getHashtagList()).containsAll(updateHashtags);
     }
 }

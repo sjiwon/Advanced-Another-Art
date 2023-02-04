@@ -20,6 +20,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashSet;
+import java.util.List;
 
 @Service
 @Transactional(readOnly = true)
@@ -82,5 +84,11 @@ public class ArtService {
     public void changeDescription(Long artId, String changeDescription) {
         Art art = artFindService.findById(artId);
         art.changeDescription(changeDescription);
+    }
+
+    @Transactional
+    public void updateHashtags(Long artId, List<String> hashtagList) {
+        Art art = artFindService.findById(artId);
+        art.updateHashtags(new HashSet<>(hashtagList));
     }
 }
