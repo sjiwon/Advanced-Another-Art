@@ -61,6 +61,22 @@ class ArtRepositoryTest extends RepositoryTest {
         assertThat(findOwner.getNickname()).isEqualTo(owner.getNickname());
     }
 
+    @Test
+    @DisplayName("작품명 중복 여부를 확인한다")
+    void test3() {
+        // given
+        Member owner = createMemberA();
+        Art art = createArt(owner);
+
+        // when
+        boolean actual1 = artRepository.existsByName(art.getName());
+        boolean actual2 = artRepository.existsByName(art.getName() + "fake");
+
+        // then
+        assertThat(actual1).isTrue();
+        assertThat(actual2).isFalse();
+    }
+
     private Member createMemberA() {
         return memberRepository.save(MemberFixture.A.toMember());
     }

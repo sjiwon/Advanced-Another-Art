@@ -3,6 +3,7 @@ package com.sjiwon.anotherart.art.service;
 import com.sjiwon.anotherart.art.domain.Art;
 import com.sjiwon.anotherart.art.domain.ArtRepository;
 import com.sjiwon.anotherart.art.domain.UploadImage;
+import com.sjiwon.anotherart.art.exception.ArtErrorCode;
 import com.sjiwon.anotherart.art.service.dto.request.ArtRegisterRequestDto;
 import com.sjiwon.anotherart.auction.domain.Auction;
 import com.sjiwon.anotherart.auction.domain.AuctionRepository;
@@ -64,5 +65,15 @@ public class ArtService {
         if (art.isAuctionType()) {
             auctionRepository.save(Auction.initAuction(art, period));
         }
+    }
+
+    public void artNameDuplicateCheck(String artName) {
+        if (isAlreadyExistsName(artName)) {
+            throw AnotherArtException.type(ArtErrorCode.INVALID_ART_NAME);
+        }
+    }
+
+    private boolean isAlreadyExistsName(String artName) {
+        return artRepository.existsByName(artName);
     }
 }
