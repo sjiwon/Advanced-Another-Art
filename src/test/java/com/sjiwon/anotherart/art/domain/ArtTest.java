@@ -85,20 +85,4 @@ class ArtTest {
         assertThat(art.getArtStatus()).isEqualTo(updateArtStatus);
         assertThat(art.isSoldOut()).isTrue();
     }
-    
-    @Test
-    @DisplayName("작품의 해시태그를 업데이트한다")
-    void test5() {
-        // given
-        Art art = ART_A.toArt(member);
-        final List<String> initHashtags = List.of("A", "B", "C", "D", "E");
-        art.applyHashtags(new HashSet<>(initHashtags));
-        
-        // when
-        final List<String> updateHashtags = List.of("A", "B", "C", "F", "E", "T", "Y", "H");
-        art.updateHashtags(new HashSet<>(updateHashtags));
-        
-        // then
-        assertThat(art.getHashtagList()).containsAll(updateHashtags);
-    }
 }

@@ -3,6 +3,7 @@ package com.sjiwon.anotherart.art.service;
 import com.sjiwon.anotherart.art.domain.Art;
 import com.sjiwon.anotherart.art.domain.ArtRepository;
 import com.sjiwon.anotherart.art.domain.UploadImage;
+import com.sjiwon.anotherart.art.domain.hashtag.HashtagRepository;
 import com.sjiwon.anotherart.art.exception.ArtErrorCode;
 import com.sjiwon.anotherart.art.service.dto.request.ArtRegisterRequestDto;
 import com.sjiwon.anotherart.auction.domain.Auction;
@@ -29,6 +30,7 @@ import java.util.List;
 public class ArtService {
     private final ArtRepository artRepository;
     private final ArtFindService artFindService;
+    private final HashtagRepository hashtagRepository;
     private final MemberFindService memberFindService;
     private final AuctionRepository auctionRepository;
 
@@ -89,6 +91,7 @@ public class ArtService {
     @Transactional
     public void updateHashtags(Long artId, List<String> hashtagList) {
         Art art = artFindService.findById(artId);
-        art.updateHashtags(new HashSet<>(hashtagList));
+        hashtagRepository.deleteByArtId(artId);
+        art.applyHashtags(new HashSet<>(hashtagList));
     }
 }

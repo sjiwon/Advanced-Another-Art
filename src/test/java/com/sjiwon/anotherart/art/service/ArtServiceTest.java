@@ -2,6 +2,7 @@ package com.sjiwon.anotherart.art.service;
 
 import com.sjiwon.anotherart.art.domain.Art;
 import com.sjiwon.anotherart.art.domain.ArtRepository;
+import com.sjiwon.anotherart.art.domain.hashtag.HashtagRepository;
 import com.sjiwon.anotherart.art.exception.ArtErrorCode;
 import com.sjiwon.anotherart.auction.domain.AuctionRepository;
 import com.sjiwon.anotherart.common.ServiceTest;
@@ -31,6 +32,9 @@ class ArtServiceTest extends ServiceTest {
 
     @Mock
     ArtFindService artFindService;
+
+    @Mock
+    HashtagRepository hashtagRepository;
 
     @Mock
     ArtRepository artRepository;
@@ -73,7 +77,7 @@ class ArtServiceTest extends ServiceTest {
         // then
         assertThat(art.getDescription()).isEqualTo(changeDescription);
     }
-    
+
     @Test
     @DisplayName("작품의 해시태그를 업데이트한다")
     void test3() {
@@ -87,8 +91,8 @@ class ArtServiceTest extends ServiceTest {
 
         // when
         final List<String> updateHashtags = List.of("A", "B", "C", "F", "E", "T", "Y", "H");
-        art.updateHashtags(new HashSet<>(updateHashtags));
-        
+        artService.updateHashtags(artId, updateHashtags);
+
         // then
         assertThat(art.getHashtagList()).containsAll(updateHashtags);
     }
