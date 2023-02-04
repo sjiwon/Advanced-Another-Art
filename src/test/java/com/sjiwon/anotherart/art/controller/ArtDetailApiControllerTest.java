@@ -1,5 +1,7 @@
 package com.sjiwon.anotherart.art.controller;
 
+import com.sjiwon.anotherart.art.controller.dto.request.ChangeArtDescriptionRequest;
+import com.sjiwon.anotherart.art.controller.utils.ChangeArtDescriptionRequestUtils;
 import com.sjiwon.anotherart.art.domain.Art;
 import com.sjiwon.anotherart.art.domain.ArtRepository;
 import com.sjiwon.anotherart.art.exception.ArtErrorCode;
@@ -7,6 +9,7 @@ import com.sjiwon.anotherart.auction.domain.Auction;
 import com.sjiwon.anotherart.auction.domain.AuctionRepository;
 import com.sjiwon.anotherart.auction.domain.Period;
 import com.sjiwon.anotherart.common.ControllerTest;
+import com.sjiwon.anotherart.common.ObjectMapperUtils;
 import com.sjiwon.anotherart.fixture.ArtFixture;
 import com.sjiwon.anotherart.fixture.MemberFixture;
 import com.sjiwon.anotherart.global.security.exception.AuthErrorCode;
@@ -25,14 +28,15 @@ import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.MediaType.APPLICATION_FORM_URLENCODED_VALUE;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
-import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
-import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
+import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.requestParameters;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -178,6 +182,92 @@ class ArtDetailApiControllerTest extends ControllerTest {
                                     )
                             )
                     );
+        }
+    }
+
+    @Nested
+    @DisplayName("작품 설명 수정 테스트 [PATCH /api/art/{artId}/description]")
+    class changeDescription {
+        private static final String BASE_URL = "/api/art/{artId}/description";
+
+        @Test
+        @DisplayName("Authorization 헤더에 Access Token이 없음에 따라 예외가 발생한다")
+        void test1() throws Exception {
+            // given
+            Member owner = createMember();
+            Art art = createGeneralArt(owner);
+            ChangeArtDescriptionRequest request = ChangeArtDescriptionRequestUtils.createRequest(art.getDescription() + "change");
+
+            // when
+            MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                    .patch(BASE_URL, art.getId())
+                    .contentType(APPLICATION_JSON_VALUE)
+                    .content(ObjectMapperUtils.objectToJson(request));
+
+            // then
+            final AuthErrorCode expectedError = AuthErrorCode.INVALID_TOKEN;
+            mockMvc.perform(requestBuilder)
+                    .andExpect(status().isForbidden())
+                    .andExpect(jsonPath("$.statusCode").exists())
+                    .andExpect(jsonPath("$.statusCode").value(expectedError.getStatus().value()))
+                    .andExpect(jsonPath("$.errorCode").exists())
+                    .andExpect(jsonPath("$.errorCode").value(expectedError.getErrorCode()))
+                    .andExpect(jsonPath("$.message").exists())
+                    .andExpect(jsonPath("$.message").value(expectedError.getMessage()))
+                    .andDo(
+                            document(
+                                    "ArtApi/ChangeDescription/Failure",
+                                    preprocessRequest(prettyPrint()),
+                                    preprocessResponse(prettyPrint()),
+                                    requestFields(
+                                            fieldWithPath("changeDescription").description("변경할 작품 설명")
+                                    ),
+                                    responseFields(
+                                            fieldWithPath("statusCode").description("HTTP 상태 코드"),
+                                            fieldWithPath("errorCode").description("커스텀 예외 코드"),
+                                            fieldWithPath("message").description("예외 메시지")
+                                    )
+                            )
+                    );
+        }
+
+        @Test
+        @DisplayName("작품 설명 수정에 성공한다")
+        void test2() throws Exception {
+            // given
+            Member owner = createMember();
+            String accessToken = jwtTokenProvider.createAccessToken(owner.getId());
+            Art art = createGeneralArt(owner);
+            final String changeDescription = art.getDescription() + "change";
+            ChangeArtDescriptionRequest request = ChangeArtDescriptionRequestUtils.createRequest(changeDescription);
+
+            // when
+            MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                    .patch(BASE_URL, art.getId())
+                    .contentType(APPLICATION_JSON_VALUE)
+                    .header(AUTHORIZATION, BEARER_TOKEN + accessToken)
+                    .content(ObjectMapperUtils.objectToJson(request));
+
+            // then
+            final AuthErrorCode expectedError = AuthErrorCode.INVALID_TOKEN;
+            mockMvc.perform(requestBuilder)
+                    .andExpect(status().isNoContent())
+                    .andExpect(jsonPath("$").doesNotExist())
+                    .andDo(
+                            document(
+                                    "ArtApi/ChangeDescription/Success",
+                                    preprocessRequest(prettyPrint()),
+                                    preprocessResponse(prettyPrint()),
+                                    requestHeaders(
+                                            headerWithName(AUTHORIZATION).description("Access Token")
+                                    ),
+                                    requestFields(
+                                            fieldWithPath("changeDescription").description("변경할 작품 설명")
+                                    )
+                            )
+                    );
+
+            assertThat(art.getDescription()).isEqualTo(changeDescription);
         }
     }
 

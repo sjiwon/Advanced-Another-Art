@@ -30,3 +30,20 @@ include::{snippets}/ArtApi/DuplicateCheck/Success/request-parameters.adoc[]
 
 HTTP Response
 include::{snippets}/ArtApi/DuplicateCheck/Success/http-response.adoc[]
+
+== 작품 설명 수정
+=== 1. Authorization 헤더에 Access Token이 없음에 따른 예외
+HTTP Request
+include::{snippets}/ArtApi/ChangeDescription/Failure/http-request.adoc[]
+include::{snippets}/ArtApi/ChangeDescription/Failure/request-fields.adoc[]
+
+HTTP Response
+include::{snippets}/ArtApi/ChangeDescription/Failure/response-body.adoc[]
+
+=== 2. 작품 설명 수정 성공
+include::{snippets}/ArtApi/ChangeDescription/Success/http-request.adoc[]
+include::{snippets}/ArtApi/ChangeDescription/Success/request-headers.adoc[]
+include::{snippets}/ArtApi/ChangeDescription/Success/request-fields.adoc[]
+
+HTTP Response
+include::{snippets}/ArtApi/ChangeDescription/Success/http-response.adoc[]
