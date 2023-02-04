@@ -1,7 +1,6 @@
 package com.sjiwon.anotherart.token.controller;
 
 import com.sjiwon.anotherart.global.annotation.ExtractToken;
-import com.sjiwon.anotherart.global.annotation.RequiredToken;
 import com.sjiwon.anotherart.global.security.TokenResponse;
 import com.sjiwon.anotherart.token.service.TokenReissueService;
 import io.swagger.annotations.Api;
@@ -20,7 +19,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class TokenReissueApiController {
     private final TokenReissueService tokenReissueService;
 
-    @RequiredToken
     @PreAuthorize("hasRole('USER')")
     @PostMapping
     @ApiOperation(value = "토큰 재발급 API", notes = "Authorization Header에 있는 Refresh Token으로 Access Token + Refresh Token 재발급")

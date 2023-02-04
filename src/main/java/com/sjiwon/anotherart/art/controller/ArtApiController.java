@@ -3,7 +3,6 @@ package com.sjiwon.anotherart.art.controller;
 import com.sjiwon.anotherart.art.controller.dto.request.ArtRegisterRequest;
 import com.sjiwon.anotherart.art.service.ArtService;
 import com.sjiwon.anotherart.global.annotation.ExtractPayload;
-import com.sjiwon.anotherart.global.annotation.RequiredToken;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +24,6 @@ import javax.validation.Valid;
 public class ArtApiController {
     private final ArtService artService;
 
-    @RequiredToken
     @PreAuthorize("hasRole('USER')")
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ApiOperation(value = "작품 등록 API", notes = "작품 등록을 진행하는 API")

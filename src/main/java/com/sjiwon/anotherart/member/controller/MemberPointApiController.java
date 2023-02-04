@@ -2,7 +2,6 @@ package com.sjiwon.anotherart.member.controller;
 
 
 import com.sjiwon.anotherart.global.annotation.ExtractPayload;
-import com.sjiwon.anotherart.global.annotation.RequiredToken;
 import com.sjiwon.anotherart.member.service.MemberPointService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -21,7 +20,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class MemberPointApiController {
     private final MemberPointService memberPointService;
 
-    @RequiredToken
     @PreAuthorize("hasRole('USER')")
     @PostMapping("/charge")
     @ApiOperation(value = "포인트 충전 API", notes = "포인트 충전을 위한 API")
@@ -30,7 +28,6 @@ public class MemberPointApiController {
         return ResponseEntity.noContent().build();
     }
 
-    @RequiredToken
     @PreAuthorize("hasRole('USER')")
     @PostMapping("/refund")
     @ApiOperation(value = "포인트 환불 API", notes = "포인트 환불을 위한 API")
