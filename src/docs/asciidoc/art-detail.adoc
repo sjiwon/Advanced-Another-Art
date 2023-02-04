@@ -1,0 +1,32 @@
+= 작품 정보 관련 API
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 2
+
+== 작품명 중복체크
+=== 1. Authorization 헤더에 Access Token이 없음에 따른 예외
+HTTP Request
+include::{snippets}/ArtApi/DuplicateCheck/Failure/Case1/http-request.adoc[]
+include::{snippets}/ArtApi/DuplicateCheck/Failure/Case1/request-parameters.adoc[]
+
+HTTP Response
+include::{snippets}/ArtApi/DuplicateCheck/Failure/Case1/response-body.adoc[]
+
+=== 2. 작품명이 중복됨에 따른 예외
+HTTP Request
+include::{snippets}/ArtApi/DuplicateCheck/Failure/Case2/http-request.adoc[]
+include::{snippets}/ArtApi/DuplicateCheck/Failure/Case2/request-headers.adoc[]
+include::{snippets}/ArtApi/DuplicateCheck/Failure/Case2/request-parameters.adoc[]
+
+HTTP Response
+include::{snippets}/ArtApi/DuplicateCheck/Failure/Case2/response-body.adoc[]
+
+=== 3. 중복체크 성공
+include::{snippets}/ArtApi/DuplicateCheck/Success/http-request.adoc[]
+include::{snippets}/ArtApi/DuplicateCheck/Success/request-headers.adoc[]
+include::{snippets}/ArtApi/DuplicateCheck/Success/request-parameters.adoc[]
+
+HTTP Response
+include::{snippets}/ArtApi/DuplicateCheck/Success/http-response.adoc[]

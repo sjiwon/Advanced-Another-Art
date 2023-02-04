@@ -66,8 +66,8 @@ class ArtApiControllerTest extends ControllerTest {
     private static final ArtFixture GENERAL_ART_BMP = ArtFixture.B_BMP;
 
     private static final List<String> NOT_ENOUGH_HASHTAGS = Collections.emptyList();
-    private static final List<String> HASHTAGS = List.of("1", "2", "3", "4", "5");
-    private static final List<String> OVERFLOW_HASHTAGS = List.of("1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11");
+    private static final List<String> HASHTAGS = List.of("A", "B", "C", "D", "E");
+    private static final List<String> OVERFLOW_HASHTAGS = List.of("A", "B", "C", "D", "E", "F", "G", "H", "I", "J");
 
     private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
     private static final String currentTime3DayAgo = LocalDateTime.now().minusDays(3).format(formatter);
