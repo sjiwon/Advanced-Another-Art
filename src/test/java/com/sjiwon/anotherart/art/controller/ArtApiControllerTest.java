@@ -34,7 +34,6 @@ import org.springframework.util.MultiValueMap;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -65,9 +64,9 @@ class ArtApiControllerTest extends ControllerTest {
     private static final ArtFixture GENERAL_ART = ArtFixture.B;
     private static final ArtFixture GENERAL_ART_BMP = ArtFixture.B_BMP;
 
-    private static final List<String> NOT_ENOUGH_HASHTAGS = Collections.emptyList();
+    private static final List<String> EMPTY_HASHTAGS = List.of();
     private static final List<String> HASHTAGS = List.of("A", "B", "C", "D", "E");
-    private static final List<String> OVERFLOW_HASHTAGS = List.of("A", "B", "C", "D", "E", "F", "G", "H", "I", "J");
+    private static final List<String> OVERFLOW_HASHTAGS = List.of("A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K");
 
     private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
     private static final String currentTime3DayAgo = LocalDateTime.now().minusDays(3).format(formatter);
@@ -301,7 +300,7 @@ class ArtApiControllerTest extends ControllerTest {
             // given
             Member owner = createMember();
             String accessToken = jwtTokenProvider.createAccessToken(owner.getId());
-            ArtRegisterRequest request = ArtRegistrationRequestUtils.createGeneralArtRequest(GENERAL_ART, NOT_ENOUGH_HASHTAGS);
+            ArtRegisterRequest request = ArtRegistrationRequestUtils.createGeneralArtRequest(GENERAL_ART, EMPTY_HASHTAGS);
 
             // when
             MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
@@ -316,7 +315,7 @@ class ArtApiControllerTest extends ControllerTest {
 
             // then
             final GlobalErrorCode expectedError = GlobalErrorCode.VALIDATION_ERROR;
-            final String message = String.format(ArtRequestValidationMessage.Registration.ART_HASHTAG_LIST_MIN, 1);
+            final String message = String.format(ArtRequestValidationMessage.ART_HASHTAG_LIST_MIN, 1);
             mockMvc.perform(requestBuilder)
                     .andExpect(status().isBadRequest())
                     .andExpect(jsonPath("$.statusCode").exists())
@@ -372,7 +371,7 @@ class ArtApiControllerTest extends ControllerTest {
 
             // then
             final GlobalErrorCode expectedError = GlobalErrorCode.VALIDATION_ERROR;
-            final String message = String.format(ArtRequestValidationMessage.Registration.ART_HASHTAG_LIST_MAX, 10);
+            final String message = String.format(ArtRequestValidationMessage.ART_HASHTAG_LIST_MAX, 10);
             mockMvc.perform(requestBuilder)
                     .andExpect(status().isBadRequest())
                     .andExpect(jsonPath("$.statusCode").exists())
