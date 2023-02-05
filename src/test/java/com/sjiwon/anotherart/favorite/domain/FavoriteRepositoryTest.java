@@ -16,6 +16,7 @@ import javax.persistence.PersistenceContext;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@DisplayName("Favorite [Repository Layer] -> FavoriteRepository 테스트")
 class FavoriteRepositoryTest extends RepositoryTest {
     @PersistenceContext
     EntityManager em;

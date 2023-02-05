@@ -491,8 +491,7 @@ class ArtDetailApiControllerTest extends ControllerTest {
 
             // when
             MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
-                    .delete(BASE_URL, art.getId())
-                    .contentType(APPLICATION_JSON_VALUE);
+                    .delete(BASE_URL, art.getId());
 
             // then
             final AuthErrorCode expectedError = AuthErrorCode.INVALID_TOKEN;
@@ -534,7 +533,6 @@ class ArtDetailApiControllerTest extends ControllerTest {
             // when
             MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
                     .delete(BASE_URL, art.getId())
-                    .contentType(APPLICATION_JSON_VALUE)
                     .header(AUTHORIZATION, BEARER_TOKEN + accessToken);
 
             // then
@@ -578,7 +576,6 @@ class ArtDetailApiControllerTest extends ControllerTest {
             // when
             MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
                     .delete(BASE_URL, art.getId())
-                    .contentType(APPLICATION_JSON_VALUE)
                     .header(AUTHORIZATION, BEARER_TOKEN + accessToken);
 
             // then
@@ -622,7 +619,6 @@ class ArtDetailApiControllerTest extends ControllerTest {
             // when
             MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
                     .delete(BASE_URL, art.getId())
-                    .contentType(APPLICATION_JSON_VALUE)
                     .header(AUTHORIZATION, BEARER_TOKEN + accessToken);
 
             // then
@@ -657,7 +653,6 @@ class ArtDetailApiControllerTest extends ControllerTest {
             // when
             MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
                     .delete(BASE_URL, art.getId())
-                    .contentType(APPLICATION_JSON_VALUE)
                     .header(AUTHORIZATION, BEARER_TOKEN + accessToken);
 
             // then
@@ -701,7 +696,6 @@ class ArtDetailApiControllerTest extends ControllerTest {
             // when
             MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
                     .delete(BASE_URL, art.getId())
-                    .contentType(APPLICATION_JSON_VALUE)
                     .header(AUTHORIZATION, BEARER_TOKEN + accessToken);
 
             // then
