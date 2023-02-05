@@ -6,7 +6,7 @@
 :toclevels: 2
 
 == 작품명 중복체크
-=== 1. Authorization 헤더에 Access Token이 없음에 따른 예외
+=== 1. Authorization 헤더에 Access Token이 없음에 따라 예외가 발생한다
 HTTP Request
 include::{snippets}/ArtApi/DuplicateCheck/Failure/Case1/http-request.adoc[]
 include::{snippets}/ArtApi/DuplicateCheck/Failure/Case1/request-parameters.adoc[]
@@ -14,7 +14,7 @@ include::{snippets}/ArtApi/DuplicateCheck/Failure/Case1/request-parameters.adoc[
 HTTP Response
 include::{snippets}/ArtApi/DuplicateCheck/Failure/Case1/response-body.adoc[]
 
-=== 2. 작품명이 중복됨에 따른 예외
+=== 2. 작품명이 중복됨에 따라 예외가 발생한다
 HTTP Request
 include::{snippets}/ArtApi/DuplicateCheck/Failure/Case2/http-request.adoc[]
 include::{snippets}/ArtApi/DuplicateCheck/Failure/Case2/request-headers.adoc[]
@@ -23,7 +23,7 @@ include::{snippets}/ArtApi/DuplicateCheck/Failure/Case2/request-parameters.adoc[
 HTTP Response
 include::{snippets}/ArtApi/DuplicateCheck/Failure/Case2/response-body.adoc[]
 
-=== 3. 중복체크 성공
+=== 3. 작품명이 중복되지 않기 때문에 중복 체크에 성공한다
 include::{snippets}/ArtApi/DuplicateCheck/Success/http-request.adoc[]
 include::{snippets}/ArtApi/DuplicateCheck/Success/request-headers.adoc[]
 include::{snippets}/ArtApi/DuplicateCheck/Success/request-parameters.adoc[]
@@ -32,7 +32,7 @@ HTTP Response
 include::{snippets}/ArtApi/DuplicateCheck/Success/http-response.adoc[]
 
 == 작품 설명 수정
-=== 1. Authorization 헤더에 Access Token이 없음에 따른 예외
+=== 1. Authorization 헤더에 Access Token이 없음에 따라 예외가 발생한다
 HTTP Request
 include::{snippets}/ArtApi/ChangeDescription/Failure/http-request.adoc[]
 include::{snippets}/ArtApi/ChangeDescription/Failure/path-parameters.adoc[]
@@ -41,7 +41,7 @@ include::{snippets}/ArtApi/ChangeDescription/Failure/request-fields.adoc[]
 HTTP Response
 include::{snippets}/ArtApi/ChangeDescription/Failure/response-body.adoc[]
 
-=== 2. 작품 설명 수정 성공
+=== 2. 작품 설명 수정에 성공한다
 include::{snippets}/ArtApi/ChangeDescription/Success/http-request.adoc[]
 include::{snippets}/ArtApi/ChangeDescription/Success/request-headers.adoc[]
 include::{snippets}/ArtApi/ChangeDescription/Success/path-parameters.adoc[]
@@ -51,7 +51,7 @@ HTTP Response
 include::{snippets}/ArtApi/ChangeDescription/Success/http-response.adoc[]
 
 == 작품 해시태그 수정
-=== 1. Authorization 헤더에 Access Token이 없음에 따른 예외
+=== 1. Authorization 헤더에 Access Token이 없음에 따라 예외가 발생한다
 HTTP Request
 include::{snippets}/ArtApi/UpdateHashtags/Failure/Case1/http-request.adoc[]
 include::{snippets}/ArtApi/UpdateHashtags/Failure/Case1/path-parameters.adoc[]
@@ -60,7 +60,7 @@ include::{snippets}/ArtApi/UpdateHashtags/Failure/Case1/request-fields.adoc[]
 HTTP Response
 include::{snippets}/ArtApi/UpdateHashtags/Failure/Case1/response-body.adoc[]
 
-=== 2. 업데이트 하려는 해시태그의 개수가 최소 개수(1개)보다 적음에 따른 예외
+=== 2. 업데이트 하려는 해시태그의 개수가 최소 개수(1개)보다 적음에 따라 예외가 발생한다
 HTTP Request
 include::{snippets}/ArtApi/UpdateHashtags/Failure/Case2/http-request.adoc[]
 include::{snippets}/ArtApi/UpdateHashtags/Failure/Case2/request-headers.adoc[]
@@ -70,7 +70,7 @@ include::{snippets}/ArtApi/UpdateHashtags/Failure/Case2/request-fields.adoc[]
 HTTP Response
 include::{snippets}/ArtApi/UpdateHashtags/Failure/Case2/response-body.adoc[]
 
-=== 3. 업데이트 하려는 해시태그의 개수가 최대 개수(10개)보다 많음에 따른 예외
+=== 3. 업데이트 하려는 해시태그의 개수가 최대 개수(10개)보다 많음에 따라 예외가 발생한다
 HTTP Request
 include::{snippets}/ArtApi/UpdateHashtags/Failure/Case3/http-request.adoc[]
 include::{snippets}/ArtApi/UpdateHashtags/Failure/Case3/request-headers.adoc[]
@@ -80,7 +80,7 @@ include::{snippets}/ArtApi/UpdateHashtags/Failure/Case3/request-fields.adoc[]
 HTTP Response
 include::{snippets}/ArtApi/UpdateHashtags/Failure/Case3/response-body.adoc[]
 
-=== 4. 해시태그 수정 성공
+=== 4. 작품의 해시태그 업데이트에 성공한다
 include::{snippets}/ArtApi/UpdateHashtags/Success/http-request.adoc[]
 include::{snippets}/ArtApi/UpdateHashtags/Success/request-headers.adoc[]
 include::{snippets}/ArtApi/UpdateHashtags/Success/path-parameters.adoc[]
@@ -90,7 +90,7 @@ HTTP Response
 include::{snippets}/ArtApi/UpdateHashtags/Success/http-response.adoc[]
 
 == 일반 작품
-=== 1. Authorization 헤더에 Access Token이 없음에 따른 예외
+=== 1. Authorization 헤더에 Access Token이 없음에 따라 예외가 발생한다
 HTTP Request
 include::{snippets}/ArtApi/DeleteGeneralArt/Failure/Case1/http-request.adoc[]
 include::{snippets}/ArtApi/DeleteGeneralArt/Failure/Case1/path-parameters.adoc[]
@@ -98,7 +98,7 @@ include::{snippets}/ArtApi/DeleteGeneralArt/Failure/Case1/path-parameters.adoc[]
 HTTP Response
 include::{snippets}/ArtApi/DeleteGeneralArt/Failure/Case1/response-body.adoc[]
 
-=== 2. 작품 소유자가 아닌 사용자가 작품 삭제 요청을 보냄에 따른 예외
+=== 2. 작품 소유자가 아닌 사용자가 작품 삭제 요청을 보냄에 따라 예외가 발생한다
 HTTP Request
 include::{snippets}/ArtApi/DeleteGeneralArt/Failure/Case2/http-request.adoc[]
 include::{snippets}/ArtApi/DeleteGeneralArt/Failure/Case2/request-headers.adoc[]
@@ -107,7 +107,7 @@ include::{snippets}/ArtApi/DeleteGeneralArt/Failure/Case2/path-parameters.adoc[]
 HTTP Response
 include::{snippets}/ArtApi/DeleteGeneralArt/Failure/Case2/response-body.adoc[]
 
-=== 3. 이미 판매된 작품에 대한 삭제 요청에 따른 예외
+=== 3. 이미 판매된 작품에 대해서 삭제 요청을 보내면 예외가 발생한다
 HTTP Request
 include::{snippets}/ArtApi/DeleteGeneralArt/Failure/Case3/http-request.adoc[]
 include::{snippets}/ArtApi/DeleteGeneralArt/Failure/Case3/request-headers.adoc[]
@@ -116,7 +116,7 @@ include::{snippets}/ArtApi/DeleteGeneralArt/Failure/Case3/path-parameters.adoc[]
 HTTP Response
 include::{snippets}/ArtApi/DeleteGeneralArt/Failure/Case3/response-body.adoc[]
 
-=== 4. 일반 작품 삭제 성공
+=== 4. 일반 작품 삭제에 성공한다
 HTTP Request
 include::{snippets}/ArtApi/DeleteGeneralArt/Success/http-request.adoc[]
 include::{snippets}/ArtApi/DeleteGeneralArt/Success/request-headers.adoc[]
@@ -128,7 +128,7 @@ include::{snippets}/ArtApi/DeleteGeneralArt/Success/http-response.adoc[]
 == 경매 작품
 일반 작품의 예외 케이스 모두 동일 적용
 
-=== 1. 입찰이 1번이라도 진행된 경매 작품은 삭제할 수 없다
+=== 1. 경매 작품일 경우 입찰이 한번이라도 진행되었다면 삭제할 수 없고 예외가 발생한다
 HTTP Request
 include::{snippets}/ArtApi/DeleteAuctionArt/Failure/http-request.adoc[]
 include::{snippets}/ArtApi/DeleteAuctionArt/Failure/request-headers.adoc[]
@@ -137,7 +137,7 @@ include::{snippets}/ArtApi/DeleteAuctionArt/Failure/path-parameters.adoc[]
 HTTP Response
 include::{snippets}/ArtApi/DeleteAuctionArt/Failure/response-body.adoc[]
 
-=== 2. 경매 작품 삭제 성공
+=== 2. 경매 작품 삭제에 성공한다
 HTTP Request
 include::{snippets}/ArtApi/DeleteAuctionArt/Success/http-request.adoc[]
 include::{snippets}/ArtApi/DeleteAuctionArt/Success/request-headers.adoc[]

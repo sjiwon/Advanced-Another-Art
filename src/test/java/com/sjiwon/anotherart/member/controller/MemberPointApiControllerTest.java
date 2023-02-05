@@ -14,7 +14,6 @@ import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -23,6 +22,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
+import static org.springframework.http.MediaType.APPLICATION_FORM_URLENCODED;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
@@ -50,7 +50,7 @@ class MemberPointApiControllerTest extends ControllerTest {
         private static final String BASE_URL = "/api/member/point/charge";
 
         @Test
-        @DisplayName("Access Token이 없음에 따라 포인트 충전이 불가능하다")
+        @DisplayName("Authorization 헤더에 Access Token이 없음에 따라 예외가 발생한다")
         void test1() throws Exception {
             // given
             Member member = signUpMember();
@@ -60,8 +60,8 @@ class MemberPointApiControllerTest extends ControllerTest {
             // when
             MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                     .post(BASE_URL)
-                    .param("chargeAmount", String.valueOf(chargeAmount))
-                    .contentType(MediaType.APPLICATION_FORM_URLENCODED);
+                    .contentType(APPLICATION_FORM_URLENCODED)
+                    .param("chargeAmount", String.valueOf(chargeAmount));
             
             // then
             final AuthErrorCode expectedError = AuthErrorCode.INVALID_TOKEN;
@@ -112,9 +112,9 @@ class MemberPointApiControllerTest extends ControllerTest {
             // when
             MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                     .post(BASE_URL)
+                    .contentType(APPLICATION_FORM_URLENCODED)
                     .header(AUTHORIZATION, BEARER_TOKEN + accessToken)
-                    .param("chargeAmount", String.valueOf(chargeAmount))
-                    .contentType(MediaType.APPLICATION_FORM_URLENCODED);
+                    .param("chargeAmount", String.valueOf(chargeAmount));
 
             // then
             mockMvc.perform(requestBuilder)
@@ -159,7 +159,7 @@ class MemberPointApiControllerTest extends ControllerTest {
         private static final String BASE_URL = "/api/member/point/refund";
 
         @Test
-        @DisplayName("Access Token이 없음에 따라 포인트 환불이 불가능하다")
+        @DisplayName("Authorization 헤더에 Access Token이 없음에 따라 예외가 발생한다")
         void test1() throws Exception {
             // given
             final int chargeAmount = 10000;
@@ -170,8 +170,8 @@ class MemberPointApiControllerTest extends ControllerTest {
             // when
             MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                     .post(BASE_URL)
-                    .param("refundAmount", String.valueOf(refundAmount))
-                    .contentType(MediaType.APPLICATION_FORM_URLENCODED);
+                    .contentType(APPLICATION_FORM_URLENCODED)
+                    .param("refundAmount", String.valueOf(refundAmount));
 
             // then
             final AuthErrorCode expectedError = AuthErrorCode.INVALID_TOKEN;
@@ -230,9 +230,9 @@ class MemberPointApiControllerTest extends ControllerTest {
             // when
             MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                     .post(BASE_URL)
+                    .contentType(APPLICATION_FORM_URLENCODED)
                     .header(AUTHORIZATION, BEARER_TOKEN + accessToken)
-                    .param("refundAmount", String.valueOf(refundAmount))
-                    .contentType(MediaType.APPLICATION_FORM_URLENCODED);
+                    .param("refundAmount", String.valueOf(refundAmount));
 
             // then
             final MemberErrorCode expectedError = MemberErrorCode.INVALID_POINT_DECREASE;
@@ -294,9 +294,9 @@ class MemberPointApiControllerTest extends ControllerTest {
             // when
             MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                     .post(BASE_URL)
+                    .contentType(APPLICATION_FORM_URLENCODED)
                     .header(AUTHORIZATION, BEARER_TOKEN + accessToken)
-                    .param("refundAmount", String.valueOf(refundAmount))
-                    .contentType(MediaType.APPLICATION_FORM_URLENCODED);
+                    .param("refundAmount", String.valueOf(refundAmount));
 
             // then
             mockMvc.perform(requestBuilder)

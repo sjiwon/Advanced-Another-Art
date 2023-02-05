@@ -9,11 +9,11 @@ import com.sjiwon.anotherart.member.domain.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
@@ -41,8 +41,8 @@ class AjaxAuthenticationSuccessHandlerTest extends ControllerTest {
         // when
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .post(BASE_URL)
-                .content(ObjectMapperUtils.objectToJson(loginRequest))
-                .contentType(MediaType.APPLICATION_JSON_VALUE);
+                .contentType(APPLICATION_JSON)
+                .content(ObjectMapperUtils.objectToJson(loginRequest));
 
         // then
         mockMvc.perform(requestBuilder)

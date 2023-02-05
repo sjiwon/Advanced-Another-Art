@@ -5,8 +5,8 @@
 :toc: left
 :toclevels: 2
 
-== 회원가입 실패
-=== 1. 회원가입에 필요한 값들이 요청되지 않은 경우
+== 회원가입
+=== 1. 회원가입에 필요한 필수 값들이 비어있음에 따라 회원가입에 실패한다
 HTTP Request
 include::{snippets}/MemberApi/SignUp/Failure/Case1/http-request.adoc[]
 include::{snippets}/MemberApi/SignUp/Failure/Case1/request-fields.adoc[]
@@ -14,8 +14,8 @@ include::{snippets}/MemberApi/SignUp/Failure/Case1/request-fields.adoc[]
 HTTP Response
 include::{snippets}/MemberApi/SignUp/Failure/Case1/response-body.adoc[]
 
-=== 2. 중복되는 값(닉네임)이 포함되어 있는 경우
-===== 닉네임 / 로그인 아이디 / 전화번호 / 이메일
+=== 2. 중복되는 값(닉네임)에 의해서 회원가입에 실패한다
+==== 중복 체크 -> 닉네임 / 로그인 아이디 / 전화번호 / 이메일
 HTTP Request
 include::{snippets}/MemberApi/SignUp/Failure/Case2/http-request.adoc[]
 include::{snippets}/MemberApi/SignUp/Failure/Case2/request-fields.adoc[]
@@ -23,7 +23,7 @@ include::{snippets}/MemberApi/SignUp/Failure/Case2/request-fields.adoc[]
 HTTP Response
 include::{snippets}/MemberApi/SignUp/Failure/Case2/response-body.adoc[]
 
-== 회원가입 성공
+=== 3. 회원가입에 성공한다
 HTTP Request
 include::{snippets}/MemberApi/SignUp/Success/http-request.adoc[]
 include::{snippets}/MemberApi/SignUp/Success/request-fields.adoc[]

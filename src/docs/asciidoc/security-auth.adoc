@@ -6,7 +6,7 @@
 :toclevels: 2
 
 == 인증 실패
-=== 1. Content-Type 오류
+=== 1. Content-Type이 application/json이 아님에 따라 예외가 발생한다
 HTTP Request
 include::{snippets}/Security/Authentication/Failure/Case1/http-request.adoc[]
 include::{snippets}/Security/Authentication/Failure/Case1/request-parameters.adoc[]
@@ -14,7 +14,7 @@ include::{snippets}/Security/Authentication/Failure/Case1/request-parameters.ado
 HTTP Response
 include::{snippets}/Security/Authentication/Failure/Case1/response-body.adoc[]
 
-=== 2. 인증 값이 비어있는 경우
+=== 2. 로그인 요청 시 아이디/비밀번호 값을 비워서 보냄에 따라 예외가 발생한다
 HTTP Request
 include::{snippets}/Security/Authentication/Failure/Case2/http-request.adoc[]
 include::{snippets}/Security/Authentication/Failure/Case2/request-fields.adoc[]
@@ -22,7 +22,7 @@ include::{snippets}/Security/Authentication/Failure/Case2/request-fields.adoc[]
 HTTP Response
 include::{snippets}/Security/Authentication/Failure/Case2/response-body.adoc[]
 
-=== 3. 사용자가 정보가 존재하지 않을 경우
+=== 3. 로그인 아이디에 해당하는 사용자 정보가 DB에 없음에 따라 예외가 발생한다
 HTTP Request
 include::{snippets}/Security/Authentication/Failure/Case3/http-request.adoc[]
 include::{snippets}/Security/Authentication/Failure/Case3/request-fields.adoc[]
@@ -30,7 +30,7 @@ include::{snippets}/Security/Authentication/Failure/Case3/request-fields.adoc[]
 HTTP Response
 include::{snippets}/Security/Authentication/Failure/Case3/response-body.adoc[]
 
-=== 4. 비밀번호가 일치하지 않는 경우
+=== 4. 비밀번호가 사용자 정보와 일치하지 않음에 따라 예외가 발생한다
 HTTP Request
 include::{snippets}/Security/Authentication/Failure/Case4/http-request.adoc[]
 include::{snippets}/Security/Authentication/Failure/Case4/request-fields.adoc[]
@@ -39,6 +39,7 @@ HTTP Response
 include::{snippets}/Security/Authentication/Failure/Case4/response-body.adoc[]
 
 == 인증 성공
+=== 로그인을 성공하면 Access Token & Refresh Token이 발급된다
 HTTP Request
 include::{snippets}/Security/Authentication/Success/http-request.adoc[]
 include::{snippets}/Security/Authentication/Success/request-fields.adoc[]

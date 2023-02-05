@@ -6,35 +6,43 @@
 :toclevels: 2
 
 == 닉네임 수정
-=== 1. 이전에 사용하던 닉네임으로 수정 요청 (실패)
+=== 1. Authorization 헤더에 Access Token이 없음에 따라 예외가 발생한다
 HTTP Request
 include::{snippets}/MemberApi/ChangeNickname/Failure/Case1/http-request.adoc[]
-include::{snippets}/MemberApi/ChangeNickname/Failure/Case1/request-headers.adoc[]
-include::{snippets}/MemberApi/ChangeNickname/Failure/Case1/request-parameters.adoc[]
+include::{snippets}/MemberApi/ChangeNickname/Failure/Case1/request-fields.adoc[]
 
 HTTP Response
 include::{snippets}/MemberApi/ChangeNickname/Failure/Case1/response-body.adoc[]
 
-=== 2. 타인이 사용하는 닉네임으로 수정 요청 (실패)
+=== 2. 이전에 사용하던 닉네임에 대해서 수정 요청을 보내면 예외가 발생한다
 HTTP Request
 include::{snippets}/MemberApi/ChangeNickname/Failure/Case2/http-request.adoc[]
 include::{snippets}/MemberApi/ChangeNickname/Failure/Case2/request-headers.adoc[]
-include::{snippets}/MemberApi/ChangeNickname/Failure/Case2/request-parameters.adoc[]
+include::{snippets}/MemberApi/ChangeNickname/Failure/Case2/request-fields.adoc[]
+
+HTTP Response
+include::{snippets}/MemberApi/ChangeNickname/Failure/Case1/response-body.adoc[]
+
+=== 3. 타인이 사용하는 닉네임으로 수정 요청을 보내면 예외가 발생한다
+HTTP Request
+include::{snippets}/MemberApi/ChangeNickname/Failure/Case3/http-request.adoc[]
+include::{snippets}/MemberApi/ChangeNickname/Failure/Case3/request-headers.adoc[]
+include::{snippets}/MemberApi/ChangeNickname/Failure/Case3/request-fields.adoc[]
 
 HTTP Response
 include::{snippets}/MemberApi/ChangeNickname/Failure/Case2/response-body.adoc[]
 
-=== 3. 닉네임 수정 성공
+=== 4. 닉네임 수정에 성공한다
 HTTP Request
 include::{snippets}/MemberApi/ChangeNickname/Success/http-request.adoc[]
 include::{snippets}/MemberApi/ChangeNickname/Success/request-headers.adoc[]
-include::{snippets}/MemberApi/ChangeNickname/Success/request-parameters.adoc[]
+include::{snippets}/MemberApi/ChangeNickname/Success/request-fields.adoc[]
 
 HTTP Response
 include::{snippets}/MemberApi/ChangeNickname/Success/http-response.adoc[]
 
 == 로그인 아이디 조회
-=== 1. 요청으로 보낸 이름에 대한 사용자 정보가 없는 경우
+=== 1. 요청으로 보낸 [이름, 이메일] 데이터중 이름에 대한 사용자 정보가 없는 경우 예외가 발생한다
 HTTP Request
 include::{snippets}/MemberApi/FindId/Failure/Case1/http-request.adoc[]
 include::{snippets}/MemberApi/FindId/Failure/Case1/request-fields.adoc[]
@@ -42,7 +50,7 @@ include::{snippets}/MemberApi/FindId/Failure/Case1/request-fields.adoc[]
 HTTP Response
 include::{snippets}/MemberApi/FindId/Failure/Case1/response-body.adoc[]
 
-=== 2. 요청으로 보낸 이메일에 대한 사용자 정보가 없는 경우
+=== 2. 요청으로 보낸 [이름, 이메일] 데이터중 이메일에 대한 사용자 정보가 없는 경우 예외가 발생한다
 HTTP Request
 include::{snippets}/MemberApi/FindId/Failure/Case2/http-request.adoc[]
 include::{snippets}/MemberApi/FindId/Failure/Case2/request-fields.adoc[]
@@ -50,7 +58,7 @@ include::{snippets}/MemberApi/FindId/Failure/Case2/request-fields.adoc[]
 HTTP Response
 include::{snippets}/MemberApi/FindId/Failure/Case2/response-body.adoc[]
 
-=== 3. 아이디 조회 성공
+=== 3. 이름, 이메일을 통해서 사용자 로그인 아이디 조회에 성공한다
 HTTP Request
 include::{snippets}/MemberApi/FindId/Success/http-request.adoc[]
 include::{snippets}/MemberApi/FindId/Success/request-fields.adoc[]
@@ -60,7 +68,7 @@ include::{snippets}/MemberApi/FindId/Success/response-body.adoc[]
 include::{snippets}/MemberApi/FindId/Success/response-fields.adoc[]
 
 == 비밀번호 재설정 간 사용자 인증
-=== 1. 인증 정보 불일치에 따른 예외
+=== 1. 요청으로 보낸 정보(이름, 로그인 아이디, 이메일)와 일치하는 사용자가 존재하지 않음에 따라 예외가 발생한다
 HTTP Request
 include::{snippets}/MemberApi/AuthMemberForResetPassword/Failure/http-request.adoc[]
 include::{snippets}/MemberApi/AuthMemberForResetPassword/Failure/request-fields.adoc[]
@@ -68,7 +76,7 @@ include::{snippets}/MemberApi/AuthMemberForResetPassword/Failure/request-fields.
 HTTP Response
 include::{snippets}/MemberApi/AuthMemberForResetPassword/Failure/response-body.adoc[]
 
-=== 2. 인증 성공
+=== 2. 인증을 성공적으로 완료한다
 HTTP Request
 include::{snippets}/MemberApi/AuthMemberForResetPassword/Success/http-request.adoc[]
 include::{snippets}/MemberApi/AuthMemberForResetPassword/Success/request-fields.adoc[]
@@ -77,7 +85,7 @@ HTTP Response
 include::{snippets}/MemberApi/AuthMemberForResetPassword/Success/http-response.adoc[]
 
 == 비밀번호 재설정
-=== 1. 이전과 동일한 비밀번호에 의한 예외
+=== 1. 이전과 동일한 비밀번호로 재설정하면 예외가 발생한다
 HTTP Request
 include::{snippets}/MemberApi/ResetPassword/Failure/http-request.adoc[]
 include::{snippets}/MemberApi/ResetPassword/Failure/request-fields.adoc[]
@@ -85,7 +93,7 @@ include::{snippets}/MemberApi/ResetPassword/Failure/request-fields.adoc[]
 HTTP Response
 include::{snippets}/MemberApi/ResetPassword/Failure/response-body.adoc[]
 
-=== 2. 재설정 성공
+=== 2. 비밀번호 재설정에 성공한다
 HTTP Request
 include::{snippets}/MemberApi/ResetPassword/Success/http-request.adoc[]
 include::{snippets}/MemberApi/ResetPassword/Success/request-fields.adoc[]

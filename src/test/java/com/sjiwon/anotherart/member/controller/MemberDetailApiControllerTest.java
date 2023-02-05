@@ -4,10 +4,13 @@ import com.sjiwon.anotherart.common.ControllerTest;
 import com.sjiwon.anotherart.common.ObjectMapperUtils;
 import com.sjiwon.anotherart.common.PasswordEncoderUtils;
 import com.sjiwon.anotherart.fixture.MemberFixture;
+import com.sjiwon.anotherart.global.security.exception.AuthErrorCode;
 import com.sjiwon.anotherart.member.controller.dto.request.AuthForResetPasswordRequest;
+import com.sjiwon.anotherart.member.controller.dto.request.ChangeNicknameRequest;
 import com.sjiwon.anotherart.member.controller.dto.request.FindIdRequest;
 import com.sjiwon.anotherart.member.controller.dto.request.ResetPasswordRequest;
 import com.sjiwon.anotherart.member.controller.utils.AuthForResetPasswordRequestUtils;
+import com.sjiwon.anotherart.member.controller.utils.ChangeNicknameRequestUtils;
 import com.sjiwon.anotherart.member.controller.utils.FindIdRequestUtils;
 import com.sjiwon.anotherart.member.controller.utils.ResetPasswordRequestUtils;
 import com.sjiwon.anotherart.member.domain.Member;
@@ -18,7 +21,6 @@ import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.MediaType;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
@@ -26,13 +28,12 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
+import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
-import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
-import static org.springframework.restdocs.request.RequestDocumentation.requestParameters;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -49,26 +50,25 @@ class MemberDetailApiControllerTest extends ControllerTest {
     @DisplayName("사용자 닉네임 수정 테스트 [PATCH /api/member/nickname]")
     class changeNickname {
         private static final String BASE_URL = "/api/member/nickname";
-        
+
         @Test
-        @DisplayName("이전에 사용하던 닉네임에 대해서 수정 요청을 보내면 예외가 발생한다")
+        @DisplayName("Authorization 헤더에 Access Token이 없음에 따라 예외가 발생한다")
         void test1() throws Exception {
             // given
             Member member = createMemberA();
-            String accessToken = jwtTokenProvider.createAccessToken(member.getId());
             final String changeNickname = member.getNickname();
+            ChangeNicknameRequest request = ChangeNicknameRequestUtils.createRequest(changeNickname);
 
             // when
             MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                     .patch(BASE_URL)
-                    .header(AUTHORIZATION, BEARER_TOKEN + accessToken)
-                    .param("changeNickname", changeNickname)
-                    .contentType(MediaType.APPLICATION_FORM_URLENCODED);
+                    .contentType(APPLICATION_JSON)
+                    .content(ObjectMapperUtils.objectToJson(request));
 
             // then
-            final MemberErrorCode expectedError = MemberErrorCode.NICKNAME_SAME_AS_BEFORE;
+            final AuthErrorCode expectedError = AuthErrorCode.INVALID_TOKEN;
             mockMvc.perform(requestBuilder)
-                    .andExpect(status().isConflict())
+                    .andExpect(status().isForbidden())
                     .andExpect(jsonPath("$.statusCode").exists())
                     .andExpect(jsonPath("$.statusCode").value(expectedError.getStatus().value()))
                     .andExpect(jsonPath("$.errorCode").exists())
@@ -80,11 +80,8 @@ class MemberDetailApiControllerTest extends ControllerTest {
                                     "MemberApi/ChangeNickname/Failure/Case1",
                                     preprocessRequest(prettyPrint()),
                                     preprocessResponse(prettyPrint()),
-                                    requestHeaders(
-                                            headerWithName(AUTHORIZATION).description("Access Token")
-                                    ),
-                                    requestParameters(
-                                            parameterWithName("changeNickname").description("변경할 닉네임")
+                                    requestFields(
+                                            fieldWithPath("changeNickname").description("변경할 닉네임")
                                     ),
                                     responseFields(
                                             fieldWithPath("statusCode").description("HTTP 상태 코드"),
@@ -94,25 +91,25 @@ class MemberDetailApiControllerTest extends ControllerTest {
                             )
                     );
         }
-
+        
         @Test
-        @DisplayName("타인이 사용하는 닉네임으로 수정 요청을 보내면 예외가 발생한다")
+        @DisplayName("이전에 사용하던 닉네임에 대해서 수정 요청을 보내면 예외가 발생한다")
         void test2() throws Exception {
             // given
-            Member memberA = createMemberA();
-            Member memberB = createMemberB();
-            String accessToken = jwtTokenProvider.createAccessToken(memberA.getId());
-            final String changeNickname = memberB.getNickname();
+            Member member = createMemberA();
+            String accessToken = jwtTokenProvider.createAccessToken(member.getId());
+            final String changeNickname = member.getNickname();
+            ChangeNicknameRequest request = ChangeNicknameRequestUtils.createRequest(changeNickname);
 
             // when
             MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                     .patch(BASE_URL)
+                    .contentType(APPLICATION_JSON)
                     .header(AUTHORIZATION, BEARER_TOKEN + accessToken)
-                    .param("changeNickname", changeNickname)
-                    .contentType(MediaType.APPLICATION_FORM_URLENCODED);
+                    .content(ObjectMapperUtils.objectToJson(request));
 
             // then
-            final MemberErrorCode expectedError = MemberErrorCode.DUPLICATE_NICKNAME;
+            final MemberErrorCode expectedError = MemberErrorCode.NICKNAME_SAME_AS_BEFORE;
             mockMvc.perform(requestBuilder)
                     .andExpect(status().isConflict())
                     .andExpect(jsonPath("$.statusCode").exists())
@@ -129,8 +126,56 @@ class MemberDetailApiControllerTest extends ControllerTest {
                                     requestHeaders(
                                             headerWithName(AUTHORIZATION).description("Access Token")
                                     ),
-                                    requestParameters(
-                                            parameterWithName("changeNickname").description("변경할 닉네임")
+                                    requestFields(
+                                            fieldWithPath("changeNickname").description("변경할 닉네임")
+                                    ),
+                                    responseFields(
+                                            fieldWithPath("statusCode").description("HTTP 상태 코드"),
+                                            fieldWithPath("errorCode").description("커스텀 예외 코드"),
+                                            fieldWithPath("message").description("예외 메시지")
+                                    )
+                            )
+                    );
+        }
+
+        @Test
+        @DisplayName("타인이 사용하는 닉네임으로 수정 요청을 보내면 예외가 발생한다")
+        void test3() throws Exception {
+            // given
+            Member memberA = createMemberA();
+            String accessToken = jwtTokenProvider.createAccessToken(memberA.getId());
+
+            Member memberB = createMemberB();
+            final String changeNickname = memberB.getNickname();
+            ChangeNicknameRequest request = ChangeNicknameRequestUtils.createRequest(changeNickname);
+
+            // when
+            MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                    .patch(BASE_URL)
+                    .contentType(APPLICATION_JSON)
+                    .header(AUTHORIZATION, BEARER_TOKEN + accessToken)
+                    .content(ObjectMapperUtils.objectToJson(request));
+
+            // then
+            final MemberErrorCode expectedError = MemberErrorCode.DUPLICATE_NICKNAME;
+            mockMvc.perform(requestBuilder)
+                    .andExpect(status().isConflict())
+                    .andExpect(jsonPath("$.statusCode").exists())
+                    .andExpect(jsonPath("$.statusCode").value(expectedError.getStatus().value()))
+                    .andExpect(jsonPath("$.errorCode").exists())
+                    .andExpect(jsonPath("$.errorCode").value(expectedError.getErrorCode()))
+                    .andExpect(jsonPath("$.message").exists())
+                    .andExpect(jsonPath("$.message").value(expectedError.getMessage()))
+                    .andDo(
+                            document(
+                                    "MemberApi/ChangeNickname/Failure/Case3",
+                                    preprocessRequest(prettyPrint()),
+                                    preprocessResponse(prettyPrint()),
+                                    requestHeaders(
+                                            headerWithName(AUTHORIZATION).description("Access Token")
+                                    ),
+                                    requestFields(
+                                            fieldWithPath("changeNickname").description("변경할 닉네임")
                                     ),
                                     responseFields(
                                             fieldWithPath("statusCode").description("HTTP 상태 코드"),
@@ -143,18 +188,19 @@ class MemberDetailApiControllerTest extends ControllerTest {
 
         @Test
         @DisplayName("닉네임 수정에 성공한다")
-        void test3() throws Exception {
+        void test4() throws Exception {
             // given
             Member member = createMemberA();
             String accessToken = jwtTokenProvider.createAccessToken(member.getId());
-            final String changeNickname = member.getNickname() + "hello world";
+            final String changeNickname = member.getNickname() + "diff";
+            ChangeNicknameRequest request = ChangeNicknameRequestUtils.createRequest(changeNickname);
 
             // when
             MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                     .patch(BASE_URL)
+                    .contentType(APPLICATION_JSON)
                     .header(AUTHORIZATION, BEARER_TOKEN + accessToken)
-                    .param("changeNickname", changeNickname)
-                    .contentType(MediaType.APPLICATION_FORM_URLENCODED);
+                    .content(ObjectMapperUtils.objectToJson(request));
 
             // then
             mockMvc.perform(requestBuilder)
@@ -168,8 +214,8 @@ class MemberDetailApiControllerTest extends ControllerTest {
                                     requestHeaders(
                                             headerWithName(AUTHORIZATION).description("Access Token")
                                     ),
-                                    requestParameters(
-                                            parameterWithName("changeNickname").description("변경할 닉네임")
+                                    requestFields(
+                                            fieldWithPath("changeNickname").description("변경할 닉네임")
                                     )
                             )
                     );
@@ -184,7 +230,7 @@ class MemberDetailApiControllerTest extends ControllerTest {
         private static final String BASE_URL = "/api/member/find/id";
 
         @Test
-        @DisplayName("요청으로 보낸 이름, 이메일에 대한 사용자 정보가 존재하지 않으면 예외가 발생한다 (이름 불일치)")
+        @DisplayName("요청으로 보낸 [이름, 이메일] 데이터중 이름에 대한 사용자 정보가 없는 경우 예외가 발생한다")
         void test1() throws Exception {
             /// given
             Member member = createMemberA();
@@ -193,8 +239,8 @@ class MemberDetailApiControllerTest extends ControllerTest {
             // when
             MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                     .post(BASE_URL)
-                    .content(ObjectMapperUtils.objectToJson(request))
-                    .contentType(MediaType.APPLICATION_JSON);
+                    .contentType(APPLICATION_JSON)
+                    .content(ObjectMapperUtils.objectToJson(request));
 
             // then
             final MemberErrorCode expectedError = MemberErrorCode.MEMBER_NOT_FOUND;
@@ -225,7 +271,7 @@ class MemberDetailApiControllerTest extends ControllerTest {
         }
 
         @Test
-        @DisplayName("요청으로 보낸 이름, 이메일에 대한 사용자 정보가 존재하지 않으면 예외가 발생한다 (이메일 불일치)")
+        @DisplayName("요청으로 보낸 [이름, 이메일] 데이터중 이메일에 대한 사용자 정보가 없는 경우 예외가 발생한다")
         void test2() throws Exception {
             /// given
             Member member = createMemberA();
@@ -234,8 +280,8 @@ class MemberDetailApiControllerTest extends ControllerTest {
             // when
             MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                     .post(BASE_URL)
-                    .content(ObjectMapperUtils.objectToJson(request))
-                    .contentType(MediaType.APPLICATION_JSON);
+                    .contentType(APPLICATION_JSON)
+                    .content(ObjectMapperUtils.objectToJson(request));
 
             // then
             final MemberErrorCode expectedError = MemberErrorCode.MEMBER_NOT_FOUND;
@@ -266,7 +312,7 @@ class MemberDetailApiControllerTest extends ControllerTest {
         }
 
         @Test
-        @DisplayName("이름, 이메일을 통해서 사용자 아이디를 조회한다")
+        @DisplayName("이름, 이메일을 통해서 사용자 로그인 아이디 조회에 성공한다")
         void test3() throws Exception {
             // given
             Member member = createMemberA();
@@ -275,8 +321,8 @@ class MemberDetailApiControllerTest extends ControllerTest {
             // when
             MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                     .post(BASE_URL)
-                    .content(ObjectMapperUtils.objectToJson(request))
-                    .contentType(MediaType.APPLICATION_JSON);
+                    .contentType(APPLICATION_JSON)
+                    .content(ObjectMapperUtils.objectToJson(request));
 
             // then
             mockMvc.perform(requestBuilder)
@@ -314,8 +360,8 @@ class MemberDetailApiControllerTest extends ControllerTest {
             // when
             MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                     .post(BASE_URL)
-                    .content(ObjectMapperUtils.objectToJson(request))
-                    .contentType(MediaType.APPLICATION_JSON);
+                    .contentType(APPLICATION_JSON)
+                    .content(ObjectMapperUtils.objectToJson(request));
 
             // then
             final MemberErrorCode expectedError = MemberErrorCode.MEMBER_NOT_FOUND;
@@ -356,8 +402,8 @@ class MemberDetailApiControllerTest extends ControllerTest {
             // when
             MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                     .post(BASE_URL)
-                    .content(ObjectMapperUtils.objectToJson(request))
-                    .contentType(MediaType.APPLICATION_JSON);
+                    .contentType(APPLICATION_JSON)
+                    .content(ObjectMapperUtils.objectToJson(request));
 
             // then
             mockMvc.perform(requestBuilder)
@@ -395,8 +441,8 @@ class MemberDetailApiControllerTest extends ControllerTest {
             // when
             MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                     .post(BASE_URL)
-                    .content(ObjectMapperUtils.objectToJson(request))
-                    .contentType(MediaType.APPLICATION_JSON);
+                    .contentType(APPLICATION_JSON)
+                    .content(ObjectMapperUtils.objectToJson(request));
 
             // then
             final MemberErrorCode expectedError = MemberErrorCode.PASSWORD_SAME_AS_BEFORE;
@@ -438,8 +484,8 @@ class MemberDetailApiControllerTest extends ControllerTest {
             // when
             MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                     .post(BASE_URL)
-                    .content(ObjectMapperUtils.objectToJson(request))
-                    .contentType(MediaType.APPLICATION_JSON);
+                    .contentType(APPLICATION_JSON)
+                    .content(ObjectMapperUtils.objectToJson(request));
 
             // then
             mockMvc.perform(requestBuilder)

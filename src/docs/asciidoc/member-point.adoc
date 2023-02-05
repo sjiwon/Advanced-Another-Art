@@ -1,4 +1,4 @@
-= 사용자 포인트 관련 API
+= 사용자 포인트 충전/환불 API
 :doctype: book
 :icons: font
 :source-highlighter: highlightjs
@@ -6,7 +6,7 @@
 :toclevels: 2
 
 == 포인트 충전
-=== 1. Access Token이 없음에 따라 포인트 충전 실패
+=== 1. Authorization 헤더에 Access Token이 없음에 따라 예외가 발생한다
 HTTP Request
 include::{snippets}/MemberApi/ChargePoint/Failure/http-request.adoc[]
 include::{snippets}/MemberApi/ChargePoint/Failure/request-parameters.adoc[]
@@ -14,7 +14,7 @@ include::{snippets}/MemberApi/ChargePoint/Failure/request-parameters.adoc[]
 HTTP Response
 include::{snippets}/MemberApi/ChargePoint/Failure/response-body.adoc[]
 
-=== 2. 포인트 충전 성공
+=== 2. 포인트 충전에 성공한다
 HTTP Request
 include::{snippets}/MemberApi/ChargePoint/Success/http-request.adoc[]
 include::{snippets}/MemberApi/ChargePoint/Success/request-headers.adoc[]
@@ -24,7 +24,7 @@ HTTP Response
 include::{snippets}/MemberApi/ChargePoint/Success/http-response.adoc[]
 
 == 포인트 환불
-=== 1. Access Token이 없음에 따라 포인트 환불 실패
+=== 1. Authorization 헤더에 Access Token이 없음에 따라 예외가 발생한다
 HTTP Request
 include::{snippets}/MemberApi/RefundPoint/Failure/Case1/http-request.adoc[]
 include::{snippets}/MemberApi/RefundPoint/Failure/Case1/request-parameters.adoc[]
@@ -32,7 +32,7 @@ include::{snippets}/MemberApi/RefundPoint/Failure/Case1/request-parameters.adoc[
 HTTP Response
 include::{snippets}/MemberApi/RefundPoint/Failure/Case1/response-body.adoc[]
 
-=== 2. 보유 포인트 부족에 따른 포인트 환불 실패
+=== 2. 보유한 포인트가 부족함에 따라 포인트 환불이 불가능하다
 HTTP Request
 include::{snippets}/MemberApi/RefundPoint/Failure/Case2/http-request.adoc[]
 include::{snippets}/MemberApi/RefundPoint/Failure/Case2/request-headers.adoc[]
@@ -41,7 +41,7 @@ include::{snippets}/MemberApi/RefundPoint/Failure/Case2/request-parameters.adoc[
 HTTP Response
 include::{snippets}/MemberApi/RefundPoint/Failure/Case2/response-body.adoc[]
 
-=== 3. 포인트 환불 성공
+=== 3. 포인트 환불에 성공한다
 HTTP Request
 include::{snippets}/MemberApi/RefundPoint/Success/http-request.adoc[]
 include::{snippets}/MemberApi/RefundPoint/Success/request-headers.adoc[]

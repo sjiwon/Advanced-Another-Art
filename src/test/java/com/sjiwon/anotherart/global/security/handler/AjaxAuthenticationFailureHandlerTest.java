@@ -11,11 +11,12 @@ import com.sjiwon.anotherart.member.exception.MemberErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import static org.springframework.http.MediaType.APPLICATION_FORM_URLENCODED;
+import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
@@ -38,14 +39,14 @@ class AjaxAuthenticationFailureHandlerTest extends ControllerTest {
     private static final String WRONG_LOGIN_PASSWORD = "fakepassword123abc!@#";
 
     @Test
-    @DisplayName("올바르지 않은 인증방식에 의해 예외가 발생한다 -> [Content-Type: application/json]")
+    @DisplayName("Content-Type이 application/json이 아님에 따라 예외가 발생한다")
     void test1() throws Exception {
         // given
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .post(BASE_URL)
+                .contentType(APPLICATION_FORM_URLENCODED)
                 .param("loginId", DEFAULT_LOGIN_ID)
-                .param("loginPassword", DEFAULT_LOGIN_PASSWORD)
-                .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE);
+                .param("loginPassword", DEFAULT_LOGIN_PASSWORD);
 
         // when - then
         final AuthErrorCode expectedError = AuthErrorCode.INVALID_AUTHENTICATION_REQUEST_FORMAT;
@@ -84,8 +85,8 @@ class AjaxAuthenticationFailureHandlerTest extends ControllerTest {
         // when
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .post(BASE_URL)
-                .content(ObjectMapperUtils.objectToJson(loginRequest))
-                .contentType(MediaType.APPLICATION_JSON_VALUE);
+                .contentType(APPLICATION_JSON)
+                .content(ObjectMapperUtils.objectToJson(loginRequest));
 
         // then
         final AuthErrorCode expectedError = AuthErrorCode.INVALID_AUTHENTICATION_REQUEST_VALUE;
@@ -116,7 +117,7 @@ class AjaxAuthenticationFailureHandlerTest extends ControllerTest {
     }
 
     @Test
-    @DisplayName("아이디 정보가 DB에 없음에 따라 예외가 발생한다")
+    @DisplayName("로그인 아이디에 해당하는 사용자 정보가 DB에 없음에 따라 예외가 발생한다")
     void test3() throws Exception {
         // given
         createMember();
@@ -125,8 +126,8 @@ class AjaxAuthenticationFailureHandlerTest extends ControllerTest {
         // when
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .post(BASE_URL)
-                .content(ObjectMapperUtils.objectToJson(loginRequest))
-                .contentType(MediaType.APPLICATION_JSON_VALUE);
+                .contentType(APPLICATION_JSON)
+                .content(ObjectMapperUtils.objectToJson(loginRequest));
 
         // then
         final MemberErrorCode expectedError = MemberErrorCode.MEMBER_NOT_FOUND;
@@ -166,8 +167,8 @@ class AjaxAuthenticationFailureHandlerTest extends ControllerTest {
         // when
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .post(BASE_URL)
-                .content(ObjectMapperUtils.objectToJson(loginRequest))
-                .contentType(MediaType.APPLICATION_JSON_VALUE);
+                .contentType(APPLICATION_JSON)
+                .content(ObjectMapperUtils.objectToJson(loginRequest));
 
         // then
         final MemberErrorCode expectedError = MemberErrorCode.INVALID_PASSWORD;

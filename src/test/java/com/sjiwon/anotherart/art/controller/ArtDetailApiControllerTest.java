@@ -38,8 +38,8 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
-import static org.springframework.http.MediaType.APPLICATION_FORM_URLENCODED_VALUE;
-import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+import static org.springframework.http.MediaType.APPLICATION_FORM_URLENCODED;
+import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
@@ -86,7 +86,7 @@ class ArtDetailApiControllerTest extends ControllerTest {
             // when
             MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                     .post(BASE_URL)
-                    .contentType(APPLICATION_FORM_URLENCODED_VALUE)
+                    .contentType(APPLICATION_FORM_URLENCODED)
                     .param("artName", art.getName());
 
             // then
@@ -127,7 +127,7 @@ class ArtDetailApiControllerTest extends ControllerTest {
             // when
             MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                     .post(BASE_URL)
-                    .contentType(APPLICATION_FORM_URLENCODED_VALUE)
+                    .contentType(APPLICATION_FORM_URLENCODED)
                     .header(AUTHORIZATION, BEARER_TOKEN + accessToken)
                     .param("artName", art.getName());
 
@@ -172,7 +172,7 @@ class ArtDetailApiControllerTest extends ControllerTest {
             // when
             MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                     .post(BASE_URL)
-                    .contentType(APPLICATION_FORM_URLENCODED_VALUE)
+                    .contentType(APPLICATION_FORM_URLENCODED)
                     .header(AUTHORIZATION, BEARER_TOKEN + accessToken)
                     .param("artName", art.getName() + "diff");
 
@@ -212,7 +212,7 @@ class ArtDetailApiControllerTest extends ControllerTest {
             // when
             MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
                     .patch(BASE_URL, art.getId())
-                    .contentType(APPLICATION_JSON_VALUE)
+                    .contentType(APPLICATION_JSON)
                     .content(ObjectMapperUtils.objectToJson(request));
 
             // then
@@ -258,7 +258,7 @@ class ArtDetailApiControllerTest extends ControllerTest {
             // when
             MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
                     .patch(BASE_URL, art.getId())
-                    .contentType(APPLICATION_JSON_VALUE)
+                    .contentType(APPLICATION_JSON)
                     .header(AUTHORIZATION, BEARER_TOKEN + accessToken)
                     .content(ObjectMapperUtils.objectToJson(request));
 
@@ -303,7 +303,7 @@ class ArtDetailApiControllerTest extends ControllerTest {
             // when
             MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
                     .patch(BASE_URL, art.getId())
-                    .contentType(APPLICATION_JSON_VALUE)
+                    .contentType(APPLICATION_JSON)
                     .content(ObjectMapperUtils.objectToJson(request));
 
             // then
@@ -348,7 +348,7 @@ class ArtDetailApiControllerTest extends ControllerTest {
             // when
             MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
                     .patch(BASE_URL, art.getId())
-                    .contentType(APPLICATION_JSON_VALUE)
+                    .contentType(APPLICATION_JSON)
                     .header(AUTHORIZATION, BEARER_TOKEN + accessToken)
                     .content(ObjectMapperUtils.objectToJson(request));
 
@@ -398,7 +398,7 @@ class ArtDetailApiControllerTest extends ControllerTest {
             // when
             MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
                     .patch(BASE_URL, art.getId())
-                    .contentType(APPLICATION_JSON_VALUE)
+                    .contentType(APPLICATION_JSON)
                     .header(AUTHORIZATION, BEARER_TOKEN + accessToken)
                     .content(ObjectMapperUtils.objectToJson(request));
 
@@ -448,7 +448,7 @@ class ArtDetailApiControllerTest extends ControllerTest {
             // when
             MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
                     .patch(BASE_URL, art.getId())
-                    .contentType(APPLICATION_JSON_VALUE)
+                    .contentType(APPLICATION_JSON)
                     .header(AUTHORIZATION, BEARER_TOKEN + accessToken)
                     .content(ObjectMapperUtils.objectToJson(request));
 

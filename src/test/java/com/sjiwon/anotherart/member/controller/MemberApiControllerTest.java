@@ -16,12 +16,12 @@ import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
@@ -40,7 +40,7 @@ class MemberApiControllerTest extends ControllerTest {
         private static final String BASE_URL = "/api/member";
 
         @Test
-        @DisplayName("필수 값이 안들어옴에 따라 회원가입에 실패한다")
+        @DisplayName("회원가입에 필요한 필수 값들이 비어있음에 따라 회원가입에 실패한다")
         void test1() throws Exception {
             // given
             SignUpRequest signUpRequest = SignUpRequestUtils.createEmptyRequest();
@@ -48,7 +48,7 @@ class MemberApiControllerTest extends ControllerTest {
             // when
             MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                     .post(BASE_URL)
-                    .contentType(MediaType.APPLICATION_JSON)
+                    .contentType(APPLICATION_JSON)
                     .content(ObjectMapperUtils.objectToJson(signUpRequest));
 
             // then
@@ -96,7 +96,7 @@ class MemberApiControllerTest extends ControllerTest {
             // when
             MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                     .post(BASE_URL)
-                    .contentType(MediaType.APPLICATION_JSON)
+                    .contentType(APPLICATION_JSON)
                     .content(ObjectMapperUtils.objectToJson(signUpRequest));
 
             // then
@@ -144,7 +144,7 @@ class MemberApiControllerTest extends ControllerTest {
             // when
             MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                     .post(BASE_URL)
-                    .contentType(MediaType.APPLICATION_JSON)
+                    .contentType(APPLICATION_JSON)
                     .content(ObjectMapperUtils.objectToJson(signUpRequest));
 
             // then
@@ -197,12 +197,12 @@ class MemberApiControllerTest extends ControllerTest {
             // when
             MockHttpServletRequestBuilder successRequestBuilder = MockMvcRequestBuilders
                     .post(BASE_URL)
-                    .contentType(MediaType.APPLICATION_JSON)
+                    .contentType(APPLICATION_JSON)
                     .content(ObjectMapperUtils.objectToJson(successRequest));
 
             MockHttpServletRequestBuilder failureRequestBuilder = MockMvcRequestBuilders
                     .post(BASE_URL)
-                    .contentType(MediaType.APPLICATION_JSON)
+                    .contentType(APPLICATION_JSON)
                     .content(ObjectMapperUtils.objectToJson(failureRequest));
 
             // then
@@ -263,12 +263,12 @@ class MemberApiControllerTest extends ControllerTest {
             // when
             MockHttpServletRequestBuilder successRequestBuilder = MockMvcRequestBuilders
                     .post(BASE_URL)
-                    .contentType(MediaType.APPLICATION_JSON)
+                    .contentType(APPLICATION_JSON)
                     .content(ObjectMapperUtils.objectToJson(successRequest));
 
             MockHttpServletRequestBuilder failureRequestBuilder = MockMvcRequestBuilders
                     .post(BASE_URL)
-                    .contentType(MediaType.APPLICATION_JSON)
+                    .contentType(APPLICATION_JSON)
                     .content(ObjectMapperUtils.objectToJson(failureRequest));
 
             // then
@@ -329,12 +329,12 @@ class MemberApiControllerTest extends ControllerTest {
             // when
             MockHttpServletRequestBuilder successRequestBuilder = MockMvcRequestBuilders
                     .post(BASE_URL)
-                    .contentType(MediaType.APPLICATION_JSON)
+                    .contentType(APPLICATION_JSON)
                     .content(ObjectMapperUtils.objectToJson(successRequest));
 
             MockHttpServletRequestBuilder failureRequestBuilder = MockMvcRequestBuilders
                     .post(BASE_URL)
-                    .contentType(MediaType.APPLICATION_JSON)
+                    .contentType(APPLICATION_JSON)
                     .content(ObjectMapperUtils.objectToJson(failureRequest));
 
             // then
@@ -395,12 +395,12 @@ class MemberApiControllerTest extends ControllerTest {
             // when
             MockHttpServletRequestBuilder successRequestBuilder = MockMvcRequestBuilders
                     .post(BASE_URL)
-                    .contentType(MediaType.APPLICATION_JSON)
+                    .contentType(APPLICATION_JSON)
                     .content(ObjectMapperUtils.objectToJson(successRequest));
 
             MockHttpServletRequestBuilder failureRequestBuilder = MockMvcRequestBuilders
                     .post(BASE_URL)
-                    .contentType(MediaType.APPLICATION_JSON)
+                    .contentType(APPLICATION_JSON)
                     .content(ObjectMapperUtils.objectToJson(failureRequest));
 
             // then
@@ -458,7 +458,7 @@ class MemberApiControllerTest extends ControllerTest {
             // when
             MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                     .post(BASE_URL)
-                    .contentType(MediaType.APPLICATION_JSON)
+                    .contentType(APPLICATION_JSON)
                     .content(ObjectMapperUtils.objectToJson(request));
 
             // then
