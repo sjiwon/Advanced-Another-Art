@@ -3,7 +3,6 @@ package com.sjiwon.anotherart.art.service;
 import com.sjiwon.anotherart.art.domain.Art;
 import com.sjiwon.anotherart.art.domain.ArtRepository;
 import com.sjiwon.anotherart.art.domain.UploadImage;
-import com.sjiwon.anotherart.art.domain.hashtag.HashtagRepository;
 import com.sjiwon.anotherart.art.exception.ArtErrorCode;
 import com.sjiwon.anotherart.art.service.dto.request.ArtRegisterRequestDto;
 import com.sjiwon.anotherart.auction.domain.Auction;
@@ -31,7 +30,6 @@ import java.util.List;
 public class ArtService {
     private final ArtRepository artRepository;
     private final ArtFindService artFindService;
-    private final HashtagRepository hashtagRepository;
     private final MemberFindService memberFindService;
     private final AuctionRepository auctionRepository;
     private final AuctionRecordRepository auctionRecordRepository;
@@ -93,7 +91,7 @@ public class ArtService {
     @Transactional
     public void updateHashtags(Long artId, List<String> hashtagList) {
         Art art = artFindService.findById(artId);
-        hashtagRepository.deleteByArtId(artId);
+        artRepository.deleteHashtagsByArtId(artId);
         art.applyHashtags(new HashSet<>(hashtagList));
     }
 
@@ -101,7 +99,7 @@ public class ArtService {
     public void deleteArt(Long memberId, Long artId) {
         Art art = artFindService.findById(artId);
         validateArtOwner(art, memberId);
-        executeDeleteArt(art);
+        executeArtDeleteProcess(art);
     }
 
     private void validateArtOwner(Art art, Long memberId) {
@@ -110,16 +108,16 @@ public class ArtService {
         }
     }
 
-    private void executeDeleteArt(Art art) {
-        validateSaleProcess(art);
+    private void executeArtDeleteProcess(Art art) {
+        validateSaleStatus(art);
         if (art.isAuctionType()) {
             validateAuctionArtBidRecord(art);
         }
-        hashtagRepository.deleteByArtId(art.getId());
+        artRepository.deleteHashtagsByArtId(art.getId());
         artRepository.deleteById(art.getId());
     }
 
-    private void validateSaleProcess(Art art) {
+    private void validateSaleStatus(Art art) {
         if (art.isSoldOut()) {
             throw AnotherArtException.type(ArtErrorCode.ALREADY_SALE);
         }

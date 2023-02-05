@@ -9,12 +9,18 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import java.util.HashSet;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("Art [Repository Layer] -> ArtRepository 테스트")
 class ArtRepositoryTest extends RepositoryTest {
+    @PersistenceContext
+    EntityManager em;
+
     @Autowired
     ArtRepository artRepository;
 
@@ -77,6 +83,24 @@ class ArtRepositoryTest extends RepositoryTest {
         assertThat(actual2).isFalse();
     }
 
+    @Test
+    @DisplayName("작품의 해시태그를 삭제한다")
+    void test4() {
+        // given
+        Member owner = createMemberA();
+        Art art = createArt(owner);
+        final List<String> hashtagList = List.of("A", "B", "C", "D", "E");
+        art.applyHashtags(new HashSet<>(hashtagList));
+
+        // when
+        artRepository.deleteHashtagsByArtId(art.getId());
+        sync();
+
+        // then
+        Art findArt = artRepository.findById(art.getId()).orElseThrow();
+        assertThat(findArt.getHashtags()).isEmpty();
+    }
+
     private Member createMemberA() {
         return memberRepository.save(MemberFixture.A.toMember());
     }
@@ -87,5 +111,10 @@ class ArtRepositoryTest extends RepositoryTest {
 
     private Art createArt(Member member) {
         return artRepository.save(ArtFixture.A.toArt(member));
+    }
+
+    private void sync() {
+        em.flush();
+        em.clear();
     }
 }
