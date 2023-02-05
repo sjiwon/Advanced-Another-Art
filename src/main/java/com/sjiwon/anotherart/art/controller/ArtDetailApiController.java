@@ -3,6 +3,7 @@ package com.sjiwon.anotherart.art.controller;
 import com.sjiwon.anotherart.art.controller.dto.request.ChangeArtDescriptionRequest;
 import com.sjiwon.anotherart.art.controller.dto.request.UpdateArtHashtagRequest;
 import com.sjiwon.anotherart.art.service.ArtService;
+import com.sjiwon.anotherart.global.annotation.ExtractPayload;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -42,6 +43,14 @@ public class ArtDetailApiController {
     @ApiOperation(value = "작품 해시태그 수정 API", notes = "작품 해시태그를 수정하는 API")
     public ResponseEntity<Void> updateHashtags(@PathVariable Long artId, @Valid @RequestBody UpdateArtHashtagRequest request) {
         artService.updateHashtags(artId, request.getHashtagList());
+        return ResponseEntity.noContent().build();
+    }
+
+    @PreAuthorize("hasRole('USER')")
+    @DeleteMapping("/{artId}")
+    @ApiOperation(value = "작품 삭제 API", notes = "작품을 삭제하는 API")
+    public ResponseEntity<Void> deleteArt(@ExtractPayload Long memberId, @PathVariable Long artId) {
+        artService.deleteArt(memberId, artId);
         return ResponseEntity.noContent().build();
     }
 }
