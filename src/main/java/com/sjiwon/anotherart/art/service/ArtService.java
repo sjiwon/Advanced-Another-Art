@@ -96,7 +96,7 @@ public class ArtService {
     }
 
     @Transactional
-    public void deleteArt(Long memberId, Long artId) {
+    public void deleteArt(Long artId, Long memberId) {
         Art art = artFindService.findById(artId);
         validateArtOwner(art, memberId);
         executeArtDeleteProcess(art);

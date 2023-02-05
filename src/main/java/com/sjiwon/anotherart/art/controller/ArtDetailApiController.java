@@ -49,8 +49,8 @@ public class ArtDetailApiController {
     @PreAuthorize("hasRole('USER')")
     @DeleteMapping("/{artId}")
     @ApiOperation(value = "작품 삭제 API", notes = "작품을 삭제하는 API")
-    public ResponseEntity<Void> deleteArt(@ExtractPayload Long memberId, @PathVariable Long artId) {
-        artService.deleteArt(memberId, artId);
+    public ResponseEntity<Void> deleteArt(@PathVariable Long artId, @ExtractPayload Long memberId) {
+        artService.deleteArt(artId, memberId);
         return ResponseEntity.noContent().build();
     }
 }
