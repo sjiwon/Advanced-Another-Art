@@ -19,6 +19,10 @@ public class MemberRequestValidationMessage {
         public static final String VALUE = "중복 체크 값은 필수입니다.";
     }
 
+    public static class ChangeNickname {
+        public static final String CHANGE_NAME = "변경할 닉네임은 필수입니다";
+    }
+
     public static class FindId {
         public static final String NAME = "이름은 필수입니다.";
         public static final String EMAIL = "이메일은 필수입니다.";

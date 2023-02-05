@@ -3,6 +3,7 @@ package com.sjiwon.anotherart.member.controller;
 import com.sjiwon.anotherart.global.annotation.ExtractPayload;
 import com.sjiwon.anotherart.global.dto.SimpleWrapper;
 import com.sjiwon.anotherart.member.controller.dto.request.AuthForResetPasswordRequest;
+import com.sjiwon.anotherart.member.controller.dto.request.ChangeNicknameRequest;
 import com.sjiwon.anotherart.member.controller.dto.request.FindIdRequest;
 import com.sjiwon.anotherart.member.controller.dto.request.ResetPasswordRequest;
 import com.sjiwon.anotherart.member.domain.Email;
@@ -26,8 +27,8 @@ public class MemberDetailApiController {
     @PreAuthorize("hasRole('USER')")
     @PatchMapping("/nickname")
     @ApiOperation(value = "닉네임 수정 API", notes = "Access Token의 Payload를 통해서 memberId에 해당하는 사용자의 닉네임 수정")
-    public ResponseEntity<Void> changeNickname(@ExtractPayload Long memberId, @RequestParam String changeNickname) {
-        memberService.changeNickname(memberId, changeNickname);
+    public ResponseEntity<Void> changeNickname(@ExtractPayload Long memberId, @Valid @RequestBody ChangeNicknameRequest request) {
+        memberService.changeNickname(memberId, request.getChangeNickname());
         return ResponseEntity.noContent().build();
     }
 
