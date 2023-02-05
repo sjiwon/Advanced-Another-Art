@@ -88,3 +88,60 @@ include::{snippets}/ArtApi/UpdateHashtags/Success/request-fields.adoc[]
 
 HTTP Response
 include::{snippets}/ArtApi/UpdateHashtags/Success/http-response.adoc[]
+
+== 일반 작품
+=== 1. Authorization 헤더에 Access Token이 없음에 따른 예외
+HTTP Request
+include::{snippets}/ArtApi/DeleteGeneralArt/Failure/Case1/http-request.adoc[]
+include::{snippets}/ArtApi/DeleteGeneralArt/Failure/Case1/path-parameters.adoc[]
+
+HTTP Response
+include::{snippets}/ArtApi/DeleteGeneralArt/Failure/Case1/response-body.adoc[]
+
+=== 2. 작품 소유자가 아닌 사용자가 작품 삭제 요청을 보냄에 따른 예외
+HTTP Request
+include::{snippets}/ArtApi/DeleteGeneralArt/Failure/Case2/http-request.adoc[]
+include::{snippets}/ArtApi/DeleteGeneralArt/Failure/Case2/request-headers.adoc[]
+include::{snippets}/ArtApi/DeleteGeneralArt/Failure/Case2/path-parameters.adoc[]
+
+HTTP Response
+include::{snippets}/ArtApi/DeleteGeneralArt/Failure/Case2/response-body.adoc[]
+
+=== 3. 이미 판매된 작품에 대한 삭제 요청에 따른 예외
+HTTP Request
+include::{snippets}/ArtApi/DeleteGeneralArt/Failure/Case3/http-request.adoc[]
+include::{snippets}/ArtApi/DeleteGeneralArt/Failure/Case3/request-headers.adoc[]
+include::{snippets}/ArtApi/DeleteGeneralArt/Failure/Case3/path-parameters.adoc[]
+
+HTTP Response
+include::{snippets}/ArtApi/DeleteGeneralArt/Failure/Case3/response-body.adoc[]
+
+=== 4. 일반 작품 삭제 성공
+HTTP Request
+include::{snippets}/ArtApi/DeleteGeneralArt/Success/http-request.adoc[]
+include::{snippets}/ArtApi/DeleteGeneralArt/Success/request-headers.adoc[]
+include::{snippets}/ArtApi/DeleteGeneralArt/Success/path-parameters.adoc[]
+
+HTTP Response
+include::{snippets}/ArtApi/DeleteGeneralArt/Success/http-response.adoc[]
+
+== 경매 작품
+일반 작품의 예외 케이스 모두 동일 적용
+
+=== 1. 입찰이 1번이라도 진행된 경매 작품은 삭제할 수 없다
+HTTP Request
+include::{snippets}/ArtApi/DeleteAuctionArt/Failure/http-request.adoc[]
+include::{snippets}/ArtApi/DeleteAuctionArt/Failure/request-headers.adoc[]
+include::{snippets}/ArtApi/DeleteAuctionArt/Failure/path-parameters.adoc[]
+
+HTTP Response
+include::{snippets}/ArtApi/DeleteAuctionArt/Failure/response-body.adoc[]
+
+=== 2. 경매 작품 삭제 성공
+HTTP Request
+include::{snippets}/ArtApi/DeleteAuctionArt/Success/http-request.adoc[]
+include::{snippets}/ArtApi/DeleteAuctionArt/Success/request-headers.adoc[]
+include::{snippets}/ArtApi/DeleteAuctionArt/Success/path-parameters.adoc[]
+
+HTTP Response
+include::{snippets}/ArtApi/DeleteAuctionArt/Success/http-response.adoc[]

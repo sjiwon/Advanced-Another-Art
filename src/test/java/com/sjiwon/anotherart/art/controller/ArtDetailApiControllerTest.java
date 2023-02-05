@@ -6,11 +6,14 @@ import com.sjiwon.anotherart.art.controller.utils.ChangeArtDescriptionRequestUti
 import com.sjiwon.anotherart.art.controller.utils.UpdateArtHashtagRequestUtils;
 import com.sjiwon.anotherart.art.domain.Art;
 import com.sjiwon.anotherart.art.domain.ArtRepository;
+import com.sjiwon.anotherart.art.domain.ArtStatus;
 import com.sjiwon.anotherart.art.exception.ArtErrorCode;
 import com.sjiwon.anotherart.art.exception.ArtRequestValidationMessage;
 import com.sjiwon.anotherart.auction.domain.Auction;
 import com.sjiwon.anotherart.auction.domain.AuctionRepository;
 import com.sjiwon.anotherart.auction.domain.Period;
+import com.sjiwon.anotherart.auction.domain.record.AuctionRecord;
+import com.sjiwon.anotherart.auction.domain.record.AuctionRecordRepository;
 import com.sjiwon.anotherart.common.ControllerTest;
 import com.sjiwon.anotherart.common.ObjectMapperUtils;
 import com.sjiwon.anotherart.fixture.ArtFixture;
@@ -54,6 +57,7 @@ class ArtDetailApiControllerTest extends ControllerTest {
     private final JwtTokenProvider jwtTokenProvider;
     private final ArtRepository artRepository;
     private final AuctionRepository auctionRepository;
+    private final AuctionRecordRepository auctionRecordRepository;
 
     private static final String BEARER_TOKEN = "Bearer ";
 
@@ -76,7 +80,7 @@ class ArtDetailApiControllerTest extends ControllerTest {
         @DisplayName("Authorization 헤더에 Access Token이 없음에 따라 예외가 발생한다")
         void test1() throws Exception {
             // given
-            Member owner = createMember();
+            Member owner = createMemberA();
             Art art = createGeneralArt(owner);
 
             // when
@@ -116,7 +120,7 @@ class ArtDetailApiControllerTest extends ControllerTest {
         @DisplayName("작품명이 중복됨에 따라 예외가 발생한다")
         void test2() throws Exception {
             // given
-            Member owner = createMember();
+            Member owner = createMemberA();
             String accessToken = jwtTokenProvider.createAccessToken(owner.getId());
             Art art = createGeneralArt(owner);
 
@@ -158,10 +162,10 @@ class ArtDetailApiControllerTest extends ControllerTest {
         }
 
         @Test
-        @DisplayName("작품명이 중복되지 않음에 따라 중복 체크에 성공한다")
+        @DisplayName("작품명이 중복되지 않기 때문에 중복 체크에 성공한다")
         void test3() throws Exception {
             // given
-            Member owner = createMember();
+            Member owner = createMemberA();
             String accessToken = jwtTokenProvider.createAccessToken(owner.getId());
             Art art = createGeneralArt(owner);
 
@@ -201,7 +205,7 @@ class ArtDetailApiControllerTest extends ControllerTest {
         @DisplayName("Authorization 헤더에 Access Token이 없음에 따라 예외가 발생한다")
         void test1() throws Exception {
             // given
-            Member owner = createMember();
+            Member owner = createMemberA();
             Art art = createGeneralArt(owner);
             ChangeArtDescriptionRequest request = ChangeArtDescriptionRequestUtils.createRequest(art.getDescription() + "change");
 
@@ -245,7 +249,7 @@ class ArtDetailApiControllerTest extends ControllerTest {
         @DisplayName("작품 설명 수정에 성공한다")
         void test2() throws Exception {
             // given
-            Member owner = createMember();
+            Member owner = createMemberA();
             String accessToken = jwtTokenProvider.createAccessToken(owner.getId());
             Art art = createGeneralArt(owner);
             final String changeDescription = art.getDescription() + "change";
@@ -259,7 +263,6 @@ class ArtDetailApiControllerTest extends ControllerTest {
                     .content(ObjectMapperUtils.objectToJson(request));
 
             // then
-            final AuthErrorCode expectedError = AuthErrorCode.INVALID_TOKEN;
             mockMvc.perform(requestBuilder)
                     .andExpect(status().isNoContent())
                     .andExpect(jsonPath("$").doesNotExist())
@@ -293,7 +296,7 @@ class ArtDetailApiControllerTest extends ControllerTest {
         @DisplayName("Authorization 헤더에 Access Token이 없음에 따라 예외가 발생한다")
         void test1() throws Exception {
             // given
-            Member owner = createMember();
+            Member owner = createMemberA();
             Art art = createGeneralArt(owner);
             UpdateArtHashtagRequest request = UpdateArtHashtagRequestUtils.createRequest(UPDATE_HASHTAGS);
 
@@ -337,7 +340,7 @@ class ArtDetailApiControllerTest extends ControllerTest {
         @DisplayName("업데이트 하려는 해시태그의 개수가 최소 개수(1개)보다 적음에 따라 예외가 발생한다")
         void test2() throws Exception {
             // given
-            Member owner = createMember();
+            Member owner = createMemberA();
             String accessToken = jwtTokenProvider.createAccessToken(owner.getId());
             Art art = createGeneralArt(owner);
             UpdateArtHashtagRequest request = UpdateArtHashtagRequestUtils.createRequest(EMPTY_HASHTAGS);
@@ -387,7 +390,7 @@ class ArtDetailApiControllerTest extends ControllerTest {
         @DisplayName("업데이트 하려는 해시태그의 개수가 최대 개수(10개)보다 많음에 따라 예외가 발생한다")
         void test3() throws Exception {
             // given
-            Member owner = createMember();
+            Member owner = createMemberA();
             String accessToken = jwtTokenProvider.createAccessToken(owner.getId());
             Art art = createGeneralArt(owner);
             UpdateArtHashtagRequest request = UpdateArtHashtagRequestUtils.createRequest(OVERFLOW_HASHTAGS);
@@ -437,7 +440,7 @@ class ArtDetailApiControllerTest extends ControllerTest {
         @DisplayName("작품의 해시태그 업데이트에 성공한다")
         void test4() throws Exception {
             // given
-            Member owner = createMember();
+            Member owner = createMemberA();
             String accessToken = jwtTokenProvider.createAccessToken(owner.getId());
             Art art = createGeneralArt(owner);
             UpdateArtHashtagRequest request = UpdateArtHashtagRequestUtils.createRequest(UPDATE_HASHTAGS);
@@ -474,8 +477,261 @@ class ArtDetailApiControllerTest extends ControllerTest {
         }
     }
 
-    private Member createMember() {
+    @Nested
+    @DisplayName("작품 삭제 테스트 [DELETE /api/art/{artId}]")
+    class deleteArt {
+        private static final String BASE_URL = "/api/art/{artId}";
+
+        @Test
+        @DisplayName("Authorization 헤더에 Access Token이 없음에 따라 예외가 발생한다")
+        void test1() throws Exception {
+            // given
+            Member owner = createMemberA();
+            Art art = createGeneralArt(owner);
+
+            // when
+            MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
+                    .delete(BASE_URL, art.getId())
+                    .contentType(APPLICATION_JSON_VALUE);
+
+            // then
+            final AuthErrorCode expectedError = AuthErrorCode.INVALID_TOKEN;
+            mockMvc.perform(requestBuilder)
+                    .andExpect(status().isForbidden())
+                    .andExpect(jsonPath("$.statusCode").exists())
+                    .andExpect(jsonPath("$.statusCode").value(expectedError.getStatus().value()))
+                    .andExpect(jsonPath("$.errorCode").exists())
+                    .andExpect(jsonPath("$.errorCode").value(expectedError.getErrorCode()))
+                    .andExpect(jsonPath("$.message").exists())
+                    .andExpect(jsonPath("$.message").value(expectedError.getMessage()))
+                    .andDo(
+                            document(
+                                    "ArtApi/DeleteGeneralArt/Failure/Case1",
+                                    preprocessRequest(prettyPrint()),
+                                    preprocessResponse(prettyPrint()),
+                                    pathParameters(
+                                            parameterWithName("artId").description("삭제할 작품의 ID(PK)")
+                                    ),
+                                    responseFields(
+                                            fieldWithPath("statusCode").description("HTTP 상태 코드"),
+                                            fieldWithPath("errorCode").description("커스텀 예외 코드"),
+                                            fieldWithPath("message").description("예외 메시지")
+                                    )
+                            )
+                    );
+        }
+
+        @Test
+        @DisplayName("작품 소유자가 아닌 사용자가 작품 삭제 요청을 보냄에 따라 예외가 발생한다")
+        void test2() throws Exception {
+            // given
+            Member owner = createMemberA();
+            Art art = createGeneralArt(owner);
+
+            Member memberB = createMemberB();
+            String accessToken = jwtTokenProvider.createAccessToken(memberB.getId());
+
+            // when
+            MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
+                    .delete(BASE_URL, art.getId())
+                    .contentType(APPLICATION_JSON_VALUE)
+                    .header(AUTHORIZATION, BEARER_TOKEN + accessToken);
+
+            // then
+            final ArtErrorCode expectedError = ArtErrorCode.INVALID_ART_DELETE_BY_ANONYMOUS;
+            mockMvc.perform(requestBuilder)
+                    .andExpect(status().isForbidden())
+                    .andExpect(jsonPath("$.statusCode").exists())
+                    .andExpect(jsonPath("$.statusCode").value(expectedError.getStatus().value()))
+                    .andExpect(jsonPath("$.errorCode").exists())
+                    .andExpect(jsonPath("$.errorCode").value(expectedError.getErrorCode()))
+                    .andExpect(jsonPath("$.message").exists())
+                    .andExpect(jsonPath("$.message").value(expectedError.getMessage()))
+                    .andDo(
+                            document(
+                                    "ArtApi/DeleteGeneralArt/Failure/Case2",
+                                    preprocessRequest(prettyPrint()),
+                                    preprocessResponse(prettyPrint()),
+                                    requestHeaders(
+                                            headerWithName(AUTHORIZATION).description("Access Token")
+                                    ),
+                                    pathParameters(
+                                            parameterWithName("artId").description("삭제할 작품의 ID(PK)")
+                                    ),
+                                    responseFields(
+                                            fieldWithPath("statusCode").description("HTTP 상태 코드"),
+                                            fieldWithPath("errorCode").description("커스텀 예외 코드"),
+                                            fieldWithPath("message").description("예외 메시지")
+                                    )
+                            )
+                    );
+        }
+
+        @Test
+        @DisplayName("이미 판매된 작품에 대해서 삭제 요청을 보내면 예외가 발생한다")
+        void test3() throws Exception {
+            // given
+            Member owner = createMemberA();
+            String accessToken = jwtTokenProvider.createAccessToken(owner.getId());
+            Art art = createSoldOutGeneralArt(owner);
+
+            // when
+            MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
+                    .delete(BASE_URL, art.getId())
+                    .contentType(APPLICATION_JSON_VALUE)
+                    .header(AUTHORIZATION, BEARER_TOKEN + accessToken);
+
+            // then
+            final ArtErrorCode expectedError = ArtErrorCode.ALREADY_SALE;
+            mockMvc.perform(requestBuilder)
+                    .andExpect(status().isBadRequest())
+                    .andExpect(jsonPath("$.statusCode").exists())
+                    .andExpect(jsonPath("$.statusCode").value(expectedError.getStatus().value()))
+                    .andExpect(jsonPath("$.errorCode").exists())
+                    .andExpect(jsonPath("$.errorCode").value(expectedError.getErrorCode()))
+                    .andExpect(jsonPath("$.message").exists())
+                    .andExpect(jsonPath("$.message").value(expectedError.getMessage()))
+                    .andDo(
+                            document(
+                                    "ArtApi/DeleteGeneralArt/Failure/Case3",
+                                    preprocessRequest(prettyPrint()),
+                                    preprocessResponse(prettyPrint()),
+                                    requestHeaders(
+                                            headerWithName(AUTHORIZATION).description("Access Token")
+                                    ),
+                                    pathParameters(
+                                            parameterWithName("artId").description("삭제할 작품의 ID(PK)")
+                                    ),
+                                    responseFields(
+                                            fieldWithPath("statusCode").description("HTTP 상태 코드"),
+                                            fieldWithPath("errorCode").description("커스텀 예외 코드"),
+                                            fieldWithPath("message").description("예외 메시지")
+                                    )
+                            )
+                    );
+        }
+
+        @Test
+        @DisplayName("일반 작품 삭제에 성공한다")
+        void test4() throws Exception {
+            // given
+            Member owner = createMemberA();
+            String accessToken = jwtTokenProvider.createAccessToken(owner.getId());
+            Art art = createGeneralArt(owner);
+
+            // when
+            MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
+                    .delete(BASE_URL, art.getId())
+                    .contentType(APPLICATION_JSON_VALUE)
+                    .header(AUTHORIZATION, BEARER_TOKEN + accessToken);
+
+            // then
+            mockMvc.perform(requestBuilder)
+                    .andExpect(status().isNoContent())
+                    .andExpect(jsonPath("$").doesNotExist())
+                    .andDo(
+                            document(
+                                    "ArtApi/DeleteGeneralArt/Success",
+                                    preprocessRequest(prettyPrint()),
+                                    preprocessResponse(prettyPrint()),
+                                    requestHeaders(
+                                            headerWithName(AUTHORIZATION).description("Access Token")
+                                    ),
+                                    pathParameters(
+                                            parameterWithName("artId").description("삭제할 작품의 ID(PK)")
+                                    )
+                            )
+                    );
+
+            assertThat(artRepository.findById(art.getId())).isEmpty();
+        }
+
+        @Test
+        @DisplayName("경매 작품일 경우 입찰이 한번이라도 진행되었다면 삭제할 수 없고 예외가 발생한다")
+        void test5() throws Exception {
+            // given
+            Member owner = createMemberA();
+            String accessToken = jwtTokenProvider.createAccessToken(owner.getId());
+            Art art = createBidProcessAuctionArt(owner);
+
+            // when
+            MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
+                    .delete(BASE_URL, art.getId())
+                    .contentType(APPLICATION_JSON_VALUE)
+                    .header(AUTHORIZATION, BEARER_TOKEN + accessToken);
+
+            // then
+            final ArtErrorCode expectedError = ArtErrorCode.ALREADY_BID_EXISTS;
+            mockMvc.perform(requestBuilder)
+                    .andExpect(status().isBadRequest())
+                    .andExpect(jsonPath("$.statusCode").exists())
+                    .andExpect(jsonPath("$.statusCode").value(expectedError.getStatus().value()))
+                    .andExpect(jsonPath("$.errorCode").exists())
+                    .andExpect(jsonPath("$.errorCode").value(expectedError.getErrorCode()))
+                    .andExpect(jsonPath("$.message").exists())
+                    .andExpect(jsonPath("$.message").value(expectedError.getMessage()))
+                    .andDo(
+                            document(
+                                    "ArtApi/DeleteAuctionArt/Failure",
+                                    preprocessRequest(prettyPrint()),
+                                    preprocessResponse(prettyPrint()),
+                                    requestHeaders(
+                                            headerWithName(AUTHORIZATION).description("Access Token")
+                                    ),
+                                    pathParameters(
+                                            parameterWithName("artId").description("삭제할 작품의 ID(PK)")
+                                    ),
+                                    responseFields(
+                                            fieldWithPath("statusCode").description("HTTP 상태 코드"),
+                                            fieldWithPath("errorCode").description("커스텀 예외 코드"),
+                                            fieldWithPath("message").description("예외 메시지")
+                                    )
+                            )
+                    );
+        }
+        
+        @Test
+        @DisplayName("경매 작품 삭제에 성공한다")
+        void test6() throws Exception {
+            // given
+            Member owner = createMemberA();
+            String accessToken = jwtTokenProvider.createAccessToken(owner.getId());
+            Art art = createAuctionArt(owner);
+
+            // when
+            MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
+                    .delete(BASE_URL, art.getId())
+                    .contentType(APPLICATION_JSON_VALUE)
+                    .header(AUTHORIZATION, BEARER_TOKEN + accessToken);
+
+            // then
+            mockMvc.perform(requestBuilder)
+                    .andExpect(status().isNoContent())
+                    .andExpect(jsonPath("$").doesNotExist())
+                    .andDo(
+                            document(
+                                    "ArtApi/DeleteAuctionArt/Success",
+                                    preprocessRequest(prettyPrint()),
+                                    preprocessResponse(prettyPrint()),
+                                    requestHeaders(
+                                            headerWithName(AUTHORIZATION).description("Access Token")
+                                    ),
+                                    pathParameters(
+                                            parameterWithName("artId").description("삭제할 작품의 ID(PK)")
+                                    )
+                            )
+                    );
+
+            assertThat(artRepository.findById(art.getId())).isEmpty();
+        }
+    }
+
+    private Member createMemberA() {
         return memberRepository.save(MemberFixture.A.toMember());
+    }
+
+    private Member createMemberB() {
+        return memberRepository.save(MemberFixture.B.toMember());
     }
 
     private Art createGeneralArt(Member owner) {
@@ -484,11 +740,30 @@ class ArtDetailApiControllerTest extends ControllerTest {
         return artRepository.save(art);
     }
 
+    private Art createSoldOutGeneralArt(Member owner) {
+        Art art = GENERAL_ART.toArt(owner);
+        art.applyHashtags(new HashSet<>(HASHTAGS));
+        art.changeArtStatus(ArtStatus.SOLD_OUT);
+        return artRepository.save(art);
+    }
+
     private Art createAuctionArt(Member owner) {
         Art art = AUCTION_ART.toArt(owner);
         art.applyHashtags(new HashSet<>(HASHTAGS));
         Art savedArt = artRepository.save(art);
         auctionRepository.save(Auction.initAuction(savedArt, Period.of(currentTime1DayLater, currentTime3DayLater)));
+        return savedArt;
+    }
+    
+    private Art createBidProcessAuctionArt(Member owner) {
+        Art art = AUCTION_ART.toArt(owner);
+        art.applyHashtags(new HashSet<>(HASHTAGS));
+        Art savedArt = artRepository.save(art);
+
+        // 입찰 진행
+        Auction auction = auctionRepository.save(Auction.initAuction(savedArt, Period.of(currentTime1DayLater, currentTime3DayLater)));
+        Member memberB = createMemberB();
+        auctionRecordRepository.save(AuctionRecord.createAuctionRecord(auction, memberB, art.getPrice() + 1_000_000));
         return savedArt;
     }
 }
