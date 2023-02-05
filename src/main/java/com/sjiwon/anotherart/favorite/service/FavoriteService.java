@@ -19,7 +19,8 @@ public class FavoriteService {
     private final MemberFindService memberFindService;
     private final FavoriteRepository favoriteRepository;
 
-    public void likeMarking(Long artId, Long memberId) {
+    @Transactional
+    public void like(Long artId, Long memberId) {
         Art art = artFindService.findById(artId);
         validateArtOwner(art, memberId);
         validateAlreadyMarking(artId, memberId);
@@ -28,13 +29,27 @@ public class FavoriteService {
 
     private void validateArtOwner(Art art, Long memberId) {
         if (art.isArtOwner(memberId)) {
-            throw AnotherArtException.type(FavoriteErrorCode.INVALID_LIKE_MARKING_BY_ART_OWNER);
+            throw AnotherArtException.type(FavoriteErrorCode.INVALID_LIKE_REQUEST_BY_ART_OWNER);
         }
     }
 
     private void validateAlreadyMarking(Long artId, Long memberId) {
         if (favoriteRepository.existsByArtIdAndMemberId(artId, memberId)) {
             throw AnotherArtException.type(FavoriteErrorCode.ALREADY_LIKE_MARKING);
+        }
+    }
+
+    @Transactional
+    public void likeCancel(Long artId, Long memberId) {
+        Art art = artFindService.findById(artId);
+        validateArtOwner(art, memberId);
+        validateLikeMarkingRecord(artId, memberId);
+        favoriteRepository.deleteByArtIdAndMemberId(artId, memberId);
+    }
+
+    private void validateLikeMarkingRecord(Long artId, Long memberId) {
+        if (!favoriteRepository.existsByArtIdAndMemberId(artId, memberId)) {
+            throw AnotherArtException.type(FavoriteErrorCode.NEVER_OR_ALREADY_CANCEL);
         }
     }
 }

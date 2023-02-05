@@ -51,6 +51,24 @@ class FavoriteRepositoryTest extends RepositoryTest {
         assertThat(actual2).isFalse();
     }
 
+    @Test
+    @DisplayName("좋아요 등록을 한 작품에 대해서 좋아요 취소를 진행한다")
+    void test2() {
+        // given
+        Member owner = createMemberA();
+        Art art = createGeneralArt(owner);
+
+        Member member = createMemberB();
+        favoriteMarking(art.getId(), member.getId());
+        sync();
+
+        // when
+        favoriteRepository.deleteByArtIdAndMemberId(art.getId(), member.getId());
+
+        // then
+        assertThat(favoriteRepository.existsByArtIdAndMemberId(art.getId(), member.getId())).isFalse();
+    }
+
     private void favoriteMarking(Long artId, Long memberId) {
         favoriteRepository.save(Favorite.favoriteMarking(artId, memberId));
     }
