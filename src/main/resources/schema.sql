@@ -60,8 +60,8 @@ CREATE TABLE art_hashtag (
 
 CREATE TABLE favorite (
     id BIGINT AUTO_INCREMENT,
-    art_id BIGINT NOT NULL COMMENT '작품 ID (Loose Coupling)',
-    user_id BIGINT NOT NULL COMMENT '사용자 ID (Loose Coupling)',
+    art_id BIGINT NOT NULL COMMENT '작품 ID (FK)',
+    member_id BIGINT NOT NULL COMMENT '사용자 ID (FK)',
 
     PRIMARY KEY (id)
 ) ENGINE=INNODB DEFAULT CHARSET=utf8mb4;
@@ -116,7 +116,17 @@ FOREIGN KEY (member_id)
 REFERENCES member(id);
 
 ALTER TABLE favorite
-ADD UNIQUE(art_id, user_id);
+ADD CONSTRAINT favorite_ibfk1_art_id
+FOREIGN KEY (art_id)
+REFERENCES art(id);
+
+ALTER TABLE favorite
+ADD CONSTRAINT favorite_ibfk2_member_id
+FOREIGN KEY (member_id)
+REFERENCES member(id);
+
+ALTER TABLE favorite
+ADD UNIQUE(art_id, member_id);
 
 ALTER TABLE auction
 ADD CONSTRAINT auction_ibfk1_art_id
