@@ -39,4 +39,8 @@ public class Period {
     private static boolean isEndBeforeStart(LocalDateTime startDate, LocalDateTime endDate) {
         return endDate.isBefore(startDate);
     }
+
+    public boolean isAuctionFinished(LocalDateTime bidTime) {
+        return bidTime.isAfter(this.endDate);
+    }
 }

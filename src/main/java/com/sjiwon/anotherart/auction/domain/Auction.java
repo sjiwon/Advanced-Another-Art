@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -58,8 +59,19 @@ public class Auction {
     }
 
     public void applyNewBid(Member newBidMember, int newBidPrice) {
+        validateBidTime();
         verifyArtOwnerBid(newBidMember.getId());
         this.currentHighestBidder = this.currentHighestBidder.applyNewBid(newBidMember, newBidPrice);
+    }
+
+    private void validateBidTime() {
+        if (isAuctionFinished()) {
+            throw AnotherArtException.type(AuctionErrorCode.AUCTION_ALREADY_FINISHED);
+        }
+    }
+
+    private boolean isAuctionFinished() {
+        return this.period.isAuctionFinished(LocalDateTime.now());
     }
 
     private void verifyArtOwnerBid(Long newBidMemberId) {
