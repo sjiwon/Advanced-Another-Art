@@ -2,6 +2,7 @@ package com.sjiwon.anotherart.art.service;
 
 import com.sjiwon.anotherart.art.domain.Art;
 import com.sjiwon.anotherart.art.domain.ArtRepository;
+import com.sjiwon.anotherart.art.domain.hashtag.HashtagRepository;
 import com.sjiwon.anotherart.art.exception.ArtErrorCode;
 import com.sjiwon.anotherart.auction.domain.AuctionRepository;
 import com.sjiwon.anotherart.common.ServiceTest;
@@ -15,7 +16,6 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
-import java.util.HashSet;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -33,6 +33,9 @@ class ArtServiceTest extends ServiceTest {
     ArtFindService artFindService;
 
     @Mock
+    HashtagRepository hashtagRepository;
+
+    @Mock
     ArtRepository artRepository;
 
     @Mock
@@ -40,6 +43,8 @@ class ArtServiceTest extends ServiceTest {
 
     @Mock
     AuctionRepository auctionRepository;
+
+    private static final List<String> HASHTAGS = List.of("A", "B", "C", "D", "E");
 
     @Test
     @DisplayName("작품명 중복 체크 로직을 진행한다")
@@ -62,7 +67,7 @@ class ArtServiceTest extends ServiceTest {
     void test2() {
         // given
         final Member owner = MemberFixture.A.toMember();
-        final Art art = ArtFixture.A.toArt(owner);
+        final Art art = ArtFixture.A.toArt(owner, HASHTAGS);
         final Long artId = 1L;
         given(artFindService.findById(artId)).willReturn(art);
 
@@ -79,10 +84,8 @@ class ArtServiceTest extends ServiceTest {
     void test3() {
         // given
         final Member owner = MemberFixture.A.toMember();
-        final Art art = ArtFixture.A.toArt(owner);
+        final Art art = ArtFixture.A.toArt(owner, HASHTAGS);
         final Long artId = 1L;
-        final List<String> initHashtags = List.of("A", "B", "C", "D", "E");
-        art.applyHashtags(new HashSet<>(initHashtags));
         lenient().when(artFindService.findById(artId)).thenReturn(art);
 
         // when

@@ -16,6 +16,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -38,6 +39,7 @@ class AuctionRecordRepositoryTest extends RepositoryTest {
     private static final int INIT_AVAILABLE_POINT = 100_000_000;
     private static final LocalDateTime currentTime1DayLater = LocalDateTime.now().plusDays(1);
     private static final LocalDateTime currentTime3DayLater = LocalDateTime.now().plusDays(3);
+    private static final List<String> HASHTAGS = List.of("A", "B", "C", "D", "E");
 
     @Test
     @DisplayName("경매 작품에 대한 입찰 횟수를 조회한다")
@@ -92,7 +94,7 @@ class AuctionRecordRepositoryTest extends RepositoryTest {
     }
 
     private Art createAuctionArt(Member owner) {
-        return artRepository.save(ArtFixture.A.toArt(owner));
+        return artRepository.save(ArtFixture.A.toArt(owner, HASHTAGS));
     }
 
     private Auction initAuction(Art art) {

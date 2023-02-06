@@ -60,7 +60,7 @@ public class Art {
     private Set<Hashtag> hashtags = new HashSet<>();
 
     @Builder
-    private Art(Member owner, String name, String description, ArtType artType, int price, UploadImage uploadImage) {
+    private Art(Member owner, String name, String description, ArtType artType, int price, UploadImage uploadImage, Set<String> hashtags) {
         this.owner = owner;
         this.name = name;
         this.description = description;
@@ -68,14 +68,15 @@ public class Art {
         this.price = price;
         this.artStatus = ArtStatus.FOR_SALE;
         this.uploadImage = uploadImage;
+        applyHashtags(hashtags);
     }
 
-    public static Art createArt(Member member, String name, String description, ArtType artType, int price, UploadImage uploadImage) {
-        return new Art(member, name, description, artType, price, uploadImage);
+    public static Art createArt(Member member, String name, String description, ArtType artType, int price, UploadImage uploadImage, Set<String> hashtags) {
+        return new Art(member, name, description, artType, price, uploadImage, hashtags);
     }
 
-    public void applyHashtags(Set<String> hashtags) {
-        this.getHashtags().addAll(
+    private void applyHashtags(Set<String> hashtags) {
+        this.hashtags.addAll(
                 hashtags.stream()
                         .map(value -> Hashtag.from(this, value))
                         .collect(Collectors.toSet())

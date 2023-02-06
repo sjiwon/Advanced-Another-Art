@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import java.util.HashSet;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -26,6 +25,8 @@ class ArtRepositoryTest extends RepositoryTest {
 
     @Autowired
     MemberRepository memberRepository;
+
+    private static final List<String> HASHTAGS = List.of("A", "B", "C", "D", "E");
 
     @Test
     @DisplayName("작품 소유자인지 검증한다")
@@ -89,8 +90,6 @@ class ArtRepositoryTest extends RepositoryTest {
         // given
         Member owner = createMemberA();
         Art art = createArt(owner);
-        final List<String> hashtagList = List.of("A", "B", "C", "D", "E");
-        art.applyHashtags(new HashSet<>(hashtagList));
 
         // when
         artRepository.deleteHashtagsByArtId(art.getId());
@@ -110,7 +109,7 @@ class ArtRepositoryTest extends RepositoryTest {
     }
 
     private Art createArt(Member member) {
-        return artRepository.save(ArtFixture.A.toArt(member));
+        return artRepository.save(ArtFixture.A.toArt(member, HASHTAGS));
     }
 
     private void sync() {

@@ -33,7 +33,6 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.time.LocalDateTime;
-import java.util.HashSet;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -729,35 +728,29 @@ class ArtDetailApiControllerTest extends ControllerTest {
     }
 
     private Art createGeneralArt(Member owner) {
-        Art art = GENERAL_ART.toArt(owner);
-        art.applyHashtags(new HashSet<>(HASHTAGS));
+        Art art = GENERAL_ART.toArt(owner, HASHTAGS);
         return artRepository.save(art);
     }
 
     private Art createSoldOutGeneralArt(Member owner) {
-        Art art = GENERAL_ART.toArt(owner);
-        art.applyHashtags(new HashSet<>(HASHTAGS));
+        Art art = GENERAL_ART.toArt(owner, HASHTAGS);
         art.changeArtStatus(ArtStatus.SOLD_OUT);
         return artRepository.save(art);
     }
 
     private Art createAuctionArt(Member owner) {
-        Art art = AUCTION_ART.toArt(owner);
-        art.applyHashtags(new HashSet<>(HASHTAGS));
-        Art savedArt = artRepository.save(art);
-        auctionRepository.save(Auction.initAuction(savedArt, Period.of(currentTime1DayLater, currentTime3DayLater)));
-        return savedArt;
+        Art art = artRepository.save(AUCTION_ART.toArt(owner, HASHTAGS));
+        auctionRepository.save(Auction.initAuction(art, Period.of(currentTime1DayLater, currentTime3DayLater)));
+        return art;
     }
     
     private Art createBidProcessAuctionArt(Member owner) {
-        Art art = AUCTION_ART.toArt(owner);
-        art.applyHashtags(new HashSet<>(HASHTAGS));
-        Art savedArt = artRepository.save(art);
+        Art art = artRepository.save(AUCTION_ART.toArt(owner, HASHTAGS));
 
         // 입찰 진행
-        Auction auction = auctionRepository.save(Auction.initAuction(savedArt, Period.of(currentTime1DayLater, currentTime3DayLater)));
+        Auction auction = auctionRepository.save(Auction.initAuction(art, Period.of(currentTime1DayLater, currentTime3DayLater)));
         Member memberB = createMemberB();
-        auctionRecordRepository.save(AuctionRecord.createAuctionRecord(auction, memberB, art.getPrice() + 1_000_000));
-        return savedArt;
+        auctionRecordRepository.save(AuctionRecord.createAuctionRecord(auction, memberB, AUCTION_ART.toArt(owner, HASHTAGS).getPrice() + 1_000_000));
+        return art;
     }
 }

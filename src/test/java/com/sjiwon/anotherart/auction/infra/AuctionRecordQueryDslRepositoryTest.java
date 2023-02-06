@@ -22,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.time.LocalDateTime;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -48,6 +49,7 @@ class AuctionRecordQueryDslRepositoryTest extends RepositoryTest {
     private static final int AVAILABLE_POINT = 100_000_000;
     private static final LocalDateTime currentTime1DayLater = LocalDateTime.now().plusDays(1);
     private static final LocalDateTime currentTime3DayLater = LocalDateTime.now().plusDays(3);
+    private static final List<String> HASHTAGS = List.of("A", "B", "C", "D", "E");
 
     @Test
     @DisplayName("작품의 경매 기록이 존재하는지 조회한다")
@@ -92,7 +94,7 @@ class AuctionRecordQueryDslRepositoryTest extends RepositoryTest {
     }
 
     private Art createAuctionArt(Member owner) {
-        Art art = artRepository.save(ArtFixture.A.toArt(owner));
+        Art art = artRepository.save(ArtFixture.A.toArt(owner, HASHTAGS));
         auctionRepository.save(Auction.initAuction(art, Period.of(currentTime1DayLater, currentTime3DayLater)));
         return art;
     }

@@ -3,6 +3,8 @@ package com.sjiwon.anotherart.art.service;
 import com.sjiwon.anotherart.art.domain.Art;
 import com.sjiwon.anotherart.art.domain.ArtRepository;
 import com.sjiwon.anotherart.art.domain.UploadImage;
+import com.sjiwon.anotherart.art.domain.hashtag.Hashtag;
+import com.sjiwon.anotherart.art.domain.hashtag.HashtagRepository;
 import com.sjiwon.anotherart.art.exception.ArtErrorCode;
 import com.sjiwon.anotherart.art.service.dto.request.ArtRegisterRequestDto;
 import com.sjiwon.anotherart.auction.domain.Auction;
@@ -30,6 +32,7 @@ import java.util.List;
 public class ArtService {
     private final ArtRepository artRepository;
     private final ArtFindService artFindService;
+    private final HashtagRepository hashtagRepository;
     private final MemberFindService memberFindService;
     private final AuctionRepository auctionRepository;
     private final AuctionRecordRepository auctionRecordRepository;
@@ -52,8 +55,8 @@ public class ArtService {
                 .artType(request.getArtType())
                 .price(request.getPrice())
                 .uploadImage(UploadImage.from(request.getFile()))
+                .hashtags(new HashSet<>(request.getHashtagList()))
                 .build();
-        art.applyHashtags(request.getHashtagList());
         processFileUpload(request.getFile(), art.getUploadImage().getStorageName());
         return artRepository.save(art);
     }
@@ -92,7 +95,12 @@ public class ArtService {
     public void updateHashtags(Long artId, List<String> hashtagList) {
         Art art = artFindService.findById(artId);
         artRepository.deleteHashtagsByArtId(artId);
-        art.applyHashtags(new HashSet<>(hashtagList));
+
+        // insert hashtags
+        List<Hashtag> hashtags = hashtagList.stream()
+                .map(hashtag -> Hashtag.from(art, hashtag))
+                .toList();
+        hashtagRepository.saveAll(hashtags);
     }
 
     @Transactional

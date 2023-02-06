@@ -7,6 +7,8 @@ import com.sjiwon.anotherart.member.domain.Member;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+import java.util.HashSet;
+import java.util.List;
 import java.util.UUID;
 
 @Getter
@@ -24,14 +26,15 @@ public enum ArtFixture {
     private final int price;
     private final String uploadName;
 
-    public Art toArt(Member artOwner) {
+    public Art toArt(Member artOwner, List<String> hashtags) {
         return Art.builder()
+                .owner(artOwner)
                 .name(name)
                 .description(description)
                 .artType(artType)
                 .price(price)
                 .uploadImage(UploadImage.of(uploadName, generateRandomStorageName()))
-                .owner(artOwner)
+                .hashtags(new HashSet<>(hashtags))
                 .build();
     }
 

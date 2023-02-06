@@ -20,6 +20,8 @@ import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
@@ -43,6 +45,7 @@ class FavoriteApiControllerTest extends ControllerTest {
     private final FavoriteRepository favoriteRepository;
 
     private static final String BEARER_TOKEN = "Bearer ";
+    private static final List<String> HASHTAGS = List.of("A", "B", "C", "D", "E");
 
     @Nested
     @DisplayName("작품 좋아요 등록 테스트 [POST /api/art/{artId}/like]")
@@ -395,6 +398,6 @@ class FavoriteApiControllerTest extends ControllerTest {
     }
 
     private Art createArt(Member owner) {
-        return artRepository.save(ArtFixture.B.toArt(owner));
+        return artRepository.save(ArtFixture.B.toArt(owner, HASHTAGS));
     }
 }

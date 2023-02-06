@@ -7,7 +7,6 @@ import com.sjiwon.anotherart.member.domain.Member;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.util.HashSet;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -17,11 +16,12 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 class ArtTest {
     private static final ArtFixture ART_A = ArtFixture.A;
     private static final Member member = MemberFixture.A.toMember();
+    private static final List<String> HASHTAGS = List.of("A", "B", "C", "D", "E");
 
     @Test
     @DisplayName("작품을 생성한다")
     void test1(){
-        Art art = ART_A.toArt(member);
+        Art art = ART_A.toArt(member, HASHTAGS);
 
         assertAll(
                 () -> assertThat(art.getName()).isEqualTo(ART_A.getName()),
@@ -29,7 +29,7 @@ class ArtTest {
                 () -> assertThat(art.getArtType()).isEqualTo(ART_A.getArtType()),
                 () -> assertThat(art.getArtStatus()).isEqualTo(ArtStatus.FOR_SALE),
                 () -> assertThat(art.getUploadImage().getUploadName()).isEqualTo(ART_A.getUploadName()),
-                () -> assertThat(art.getHashtags().size()).isEqualTo(0),
+                () -> assertThat(art.getHashtags().size()).isEqualTo(HASHTAGS.size()),
                 () -> assertThat(art.getOwner().getName()).isEqualTo(member.getName()),
                 () -> assertThat(art.getOwner().getNickname()).isEqualTo(member.getNickname()),
                 () -> assertThat(art.getOwner().getLoginId()).isEqualTo(member.getLoginId())
@@ -39,8 +39,7 @@ class ArtTest {
     @Test
     @DisplayName("작품을 생성한다 + 해시태그를 추가한다")
     void test2(){
-        Art art = ART_A.toArt(member);
-        art.applyHashtags(new HashSet<>(List.of("A", "B", "C", "D", "E", "E", "E")));
+        Art art = ART_A.toArt(member, HASHTAGS);
 
         assertAll(
                 () -> assertThat(art.getName()).isEqualTo(ART_A.getName()),
@@ -49,7 +48,7 @@ class ArtTest {
                 () -> assertThat(art.getArtStatus()).isEqualTo(ArtStatus.FOR_SALE),
                 () -> assertThat(art.getUploadImage().getUploadName()).isEqualTo(ART_A.getUploadName()),
                 () -> assertThat(art.getHashtags().size()).isEqualTo(5),
-                () -> assertThat(art.getHashtags().stream().map(Hashtag::getName).toList()).contains("A", "B", "C", "D", "E"),
+                () -> assertThat(art.getHashtags().stream().map(Hashtag::getName).toList()).containsAll(HASHTAGS),
                 () -> assertThat(art.getOwner().getName()).isEqualTo(member.getName()),
                 () -> assertThat(art.getOwner().getNickname()).isEqualTo(member.getNickname()),
                 () -> assertThat(art.getOwner().getLoginId()).isEqualTo(member.getLoginId())
@@ -60,7 +59,7 @@ class ArtTest {
     @DisplayName("작품 설명을 변경한다")
     void test3(){
         // given
-        Art art = ART_A.toArt(member);
+        Art art = ART_A.toArt(member, HASHTAGS);
         
         // when
         final String updateDescription = "Hello World";
@@ -74,7 +73,7 @@ class ArtTest {
     @DisplayName("작품 상태를 변경한다")
     void test4(){
         // given
-        Art art = ART_A.toArt(member);
+        Art art = ART_A.toArt(member, HASHTAGS);
         assertThat(art.getArtStatus()).isEqualTo(ArtStatus.FOR_SALE);
         
         // when

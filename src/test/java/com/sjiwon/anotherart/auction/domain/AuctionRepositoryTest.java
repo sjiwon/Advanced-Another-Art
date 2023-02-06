@@ -19,6 +19,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -40,6 +41,7 @@ class AuctionRepositoryTest extends RepositoryTest {
 
     private static final Period AUCTION_PERIOD = Period.of(LocalDateTime.now().minusDays(1), LocalDateTime.now().plusDays(1));
     private static final int INIT_AVAILABLE_POINT = 1_000_000;
+    private static final List<String> HASHTAGS = List.of("A", "B", "C", "D", "E");
 
     @Nested
     @DisplayName("경매 등록")
@@ -245,15 +247,15 @@ class AuctionRepositoryTest extends RepositoryTest {
     }
 
     private Art createAuctionArtA(Member member) {
-        return artRepository.save(ArtFixture.A.toArt(member));
+        return artRepository.save(ArtFixture.A.toArt(member, HASHTAGS));
     }
 
     private Art createAuctionArtC(Member member) {
-        return artRepository.save(ArtFixture.C.toArt(member));
+        return artRepository.save(ArtFixture.C.toArt(member, HASHTAGS));
     }
 
     private Art createGeneralArt(Member member) {
-        return artRepository.save(ArtFixture.B.toArt(member));
+        return artRepository.save(ArtFixture.B.toArt(member, HASHTAGS));
     }
 
     private Auction initAuction(Art art) {

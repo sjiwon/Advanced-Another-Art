@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -27,12 +28,14 @@ class ArtFindServiceTest extends ServiceTest {
     @Mock
     private ArtRepository artRepository;
 
+    private static final List<String> HASHTAGS = List.of("A", "B", "C", "D", "E");
+
     @Test
     @DisplayName("ID(PK)로 작품 조회하기")
     void test1() {
         // given
         final Member owner = MemberFixture.A.toMember();
-        final Art art = ArtFixture.A.toArt(owner);
+        final Art art = ArtFixture.A.toArt(owner, HASHTAGS);
         final Long artId = 1L;
         given(artRepository.findById(artId)).willReturn(Optional.ofNullable(art));
 

@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -29,6 +30,8 @@ class FavoriteRepositoryTest extends RepositoryTest {
 
     @Autowired
     private ArtRepository artRepository;
+
+    private static final List<String> HASHTAGS = List.of("A", "B", "C", "D", "E");
 
     @Test
     @DisplayName("작품에 대한 좋아요 등록을 했는지 조회한다")
@@ -82,11 +85,11 @@ class FavoriteRepositoryTest extends RepositoryTest {
     }
 
     private Art createGeneralArt(Member owner) {
-        return artRepository.save(ArtFixture.B.toArt(owner));
+        return artRepository.save(ArtFixture.B.toArt(owner, HASHTAGS));
     }
 
     private Art createAuctionArt(Member owner) {
-        return artRepository.save(ArtFixture.A.toArt(owner));
+        return artRepository.save(ArtFixture.A.toArt(owner, HASHTAGS));
     }
 
     private void sync() {
