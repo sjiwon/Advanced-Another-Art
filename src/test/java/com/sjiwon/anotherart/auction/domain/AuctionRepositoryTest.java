@@ -4,6 +4,8 @@ import com.sjiwon.anotherart.art.domain.Art;
 import com.sjiwon.anotherart.art.domain.ArtRepository;
 import com.sjiwon.anotherart.art.domain.ArtStatus;
 import com.sjiwon.anotherart.art.domain.ArtType;
+import com.sjiwon.anotherart.auction.domain.record.AuctionRecord;
+import com.sjiwon.anotherart.auction.domain.record.AuctionRecordRepository;
 import com.sjiwon.anotherart.auction.exception.AuctionErrorCode;
 import com.sjiwon.anotherart.common.RepositoryTest;
 import com.sjiwon.anotherart.fixture.ArtFixture;
@@ -17,6 +19,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -31,6 +34,9 @@ class AuctionRepositoryTest extends RepositoryTest {
 
     @Autowired
     ArtRepository artRepository;
+
+    @Autowired
+    AuctionRecordRepository auctionRecordRepository;
 
     private static final Period AUCTION_PERIOD = Period.of(LocalDateTime.now().minusDays(1), LocalDateTime.now().plusDays(1));
     private static final int INIT_AVAILABLE_POINT = 1_000_000;
@@ -56,7 +62,7 @@ class AuctionRepositoryTest extends RepositoryTest {
         void test2(){
             // given
             Member member = createMemberA();
-            Art auctionArt = createAuctionArt(member);
+            Art auctionArt = createAuctionArtA(member);
             final Period period = Period.of(LocalDateTime.now().minusDays(1), LocalDateTime.now().plusDays(1));
 
             // when
@@ -79,7 +85,7 @@ class AuctionRepositoryTest extends RepositoryTest {
         void test1(){
             // given
             Member member = createMemberA();
-            Art auctionArt = createAuctionArt(member);
+            Art auctionArt = createAuctionArtA(member);
             Auction auction = initAuction(auctionArt);
 
             // when - then
@@ -94,7 +100,7 @@ class AuctionRepositoryTest extends RepositoryTest {
         void test2(){
             // given
             Member memberA = createMemberA();
-            Art auctionArt = createAuctionArt(memberA);
+            Art auctionArt = createAuctionArtA(memberA);
             Auction auction = initAuction(auctionArt);
 
             Member memberB = createMemberB();
@@ -114,7 +120,7 @@ class AuctionRepositoryTest extends RepositoryTest {
         void test3(){
             // given
             Member memberA = createMemberA();
-            Art auctionArt = createAuctionArt(memberA);
+            Art auctionArt = createAuctionArtA(memberA);
             Auction auction = initAuction(auctionArt);
 
             Member memberB = createMemberB();
@@ -134,7 +140,7 @@ class AuctionRepositoryTest extends RepositoryTest {
         void test4(){
             // given
             Member memberA = createMemberA();
-            Art auctionArt = createAuctionArt(memberA);
+            Art auctionArt = createAuctionArtA(memberA);
             Auction auction = initAuction(auctionArt);
 
             Member memberB = createMemberB();
@@ -162,7 +168,7 @@ class AuctionRepositoryTest extends RepositoryTest {
     void test5() {
         // given
         Member owner = createMemberA();
-        Art auctionArt = createAuctionArt(owner);
+        Art auctionArt = createAuctionArtA(owner);
         Auction auction = initAuction(auctionArt);
 
         // when
@@ -178,6 +184,46 @@ class AuctionRepositoryTest extends RepositoryTest {
         assertThat(findAuction.getArt().getOwner().getId()).isEqualTo(owner.getId());
         assertThat(findAuction.getArt().getOwner().getName()).isEqualTo(owner.getName());
         assertThat(findAuction.getArt().getOwner().getNickname()).isEqualTo(owner.getNickname());
+    }
+
+    @Test
+    @DisplayName("현재 최고 입찰자도 포함해서 경매 정보를 조회한다")
+    void test6() {
+        // given
+        Member owner = createMemberA();
+        Art auctionArtA = createAuctionArtA(owner);
+        Art auctionArtC = createAuctionArtC(owner);
+        Auction auctionA = initAuction(auctionArtA);
+        Auction auctionC = initAuction(auctionArtC);
+
+        // auctionC에 memberB가 입찰을 진행
+        Member memberB = createMemberB();
+        final int bidPrice = auctionC.getCurrentHighestBidder().getBidPrice() + 5_000;
+        bidProcess(auctionC, memberB, bidPrice);
+//        sync();
+
+        // when
+        Optional<Auction> findAuctionA = auctionRepository.findByIdWithHighestBidder(auctionA.getId());
+        Optional<Auction> findAuctionC = auctionRepository.findByIdWithHighestBidder(auctionC.getId());
+
+        // then
+        assertThat(findAuctionA).isPresent(); // 입찰 기록 X
+        assertThat(findAuctionA.get().getAuctionRecords().size()).isEqualTo(0);
+        assertThat(findAuctionA.get().getCurrentHighestBidder().getMember()).isNull();
+        assertThat(findAuctionA.get().getCurrentHighestBidder().getBidPrice()).isEqualTo(auctionArtA.getPrice());
+
+        assertThat(findAuctionC).isPresent(); // 입찰 기록 O
+        assertThat(findAuctionC.get().getAuctionRecords().size()).isEqualTo(1);
+        assertThat(findAuctionC.get().getCurrentHighestBidder().getMember()).isNotNull();
+        assertThat(findAuctionC.get().getCurrentHighestBidder().getMember().getId()).isEqualTo(memberB.getId());
+        assertThat(findAuctionC.get().getCurrentHighestBidder().getMember().getName()).isEqualTo(memberB.getName());
+        assertThat(findAuctionC.get().getCurrentHighestBidder().getBidPrice()).isEqualTo(bidPrice);
+        assertThat(memberB.getAvailablePoint().getValue()).isEqualTo(INIT_AVAILABLE_POINT - bidPrice);
+    }
+
+    private void bidProcess(Auction auctionC, Member memberB, int bidPrice) {
+        auctionC.applyNewBid(memberB, bidPrice);
+        auctionRecordRepository.save(AuctionRecord.createAuctionRecord(auctionC, memberB, bidPrice));
     }
 
     private Member createMemberA() {
@@ -198,8 +244,12 @@ class AuctionRepositoryTest extends RepositoryTest {
         return memberRepository.save(memberC);
     }
 
-    private Art createAuctionArt(Member member) {
+    private Art createAuctionArtA(Member member) {
         return artRepository.save(ArtFixture.A.toArt(member));
+    }
+
+    private Art createAuctionArtC(Member member) {
+        return artRepository.save(ArtFixture.C.toArt(member));
     }
 
     private Art createGeneralArt(Member member) {

@@ -14,6 +14,7 @@ public enum AuctionErrorCode implements ErrorCode {
     INVALID_DUPLICATE_BID(HttpStatus.BAD_REQUEST, "AUCTION_004", "현재 최고 입찰자는 연속해서 입찰할 수 없습니다."),
     INVALID_BID_PRICE(HttpStatus.BAD_REQUEST, "AUCTION_005", "입찰 금액이 부족합니다."),
     AUCTION_ALREADY_FINISHED(HttpStatus.BAD_REQUEST, "AUCTION_006", "종료된 경매입니다."),
+    AUCTION_NOT_FOUND(HttpStatus.NOT_FOUND, "AUCTION_007", "경매 정보를 찾을 수 없습니다."),
     ;
 
     private final HttpStatus status;
