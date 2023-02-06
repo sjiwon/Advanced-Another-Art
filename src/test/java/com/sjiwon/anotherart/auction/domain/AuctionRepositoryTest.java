@@ -73,7 +73,7 @@ class AuctionRepositoryTest extends RepositoryTest {
             assertThat(auction.getArt().getName()).isEqualTo(auctionArt.getName());
             assertThat(auction.getArt().getArtType()).isEqualTo(ArtType.AUCTION);
             assertThat(auction.getCurrentHighestBidder().isBidderExists()).isFalse();
-            assertThat(auction.getCurrentHighestBidder().getBidPrice()).isEqualTo(auctionArt.getPrice());
+            assertThat(auction.getCurrentHighestBidder().getBidAmount()).isEqualTo(auctionArt.getPrice());
         }
     }
 
@@ -156,10 +156,10 @@ class AuctionRepositoryTest extends RepositoryTest {
             assertThat(memberC.getAvailablePoint().getValue()).isEqualTo(INIT_AVAILABLE_POINT - currentBidPrice);
 
             // then
-            assertThat(auction.getCurrentHighestBidder().getMember().getId()).isEqualTo(memberC.getId());
-            assertThat(auction.getCurrentHighestBidder().getMember().getName()).isEqualTo(memberC.getName());
-            assertThat(auction.getCurrentHighestBidder().getMember().getNickname()).isEqualTo(memberC.getNickname());
-            assertThat(auction.getCurrentHighestBidder().getBidPrice()).isEqualTo(currentBidPrice);
+            assertThat(auction.getCurrentHighestBidder().getBidder().getId()).isEqualTo(memberC.getId());
+            assertThat(auction.getCurrentHighestBidder().getBidder().getName()).isEqualTo(memberC.getName());
+            assertThat(auction.getCurrentHighestBidder().getBidder().getNickname()).isEqualTo(memberC.getNickname());
+            assertThat(auction.getCurrentHighestBidder().getBidAmount()).isEqualTo(currentBidPrice);
         }
     }
 
@@ -175,8 +175,8 @@ class AuctionRepositoryTest extends RepositoryTest {
         Auction findAuction = auctionRepository.findByArtId(auctionArt.getId());
 
         // then
-        assertThat(findAuction.getCurrentHighestBidder().getMember()).isNull();
-        assertThat(findAuction.getCurrentHighestBidder().getBidPrice()).isEqualTo(auctionArt.getPrice());
+        assertThat(findAuction.getCurrentHighestBidder().getBidder()).isNull();
+        assertThat(findAuction.getCurrentHighestBidder().getBidAmount()).isEqualTo(auctionArt.getPrice());
         assertThat(findAuction.getArt().getId()).isEqualTo(auctionArt.getId());
         assertThat(findAuction.getArt().getName()).isEqualTo(auctionArt.getName());
         assertThat(findAuction.getArt().getArtStatus()).isEqualTo(ArtStatus.FOR_SALE);
@@ -198,7 +198,7 @@ class AuctionRepositoryTest extends RepositoryTest {
 
         // auctionC에 memberB가 입찰을 진행
         Member memberB = createMemberB();
-        final int bidPrice = auctionC.getCurrentHighestBidder().getBidPrice() + 5_000;
+        final int bidPrice = auctionC.getCurrentHighestBidder().getBidAmount() + 5_000;
         bidProcess(auctionC, memberB, bidPrice);
 //        sync();
 
@@ -209,15 +209,15 @@ class AuctionRepositoryTest extends RepositoryTest {
         // then
         assertThat(findAuctionA).isPresent(); // 입찰 기록 X
         assertThat(findAuctionA.get().getAuctionRecords().size()).isEqualTo(0);
-        assertThat(findAuctionA.get().getCurrentHighestBidder().getMember()).isNull();
-        assertThat(findAuctionA.get().getCurrentHighestBidder().getBidPrice()).isEqualTo(auctionArtA.getPrice());
+        assertThat(findAuctionA.get().getCurrentHighestBidder().getBidder()).isNull();
+        assertThat(findAuctionA.get().getCurrentHighestBidder().getBidAmount()).isEqualTo(auctionArtA.getPrice());
 
         assertThat(findAuctionC).isPresent(); // 입찰 기록 O
         assertThat(findAuctionC.get().getAuctionRecords().size()).isEqualTo(1);
-        assertThat(findAuctionC.get().getCurrentHighestBidder().getMember()).isNotNull();
-        assertThat(findAuctionC.get().getCurrentHighestBidder().getMember().getId()).isEqualTo(memberB.getId());
-        assertThat(findAuctionC.get().getCurrentHighestBidder().getMember().getName()).isEqualTo(memberB.getName());
-        assertThat(findAuctionC.get().getCurrentHighestBidder().getBidPrice()).isEqualTo(bidPrice);
+        assertThat(findAuctionC.get().getCurrentHighestBidder().getBidder()).isNotNull();
+        assertThat(findAuctionC.get().getCurrentHighestBidder().getBidder().getId()).isEqualTo(memberB.getId());
+        assertThat(findAuctionC.get().getCurrentHighestBidder().getBidder().getName()).isEqualTo(memberB.getName());
+        assertThat(findAuctionC.get().getCurrentHighestBidder().getBidAmount()).isEqualTo(bidPrice);
         assertThat(memberB.getAvailablePoint().getValue()).isEqualTo(INIT_AVAILABLE_POINT - bidPrice);
     }
 

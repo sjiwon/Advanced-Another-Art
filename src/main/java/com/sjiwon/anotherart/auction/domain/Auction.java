@@ -58,10 +58,10 @@ public class Auction {
         }
     }
 
-    public void applyNewBid(Member newBidMember, int newBidPrice) {
+    public void applyNewBid(Member newBidder, int newBidAmount) {
         validateBidTime();
-        verifyArtOwnerBid(newBidMember.getId());
-        this.currentHighestBidder = this.currentHighestBidder.applyNewBid(newBidMember, newBidPrice);
+        verifyArtOwnerBid(newBidder.getId());
+        this.currentHighestBidder = this.currentHighestBidder.applyNewBid(newBidder, newBidAmount);
     }
 
     private void validateBidTime() {

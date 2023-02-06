@@ -15,48 +15,48 @@ import java.util.Objects;
 @Embeddable
 public class CurrentHighestBidder {
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id", referencedColumnName = "id", updatable = false)
-    private Member member;
+    @JoinColumn(name = "bidder_id", referencedColumnName = "id", updatable = false)
+    private Member bidder;
 
-    @Column(name = "bid_price")
-    private int bidPrice;
+    @Column(name = "bid_amount")
+    private int bidAmount;
 
-    private CurrentHighestBidder(Member member, int bidPrice) {
-        this.member = member;
-        this.bidPrice = bidPrice;
+    private CurrentHighestBidder(Member bidder, int bidAmount) {
+        this.bidder = bidder;
+        this.bidAmount = bidAmount;
     }
 
-    public static CurrentHighestBidder of(Member member, int bidPrice) {
-        return new CurrentHighestBidder(member, bidPrice);
+    public static CurrentHighestBidder of(Member bidder, int bidAmount) {
+        return new CurrentHighestBidder(bidder, bidAmount);
     }
 
-    public CurrentHighestBidder applyNewBid(Member newBidMember, int newBidPrice) {
-        verifyBidPrice(newBidPrice);
-        verifyDuplicateBid(newBidMember.getId());
-        proceedingPointTransaction(newBidMember, newBidPrice);
-        return new CurrentHighestBidder(newBidMember, newBidPrice);
+    public CurrentHighestBidder applyNewBid(Member newBidder, int newBidAmount) {
+        verifyBidPrice(newBidAmount);
+        verifyDuplicateBid(newBidder.getId());
+        proceedingPointTransaction(newBidder, newBidAmount);
+        return new CurrentHighestBidder(newBidder, newBidAmount);
     }
 
-    private void verifyBidPrice(int newBidPrice) {
-        if (this.bidPrice >= newBidPrice) {
+    private void verifyBidPrice(int newBidAmount) {
+        if (this.bidAmount >= newBidAmount) {
             throw AnotherArtException.type(AuctionErrorCode.INVALID_BID_PRICE);
         }
     }
 
-    private void verifyDuplicateBid(Long newBidMemberId) {
-        if (isBidderExists() && Objects.equals(this.getMember().getId(), newBidMemberId)) {
+    private void verifyDuplicateBid(Long newBidderId) {
+        if (isBidderExists() && Objects.equals(this.getBidder().getId(), newBidderId)) {
             throw AnotherArtException.type(AuctionErrorCode.INVALID_DUPLICATE_BID);
         }
     }
 
-    private void proceedingPointTransaction(Member newBidMember, int newBidPrice) {
+    private void proceedingPointTransaction(Member newBidder, int newBidAmount) {
         if (isBidderExists()) {
-            this.member.increasePoint(this.bidPrice);
+            this.bidder.increasePoint(this.bidAmount);
         }
-        newBidMember.decreasePoint(newBidPrice);
+        newBidder.decreasePoint(newBidAmount);
     }
 
     public boolean isBidderExists() {
-        return this.member != null;
+        return this.bidder != null;
     }
 }

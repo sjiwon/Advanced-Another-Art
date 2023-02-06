@@ -14,7 +14,7 @@ public interface AuctionRepository extends JpaRepository<Auction, Long> {
 
     @Query("SELECT ac" +
             " FROM Auction ac" +
-            " LEFT OUTER JOIN FETCH ac.currentHighestBidder.member" +
+            " LEFT OUTER JOIN FETCH ac.currentHighestBidder.bidder" +
             " WHERE ac.id = :auctionId")
     Optional<Auction> findByIdWithHighestBidder(@Param("auctionId") Long auctionId);
 }

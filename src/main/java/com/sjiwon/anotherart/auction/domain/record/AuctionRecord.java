@@ -22,8 +22,8 @@ public class AuctionRecord {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "bid_price")
-    private int bidPrice;
+    @Column(name = "bid_amount")
+    private int bidAmount;
 
     @CreatedDate
     @Column(name = "bid_date")
@@ -34,18 +34,18 @@ public class AuctionRecord {
     private Auction auction;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id", referencedColumnName = "id", updatable = false)
-    private Member member;
+    @JoinColumn(name = "bidder_id", referencedColumnName = "id", updatable = false)
+    private Member bidder;
 
     @Builder
-    private AuctionRecord(Auction auction, Member member, int bidPrice) {
+    private AuctionRecord(Auction auction, Member bidder, int bidAmount) {
         this.auction = auction;
-        this.member = member;
-        this.bidPrice = bidPrice;
+        this.bidder = bidder;
+        this.bidAmount = bidAmount;
         this.auction.getAuctionRecords().add(this);
     }
 
-    public static AuctionRecord createAuctionRecord(Auction auction, Member member, int bidPrice) {
-        return new AuctionRecord(auction, member, bidPrice);
+    public static AuctionRecord createAuctionRecord(Auction auction, Member bidder, int bidPrice) {
+        return new AuctionRecord(auction, bidder, bidPrice);
     }
 }
