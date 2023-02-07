@@ -376,7 +376,7 @@ class BidApiControllerTest extends ControllerTest {
             assertThat(auctionRecord.get(0).getBidder().getName()).isEqualTo(bidder.getName());
             assertThat(auctionRecord.get(0).getBidder().getNickname()).isEqualTo(bidder.getNickname());
 
-            Auction findAuction = auctionRepository.findByArtId(art.getId());
+            Auction findAuction = auctionRepository.findByArtId(art.getId()).orElseThrow();
             assertThat(findAuction.getCurrentHighestBidder().getBidder()).isNotNull();
             assertThat(findAuction.getCurrentHighestBidder().getBidder().getId()).isEqualTo(bidder.getId());
             assertThat(findAuction.getCurrentHighestBidder().getBidder().getName()).isEqualTo(bidder.getName());
@@ -417,7 +417,7 @@ class BidApiControllerTest extends ControllerTest {
             assertThat(auctionRecord1.get(0).getBidder().getName()).isEqualTo(bidder1.getName());
             assertThat(auctionRecord1.get(0).getBidder().getNickname()).isEqualTo(bidder1.getNickname());
 
-            Auction findAuction1 = auctionRepository.findByArtId(art.getId());
+            Auction findAuction1 = auctionRepository.findByArtId(art.getId()).orElseThrow();
             assertThat(findAuction1.getCurrentHighestBidder().getBidder()).isNotNull();
             assertThat(findAuction1.getCurrentHighestBidder().getBidder().getId()).isEqualTo(bidder1.getId());
             assertThat(findAuction1.getCurrentHighestBidder().getBidder().getName()).isEqualTo(bidder1.getName());
@@ -453,7 +453,7 @@ class BidApiControllerTest extends ControllerTest {
             assertThat(auctionRecord2.get(1).getBidder().getName()).isEqualTo(bidder2.getName());
             assertThat(auctionRecord2.get(1).getBidder().getNickname()).isEqualTo(bidder2.getNickname());
 
-            Auction findAuction2 = auctionRepository.findByArtId(art.getId());
+            Auction findAuction2 = auctionRepository.findByArtId(art.getId()).orElseThrow();
             assertThat(findAuction2.getCurrentHighestBidder().getBidder()).isNotNull();
             assertThat(findAuction2.getCurrentHighestBidder().getBidder().getId()).isEqualTo(bidder2.getId());
             assertThat(findAuction2.getCurrentHighestBidder().getBidder().getName()).isEqualTo(bidder2.getName());

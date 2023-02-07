@@ -64,7 +64,7 @@ class AuctionRecordQueryDslRepositoryTest extends RepositoryTest {
 
         // 입찰 1회 진행
         Member bidder = createMemberB();
-        Auction auction = auctionRepository.findByArtId(auctionArt.getId());
+        Auction auction = auctionRepository.findByArtId(auctionArt.getId()).orElseThrow();
 
         final int BID_AMOUNT = 50_000_000;
         processBid(auction, bidder, BID_AMOUNT);

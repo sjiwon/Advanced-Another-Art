@@ -12,7 +12,7 @@ public interface AuctionRepository extends JpaRepository<Auction, Long> {
     @Query("SELECT ac" +
             " FROM Auction ac" +
             " WHERE ac.art.id = :artId")
-    Auction findByArtId(@Param("artId") Long artId);
+    Optional<Auction> findByArtId(@Param("artId") Long artId);
 
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("SELECT ac" +

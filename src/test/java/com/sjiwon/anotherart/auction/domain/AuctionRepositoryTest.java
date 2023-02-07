@@ -172,7 +172,7 @@ class AuctionRepositoryTest extends RepositoryTest {
         Auction auction = initAuction(auctionArt);
 
         // when
-        Auction findAuction = auctionRepository.findByArtId(auctionArt.getId());
+        Auction findAuction = auctionRepository.findByArtId(auctionArt.getId()).orElseThrow();
 
         // then
         assertThat(findAuction.getCurrentHighestBidder().getBidder()).isNull();
