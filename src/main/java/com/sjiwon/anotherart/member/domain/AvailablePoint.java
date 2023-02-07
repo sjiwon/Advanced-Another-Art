@@ -47,4 +47,8 @@ public class AvailablePoint {
             throw AnotherArtException.type(MemberErrorCode.INVALID_POINT_DECREASE);
         }
     }
+
+    public boolean isPointInsufficient(int comparePoint) {
+        return this.value < comparePoint;
+    }
 }

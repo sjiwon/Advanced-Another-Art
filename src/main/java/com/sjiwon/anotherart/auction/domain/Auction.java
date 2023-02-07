@@ -74,7 +74,7 @@ public class Auction {
         }
     }
 
-    private boolean isAuctionFinished() {
+    public boolean isAuctionFinished() {
         return this.period.isAuctionFinished(LocalDateTime.now());
     }
 

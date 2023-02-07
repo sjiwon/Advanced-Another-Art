@@ -69,11 +69,15 @@ public class Member {
         this.email = email;
         this.availablePoint = AvailablePoint.from(0);
         this.role = Role.USER;
-        this.pointDetails.add(PointDetail.createPointDetail(this));
+        addPointDetail(PointDetail.createPointDetail(this));
     }
 
     public static Member createMember(String name, String nickname, String loginId, Password password, String school, Address address, String phone, Email email) {
         return new Member(name, nickname, loginId, password, school, address, phone, email);
+    }
+
+    public void addPointDetail(PointDetail pointDetail) {
+        this.pointDetails.add(pointDetail);
     }
 
     public void changeNickname(String nickname) {
@@ -127,5 +131,13 @@ public class Member {
         }
 
         return result;
+    }
+
+    public boolean isPointInsufficient(int comparePoint) {
+        return this.availablePoint.isPointInsufficient(comparePoint);
+    }
+
+    public boolean isSameMember(Long compareId) {
+        return Objects.equals(this.id, compareId);
     }
 }

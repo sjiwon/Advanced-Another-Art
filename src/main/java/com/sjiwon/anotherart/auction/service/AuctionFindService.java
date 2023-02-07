@@ -18,4 +18,9 @@ public class AuctionFindService {
         return auctionRepository.findByIdWithPessimisticLock(auctionId)
                 .orElseThrow(() -> AnotherArtException.type(AuctionErrorCode.AUCTION_NOT_FOUND));
     }
+
+    public Auction findByArtId(Long artId) {
+        return auctionRepository.findByArtId(artId)
+                .orElseThrow(() -> AnotherArtException.type(AuctionErrorCode.AUCTION_NOT_FOUND));
+    }
 }
