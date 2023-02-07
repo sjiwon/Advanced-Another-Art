@@ -54,7 +54,7 @@ class MemberPointApiControllerTest extends ControllerTest {
         void test1() throws Exception {
             // given
             Member member = signUpMember();
-            final int initAmount = member.getAvailablePoint().getValue();
+            final int initAmount = member.getAvailablePoint();
             final int chargeAmount = 15000;
             
             // when
@@ -96,7 +96,7 @@ class MemberPointApiControllerTest extends ControllerTest {
             assertThat(pointDetails.get(0).getPointType()).isEqualTo(PointType.JOIN);
             assertThat(pointDetails.get(0).getAmount()).isEqualTo(0);
 
-            assertThat(member.getAvailablePoint().getValue()).isEqualTo(initAmount);
+            assertThat(member.getAvailablePoint()).isEqualTo(initAmount);
             assertThat(member.getTotalPoints()).isEqualTo(initAmount);
         }
         
@@ -106,7 +106,7 @@ class MemberPointApiControllerTest extends ControllerTest {
             // given
             Member member = signUpMember();
             String accessToken = jwtTokenProvider.createAccessToken(member.getId());
-            final int initAmount = member.getAvailablePoint().getValue();
+            final int initAmount = member.getAvailablePoint();
             final int chargeAmount = 15000;
 
             // when
@@ -148,7 +148,7 @@ class MemberPointApiControllerTest extends ControllerTest {
             assertThat(chargeDetail.getPointType()).isEqualTo(PointType.CHARGE);
             assertThat(chargeDetail.getAmount()).isEqualTo(chargeAmount);
 
-            assertThat(member.getAvailablePoint().getValue()).isEqualTo(initAmount + chargeAmount);
+            assertThat(member.getAvailablePoint()).isEqualTo(initAmount + chargeAmount);
             assertThat(member.getTotalPoints()).isEqualTo(initAmount + chargeAmount);
         }
     }
@@ -164,7 +164,7 @@ class MemberPointApiControllerTest extends ControllerTest {
             // given
             final int chargeAmount = 10000;
             Member member = signUpAndChargePoint(chargeAmount);
-            final int initAmount = member.getAvailablePoint().getValue();
+            final int initAmount = member.getAvailablePoint();
             final int refundAmount = 15000;
 
             // when
@@ -213,7 +213,7 @@ class MemberPointApiControllerTest extends ControllerTest {
             assertThat(chargeDetail.getPointType()).isEqualTo(PointType.CHARGE);
             assertThat(chargeDetail.getAmount()).isEqualTo(chargeAmount);
 
-            assertThat(member.getAvailablePoint().getValue()).isEqualTo(initAmount);
+            assertThat(member.getAvailablePoint()).isEqualTo(initAmount);
             assertThat(member.getTotalPoints()).isEqualTo(initAmount);
         }
         
@@ -224,7 +224,7 @@ class MemberPointApiControllerTest extends ControllerTest {
             final int chargeAmount = 10000;
             Member member = signUpAndChargePoint(chargeAmount);
             String accessToken = jwtTokenProvider.createAccessToken(member.getId());
-            final int initAmount = member.getAvailablePoint().getValue();
+            final int initAmount = member.getAvailablePoint();
             final int refundAmount = 15000;
 
             // when
@@ -277,7 +277,7 @@ class MemberPointApiControllerTest extends ControllerTest {
             assertThat(chargeDetail.getPointType()).isEqualTo(PointType.CHARGE);
             assertThat(chargeDetail.getAmount()).isEqualTo(chargeAmount);
 
-            assertThat(member.getAvailablePoint().getValue()).isEqualTo(initAmount);
+            assertThat(member.getAvailablePoint()).isEqualTo(initAmount);
             assertThat(member.getTotalPoints()).isEqualTo(initAmount);
         }
         
@@ -288,7 +288,7 @@ class MemberPointApiControllerTest extends ControllerTest {
             final int chargeAmount = 20000;
             Member member = signUpAndChargePoint(chargeAmount);
             String accessToken = jwtTokenProvider.createAccessToken(member.getId());
-            final int initAmount = member.getAvailablePoint().getValue();
+            final int initAmount = member.getAvailablePoint();
             final int refundAmount = 15000;
 
             // when
@@ -335,7 +335,7 @@ class MemberPointApiControllerTest extends ControllerTest {
             assertThat(refundDetail.getPointType()).isEqualTo(PointType.REFUND);
             assertThat(refundDetail.getAmount()).isEqualTo(refundAmount);
 
-            assertThat(member.getAvailablePoint().getValue()).isEqualTo(initAmount - refundAmount);
+            assertThat(member.getAvailablePoint()).isEqualTo(initAmount - refundAmount);
             assertThat(member.getTotalPoints()).isEqualTo(initAmount - refundAmount);
         }
     }

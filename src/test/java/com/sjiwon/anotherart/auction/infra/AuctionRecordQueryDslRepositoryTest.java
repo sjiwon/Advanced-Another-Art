@@ -71,7 +71,7 @@ class AuctionRecordQueryDslRepositoryTest extends RepositoryTest {
 
         boolean actual2 = auctionRecordRepository.existsAuctionRecordByArtId(auctionArt.getId());
         assertThat(actual2).isTrue();
-        assertThat(bidder.getAvailablePoint().getValue()).isEqualTo(AVAILABLE_POINT - BID_AMOUNT);
+        assertThat(bidder.getAvailablePoint()).isEqualTo(AVAILABLE_POINT - BID_AMOUNT);
         assertThat(bidder.getTotalPoints()).isEqualTo(AVAILABLE_POINT);
     }
 

@@ -33,7 +33,7 @@ class MemberPointServiceTest extends ServiceTest {
         // given
         Member member = MemberFixture.A.toMember();
         final Long memberId = 1L;
-        final int initAmount = member.getAvailablePoint().getValue();
+        final int initAmount = member.getAvailablePoint();
         final int chargeAmount = 15000;
         given(memberFindService.findById(memberId)).willReturn(member);
 
@@ -41,7 +41,7 @@ class MemberPointServiceTest extends ServiceTest {
         memberPointService.chargePoint(memberId, chargeAmount);
 
         // then
-        assertThat(member.getAvailablePoint().getValue()).isEqualTo(initAmount + chargeAmount);
+        assertThat(member.getAvailablePoint()).isEqualTo(initAmount + chargeAmount);
     }
 
     @Nested
@@ -54,7 +54,7 @@ class MemberPointServiceTest extends ServiceTest {
             Member member = MemberFixture.A.toMember();
             member.increasePoint(10000);
             final Long memberId = 1L;
-            final int initAmount = member.getAvailablePoint().getValue();
+            final int initAmount = member.getAvailablePoint();
             final int refundAmount = 15000;
             given(memberFindService.findById(memberId)).willReturn(member);
 
@@ -71,7 +71,7 @@ class MemberPointServiceTest extends ServiceTest {
             Member member = MemberFixture.A.toMember();
             member.increasePoint(20000);
             final Long memberId = 1L;
-            final int initAmount = member.getAvailablePoint().getValue();
+            final int initAmount = member.getAvailablePoint();
             final int refundAmount = 15000;
             given(memberFindService.findById(memberId)).willReturn(member);
 
@@ -79,7 +79,7 @@ class MemberPointServiceTest extends ServiceTest {
             memberPointService.refundPoint(memberId, refundAmount);
 
             // then
-            assertThat(member.getAvailablePoint().getValue()).isEqualTo(initAmount - refundAmount);
+            assertThat(member.getAvailablePoint()).isEqualTo(initAmount - refundAmount);
         }
     }
 }

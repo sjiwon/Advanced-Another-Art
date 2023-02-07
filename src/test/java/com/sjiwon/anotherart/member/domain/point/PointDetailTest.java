@@ -37,7 +37,7 @@ class PointDetailTest {
         assertThat(pointDetail.getPointType()).isEqualTo(PointType.CHARGE);
         assertThat(pointDetail.getAmount()).isEqualTo(chargeAmount);
         assertThat(pointDetail.isPointIncreaseType()).isTrue();
-        assertThat(memberA.getAvailablePoint().getValue()).isEqualTo(chargeAmount);
+        assertThat(memberA.getAvailablePoint()).isEqualTo(chargeAmount);
     }
 
     @Test
@@ -56,7 +56,7 @@ class PointDetailTest {
         assertThat(pointDetail.getPointType()).isEqualTo(PointType.REFUND);
         assertThat(pointDetail.getAmount()).isEqualTo(refundAmount);
         assertThat(pointDetail.isPointIncreaseType()).isFalse();
-        assertThat(memberA.getAvailablePoint().getValue()).isEqualTo(increasePoint - refundAmount);
+        assertThat(memberA.getAvailablePoint()).isEqualTo(increasePoint - refundAmount);
     }
 
     @Test
@@ -75,7 +75,7 @@ class PointDetailTest {
         assertThat(pointDetail.getPointType()).isEqualTo(PointType.PURCHASE);
         assertThat(pointDetail.getAmount()).isEqualTo(artPrice);
         assertThat(pointDetail.isPointIncreaseType()).isFalse();
-        assertThat(memberA.getAvailablePoint().getValue()).isEqualTo(increasePoint - artPrice);
+        assertThat(memberA.getAvailablePoint()).isEqualTo(increasePoint - artPrice);
     }
 
     @Test
@@ -94,6 +94,6 @@ class PointDetailTest {
         assertThat(pointDetail.getPointType()).isEqualTo(PointType.SOLD);
         assertThat(pointDetail.getAmount()).isEqualTo(artPrice);
         assertThat(pointDetail.isPointIncreaseType()).isTrue();
-        assertThat(memberA.getAvailablePoint().getValue()).isEqualTo(increasePoint + artPrice);
+        assertThat(memberA.getAvailablePoint()).isEqualTo(increasePoint + artPrice);
     }
 }

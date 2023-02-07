@@ -384,7 +384,7 @@ class BidApiControllerTest extends ControllerTest {
             assertThat(findAuction.getCurrentHighestBidder().getBidAmount()).isEqualTo(bidAmount);
 
             Member findBidder = memberRepository.findById(bidder.getId()).orElseThrow();
-            assertThat(findBidder.getAvailablePoint().getValue()).isEqualTo(INIT_AVAILABLE_POINT - bidAmount);
+            assertThat(findBidder.getAvailablePoint()).isEqualTo(INIT_AVAILABLE_POINT - bidAmount);
         }
 
         @Test
@@ -425,7 +425,7 @@ class BidApiControllerTest extends ControllerTest {
             assertThat(findAuction1.getCurrentHighestBidder().getBidAmount()).isEqualTo(bidAmount1);
 
             Member findBidder = memberRepository.findById(bidder1.getId()).orElseThrow();
-            assertThat(findBidder.getAvailablePoint().getValue()).isEqualTo(INIT_AVAILABLE_POINT - bidAmount1);
+            assertThat(findBidder.getAvailablePoint()).isEqualTo(INIT_AVAILABLE_POINT - bidAmount1);
  
             // 두번째 입찰 진행
             Member bidder2 = createMemberC();
@@ -462,8 +462,8 @@ class BidApiControllerTest extends ControllerTest {
 
             Member findBidder1 = memberRepository.findById(bidder1.getId()).orElseThrow();
             Member findBidder2 = memberRepository.findById(bidder2.getId()).orElseThrow();
-            assertThat(findBidder1.getAvailablePoint().getValue()).isEqualTo(INIT_AVAILABLE_POINT);
-            assertThat(findBidder2.getAvailablePoint().getValue()).isEqualTo(INIT_AVAILABLE_POINT - bidAmount2);
+            assertThat(findBidder1.getAvailablePoint()).isEqualTo(INIT_AVAILABLE_POINT);
+            assertThat(findBidder2.getAvailablePoint()).isEqualTo(INIT_AVAILABLE_POINT - bidAmount2);
         }
     }
 

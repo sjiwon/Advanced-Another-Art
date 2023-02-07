@@ -111,6 +111,10 @@ public class Member {
         this.availablePoint = this.availablePoint.decreasePoint(point);
     }
 
+    public int getAvailablePoint() {
+        return this.availablePoint.getValue();
+    }
+
     public int getTotalPoints() {
         int result = 0;
 

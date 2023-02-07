@@ -106,7 +106,7 @@ class AuctionRepositoryTest extends RepositoryTest {
             Member memberB = createMemberB();
             final int previousBidPrice = 150000;
             auction.applyNewBid(memberB, previousBidPrice);
-            assertThat(memberB.getAvailablePoint().getValue()).isEqualTo(INIT_AVAILABLE_POINT - previousBidPrice);
+            assertThat(memberB.getAvailablePoint()).isEqualTo(INIT_AVAILABLE_POINT - previousBidPrice);
 
             // when - then
             Member memberC = createMemberC();
@@ -126,7 +126,7 @@ class AuctionRepositoryTest extends RepositoryTest {
             Member memberB = createMemberB();
             final int previousBidPrice = 150000;
             auction.applyNewBid(memberB, previousBidPrice);
-            assertThat(memberB.getAvailablePoint().getValue()).isEqualTo(INIT_AVAILABLE_POINT - previousBidPrice);
+            assertThat(memberB.getAvailablePoint()).isEqualTo(INIT_AVAILABLE_POINT - previousBidPrice);
 
             // when - then
             final int currentBidPrice = 200000;
@@ -146,14 +146,14 @@ class AuctionRepositoryTest extends RepositoryTest {
             Member memberB = createMemberB();
             final int previousBidPrice = 150000;
             auction.applyNewBid(memberB, previousBidPrice);
-            assertThat(memberB.getAvailablePoint().getValue()).isEqualTo(INIT_AVAILABLE_POINT - previousBidPrice);
+            assertThat(memberB.getAvailablePoint()).isEqualTo(INIT_AVAILABLE_POINT - previousBidPrice);
 
             // when
             Member memberC = createMemberC();
             final int currentBidPrice = 200000;
             auction.applyNewBid(memberC, currentBidPrice);
-            assertThat(memberB.getAvailablePoint().getValue()).isEqualTo(INIT_AVAILABLE_POINT);
-            assertThat(memberC.getAvailablePoint().getValue()).isEqualTo(INIT_AVAILABLE_POINT - currentBidPrice);
+            assertThat(memberB.getAvailablePoint()).isEqualTo(INIT_AVAILABLE_POINT);
+            assertThat(memberC.getAvailablePoint()).isEqualTo(INIT_AVAILABLE_POINT - currentBidPrice);
 
             // then
             assertThat(auction.getCurrentHighestBidder().getBidder().getId()).isEqualTo(memberC.getId());

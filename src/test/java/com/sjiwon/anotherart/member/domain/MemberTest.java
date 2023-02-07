@@ -30,7 +30,7 @@ class MemberTest {
                 () -> assertThat(memberA.getAddress().getPostcode()).isEqualTo(MEMBER_A.getPostcode()),
                 () -> assertThat(memberA.getAddress().getDefaultAddress()).isEqualTo(MEMBER_A.getDefaultAddress()),
                 () -> assertThat(memberA.getAddress().getDetailAddress()).isEqualTo(MEMBER_A.getDetailAddress()),
-                () -> assertThat(memberA.getAvailablePoint().getValue()).isEqualTo(0),
+                () -> assertThat(memberA.getAvailablePoint()).isEqualTo(0),
                 () -> assertThat(memberA.getRole()).isEqualTo(Role.USER)
         );
     }
@@ -96,7 +96,7 @@ class MemberTest {
         memberA.increasePoint(increasePoint);
 
         // then
-        assertThat(memberA.getAvailablePoint().getValue()).isEqualTo(increasePoint);
+        assertThat(memberA.getAvailablePoint()).isEqualTo(increasePoint);
     }
 
     @Test
@@ -112,7 +112,7 @@ class MemberTest {
         memberA.decreasePoint(decreasePoint);
 
         // then
-        assertThat(memberA.getAvailablePoint().getValue()).isEqualTo(increasePoint - decreasePoint);
+        assertThat(memberA.getAvailablePoint()).isEqualTo(increasePoint - decreasePoint);
     }
 
     @Test
