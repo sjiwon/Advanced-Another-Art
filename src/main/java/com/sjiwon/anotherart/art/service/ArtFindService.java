@@ -18,4 +18,9 @@ public class ArtFindService {
         return artRepository.findById(artId)
                 .orElseThrow(() -> AnotherArtException.type(ArtErrorCode.ART_NOT_FOUND));
     }
+
+    public Art findByIdWithPessimisticLock(Long artId) {
+        return artRepository.findByIdWithPessimisticLock(artId)
+                .orElseThrow(() -> AnotherArtException.type(ArtErrorCode.ART_NOT_FOUND));
+    }
 }
