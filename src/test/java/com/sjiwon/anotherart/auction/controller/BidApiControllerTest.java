@@ -43,6 +43,7 @@ import static org.springframework.restdocs.request.RequestDocumentation.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@DisplayName("Auction [Controller Layer] -> BidApiController 테스트")
 @RequiredArgsConstructor
 class BidApiControllerTest extends ControllerTest {
     private final MockMvc mockMvc;

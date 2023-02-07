@@ -20,6 +20,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@DisplayName("AuctionRecord [Repository Layer] -> AuctionRecordRepository 테스트")
 class AuctionRecordRepositoryTest extends RepositoryTest {
     @Autowired
     MemberRepository memberRepository;
