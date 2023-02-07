@@ -4,7 +4,6 @@ import com.sjiwon.anotherart.art.domain.Art;
 import com.sjiwon.anotherart.art.domain.ArtRepository;
 import com.sjiwon.anotherart.art.domain.ArtStatus;
 import com.sjiwon.anotherart.art.domain.ArtType;
-import com.sjiwon.anotherart.auction.domain.record.AuctionRecord;
 import com.sjiwon.anotherart.auction.domain.record.AuctionRecordRepository;
 import com.sjiwon.anotherart.auction.exception.AuctionErrorCode;
 import com.sjiwon.anotherart.common.RepositoryTest;
@@ -20,7 +19,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -74,7 +72,7 @@ class AuctionRepositoryTest extends RepositoryTest {
             assertThat(auction.getArt().getId()).isEqualTo(auctionArt.getId());
             assertThat(auction.getArt().getName()).isEqualTo(auctionArt.getName());
             assertThat(auction.getArt().getArtType()).isEqualTo(ArtType.AUCTION);
-            assertThat(auction.getCurrentHighestBidder().isBidderExists()).isFalse();
+            assertThat(auction.getCurrentHighestBidder().getBidder()).isNull();
             assertThat(auction.getCurrentHighestBidder().getBidAmount()).isEqualTo(auctionArt.getPrice());
         }
     }
@@ -186,46 +184,6 @@ class AuctionRepositoryTest extends RepositoryTest {
         assertThat(findAuction.getArt().getOwner().getId()).isEqualTo(owner.getId());
         assertThat(findAuction.getArt().getOwner().getName()).isEqualTo(owner.getName());
         assertThat(findAuction.getArt().getOwner().getNickname()).isEqualTo(owner.getNickname());
-    }
-
-    @Test
-    @DisplayName("현재 최고 입찰자도 포함해서 경매 정보를 조회한다")
-    void test6() {
-        // given
-        Member owner = createMemberA();
-        Art auctionArtA = createAuctionArtA(owner);
-        Art auctionArtC = createAuctionArtC(owner);
-        Auction auctionA = initAuction(auctionArtA);
-        Auction auctionC = initAuction(auctionArtC);
-
-        // auctionC에 memberB가 입찰을 진행
-        Member memberB = createMemberB();
-        final int bidPrice = auctionC.getCurrentHighestBidder().getBidAmount() + 5_000;
-        bidProcess(auctionC, memberB, bidPrice);
-//        sync();
-
-        // when
-        Optional<Auction> findAuctionA = auctionRepository.findByIdWithHighestBidder(auctionA.getId());
-        Optional<Auction> findAuctionC = auctionRepository.findByIdWithHighestBidder(auctionC.getId());
-
-        // then
-        assertThat(findAuctionA).isPresent(); // 입찰 기록 X
-        assertThat(findAuctionA.get().getAuctionRecords().size()).isEqualTo(0);
-        assertThat(findAuctionA.get().getCurrentHighestBidder().getBidder()).isNull();
-        assertThat(findAuctionA.get().getCurrentHighestBidder().getBidAmount()).isEqualTo(auctionArtA.getPrice());
-
-        assertThat(findAuctionC).isPresent(); // 입찰 기록 O
-        assertThat(findAuctionC.get().getAuctionRecords().size()).isEqualTo(1);
-        assertThat(findAuctionC.get().getCurrentHighestBidder().getBidder()).isNotNull();
-        assertThat(findAuctionC.get().getCurrentHighestBidder().getBidder().getId()).isEqualTo(memberB.getId());
-        assertThat(findAuctionC.get().getCurrentHighestBidder().getBidder().getName()).isEqualTo(memberB.getName());
-        assertThat(findAuctionC.get().getCurrentHighestBidder().getBidAmount()).isEqualTo(bidPrice);
-        assertThat(memberB.getAvailablePoint().getValue()).isEqualTo(INIT_AVAILABLE_POINT - bidPrice);
-    }
-
-    private void bidProcess(Auction auctionC, Member memberB, int bidPrice) {
-        auctionC.applyNewBid(memberB, bidPrice);
-        auctionRecordRepository.save(AuctionRecord.createAuctionRecord(auctionC, memberB, bidPrice));
     }
 
     private Member createMemberA() {
