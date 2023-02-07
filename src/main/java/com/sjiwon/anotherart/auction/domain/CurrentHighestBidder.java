@@ -30,7 +30,7 @@ public class CurrentHighestBidder {
         return new CurrentHighestBidder(bidder, bidAmount);
     }
 
-    public CurrentHighestBidder applyNewBid(Member newBidder, int newBidAmount) {
+    public CurrentHighestBidder processBidAndUpdateHighestBidder(Member newBidder, int newBidAmount) {
         verifyBidPrice(newBidAmount);
         verifyDuplicateBid(newBidder.getId());
         proceedingPointTransaction(newBidder, newBidAmount);
@@ -56,7 +56,7 @@ public class CurrentHighestBidder {
         newBidder.decreasePoint(newBidAmount);
     }
 
-    public boolean isBidderExists() {
+    private boolean isBidderExists() {
         return this.bidder != null;
     }
 }

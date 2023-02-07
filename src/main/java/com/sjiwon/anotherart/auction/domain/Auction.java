@@ -36,7 +36,7 @@ public class Auction {
     @JoinColumn(name = "art_id", referencedColumnName = "id", nullable = false, updatable = false)
     private Art art;
 
-    @OneToMany(mappedBy = "auction")
+    @OneToMany(mappedBy = "auction", cascade = CascadeType.PERSIST)
     private List<AuctionRecord> auctionRecords = new ArrayList<>();
 
     @Builder
@@ -52,6 +52,10 @@ public class Auction {
         return new Auction(art, currentHighestBidder, period);
     }
 
+    public void addAuctionRecord(AuctionRecord auctionRecord) {
+        this.auctionRecords.add(auctionRecord);
+    }
+
     private static void validateArtType(Art art) {
         if (!art.isAuctionType()) {
             throw AnotherArtException.type(AuctionErrorCode.INVALID_ART_TYPE);
@@ -61,7 +65,7 @@ public class Auction {
     public void applyNewBid(Member newBidder, int newBidAmount) {
         validateBidTime();
         verifyArtOwnerBid(newBidder.getId());
-        this.currentHighestBidder = this.currentHighestBidder.applyNewBid(newBidder, newBidAmount);
+        this.currentHighestBidder = this.currentHighestBidder.processBidAndUpdateHighestBidder(newBidder, newBidAmount);
     }
 
     private void validateBidTime() {
