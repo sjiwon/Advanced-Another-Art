@@ -75,7 +75,7 @@ public class Art {
         return new Art(member, name, description, artType, price, uploadImage, hashtags);
     }
 
-    private void applyHashtags(Set<String> hashtags) {
+    public void applyHashtags(Set<String> hashtags) {
         this.hashtags.addAll(
                 hashtags.stream()
                         .map(value -> Hashtag.from(this, value))
