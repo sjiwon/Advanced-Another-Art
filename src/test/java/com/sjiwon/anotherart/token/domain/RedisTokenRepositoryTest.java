@@ -38,11 +38,11 @@ class RedisTokenRepositoryTest extends RedisTest {
 
         // when
         final RedisRefreshToken redisRefreshToken = new RedisRefreshToken(refreshToken, memberId);
-        ReflectionTestUtils.setField(redisRefreshToken, "timeToLive", 2L);
+        ReflectionTestUtils.setField(redisRefreshToken, "timeToLive", 1L);
         redisTokenRepository.save(redisRefreshToken);
 
         // then
-        Thread.sleep(3000);
+        Thread.sleep(1500);
         Optional<RedisRefreshToken> findRefreshToken = redisTokenRepository.findById(refreshToken);
         assertThat(findRefreshToken).isEmpty();
     }
