@@ -386,8 +386,8 @@ class MemberApiControllerTest extends ControllerTest {
             // given
             Member member = createMember();
             final String resource = "email";
-            final String successValue = "success" + member.getEmail().getValue();
-            final String failureValue = member.getEmail().getValue();
+            final String successValue = "success" + member.getEmailValue();
+            final String failureValue = member.getEmailValue();
 
             DuplicateCheckRequest successRequest = DuplicateCheckRequestUtils.createRequest(resource, successValue);
             DuplicateCheckRequest failureRequest = DuplicateCheckRequestUtils.createRequest(resource, failureValue);

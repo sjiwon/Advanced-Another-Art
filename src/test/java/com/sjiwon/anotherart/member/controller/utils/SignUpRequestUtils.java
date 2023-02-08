@@ -30,7 +30,7 @@ public class SignUpRequestUtils {
                 .defaultAddress("기본 주소")
                 .detailAddress("상세 주소")
                 .phone(member.getPhone())
-                .email(member.getEmail().getValue())
+                .email(member.getEmailValue())
                 .build();
     }
 

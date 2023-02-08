@@ -26,7 +26,7 @@ class MemberTest {
                 () -> assertThat(memberA.getName()).isEqualTo(MEMBER_A.getName()),
                 () -> assertThat(memberA.getNickname()).isEqualTo(MEMBER_A.getNickname()),
                 () -> assertThat(memberA.getLoginId()).isEqualTo(MEMBER_A.getLoginId()),
-                () -> assertThat(ENCODER.matches(MEMBER_A.getPassword(), memberA.getPassword().getValue())).isTrue(),
+                () -> assertThat(ENCODER.matches(MEMBER_A.getPassword(), memberA.getPasswordValue())).isTrue(),
                 () -> assertThat(memberA.getAddress().getPostcode()).isEqualTo(MEMBER_A.getPostcode()),
                 () -> assertThat(memberA.getAddress().getDefaultAddress()).isEqualTo(MEMBER_A.getDefaultAddress()),
                 () -> assertThat(memberA.getAddress().getDetailAddress()).isEqualTo(MEMBER_A.getDetailAddress()),
@@ -64,7 +64,7 @@ class MemberTest {
         memberA.changePassword(diffPassword, ENCODER);
 
         // then
-        assertThat(ENCODER.matches(diffPassword, memberA.getPassword().getValue())).isTrue();
+        assertThat(ENCODER.matches(diffPassword, memberA.getPasswordValue())).isTrue();
     }
 
     @Test
@@ -155,7 +155,7 @@ class MemberTest {
         // given
         Member memberA = MEMBER_A.toMember();
         final Email same = memberA.getEmail();
-        final Email diff = Email.from("diff" + memberA.getEmail().getValue());
+        final Email diff = Email.from("diff" + memberA.getEmailValue());
 
         // when
         boolean actual1 = memberA.isSameEmail(same);

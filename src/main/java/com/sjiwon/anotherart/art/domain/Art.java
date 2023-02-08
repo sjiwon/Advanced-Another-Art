@@ -83,12 +83,6 @@ public class Art {
         );
     }
 
-    public List<String> getHashtagList() {
-        return this.hashtags.stream()
-                .map(Hashtag::getName)
-                .collect(Collectors.toList());
-    }
-
     public void changeDescription(String description) {
         this.description = description;
     }
@@ -107,5 +101,20 @@ public class Art {
 
     public boolean isAuctionType() {
         return this.artType == ArtType.AUCTION;
+    }
+
+    // Generate Getter
+    public String getUploadName() {
+        return uploadImage.getUploadName();
+    }
+
+    public String getStorageName() {
+        return uploadImage.getStorageName();
+    }
+
+    public List<String> getHashtagList() {
+        return hashtags.stream()
+                .map(Hashtag::getName)
+                .collect(Collectors.toList());
     }
 }

@@ -83,4 +83,21 @@ public class Auction {
             throw AnotherArtException.type(AuctionErrorCode.INVALID_OWNER_BID);
         }
     }
+
+    // Generate Getter
+    public LocalDateTime getAuctionStartDate() {
+        return period.getStartDate();
+    }
+
+    public LocalDateTime getAuctionEndDate() {
+        return period.getEndDate();
+    }
+
+    public Member getBidder() {
+        return currentHighestBidder.getBidder();
+    }
+
+    public int getBidAmount() {
+        return currentHighestBidder.getBidAmount();
+    }
 }

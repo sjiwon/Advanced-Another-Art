@@ -377,11 +377,11 @@ class BidApiControllerTest extends ControllerTest {
             assertThat(auctionRecord.get(0).getBidder().getNickname()).isEqualTo(bidder.getNickname());
 
             Auction findAuction = auctionRepository.findByArtId(art.getId()).orElseThrow();
-            assertThat(findAuction.getCurrentHighestBidder().getBidder()).isNotNull();
-            assertThat(findAuction.getCurrentHighestBidder().getBidder().getId()).isEqualTo(bidder.getId());
-            assertThat(findAuction.getCurrentHighestBidder().getBidder().getName()).isEqualTo(bidder.getName());
-            assertThat(findAuction.getCurrentHighestBidder().getBidder().getNickname()).isEqualTo(bidder.getNickname());
-            assertThat(findAuction.getCurrentHighestBidder().getBidAmount()).isEqualTo(bidAmount);
+            assertThat(findAuction.getBidder()).isNotNull();
+            assertThat(findAuction.getBidder().getId()).isEqualTo(bidder.getId());
+            assertThat(findAuction.getBidder().getName()).isEqualTo(bidder.getName());
+            assertThat(findAuction.getBidder().getNickname()).isEqualTo(bidder.getNickname());
+            assertThat(findAuction.getBidAmount()).isEqualTo(bidAmount);
 
             Member findBidder = memberRepository.findById(bidder.getId()).orElseThrow();
             assertThat(findBidder.getAvailablePoint()).isEqualTo(INIT_AVAILABLE_POINT - bidAmount);
@@ -418,11 +418,11 @@ class BidApiControllerTest extends ControllerTest {
             assertThat(auctionRecord1.get(0).getBidder().getNickname()).isEqualTo(bidder1.getNickname());
 
             Auction findAuction1 = auctionRepository.findByArtId(art.getId()).orElseThrow();
-            assertThat(findAuction1.getCurrentHighestBidder().getBidder()).isNotNull();
-            assertThat(findAuction1.getCurrentHighestBidder().getBidder().getId()).isEqualTo(bidder1.getId());
-            assertThat(findAuction1.getCurrentHighestBidder().getBidder().getName()).isEqualTo(bidder1.getName());
-            assertThat(findAuction1.getCurrentHighestBidder().getBidder().getNickname()).isEqualTo(bidder1.getNickname());
-            assertThat(findAuction1.getCurrentHighestBidder().getBidAmount()).isEqualTo(bidAmount1);
+            assertThat(findAuction1.getBidder()).isNotNull();
+            assertThat(findAuction1.getBidder().getId()).isEqualTo(bidder1.getId());
+            assertThat(findAuction1.getBidder().getName()).isEqualTo(bidder1.getName());
+            assertThat(findAuction1.getBidder().getNickname()).isEqualTo(bidder1.getNickname());
+            assertThat(findAuction1.getBidAmount()).isEqualTo(bidAmount1);
 
             Member findBidder = memberRepository.findById(bidder1.getId()).orElseThrow();
             assertThat(findBidder.getAvailablePoint()).isEqualTo(INIT_AVAILABLE_POINT - bidAmount1);
@@ -454,11 +454,11 @@ class BidApiControllerTest extends ControllerTest {
             assertThat(auctionRecord2.get(1).getBidder().getNickname()).isEqualTo(bidder2.getNickname());
 
             Auction findAuction2 = auctionRepository.findByArtId(art.getId()).orElseThrow();
-            assertThat(findAuction2.getCurrentHighestBidder().getBidder()).isNotNull();
-            assertThat(findAuction2.getCurrentHighestBidder().getBidder().getId()).isEqualTo(bidder2.getId());
-            assertThat(findAuction2.getCurrentHighestBidder().getBidder().getName()).isEqualTo(bidder2.getName());
-            assertThat(findAuction2.getCurrentHighestBidder().getBidder().getNickname()).isEqualTo(bidder2.getNickname());
-            assertThat(findAuction2.getCurrentHighestBidder().getBidAmount()).isEqualTo(bidAmount2);
+            assertThat(findAuction2.getBidder()).isNotNull();
+            assertThat(findAuction2.getBidder().getId()).isEqualTo(bidder2.getId());
+            assertThat(findAuction2.getBidder().getName()).isEqualTo(bidder2.getName());
+            assertThat(findAuction2.getBidder().getNickname()).isEqualTo(bidder2.getNickname());
+            assertThat(findAuction2.getBidAmount()).isEqualTo(bidAmount2);
 
             Member findBidder1 = memberRepository.findById(bidder1.getId()).orElseThrow();
             Member findBidder2 = memberRepository.findById(bidder2.getId()).orElseThrow();

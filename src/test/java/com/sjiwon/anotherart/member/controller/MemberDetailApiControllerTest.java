@@ -234,7 +234,7 @@ class MemberDetailApiControllerTest extends ControllerTest {
         void test1() throws Exception {
             /// given
             Member member = createMemberA();
-            FindIdRequest request = FindIdRequestUtils.createRequest(member.getName() + "diff", member.getEmail().getValue());
+            FindIdRequest request = FindIdRequestUtils.createRequest(member.getName() + "diff", member.getEmailValue());
 
             // when
             MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
@@ -275,7 +275,7 @@ class MemberDetailApiControllerTest extends ControllerTest {
         void test2() throws Exception {
             /// given
             Member member = createMemberA();
-            FindIdRequest request = FindIdRequestUtils.createRequest(member.getName(), "diff" + member.getEmail().getValue());
+            FindIdRequest request = FindIdRequestUtils.createRequest(member.getName(), "diff" + member.getEmailValue());
 
             // when
             MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
@@ -316,7 +316,7 @@ class MemberDetailApiControllerTest extends ControllerTest {
         void test3() throws Exception {
             // given
             Member member = createMemberA();
-            FindIdRequest request = FindIdRequestUtils.createRequest(member.getName(), member.getEmail().getValue());
+            FindIdRequest request = FindIdRequestUtils.createRequest(member.getName(), member.getEmailValue());
 
             // when
             MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
@@ -355,7 +355,7 @@ class MemberDetailApiControllerTest extends ControllerTest {
         void test1() throws Exception {
             // given
             Member member = createMemberA();
-            AuthForResetPasswordRequest request = AuthForResetPasswordRequestUtils.createRequest(member.getName() + "diff", member.getLoginId(), member.getEmail().getValue());
+            AuthForResetPasswordRequest request = AuthForResetPasswordRequestUtils.createRequest(member.getName() + "diff", member.getLoginId(), member.getEmailValue());
 
             // when
             MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
@@ -397,7 +397,7 @@ class MemberDetailApiControllerTest extends ControllerTest {
         void test2() throws Exception {
             // given
             Member member = createMemberA();
-            AuthForResetPasswordRequest request = AuthForResetPasswordRequestUtils.createRequest(member.getName(), member.getLoginId(), member.getEmail().getValue());
+            AuthForResetPasswordRequest request = AuthForResetPasswordRequestUtils.createRequest(member.getName(), member.getLoginId(), member.getEmailValue());
 
             // when
             MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
@@ -504,7 +504,7 @@ class MemberDetailApiControllerTest extends ControllerTest {
                     );
 
             PasswordEncoder encoder = PasswordEncoderUtils.getEncoder();
-            assertThat(encoder.matches(chnagePassword, member.getPassword().getValue())).isTrue();
+            assertThat(encoder.matches(chnagePassword, member.getPasswordValue())).isTrue();
         }
     }
 

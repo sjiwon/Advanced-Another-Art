@@ -115,6 +115,23 @@ public class Member {
         this.availablePoint = this.availablePoint.decreasePoint(point);
     }
 
+    public boolean isPointInsufficient(int comparePoint) {
+        return this.availablePoint.isPointInsufficient(comparePoint);
+    }
+
+    public boolean isSameMember(Long compareId) {
+        return Objects.equals(this.id, compareId);
+    }
+
+    // Generate Getter
+    public String getPasswordValue() {
+        return password.getValue();
+    }
+
+    public String getEmailValue() {
+        return email.getValue();
+    }
+
     public int getAvailablePoint() {
         return this.availablePoint.getValue();
     }
@@ -131,13 +148,5 @@ public class Member {
         }
 
         return result;
-    }
-
-    public boolean isPointInsufficient(int comparePoint) {
-        return this.availablePoint.isPointInsufficient(comparePoint);
-    }
-
-    public boolean isSameMember(Long compareId) {
-        return Objects.equals(this.id, compareId);
     }
 }

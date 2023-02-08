@@ -89,7 +89,7 @@ CREATE TABLE auction_record (
 
 CREATE TABLE purchase (
     id BIGINT AUTO_INCREMENT,
-    member_id BIGINT NOT NULL COMMENT '구매한 사용자 ID (FK)',
+    buyer_id BIGINT NOT NULL COMMENT '구매한 사용자 ID (FK)',
     art_id BIGINT NOT NULL UNIQUE COMMENT '구매한 작품 ID (FK)',
     purchase_price INT NOT NULL COMMENT '구매 가격',
     purchase_date DATETIME NOT NULL COMMENT '구매 날짜',
@@ -150,7 +150,7 @@ REFERENCES member(id);
 
 ALTER TABLE purchase
 ADD CONSTRAINT purchase_ibfk1_member_id
-FOREIGN KEY (member_id)
+FOREIGN KEY (buyer_id)
 REFERENCES member(id);
 
 ALTER TABLE purchase

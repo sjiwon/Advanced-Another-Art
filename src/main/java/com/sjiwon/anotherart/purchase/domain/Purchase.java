@@ -33,25 +33,25 @@ public class Purchase {
     private LocalDateTime purchaseDate;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "member_id", referencedColumnName = "id", nullable = false, updatable = false)
-    private Member member;
+    @JoinColumn(name = "buyer_id", referencedColumnName = "id", nullable = false, updatable = false)
+    private Member buyer;
 
     @OneToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "art_id", referencedColumnName = "id", nullable = false, updatable = false, unique = true)
     private Art art;
 
     @Builder
-    private Purchase(Member member, Art art, int purchasePrice) {
-        this.member = member;
+    private Purchase(Member buyer, Art art, int purchasePrice) {
+        this.buyer = buyer;
         this.art = art;
         this.purchasePrice = purchasePrice;
     }
 
-    public static Purchase purchaseArt(Member member, Art art, int purchasePrice) {
+    public static Purchase purchaseArt(Member buyer, Art art, int purchasePrice) {
         validatePurchaseAvailability(art);
-        validateMemberAvailablePoint(member, purchasePrice);
+        validateMemberAvailablePoint(buyer, purchasePrice);
         changeSaleStatus(art);
-        return new Purchase(member, art, purchasePrice);
+        return new Purchase(buyer, art, purchasePrice);
     }
 
     private static void validatePurchaseAvailability(Art art) {
@@ -60,8 +60,8 @@ public class Purchase {
         }
     }
 
-    private static void validateMemberAvailablePoint(Member member, int purchasePrice) {
-        if (member.isPointInsufficient(purchasePrice)) {
+    private static void validateMemberAvailablePoint(Member buyer, int purchasePrice) {
+        if (buyer.isPointInsufficient(purchasePrice)) {
             throw AnotherArtException.type(PurchaseErrorCode.INSUFFICIENT_AVAILABLE_POINT);
         }
     }

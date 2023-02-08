@@ -22,7 +22,7 @@ public class MemberAuthDto {
         this.id = member.getId();
         this.name = member.getName();
         this.loginId = member.getLoginId();
-        this.loginPassword = member.getPassword().getValue();
+        this.loginPassword = member.getPasswordValue();
         this.role = member.getRole().getAuthority();
     }
 }

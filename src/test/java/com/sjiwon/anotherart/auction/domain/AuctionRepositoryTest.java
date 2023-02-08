@@ -72,8 +72,8 @@ class AuctionRepositoryTest extends RepositoryTest {
             assertThat(auction.getArt().getId()).isEqualTo(auctionArt.getId());
             assertThat(auction.getArt().getName()).isEqualTo(auctionArt.getName());
             assertThat(auction.getArt().getArtType()).isEqualTo(ArtType.AUCTION);
-            assertThat(auction.getCurrentHighestBidder().getBidder()).isNull();
-            assertThat(auction.getCurrentHighestBidder().getBidAmount()).isEqualTo(auctionArt.getPrice());
+            assertThat(auction.getBidder()).isNull();
+            assertThat(auction.getBidAmount()).isEqualTo(auctionArt.getPrice());
         }
     }
 
@@ -156,10 +156,10 @@ class AuctionRepositoryTest extends RepositoryTest {
             assertThat(memberC.getAvailablePoint()).isEqualTo(INIT_AVAILABLE_POINT - currentBidPrice);
 
             // then
-            assertThat(auction.getCurrentHighestBidder().getBidder().getId()).isEqualTo(memberC.getId());
-            assertThat(auction.getCurrentHighestBidder().getBidder().getName()).isEqualTo(memberC.getName());
-            assertThat(auction.getCurrentHighestBidder().getBidder().getNickname()).isEqualTo(memberC.getNickname());
-            assertThat(auction.getCurrentHighestBidder().getBidAmount()).isEqualTo(currentBidPrice);
+            assertThat(auction.getBidder().getId()).isEqualTo(memberC.getId());
+            assertThat(auction.getBidder().getName()).isEqualTo(memberC.getName());
+            assertThat(auction.getBidder().getNickname()).isEqualTo(memberC.getNickname());
+            assertThat(auction.getBidAmount()).isEqualTo(currentBidPrice);
         }
     }
 
@@ -175,8 +175,8 @@ class AuctionRepositoryTest extends RepositoryTest {
         Auction findAuction = auctionRepository.findByArtId(auctionArt.getId()).orElseThrow();
 
         // then
-        assertThat(findAuction.getCurrentHighestBidder().getBidder()).isNull();
-        assertThat(findAuction.getCurrentHighestBidder().getBidAmount()).isEqualTo(auctionArt.getPrice());
+        assertThat(findAuction.getBidder()).isNull();
+        assertThat(findAuction.getBidAmount()).isEqualTo(auctionArt.getPrice());
         assertThat(findAuction.getArt().getId()).isEqualTo(auctionArt.getId());
         assertThat(findAuction.getArt().getName()).isEqualTo(auctionArt.getName());
         assertThat(findAuction.getArt().getArtStatus()).isEqualTo(ArtStatus.FOR_SALE);

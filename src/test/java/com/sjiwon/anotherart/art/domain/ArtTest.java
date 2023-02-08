@@ -1,6 +1,5 @@
 package com.sjiwon.anotherart.art.domain;
 
-import com.sjiwon.anotherart.art.domain.hashtag.Hashtag;
 import com.sjiwon.anotherart.fixture.ArtFixture;
 import com.sjiwon.anotherart.fixture.MemberFixture;
 import com.sjiwon.anotherart.member.domain.Member;
@@ -28,8 +27,8 @@ class ArtTest {
                 () -> assertThat(art.getDescription()).isEqualTo(ART_A.getDescription()),
                 () -> assertThat(art.getArtType()).isEqualTo(ART_A.getArtType()),
                 () -> assertThat(art.getArtStatus()).isEqualTo(ArtStatus.FOR_SALE),
-                () -> assertThat(art.getUploadImage().getUploadName()).isEqualTo(ART_A.getUploadName()),
-                () -> assertThat(art.getHashtags().size()).isEqualTo(HASHTAGS.size()),
+                () -> assertThat(art.getUploadName()).isEqualTo(ART_A.getUploadName()),
+                () -> assertThat(art.getHashtagList().size()).isEqualTo(HASHTAGS.size()),
                 () -> assertThat(art.getOwner().getName()).isEqualTo(member.getName()),
                 () -> assertThat(art.getOwner().getNickname()).isEqualTo(member.getNickname()),
                 () -> assertThat(art.getOwner().getLoginId()).isEqualTo(member.getLoginId())
@@ -46,9 +45,9 @@ class ArtTest {
                 () -> assertThat(art.getDescription()).isEqualTo(ART_A.getDescription()),
                 () -> assertThat(art.getArtType()).isEqualTo(ART_A.getArtType()),
                 () -> assertThat(art.getArtStatus()).isEqualTo(ArtStatus.FOR_SALE),
-                () -> assertThat(art.getUploadImage().getUploadName()).isEqualTo(ART_A.getUploadName()),
-                () -> assertThat(art.getHashtags().size()).isEqualTo(5),
-                () -> assertThat(art.getHashtags().stream().map(Hashtag::getName).toList()).containsAll(HASHTAGS),
+                () -> assertThat(art.getUploadName()).isEqualTo(ART_A.getUploadName()),
+                () -> assertThat(art.getHashtagList().size()).isEqualTo(5),
+                () -> assertThat(art.getHashtagList()).containsAll(HASHTAGS),
                 () -> assertThat(art.getOwner().getName()).isEqualTo(member.getName()),
                 () -> assertThat(art.getOwner().getNickname()).isEqualTo(member.getNickname()),
                 () -> assertThat(art.getOwner().getLoginId()).isEqualTo(member.getLoginId())

@@ -56,7 +56,7 @@ public class ArtService {
                 .uploadImage(UploadImage.from(request.getFile()))
                 .hashtags(new HashSet<>(request.getHashtagList()))
                 .build();
-        processFileUpload(request.getFile(), art.getUploadImage().getStorageName());
+        processFileUpload(request.getFile(), art.getStorageName());
         return artRepository.save(art);
     }
 

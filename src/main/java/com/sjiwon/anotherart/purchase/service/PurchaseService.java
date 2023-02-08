@@ -45,9 +45,9 @@ public class PurchaseService {
         validateAuctionIsProceeding(auction);
         validateHighestBidder(auction, memberId);
 
-        Member member = memberFindService.findById(memberId);
-        purchaseRepository.save(Purchase.purchaseArt(member, art, auction.getCurrentHighestBidder().getBidAmount()));
-        proceedingPointTransaction(auction, art, member);
+        Member buyer = memberFindService.findById(memberId);
+        purchaseRepository.save(Purchase.purchaseArt(buyer, art, auction.getBidAmount()));
+        proceedingPointTransaction(auction, art, buyer);
     }
 
     private void validateAuctionIsProceeding(Auction auction) {
@@ -57,25 +57,25 @@ public class PurchaseService {
     }
 
     private void validateHighestBidder(Auction auction, Long memberId) {
-        Member bidder = auction.getCurrentHighestBidder().getBidder();
+        Member bidder = auction.getBidder();
         if (!bidder.isSameMember(memberId)) {
             throw AnotherArtException.type(PurchaseErrorCode.INVALID_HIGHEST_BIDDER);
         }
     }
 
     private void generalArtPurchaseProcess(Art art, Long memberId) {
-        Member member = memberFindService.findById(memberId);
-        purchaseRepository.save(Purchase.purchaseArt(member, art, art.getPrice()));
-        proceedingPointTransaction(null, art, member);
+        Member buyer = memberFindService.findById(memberId);
+        purchaseRepository.save(Purchase.purchaseArt(buyer, art, art.getPrice()));
+        proceedingPointTransaction(null, art, buyer);
     }
 
-    private void proceedingPointTransaction(@Nullable Auction auction, Art art, Member member) {
+    private void proceedingPointTransaction(@Nullable Auction auction, Art art, Member buyer) {
         Member owner = art.getOwner();
         if (auction == null) {
             owner.addPointDetail(PointDetail.insertPointDetail(owner, PointType.SOLD, art.getPrice()));
-            member.addPointDetail(PointDetail.insertPointDetail(member, PointType.PURCHASE, art.getPrice()));
+            buyer.addPointDetail(PointDetail.insertPointDetail(buyer, PointType.PURCHASE, art.getPrice()));
         } else {
-            owner.addPointDetail(PointDetail.insertPointDetail(owner, PointType.SOLD, auction.getCurrentHighestBidder().getBidAmount()));
+            owner.addPointDetail(PointDetail.insertPointDetail(owner, PointType.SOLD, auction.getBidAmount()));
         }
     }
 }

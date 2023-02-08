@@ -653,8 +653,8 @@ class ArtApiControllerTest extends ControllerTest {
 
             Auction auction = auctionRepository.findByArtId(findArt.getId()).orElseThrow();
             assertThat(auction.getAuctionRecords().size()).isEqualTo(0);
-            assertThat(auction.getCurrentHighestBidder().getBidder()).isNull();
-            assertThat(auction.getCurrentHighestBidder().getBidAmount()).isEqualTo(AUCTION_ART.getPrice());
+            assertThat(auction.getBidder()).isNull();
+            assertThat(auction.getBidAmount()).isEqualTo(AUCTION_ART.getPrice());
             assertThat(auction.getArt().getId()).isEqualTo(findArt.getId());
             assertThat(auction.getArt().getName()).isEqualTo(AUCTION_ART.getName());
             assertThat(auction.getArt().getArtType()).isEqualTo(ArtType.AUCTION);
