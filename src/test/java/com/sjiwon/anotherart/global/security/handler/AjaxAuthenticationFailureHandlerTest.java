@@ -6,12 +6,9 @@ import com.sjiwon.anotherart.fixture.MemberFixture;
 import com.sjiwon.anotherart.global.security.exception.AuthErrorCode;
 import com.sjiwon.anotherart.global.security.handler.utils.MemberLoginRequestUtils;
 import com.sjiwon.anotherart.global.security.principal.MemberLoginRequest;
-import com.sjiwon.anotherart.member.domain.MemberRepository;
 import com.sjiwon.anotherart.member.exception.MemberErrorCode;
-import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
@@ -26,11 +23,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @DisplayName("Security [Handler] -> AjaxAuthenticationFailureHandler 테스트")
-@RequiredArgsConstructor
 class AjaxAuthenticationFailureHandlerTest extends ControllerTest {
-    private final MockMvc mockMvc;
-    private final MemberRepository memberRepository;
-
     private static final String BASE_URL = "/api/login";
     private static final MemberFixture MEMBER = MemberFixture.A;
     private static final String DEFAULT_LOGIN_ID = MEMBER.getLoginId();

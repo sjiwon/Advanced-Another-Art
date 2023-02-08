@@ -1,23 +1,17 @@
 package com.sjiwon.anotherart.favorite.controller;
 
 import com.sjiwon.anotherart.art.domain.Art;
-import com.sjiwon.anotherart.art.domain.ArtRepository;
 import com.sjiwon.anotherart.common.ControllerTest;
 import com.sjiwon.anotherart.favorite.domain.Favorite;
-import com.sjiwon.anotherart.favorite.domain.FavoriteRepository;
 import com.sjiwon.anotherart.favorite.exception.FavoriteErrorCode;
 import com.sjiwon.anotherart.fixture.ArtFixture;
 import com.sjiwon.anotherart.fixture.MemberFixture;
 import com.sjiwon.anotherart.global.security.exception.AuthErrorCode;
 import com.sjiwon.anotherart.member.domain.Member;
-import com.sjiwon.anotherart.member.domain.MemberRepository;
-import com.sjiwon.anotherart.token.utils.JwtTokenProvider;
-import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
 import java.util.List;
@@ -36,14 +30,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @DisplayName("Favorite [Controller Layer] -> FavoriteApiController 테스트")
-@RequiredArgsConstructor
 class FavoriteApiControllerTest extends ControllerTest {
-    private final MockMvc mockMvc;
-    private final MemberRepository memberRepository;
-    private final JwtTokenProvider jwtTokenProvider;
-    private final ArtRepository artRepository;
-    private final FavoriteRepository favoriteRepository;
-
     private static final String BEARER_TOKEN = "Bearer ";
     private static final List<String> HASHTAGS = List.of("A", "B", "C", "D", "E");
 

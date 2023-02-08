@@ -14,15 +14,11 @@ import com.sjiwon.anotherart.member.controller.utils.ChangeNicknameRequestUtils;
 import com.sjiwon.anotherart.member.controller.utils.FindIdRequestUtils;
 import com.sjiwon.anotherart.member.controller.utils.ResetPasswordRequestUtils;
 import com.sjiwon.anotherart.member.domain.Member;
-import com.sjiwon.anotherart.member.domain.MemberRepository;
 import com.sjiwon.anotherart.member.exception.MemberErrorCode;
-import com.sjiwon.anotherart.token.utils.JwtTokenProvider;
-import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
@@ -38,12 +34,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @DisplayName("Member [Controller Layer] -> MemberDetailApiController 테스트")
-@RequiredArgsConstructor
 class MemberDetailApiControllerTest extends ControllerTest {
-    private final MockMvc mockMvc;
-    private final MemberRepository memberRepository;
-    private final JwtTokenProvider jwtTokenProvider;
-
     private static final String BEARER_TOKEN = "Bearer ";
 
     @Nested

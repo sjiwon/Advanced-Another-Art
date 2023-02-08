@@ -10,13 +10,10 @@ import com.sjiwon.anotherart.member.controller.utils.DuplicateCheckRequestUtils;
 import com.sjiwon.anotherart.member.controller.utils.SignUpRequestUtils;
 import com.sjiwon.anotherart.member.domain.Email;
 import com.sjiwon.anotherart.member.domain.Member;
-import com.sjiwon.anotherart.member.domain.MemberRepository;
 import com.sjiwon.anotherart.member.exception.MemberErrorCode;
-import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
@@ -29,11 +26,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @DisplayName("Member [Controller Layer] -> MemberApiController 테스트")
-@RequiredArgsConstructor
 class MemberApiControllerTest extends ControllerTest {
-    private final MockMvc mockMvc;
-    private final MemberRepository memberRepository;
-
     @Nested
     @DisplayName("회원가입 테스트 [POST /api/member]")
     class signUp {

@@ -3,12 +3,10 @@ package com.sjiwon.anotherart.art.controller;
 import com.sjiwon.anotherart.art.controller.dto.request.ArtRegisterRequest;
 import com.sjiwon.anotherart.art.controller.utils.ArtRegistrationRequestUtils;
 import com.sjiwon.anotherart.art.domain.Art;
-import com.sjiwon.anotherart.art.domain.ArtRepository;
 import com.sjiwon.anotherart.art.domain.ArtStatus;
 import com.sjiwon.anotherart.art.domain.ArtType;
 import com.sjiwon.anotherart.art.exception.ArtRequestValidationMessage;
 import com.sjiwon.anotherart.auction.domain.Auction;
-import com.sjiwon.anotherart.auction.domain.AuctionRepository;
 import com.sjiwon.anotherart.auction.exception.AuctionErrorCode;
 import com.sjiwon.anotherart.common.ControllerTest;
 import com.sjiwon.anotherart.fixture.ArtFixture;
@@ -16,15 +14,11 @@ import com.sjiwon.anotherart.fixture.MemberFixture;
 import com.sjiwon.anotherart.global.exception.GlobalErrorCode;
 import com.sjiwon.anotherart.global.security.exception.AuthErrorCode;
 import com.sjiwon.anotherart.member.domain.Member;
-import com.sjiwon.anotherart.member.domain.MemberRepository;
-import com.sjiwon.anotherart.token.utils.JwtTokenProvider;
-import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.util.LinkedMultiValueMap;
@@ -49,15 +43,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @DisplayName("Art [Controller Layer] -> ArtApiController 테스트")
-@RequiredArgsConstructor
 @TestPropertySource(properties = "file.dir=src/test/resources/images/storage/")
 class ArtApiControllerTest extends ControllerTest {
-    private final MockMvc mockMvc;
-    private final MemberRepository memberRepository;
-    private final JwtTokenProvider jwtTokenProvider;
-    private final ArtRepository artRepository;
-    private final AuctionRepository auctionRepository;
-
     private static final String BEARER_TOKEN = "Bearer ";
 
     private static final ArtFixture AUCTION_ART = ArtFixture.A;

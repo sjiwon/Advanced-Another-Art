@@ -1,31 +1,23 @@
 package com.sjiwon.anotherart.purchase.controller;
 
 import com.sjiwon.anotherart.art.domain.Art;
-import com.sjiwon.anotherart.art.domain.ArtRepository;
 import com.sjiwon.anotherart.art.domain.ArtStatus;
 import com.sjiwon.anotherart.auction.domain.Auction;
-import com.sjiwon.anotherart.auction.domain.AuctionRepository;
 import com.sjiwon.anotherart.auction.domain.Period;
 import com.sjiwon.anotherart.auction.domain.record.AuctionRecord;
-import com.sjiwon.anotherart.auction.domain.record.AuctionRecordRepository;
 import com.sjiwon.anotherart.common.ControllerTest;
 import com.sjiwon.anotherart.fixture.ArtFixture;
 import com.sjiwon.anotherart.fixture.MemberFixture;
 import com.sjiwon.anotherart.global.security.exception.AuthErrorCode;
 import com.sjiwon.anotherart.member.domain.Member;
-import com.sjiwon.anotherart.member.domain.MemberRepository;
 import com.sjiwon.anotherart.member.domain.point.PointDetail;
-import com.sjiwon.anotherart.member.domain.point.PointDetailRepository;
 import com.sjiwon.anotherart.member.domain.point.PointType;
 import com.sjiwon.anotherart.purchase.exception.PurchaseErrorCode;
-import com.sjiwon.anotherart.token.utils.JwtTokenProvider;
-import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.test.util.ReflectionTestUtils;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
 import java.time.LocalDateTime;
@@ -46,16 +38,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @DisplayName("Purchase [Controller Layer] -> PurchaseApiController 테스트")
-@RequiredArgsConstructor
 class PurchaseApiControllerTest extends ControllerTest {
-    private final MockMvc mockMvc;
-    private final MemberRepository memberRepository;
-    private final PointDetailRepository pointDetailRepository;
-    private final JwtTokenProvider jwtTokenProvider;
-    private final ArtRepository artRepository;
-    private final AuctionRepository auctionRepository;
-    private final AuctionRecordRepository auctionRecordRepository;
-
     private static final String BEARER_TOKEN = "Bearer ";
     private static final int INIT_AVAILABLE_POINT = 100_000_000;
     private static final List<String> HASHTAGS = List.of("A", "B", "C", "D", "E");
