@@ -1,27 +1,23 @@
 package com.sjiwon.anotherart.auction.service;
 
 import com.sjiwon.anotherart.art.domain.Art;
-import com.sjiwon.anotherart.art.domain.ArtRepository;
-import com.sjiwon.anotherart.art.domain.hashtag.HashtagRepository;
 import com.sjiwon.anotherart.auction.domain.Auction;
-import com.sjiwon.anotherart.auction.domain.AuctionRepository;
 import com.sjiwon.anotherart.auction.domain.Period;
-import com.sjiwon.anotherart.auction.domain.record.AuctionRecordRepository;
+import com.sjiwon.anotherart.common.ConcurrencyTest;
 import com.sjiwon.anotherart.common.utils.PasswordEncoderUtils;
 import com.sjiwon.anotherart.fixture.ArtFixture;
 import com.sjiwon.anotherart.fixture.MemberFixture;
-import com.sjiwon.anotherart.member.domain.*;
+import com.sjiwon.anotherart.member.domain.Address;
+import com.sjiwon.anotherart.member.domain.Email;
+import com.sjiwon.anotherart.member.domain.Member;
+import com.sjiwon.anotherart.member.domain.Password;
 import com.sjiwon.anotherart.member.domain.point.PointDetail;
-import com.sjiwon.anotherart.member.domain.point.PointDetailRepository;
 import com.sjiwon.anotherart.member.domain.point.PointType;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.TestConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,18 +31,10 @@ import static com.sjiwon.anotherart.common.utils.MemberUtils.INIT_AVAILABLE_POIN
 import static org.assertj.core.api.Assertions.assertThat;
 
 @Slf4j
-@SpringBootTest
-@TestConstructor(autowireMode = TestConstructor.AutowireMode.ALL)
-@RequiredArgsConstructor
 @DisplayName("Auction [Bid Concurrency Test] -> 경매 작품 입찰 동시성 테스트")
-class BidServiceTest {
-    private final BidService bidService;
-    private final MemberRepository memberRepository;
-    private final PointDetailRepository pointDetailRepository;
-    private final ArtRepository artRepository;
-    private final HashtagRepository hashtagRepository;
-    private final AuctionRepository auctionRepository;
-    private final AuctionRecordRepository auctionRecordRepository;
+class BidServiceTest extends ConcurrencyTest {
+    @Autowired
+    private BidService bidService;
 
     private static final MemberFixture MEMBER = MemberFixture.A;
     private final List<Long> participateMemberIdList = new ArrayList<>();
@@ -54,16 +42,6 @@ class BidServiceTest {
     @BeforeEach
     void before() {
         createParticipateMembers(); // 100명의 더미 사용자 생성
-    }
-
-    @AfterEach
-    void after() {
-        auctionRecordRepository.deleteAll();
-        auctionRepository.deleteAll();
-        hashtagRepository.deleteAll();
-        artRepository.deleteAll();
-        pointDetailRepository.deleteAll();
-        memberRepository.deleteAll();
     }
 
     @Test

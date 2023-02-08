@@ -1,24 +1,21 @@
 package com.sjiwon.anotherart.purchase.service;
 
 import com.sjiwon.anotherart.art.domain.Art;
-import com.sjiwon.anotherart.art.domain.ArtRepository;
-import com.sjiwon.anotherart.art.domain.hashtag.HashtagRepository;
+import com.sjiwon.anotherart.common.ConcurrencyTest;
 import com.sjiwon.anotherart.common.utils.PasswordEncoderUtils;
 import com.sjiwon.anotherart.fixture.ArtFixture;
 import com.sjiwon.anotherart.fixture.MemberFixture;
-import com.sjiwon.anotherart.member.domain.*;
+import com.sjiwon.anotherart.member.domain.Address;
+import com.sjiwon.anotherart.member.domain.Email;
+import com.sjiwon.anotherart.member.domain.Member;
+import com.sjiwon.anotherart.member.domain.Password;
 import com.sjiwon.anotherart.member.domain.point.PointDetail;
-import com.sjiwon.anotherart.member.domain.point.PointDetailRepository;
 import com.sjiwon.anotherart.member.domain.point.PointType;
-import com.sjiwon.anotherart.purchase.domain.PurchaseRepository;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.TestConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,17 +29,10 @@ import static com.sjiwon.anotherart.common.utils.MemberUtils.INIT_AVAILABLE_POIN
 import static org.assertj.core.api.Assertions.assertThat;
 
 @Slf4j
-@SpringBootTest
-@TestConstructor(autowireMode = TestConstructor.AutowireMode.ALL)
-@RequiredArgsConstructor
 @DisplayName("Purchase [Purchase Concurrency Test] -> 작품 구매 동시성 테스트")
-class PurchaseServiceTest {
-    private final PurchaseService purchaseService;
-    private final MemberRepository memberRepository;
-    private final PointDetailRepository pointDetailRepository;
-    private final ArtRepository artRepository;
-    private final HashtagRepository hashtagRepository;
-    private final PurchaseRepository purchaseRepository;
+class PurchaseServiceTest extends ConcurrencyTest {
+    @Autowired
+    private PurchaseService purchaseService;
 
     private static final MemberFixture MEMBER = MemberFixture.A;
     private final List<Long> participateMemberIdList = new ArrayList<>();
@@ -50,15 +40,6 @@ class PurchaseServiceTest {
     @BeforeEach
     void before() {
         createParticipateMembers(); // 100명의 더미 사용자 생성
-    }
-
-    @AfterEach
-    void after() {
-        purchaseRepository.deleteAll();
-        hashtagRepository.deleteAll();
-        artRepository.deleteAll();
-        pointDetailRepository.deleteAll();
-        memberRepository.deleteAll();
     }
 
     @Test
