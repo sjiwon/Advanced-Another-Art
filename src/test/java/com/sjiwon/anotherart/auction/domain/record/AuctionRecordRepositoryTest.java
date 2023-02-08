@@ -10,23 +10,18 @@ import com.sjiwon.anotherart.fixture.ArtFixture;
 import com.sjiwon.anotherart.fixture.MemberFixture;
 import com.sjiwon.anotherart.member.domain.Member;
 import com.sjiwon.anotherart.member.domain.MemberRepository;
-import com.sjiwon.anotherart.member.domain.point.PointDetailRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.time.LocalDateTime;
-import java.util.List;
-
+import static com.sjiwon.anotherart.common.utils.ArtUtils.*;
+import static com.sjiwon.anotherart.common.utils.MemberUtils.INIT_AVAILABLE_POINT;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("AuctionRecord [Repository Layer] -> AuctionRecordRepository 테스트")
 class AuctionRecordRepositoryTest extends RepositoryTest {
     @Autowired
     MemberRepository memberRepository;
-
-    @Autowired
-    PointDetailRepository pointDetailRepository;
 
     @Autowired
     ArtRepository artRepository;
@@ -36,11 +31,6 @@ class AuctionRecordRepositoryTest extends RepositoryTest {
 
     @Autowired
     AuctionRecordRepository auctionRecordRepository;
-
-    private static final int INIT_AVAILABLE_POINT = 100_000_000;
-    private static final LocalDateTime currentTime1DayLater = LocalDateTime.now().plusDays(1);
-    private static final LocalDateTime currentTime3DayLater = LocalDateTime.now().plusDays(3);
-    private static final List<String> HASHTAGS = List.of("A", "B", "C", "D", "E");
 
     @Test
     @DisplayName("경매 작품에 대한 입찰 횟수를 조회한다")

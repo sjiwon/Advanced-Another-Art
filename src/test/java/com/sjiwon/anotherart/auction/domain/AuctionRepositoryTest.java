@@ -4,7 +4,6 @@ import com.sjiwon.anotherart.art.domain.Art;
 import com.sjiwon.anotherart.art.domain.ArtRepository;
 import com.sjiwon.anotherart.art.domain.ArtStatus;
 import com.sjiwon.anotherart.art.domain.ArtType;
-import com.sjiwon.anotherart.auction.domain.record.AuctionRecordRepository;
 import com.sjiwon.anotherart.auction.exception.AuctionErrorCode;
 import com.sjiwon.anotherart.common.RepositoryTest;
 import com.sjiwon.anotherart.fixture.ArtFixture;
@@ -18,8 +17,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
+import static com.sjiwon.anotherart.common.utils.ArtUtils.*;
+import static com.sjiwon.anotherart.common.utils.MemberUtils.INIT_AVAILABLE_POINT;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -34,13 +34,6 @@ class AuctionRepositoryTest extends RepositoryTest {
     @Autowired
     ArtRepository artRepository;
 
-    @Autowired
-    AuctionRecordRepository auctionRecordRepository;
-
-    private static final Period AUCTION_PERIOD = Period.of(LocalDateTime.now().minusDays(1), LocalDateTime.now().plusDays(1));
-    private static final int INIT_AVAILABLE_POINT = 1_000_000;
-    private static final List<String> HASHTAGS = List.of("A", "B", "C", "D", "E");
-
     @Nested
     @DisplayName("경매 등록")
     class auctionRegistration {
@@ -52,7 +45,7 @@ class AuctionRepositoryTest extends RepositoryTest {
             Art generalArt = createGeneralArt(member);
 
             // when - then
-            assertThatThrownBy(() -> Auction.initAuction(generalArt, AUCTION_PERIOD))
+            assertThatThrownBy(() -> initAuction(generalArt))
                     .isInstanceOf(AnotherArtException.class)
                     .hasMessage(AuctionErrorCode.INVALID_ART_TYPE.getMessage());
         }
@@ -217,6 +210,6 @@ class AuctionRepositoryTest extends RepositoryTest {
     }
 
     private Auction initAuction(Art art) {
-        return auctionRepository.save(Auction.initAuction(art, AUCTION_PERIOD));
+        return auctionRepository.save(Auction.initAuction(art, Period.of(currentTime1DayLater, currentTime3DayLater)));
     }
 }

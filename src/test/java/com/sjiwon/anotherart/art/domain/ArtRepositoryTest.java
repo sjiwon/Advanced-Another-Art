@@ -9,24 +9,18 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import java.util.List;
 
+import static com.sjiwon.anotherart.common.utils.ArtUtils.HASHTAGS;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("Art [Repository Layer] -> ArtRepository 테스트")
 class ArtRepositoryTest extends RepositoryTest {
-    @PersistenceContext
-    EntityManager em;
+    @Autowired
+    private ArtRepository artRepository;
 
     @Autowired
-    ArtRepository artRepository;
-
-    @Autowired
-    MemberRepository memberRepository;
-
-    private static final List<String> HASHTAGS = List.of("A", "B", "C", "D", "E");
+    private MemberRepository memberRepository;
 
     @Test
     @DisplayName("작품 소유자인지 검증한다")
@@ -93,7 +87,6 @@ class ArtRepositoryTest extends RepositoryTest {
 
         // when
         artRepository.deleteHashtagsByArtId(art.getId());
-        sync();
 
         // then
         Art findArt = artRepository.findById(art.getId()).orElseThrow();
@@ -110,10 +103,5 @@ class ArtRepositoryTest extends RepositoryTest {
 
     private Art createArt(Member member) {
         return artRepository.save(ArtFixture.A.toArt(member, HASHTAGS));
-    }
-
-    private void sync() {
-        em.flush();
-        em.clear();
     }
 }

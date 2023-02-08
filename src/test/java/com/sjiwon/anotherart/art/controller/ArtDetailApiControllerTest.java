@@ -12,7 +12,7 @@ import com.sjiwon.anotherart.auction.domain.Auction;
 import com.sjiwon.anotherart.auction.domain.Period;
 import com.sjiwon.anotherart.auction.domain.record.AuctionRecord;
 import com.sjiwon.anotherart.common.ControllerTest;
-import com.sjiwon.anotherart.common.ObjectMapperUtils;
+import com.sjiwon.anotherart.common.utils.ObjectMapperUtils;
 import com.sjiwon.anotherart.fixture.ArtFixture;
 import com.sjiwon.anotherart.fixture.MemberFixture;
 import com.sjiwon.anotherart.global.exception.GlobalErrorCode;
@@ -25,9 +25,8 @@ import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import java.time.LocalDateTime;
-import java.util.List;
-
+import static com.sjiwon.anotherart.common.utils.ArtUtils.*;
+import static com.sjiwon.anotherart.common.utils.TokenUtils.BEARER_TOKEN;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.MediaType.APPLICATION_FORM_URLENCODED;
@@ -43,17 +42,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @DisplayName("Art [Controller Layer] -> ArtDetailApiController 테스트")
 class ArtDetailApiControllerTest extends ControllerTest {
-    private static final String BEARER_TOKEN = "Bearer ";
-
     private static final ArtFixture AUCTION_ART = ArtFixture.A;
     private static final ArtFixture GENERAL_ART = ArtFixture.B;
-    private static final List<String> EMPTY_HASHTAGS = List.of();
-    private static final List<String> HASHTAGS = List.of("A", "B", "C", "D", "E");
-    private static final List<String> UPDATE_HASHTAGS = List.of("F", "G", "H", "I", "J");
-    private static final List<String> OVERFLOW_HASHTAGS = List.of("A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K");
-
-    private static final LocalDateTime currentTime1DayLater = LocalDateTime.now().plusDays(1);
-    private static final LocalDateTime currentTime3DayLater = LocalDateTime.now().plusDays(3);
 
     @Nested
     @DisplayName("작품명 중복 체크 테스트 [POST /api/art/duplicate-check]")

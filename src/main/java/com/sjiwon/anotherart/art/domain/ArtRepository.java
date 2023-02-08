@@ -14,7 +14,7 @@ public interface ArtRepository extends JpaRepository<Art, Long> {
             " WHERE a.owner.id = :ownerId")
     List<Art> findByOwnerId(@Param("ownerId") Long ownerId);
 
-    @Modifying
+    @Modifying(clearAutomatically = true)
     @Query("DELETE FROM Hashtag h WHERE h.art.id = :artId")
     void deleteHashtagsByArtId(@Param("artId") Long artId);
 

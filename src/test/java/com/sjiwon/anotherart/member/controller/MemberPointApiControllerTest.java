@@ -15,6 +15,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.util.List;
 
+import static com.sjiwon.anotherart.common.utils.TokenUtils.BEARER_TOKEN;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.MediaType.APPLICATION_FORM_URLENCODED;
@@ -31,8 +32,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @DisplayName("Member [Controller Layer] -> MemberPointApiController 테스트")
 class MemberPointApiControllerTest extends ControllerTest {
-    private static final String BEARER_TOKEN = "Bearer ";
-
     @Nested
     @DisplayName("사용자 포인트 충전 테스트 [POST /api/member/point/charge]")
     class chargePoint {

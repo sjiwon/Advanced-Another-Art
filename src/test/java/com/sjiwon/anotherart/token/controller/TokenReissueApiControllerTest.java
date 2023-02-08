@@ -11,6 +11,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import static com.sjiwon.anotherart.common.utils.TokenUtils.BEARER_TOKEN;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
@@ -23,8 +24,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @DisplayName("Token [Controller Layer] -> TokenReissueApiController 테스트")
 class TokenReissueApiControllerTest extends ControllerTest {
-    private static final String BEARER_TOKEN = "Bearer ";
-
     @Nested
     @DisplayName("토큰 재발급 테스트 [POST /api/token/reissue]")
     class reissueToken {

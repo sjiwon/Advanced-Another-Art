@@ -1,7 +1,7 @@
 package com.sjiwon.anotherart.member.controller;
 
 import com.sjiwon.anotherart.common.ControllerTest;
-import com.sjiwon.anotherart.common.ObjectMapperUtils;
+import com.sjiwon.anotherart.common.utils.ObjectMapperUtils;
 import com.sjiwon.anotherart.fixture.MemberFixture;
 import com.sjiwon.anotherart.global.exception.GlobalErrorCode;
 import com.sjiwon.anotherart.member.controller.dto.request.DuplicateCheckRequest;

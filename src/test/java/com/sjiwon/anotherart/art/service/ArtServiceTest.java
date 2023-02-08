@@ -18,6 +18,7 @@ import org.mockito.Mock;
 
 import java.util.List;
 
+import static com.sjiwon.anotherart.common.utils.ArtUtils.HASHTAGS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
@@ -43,8 +44,6 @@ class ArtServiceTest extends ServiceTest {
 
     @Mock
     AuctionRepository auctionRepository;
-
-    private static final List<String> HASHTAGS = List.of("A", "B", "C", "D", "E");
 
     @Test
     @DisplayName("작품명 중복 체크 로직을 진행한다")

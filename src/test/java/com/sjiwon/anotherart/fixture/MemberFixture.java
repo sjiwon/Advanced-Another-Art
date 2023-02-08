@@ -1,6 +1,6 @@
 package com.sjiwon.anotherart.fixture;
 
-import com.sjiwon.anotherart.common.PasswordEncoderUtils;
+import com.sjiwon.anotherart.common.utils.PasswordEncoderUtils;
 import com.sjiwon.anotherart.member.domain.Address;
 import com.sjiwon.anotherart.member.domain.Email;
 import com.sjiwon.anotherart.member.domain.Member;

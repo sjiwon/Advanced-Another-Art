@@ -24,11 +24,11 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
 
+import static com.sjiwon.anotherart.common.utils.ArtUtils.*;
+import static com.sjiwon.anotherart.common.utils.TokenUtils.BEARER_TOKEN;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.MediaType.APPLICATION_FORM_URLENCODED;
@@ -45,20 +45,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @DisplayName("Art [Controller Layer] -> ArtApiController 테스트")
 @TestPropertySource(properties = "file.dir=src/test/resources/images/storage/")
 class ArtApiControllerTest extends ControllerTest {
-    private static final String BEARER_TOKEN = "Bearer ";
-
     private static final ArtFixture AUCTION_ART = ArtFixture.A;
     private static final ArtFixture GENERAL_ART = ArtFixture.B;
     private static final ArtFixture GENERAL_ART_BMP = ArtFixture.B_BMP;
-
-    private static final List<String> EMPTY_HASHTAGS = List.of();
-    private static final List<String> HASHTAGS = List.of("A", "B", "C", "D", "E");
-    private static final List<String> OVERFLOW_HASHTAGS = List.of("A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K");
-
-    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
-    private static final String currentTime3DayAgo = LocalDateTime.now().minusDays(3).format(formatter);
-    private static final String currentTime1DayLater = LocalDateTime.now().plusDays(1).format(formatter);
-    private static final String currentTime3DayLater = LocalDateTime.now().plusDays(3).format(formatter);
 
     @Nested
     @DisplayName("작품 등록 테스트 [POST /api/art]")
@@ -472,8 +461,8 @@ class ArtApiControllerTest extends ControllerTest {
                     .param("description", request.getDescription())
                     .param("price", String.valueOf(request.getPrice()))
                     .params(createHashtagParams(request.getHashtagList()))
-                    .param("startDate", currentTime3DayAgo)
-                    .param("endDate", currentTime3DayLater);
+                    .param("startDate", currentTime3DayAgoToString)
+                    .param("endDate", currentTime3DayLaterToString);
 
             // then
             final GlobalErrorCode expectedError = GlobalErrorCode.VALIDATION_ERROR;
@@ -533,8 +522,8 @@ class ArtApiControllerTest extends ControllerTest {
                     .param("description", request.getDescription())
                     .param("price", String.valueOf(request.getPrice()))
                     .params(createHashtagParams(request.getHashtagList()))
-                    .param("startDate", currentTime3DayLater)
-                    .param("endDate", currentTime1DayLater);
+                    .param("startDate", currentTime3DayLaterToString)
+                    .param("endDate", currentTime1DayLaterToString);
 
             // then
             final AuctionErrorCode expectedError = AuctionErrorCode.INVALID_AUCTION_DURATION;
@@ -593,8 +582,8 @@ class ArtApiControllerTest extends ControllerTest {
                     .param("description", request.getDescription())
                     .param("price", String.valueOf(request.getPrice()))
                     .params(createHashtagParams(request.getHashtagList()))
-                    .param("startDate", currentTime1DayLater)
-                    .param("endDate", currentTime3DayLater);
+                    .param("startDate", currentTime1DayLaterToString)
+                    .param("endDate", currentTime3DayLaterToString);
 
             // then
             mockMvc.perform(requestBuilder)

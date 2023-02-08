@@ -23,6 +23,9 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 import java.time.LocalDateTime;
 import java.util.List;
 
+import static com.sjiwon.anotherart.common.utils.ArtUtils.*;
+import static com.sjiwon.anotherart.common.utils.MemberUtils.INIT_AVAILABLE_POINT;
+import static com.sjiwon.anotherart.common.utils.TokenUtils.BEARER_TOKEN;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.MediaType.APPLICATION_FORM_URLENCODED;
@@ -39,12 +42,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @DisplayName("Purchase [Controller Layer] -> PurchaseApiController 테스트")
 class PurchaseApiControllerTest extends ControllerTest {
-    private static final String BEARER_TOKEN = "Bearer ";
-    private static final int INIT_AVAILABLE_POINT = 100_000_000;
-    private static final List<String> HASHTAGS = List.of("A", "B", "C", "D", "E");
-    private static final LocalDateTime currentTime1DayLater = LocalDateTime.now().plusDays(1);
-    private static final LocalDateTime currentTime3DayLater = LocalDateTime.now().plusDays(3);
-
     @Nested
     @DisplayName("작품 구매 테스트 [POST /api/art/{artId}/purchase]")
     class bid {

@@ -1,7 +1,7 @@
 package com.sjiwon.anotherart.global.security.handler;
 
 import com.sjiwon.anotherart.common.ControllerTest;
-import com.sjiwon.anotherart.common.ObjectMapperUtils;
+import com.sjiwon.anotherart.common.utils.ObjectMapperUtils;
 import com.sjiwon.anotherart.fixture.MemberFixture;
 import com.sjiwon.anotherart.global.security.handler.utils.MemberLoginRequestUtils;
 import com.sjiwon.anotherart.global.security.principal.MemberLoginRequest;

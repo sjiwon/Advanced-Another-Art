@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import static com.sjiwon.anotherart.common.utils.TokenUtils.BEARER_TOKEN;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
@@ -23,7 +24,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @DisplayName("Security [Handler] -> JwtLogoutSuccessHandler 테스트")
 class JwtLogoutSuccessHandlerTest extends ControllerTest {
     private static final String BASE_URL = "/api/logout";
-    private static final String BEARER_TOKEN = "Bearer ";
 
     @Test
     @DisplayName("Authorization 헤더에 Refresh Token이 없으면 로그아웃에 실패한다")

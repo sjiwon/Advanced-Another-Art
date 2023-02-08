@@ -22,6 +22,9 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 import java.time.LocalDateTime;
 import java.util.List;
 
+import static com.sjiwon.anotherart.common.utils.ArtUtils.*;
+import static com.sjiwon.anotherart.common.utils.MemberUtils.INIT_AVAILABLE_POINT;
+import static com.sjiwon.anotherart.common.utils.TokenUtils.BEARER_TOKEN;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.MediaType.APPLICATION_FORM_URLENCODED;
@@ -37,12 +40,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @DisplayName("Auction [Controller Layer] -> BidApiController 테스트")
 class BidApiControllerTest extends ControllerTest {
-    private static final String BEARER_TOKEN = "Bearer ";
-    private static final int INIT_AVAILABLE_POINT = 100_000_000;
-    private static final List<String> HASHTAGS = List.of("A", "B", "C", "D", "E");
-    private static final LocalDateTime currentTime1DayLater = LocalDateTime.now().plusDays(1);
-    private static final LocalDateTime currentTime3DayLater = LocalDateTime.now().plusDays(3);
-
     @Nested
     @DisplayName("경매 작품 입찰 테스트 [POST /api/auction/{auctionId}/bid]")
     class bid {

@@ -1,6 +1,6 @@
 package com.sjiwon.anotherart.member.domain;
 
-import com.sjiwon.anotherart.common.PasswordEncoderUtils;
+import com.sjiwon.anotherart.common.utils.PasswordEncoderUtils;
 import com.sjiwon.anotherart.fixture.MemberFixture;
 import com.sjiwon.anotherart.global.exception.AnotherArtException;
 import com.sjiwon.anotherart.member.exception.MemberErrorCode;

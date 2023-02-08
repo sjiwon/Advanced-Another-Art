@@ -11,17 +11,11 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import java.util.List;
-
+import static com.sjiwon.anotherart.common.utils.ArtUtils.HASHTAGS;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("Favorite [Repository Layer] -> FavoriteRepository 테스트")
 class FavoriteRepositoryTest extends RepositoryTest {
-    @PersistenceContext
-    EntityManager em;
-
     @Autowired
     private FavoriteRepository favoriteRepository;
 
@@ -30,8 +24,6 @@ class FavoriteRepositoryTest extends RepositoryTest {
 
     @Autowired
     private ArtRepository artRepository;
-
-    private static final List<String> HASHTAGS = List.of("A", "B", "C", "D", "E");
 
     @Test
     @DisplayName("작품에 대한 좋아요 등록을 했는지 조회한다")
@@ -43,7 +35,6 @@ class FavoriteRepositoryTest extends RepositoryTest {
 
         Member member = createMemberB();
         favoriteMarking(generalArt.getId(), member.getId());
-        sync();
 
         // when
         boolean actual1 = favoriteRepository.existsByArtIdAndMemberId(generalArt.getId(), member.getId());
@@ -63,7 +54,6 @@ class FavoriteRepositoryTest extends RepositoryTest {
 
         Member member = createMemberB();
         favoriteMarking(art.getId(), member.getId());
-        sync();
 
         // when
         favoriteRepository.deleteByArtIdAndMemberId(art.getId(), member.getId());
@@ -90,10 +80,5 @@ class FavoriteRepositoryTest extends RepositoryTest {
 
     private Art createAuctionArt(Member owner) {
         return artRepository.save(ArtFixture.A.toArt(owner, HASHTAGS));
-    }
-
-    private void sync() {
-        em.flush();
-        em.clear();
     }
 }

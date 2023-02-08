@@ -7,7 +7,7 @@ import com.sjiwon.anotherart.auction.domain.Auction;
 import com.sjiwon.anotherart.auction.domain.AuctionRepository;
 import com.sjiwon.anotherart.auction.domain.Period;
 import com.sjiwon.anotherart.auction.domain.record.AuctionRecordRepository;
-import com.sjiwon.anotherart.common.PasswordEncoderUtils;
+import com.sjiwon.anotherart.common.utils.PasswordEncoderUtils;
 import com.sjiwon.anotherart.fixture.ArtFixture;
 import com.sjiwon.anotherart.fixture.MemberFixture;
 import com.sjiwon.anotherart.member.domain.*;

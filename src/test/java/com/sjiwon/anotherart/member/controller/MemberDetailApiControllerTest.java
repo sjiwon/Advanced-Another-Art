@@ -1,8 +1,8 @@
 package com.sjiwon.anotherart.member.controller;
 
 import com.sjiwon.anotherart.common.ControllerTest;
-import com.sjiwon.anotherart.common.ObjectMapperUtils;
-import com.sjiwon.anotherart.common.PasswordEncoderUtils;
+import com.sjiwon.anotherart.common.utils.ObjectMapperUtils;
+import com.sjiwon.anotherart.common.utils.PasswordEncoderUtils;
 import com.sjiwon.anotherart.fixture.MemberFixture;
 import com.sjiwon.anotherart.global.security.exception.AuthErrorCode;
 import com.sjiwon.anotherart.member.controller.dto.request.AuthForResetPasswordRequest;
@@ -22,6 +22,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import static com.sjiwon.anotherart.common.utils.TokenUtils.BEARER_TOKEN;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
@@ -35,8 +36,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @DisplayName("Member [Controller Layer] -> MemberDetailApiController 테스트")
 class MemberDetailApiControllerTest extends ControllerTest {
-    private static final String BEARER_TOKEN = "Bearer ";
-
     @Nested
     @DisplayName("사용자 닉네임 수정 테스트 [PATCH /api/member/nickname]")
     class changeNickname {

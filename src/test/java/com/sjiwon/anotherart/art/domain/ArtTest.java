@@ -6,8 +6,7 @@ import com.sjiwon.anotherart.member.domain.Member;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.util.List;
-
+import static com.sjiwon.anotherart.common.utils.ArtUtils.HASHTAGS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
@@ -15,7 +14,6 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 class ArtTest {
     private static final ArtFixture ART_A = ArtFixture.A;
     private static final Member member = MemberFixture.A.toMember();
-    private static final List<String> HASHTAGS = List.of("A", "B", "C", "D", "E");
 
     @Test
     @DisplayName("작품을 생성한다")

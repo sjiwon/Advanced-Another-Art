@@ -3,7 +3,7 @@ package com.sjiwon.anotherart.purchase.service;
 import com.sjiwon.anotherart.art.domain.Art;
 import com.sjiwon.anotherart.art.domain.ArtRepository;
 import com.sjiwon.anotherart.art.domain.hashtag.HashtagRepository;
-import com.sjiwon.anotherart.common.PasswordEncoderUtils;
+import com.sjiwon.anotherart.common.utils.PasswordEncoderUtils;
 import com.sjiwon.anotherart.fixture.ArtFixture;
 import com.sjiwon.anotherart.fixture.MemberFixture;
 import com.sjiwon.anotherart.member.domain.*;
@@ -27,6 +27,8 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import static com.sjiwon.anotherart.common.utils.ArtUtils.HASHTAGS;
+import static com.sjiwon.anotherart.common.utils.MemberUtils.INIT_AVAILABLE_POINT;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @Slf4j
@@ -43,8 +45,6 @@ class PurchaseServiceTest {
     private final PurchaseRepository purchaseRepository;
 
     private static final MemberFixture MEMBER = MemberFixture.A;
-    private static final int INIT_AVAILABLE_POINT = 100_000_000;
-    private static final List<String> HASHTAGS = List.of("A", "B", "C", "D", "E");
 
     private final List<Long> participateMemberIdList = new ArrayList<>();
     @BeforeEach

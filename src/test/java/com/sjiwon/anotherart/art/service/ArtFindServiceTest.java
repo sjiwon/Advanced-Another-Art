@@ -13,9 +13,9 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
-import java.util.List;
 import java.util.Optional;
 
+import static com.sjiwon.anotherart.common.utils.ArtUtils.HASHTAGS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.BDDMockito.given;
@@ -27,8 +27,6 @@ class ArtFindServiceTest extends ServiceTest {
 
     @Mock
     private ArtRepository artRepository;
-
-    private static final List<String> HASHTAGS = List.of("A", "B", "C", "D", "E");
 
     @Test
     @DisplayName("ID(PK)로 작품 조회하기")

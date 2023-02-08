@@ -6,17 +6,12 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("Member [Repository Layer] -> MemberRepository 테스트")
 class MemberRepositoryTest extends RepositoryTest {
-    @PersistenceContext
-    EntityManager em;
-
     @Autowired
     MemberRepository memberRepository;
 
@@ -25,7 +20,6 @@ class MemberRepositoryTest extends RepositoryTest {
     void test1() {
         // given
         Member expectedMember = createMemberA();
-        synchronizePersistenceContext();
 
         // when
         boolean actual1 = memberRepository.existsByNickname(expectedMember.getNickname());
@@ -41,7 +35,6 @@ class MemberRepositoryTest extends RepositoryTest {
     void test2() {
         // given
         Member expectedMember = createMemberA();
-        synchronizePersistenceContext();
 
         // when
         boolean actual1 = memberRepository.existsByLoginId(expectedMember.getLoginId());
@@ -57,7 +50,6 @@ class MemberRepositoryTest extends RepositoryTest {
     void test3() {
         // given
         Member expectedMember = createMemberA();
-        synchronizePersistenceContext();
 
         // when
         boolean actual1 = memberRepository.existsByPhone(expectedMember.getPhone());
@@ -73,7 +65,6 @@ class MemberRepositoryTest extends RepositoryTest {
     void test4() {
         // given
         Member expectedMember = createMemberA();
-        synchronizePersistenceContext();
 
         // when
         boolean actual1 = memberRepository.existsByEmail(expectedMember.getEmail());
@@ -90,7 +81,6 @@ class MemberRepositoryTest extends RepositoryTest {
         // given
         final Member expectedMember = createMemberA();
         final String loginId = expectedMember.getLoginId();
-        synchronizePersistenceContext();
 
         // when
         Optional<Member> actualMember = memberRepository.findByLoginId(loginId);
@@ -111,7 +101,6 @@ class MemberRepositoryTest extends RepositoryTest {
         final Member expectedMember = createMemberA();
         final String name = expectedMember.getName();
         final Email email = expectedMember.getEmail();
-        synchronizePersistenceContext();
 
         // when
         Optional<Member> emptyMember1 = memberRepository.findByNameAndEmail(name + "fake", email);
@@ -135,7 +124,6 @@ class MemberRepositoryTest extends RepositoryTest {
         final String name = expectedMember.getName();
         final String loginId = expectedMember.getLoginId();
         final Email email = expectedMember.getEmail();
-        synchronizePersistenceContext();
 
         // when
         boolean actual1 = memberRepository.existsByNameAndLoginIdAndEmail(name, loginId, email);
@@ -152,10 +140,5 @@ class MemberRepositoryTest extends RepositoryTest {
 
     private Member createMemberA() {
         return memberRepository.save(MemberFixture.A.toMember());
-    }
-
-    private void synchronizePersistenceContext() {
-        em.flush();
-        em.clear();
     }
 }
