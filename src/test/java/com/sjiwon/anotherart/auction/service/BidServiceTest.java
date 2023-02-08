@@ -51,6 +51,7 @@ class BidServiceTest {
     private static final LocalDateTime currentTime3DayLater = LocalDateTime.now().plusDays(3);
     private static final List<String> HASHTAGS = List.of("A", "B", "C", "D", "E");
 
+    private final List<Long> participateMemberIdList = new ArrayList<>();
     @BeforeEach
     void before() {
         createParticipateMembers(); // 100명의 더미 사용자 생성
@@ -80,11 +81,10 @@ class BidServiceTest {
 
         // when
         final int bidAmount = auctionArt.getPrice() + 5_000;
-        for (int i = 1; i <= 100; i++) {
-            long memberId = i;
+        for (Long participateMemberId : participateMemberIdList) {
             executorService.submit(() -> {
                 try {
-                    bidService.bid(auction.getId(), memberId, bidAmount);
+                    bidService.bid(auction.getId(), participateMemberId, bidAmount);
                 } catch (Exception e) {
                     e.printStackTrace();
                 } finally {
@@ -117,8 +117,11 @@ class BidServiceTest {
             pointDetails.add(PointDetail.insertPointDetail(member, PointType.CHARGE, INIT_AVAILABLE_POINT));
         }
 
-        memberRepository.saveAll(members);
+        List<Member> savedMembers = memberRepository.saveAll(members);
         pointDetailRepository.saveAll(pointDetails);
+
+        // ID(PK) 추출
+        savedMembers.forEach(savedMember -> participateMemberIdList.add(savedMember.getId()));
     }
 
     private static String generateRandomPhoneNumber() {
