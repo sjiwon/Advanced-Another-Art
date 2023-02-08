@@ -13,6 +13,7 @@ import com.sjiwon.anotherart.purchase.domain.Purchase;
 import com.sjiwon.anotherart.purchase.domain.PurchaseRepository;
 import com.sjiwon.anotherart.purchase.exception.PurchaseErrorCode;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,11 +28,15 @@ public class PurchaseService {
 
     @Transactional
     public void purchaseArt(Long artId, Long memberId) {
-        Art art = artFindService.findByIdWithPessimisticLock(artId);
-        if (art.isAuctionType()) {
-            auctionArtPurchaseProcess(art, memberId);
-        } else {
-            generalArtPurchaseProcess(art, memberId);
+        Art art = artFindService.findById(artId);
+        try {
+            if (art.isAuctionType()) {
+                auctionArtPurchaseProcess(art, memberId);
+            } else {
+                generalArtPurchaseProcess(art, memberId);
+            }
+        } catch (DataIntegrityViolationException e) {
+            throw AnotherArtException.type(PurchaseErrorCode.ART_ALREADY_SOLD_OUT);
         }
     }
 
