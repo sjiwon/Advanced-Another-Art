@@ -41,8 +41,6 @@ public class PointDetail {
         this.member = member;
         this.pointType = pointType;
         this.amount = amount;
-
-        member.getPointDetails().add(this);
     }
 
     public static PointDetail createPointDetail(Member member) {

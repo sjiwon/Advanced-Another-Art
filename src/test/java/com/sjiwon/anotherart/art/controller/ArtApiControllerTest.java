@@ -109,10 +109,10 @@ class ArtApiControllerTest extends ControllerTest {
         void test2() throws Exception {
             // given
             Member owner = createMember();
-            String accessToken = jwtTokenProvider.createAccessToken(owner.getId());
             ArtRegisterRequest request = ArtRegistrationRequestUtils.createGeneralArtRequest(GENERAL_ART, HASHTAGS);
 
             // when
+            final String accessToken = jwtTokenProvider.createAccessToken(owner.getId());
             MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                     .post(BASE_URL)
                     .contentType(APPLICATION_FORM_URLENCODED)
@@ -164,10 +164,10 @@ class ArtApiControllerTest extends ControllerTest {
         void test3() throws Exception {
             // given
             Member owner = createMember();
-            String accessToken = jwtTokenProvider.createAccessToken(owner.getId());
             ArtRegisterRequest request = ArtRegistrationRequestUtils.createGeneralArtRequestWithEmptyImage(GENERAL_ART, HASHTAGS);
 
             // when
+            final String accessToken = jwtTokenProvider.createAccessToken(owner.getId());
             MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                     .multipart(BASE_URL)
                     .file((MockMultipartFile) request.getFile())
@@ -218,10 +218,10 @@ class ArtApiControllerTest extends ControllerTest {
         void test4() throws Exception {
             // given
             Member owner = createMember();
-            String accessToken = jwtTokenProvider.createAccessToken(owner.getId());
             ArtRegisterRequest request = ArtRegistrationRequestUtils.createGeneralArtRequestWithNotAcceptableFormat(GENERAL_ART_BMP, HASHTAGS);
 
             // when
+            final String accessToken = jwtTokenProvider.createAccessToken(owner.getId());
             MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                     .multipart(BASE_URL)
                     .file((MockMultipartFile) request.getFile())
@@ -275,10 +275,10 @@ class ArtApiControllerTest extends ControllerTest {
         void test5() throws Exception {
             // given
             Member owner = createMember();
-            String accessToken = jwtTokenProvider.createAccessToken(owner.getId());
             ArtRegisterRequest request = ArtRegistrationRequestUtils.createGeneralArtRequest(GENERAL_ART, EMPTY_HASHTAGS);
 
             // when
+            final String accessToken = jwtTokenProvider.createAccessToken(owner.getId());
             MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                     .multipart(BASE_URL)
                     .file((MockMultipartFile) request.getFile())
@@ -331,10 +331,10 @@ class ArtApiControllerTest extends ControllerTest {
         void test6() throws Exception {
             // given
             Member owner = createMember();
-            String accessToken = jwtTokenProvider.createAccessToken(owner.getId());
             ArtRegisterRequest request = ArtRegistrationRequestUtils.createGeneralArtRequest(GENERAL_ART, OVERFLOW_HASHTAGS);
 
             // when
+            final String accessToken = jwtTokenProvider.createAccessToken(owner.getId());
             MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                     .multipart(BASE_URL)
                     .file((MockMultipartFile) request.getFile())
@@ -388,10 +388,10 @@ class ArtApiControllerTest extends ControllerTest {
         void test7() throws Exception {
             // given
             Member owner = createMember();
-            String accessToken = jwtTokenProvider.createAccessToken(owner.getId());
             ArtRegisterRequest request = ArtRegistrationRequestUtils.createGeneralArtRequest(GENERAL_ART, HASHTAGS);
 
             // when
+            final String accessToken = jwtTokenProvider.createAccessToken(owner.getId());
             MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                     .multipart(BASE_URL)
                     .file((MockMultipartFile) request.getFile())
@@ -427,9 +427,11 @@ class ArtApiControllerTest extends ControllerTest {
                             )
                     );
 
+            // 등록한 일반 작품
             List<Art> ownerArtList = artRepository.findByOwnerId(owner.getId());
             assertThat(ownerArtList.size()).isEqualTo(1);
 
+            // 작품 정보 확인
             Art findArt = ownerArtList.get(0);
             assertThat(findArt.getName()).isEqualTo(GENERAL_ART.getName());
             assertThat(findArt.getPrice()).isEqualTo(GENERAL_ART.getPrice());
@@ -437,6 +439,7 @@ class ArtApiControllerTest extends ControllerTest {
             assertThat(findArt.getArtStatus()).isEqualTo(ArtStatus.FOR_SALE);
             assertThat(findArt.getHashtagList()).containsAll(HASHTAGS);
 
+            // 작품 소유자 정보 확인
             Member findOwner = findArt.getOwner();
             assertThat(findOwner.getId()).isEqualTo(owner.getId());
             assertThat(findOwner.getName()).isEqualTo(owner.getName());
@@ -448,10 +451,10 @@ class ArtApiControllerTest extends ControllerTest {
         void test8() throws Exception {
             // given
             Member member = createMember();
-            String accessToken = jwtTokenProvider.createAccessToken(member.getId());
             ArtRegisterRequest request = ArtRegistrationRequestUtils.createAuctionArtRequest(AUCTION_ART, HASHTAGS);
 
             // when
+            final String accessToken = jwtTokenProvider.createAccessToken(member.getId());
             MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                     .multipart(BASE_URL)
                     .file((MockMultipartFile) request.getFile())
@@ -509,10 +512,10 @@ class ArtApiControllerTest extends ControllerTest {
         void test9() throws Exception {
             // given
             Member member = createMember();
-            String accessToken = jwtTokenProvider.createAccessToken(member.getId());
             ArtRegisterRequest request = ArtRegistrationRequestUtils.createAuctionArtRequest(AUCTION_ART, HASHTAGS);
 
             // when
+            final String accessToken = jwtTokenProvider.createAccessToken(member.getId());
             MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                     .multipart(BASE_URL)
                     .file((MockMultipartFile) request.getFile())
@@ -569,10 +572,10 @@ class ArtApiControllerTest extends ControllerTest {
         void test10() throws Exception {
             // given
             Member owner = createMember();
-            String accessToken = jwtTokenProvider.createAccessToken(owner.getId());
             ArtRegisterRequest request = ArtRegistrationRequestUtils.createAuctionArtRequest(AUCTION_ART, HASHTAGS);
 
             // when
+            final String accessToken = jwtTokenProvider.createAccessToken(owner.getId());
             MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                     .multipart(BASE_URL)
                     .file((MockMultipartFile) request.getFile())
@@ -612,9 +615,11 @@ class ArtApiControllerTest extends ControllerTest {
                             )
                     );
 
+            // 등록한 경매 작품
             List<Art> ownerArtList = artRepository.findByOwnerId(owner.getId());
             assertThat(ownerArtList.size()).isEqualTo(1);
 
+            // 작품 정보 확인
             Art findArt = ownerArtList.get(0);
             assertThat(findArt.getName()).isEqualTo(AUCTION_ART.getName());
             assertThat(findArt.getPrice()).isEqualTo(AUCTION_ART.getPrice());
@@ -622,11 +627,13 @@ class ArtApiControllerTest extends ControllerTest {
             assertThat(findArt.getArtStatus()).isEqualTo(ArtStatus.FOR_SALE);
             assertThat(findArt.getHashtagList()).containsAll(HASHTAGS);
 
+            // 작품 소유자 확인
             Member findOwner = findArt.getOwner();
             assertThat(findOwner.getId()).isEqualTo(owner.getId());
             assertThat(findOwner.getName()).isEqualTo(owner.getName());
             assertThat(findOwner.getNickname()).isEqualTo(owner.getNickname());
 
+            // 경매 정보 확인
             Auction auction = auctionRepository.findByArtId(findArt.getId()).orElseThrow();
             assertThat(auction.getAuctionRecords().size()).isEqualTo(0);
             assertThat(auction.getBidder()).isNull();

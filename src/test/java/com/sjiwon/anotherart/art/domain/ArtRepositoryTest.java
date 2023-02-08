@@ -46,9 +46,11 @@ class ArtRepositoryTest extends RepositoryTest {
         
         // when
         List<Art> ownerArtList = artRepository.findByOwnerId(owner.getId());
-        assertThat(ownerArtList.size()).isEqualTo(1);
 
         // then
+        assertThat(ownerArtList.size()).isEqualTo(1);
+        
+        // 작품 정보 확인
         Art findArt = ownerArtList.get(0);
         assertThat(findArt.getId()).isEqualTo(art.getId());
         assertThat(findArt.getName()).isEqualTo(art.getName());
@@ -56,6 +58,7 @@ class ArtRepositoryTest extends RepositoryTest {
         assertThat(findArt.getArtType()).isEqualTo(art.getArtType());
         assertThat(findArt.getArtStatus()).isEqualTo(ArtStatus.FOR_SALE);
 
+        // 작품 소유자 정보 확인
         Member findOwner = findArt.getOwner();
         assertThat(findOwner.getId()).isEqualTo(owner.getId());
         assertThat(findOwner.getName()).isEqualTo(owner.getName());

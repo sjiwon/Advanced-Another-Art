@@ -79,10 +79,10 @@ class FavoriteApiControllerTest extends ControllerTest {
         void test2() throws Exception {
             // given
             Member owner = createMemberA();
-            String accessToken = jwtTokenProvider.createAccessToken(owner.getId());
             Art art = createArt(owner);
 
             // when
+            final String accessToken = jwtTokenProvider.createAccessToken(owner.getId());
             MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
                     .post(BASE_URL, art.getId())
                     .header(AUTHORIZATION, BEARER_TOKEN + accessToken);
@@ -125,10 +125,10 @@ class FavoriteApiControllerTest extends ControllerTest {
             Art art = createArt(owner);
 
             Member member = createMemberB();
-            String accessToken = jwtTokenProvider.createAccessToken(member.getId());
             advanceLikeMarking(art, member);
 
             // when
+            final String accessToken = jwtTokenProvider.createAccessToken(member.getId());
             MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
                     .post(BASE_URL, art.getId())
                     .header(AUTHORIZATION, BEARER_TOKEN + accessToken);
@@ -171,9 +171,9 @@ class FavoriteApiControllerTest extends ControllerTest {
             Art art = createArt(owner);
 
             Member member = createMemberB();
-            String accessToken = jwtTokenProvider.createAccessToken(member.getId());
 
             // when
+            final String accessToken = jwtTokenProvider.createAccessToken(member.getId());
             MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
                     .post(BASE_URL, art.getId())
                     .header(AUTHORIZATION, BEARER_TOKEN + accessToken);
@@ -248,10 +248,10 @@ class FavoriteApiControllerTest extends ControllerTest {
         void test2() throws Exception {
             // given
             Member owner = createMemberA();
-            String accessToken = jwtTokenProvider.createAccessToken(owner.getId());
             Art art = createArt(owner);
 
             // when
+            final String accessToken = jwtTokenProvider.createAccessToken(owner.getId());
             MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
                     .delete(BASE_URL, art.getId())
                     .header(AUTHORIZATION, BEARER_TOKEN + accessToken);
@@ -294,9 +294,9 @@ class FavoriteApiControllerTest extends ControllerTest {
             Art art = createArt(owner);
 
             Member member = createMemberB();
-            String accessToken = jwtTokenProvider.createAccessToken(member.getId());
 
             // when
+            final String accessToken = jwtTokenProvider.createAccessToken(member.getId());
             MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
                     .delete(BASE_URL, art.getId())
                     .header(AUTHORIZATION, BEARER_TOKEN + accessToken);
@@ -340,9 +340,9 @@ class FavoriteApiControllerTest extends ControllerTest {
 
             Member member = createMemberB();
             advanceLikeMarking(art, member);
-            String accessToken = jwtTokenProvider.createAccessToken(member.getId());
 
             // when
+            final String accessToken = jwtTokenProvider.createAccessToken(member.getId());
             MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
                     .delete(BASE_URL, art.getId())
                     .header(AUTHORIZATION, BEARER_TOKEN + accessToken);

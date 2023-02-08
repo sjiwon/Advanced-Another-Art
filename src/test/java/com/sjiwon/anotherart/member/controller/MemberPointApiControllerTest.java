@@ -333,8 +333,8 @@ class MemberPointApiControllerTest extends ControllerTest {
     }
 
     private Member signUpAndChargePoint(int chargeAmount) {
-        Member member = memberRepository.save(MemberFixture.A.toMember());
-        pointDetailRepository.save(PointDetail.insertPointDetail(member, PointType.CHARGE, chargeAmount));
-        return member;
+        Member member = MemberFixture.A.toMember();
+        member.addPointDetail(PointDetail.insertPointDetail(member, PointType.CHARGE, chargeAmount));
+        return memberRepository.save(member);
     }
 }

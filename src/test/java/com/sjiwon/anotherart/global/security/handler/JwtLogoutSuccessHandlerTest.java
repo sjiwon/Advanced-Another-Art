@@ -64,11 +64,12 @@ class JwtLogoutSuccessHandlerTest extends ControllerTest {
     void test2() throws Exception {
         // given
         Member member = createMember();
-        String refreshToken = jwtTokenProvider.createRefreshToken(member.getId());
+
+        // when
+        final String refreshToken = jwtTokenProvider.createRefreshToken(member.getId());
         redisTokenService.saveRefreshToken(refreshToken, member.getId());
         assertThat(redisTokenService.isRefreshTokenExists(refreshToken)).isTrue();
 
-        // when
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .post(BASE_URL)
                 .header(AUTHORIZATION, BEARER_TOKEN + refreshToken);

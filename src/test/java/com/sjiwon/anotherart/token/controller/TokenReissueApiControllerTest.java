@@ -66,10 +66,10 @@ class TokenReissueApiControllerTest extends ControllerTest {
             // given
             ReflectionTestUtils.setField(jwtTokenProvider, "refreshTokenValidityInMilliseconds", 0L);
             Member member = createMember();
-            String refreshToken = jwtTokenProvider.createRefreshToken(member.getId());
-            redisTokenService.saveRefreshToken(refreshToken, member.getId());
 
             // when
+            final String refreshToken = jwtTokenProvider.createRefreshToken(member.getId());
+            redisTokenService.saveRefreshToken(refreshToken, member.getId());
             MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                     .post(BASE_URL)
                     .header(AUTHORIZATION, BEARER_TOKEN + refreshToken);
@@ -107,9 +107,9 @@ class TokenReissueApiControllerTest extends ControllerTest {
             // given
             ReflectionTestUtils.setField(jwtTokenProvider, "refreshTokenValidityInMilliseconds", 1209600L);
             Member member = createMember();
-            String refreshToken = jwtTokenProvider.createRefreshToken(member.getId()); // Redis에 저장하지 않음에 따라 이미 사용했다고 가정
             
             // when
+            final String refreshToken = jwtTokenProvider.createRefreshToken(member.getId()); // Redis에 저장하지 않음에 따라 이미 사용했다고 가정
             MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                     .post(BASE_URL)
                     .header(AUTHORIZATION, BEARER_TOKEN + refreshToken);
@@ -148,10 +148,10 @@ class TokenReissueApiControllerTest extends ControllerTest {
             // given
             ReflectionTestUtils.setField(jwtTokenProvider, "refreshTokenValidityInMilliseconds", 1209600L);
             Member member = createMember();
-            String refreshToken = jwtTokenProvider.createRefreshToken(member.getId());
-            redisTokenService.saveRefreshToken(refreshToken, member.getId());
 
             // when
+            final String refreshToken = jwtTokenProvider.createRefreshToken(member.getId());
+            redisTokenService.saveRefreshToken(refreshToken, member.getId());
             MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                     .post(BASE_URL)
                     .header(AUTHORIZATION, BEARER_TOKEN + refreshToken);

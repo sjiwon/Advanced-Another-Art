@@ -28,7 +28,6 @@ public class Hashtag {
     private Hashtag(Art art, String name) {
         this.art = art;
         this.name = name;
-        art.getHashtags().add(this);
     }
 
     public static Hashtag from(Art art, String name) {

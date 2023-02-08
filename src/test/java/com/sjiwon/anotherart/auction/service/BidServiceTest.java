@@ -23,7 +23,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestConstructor;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -31,6 +30,8 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import static com.sjiwon.anotherart.common.utils.ArtUtils.*;
+import static com.sjiwon.anotherart.common.utils.MemberUtils.INIT_AVAILABLE_POINT;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @Slf4j
@@ -48,12 +49,8 @@ class BidServiceTest {
     private final AuctionRecordRepository auctionRecordRepository;
 
     private static final MemberFixture MEMBER = MemberFixture.A;
-    private static final int INIT_AVAILABLE_POINT = 100_000_000;
-    private static final LocalDateTime currentTime1DayLater = LocalDateTime.now().plusDays(1);
-    private static final LocalDateTime currentTime3DayLater = LocalDateTime.now().plusDays(3);
-    private static final List<String> HASHTAGS = List.of("A", "B", "C", "D", "E");
-
     private final List<Long> participateMemberIdList = new ArrayList<>();
+
     @BeforeEach
     void before() {
         createParticipateMembers(); // 100명의 더미 사용자 생성

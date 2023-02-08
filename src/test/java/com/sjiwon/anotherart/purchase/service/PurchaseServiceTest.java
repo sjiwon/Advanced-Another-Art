@@ -45,8 +45,8 @@ class PurchaseServiceTest {
     private final PurchaseRepository purchaseRepository;
 
     private static final MemberFixture MEMBER = MemberFixture.A;
-
     private final List<Long> participateMemberIdList = new ArrayList<>();
+
     @BeforeEach
     void before() {
         createParticipateMembers(); // 100명의 더미 사용자 생성

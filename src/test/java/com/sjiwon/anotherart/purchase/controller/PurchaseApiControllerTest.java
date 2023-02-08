@@ -104,11 +104,11 @@ class PurchaseApiControllerTest extends ControllerTest {
 
             // 입찰 진행
             Member highestBidder = createMemberB();
-            String accessToken = jwtTokenProvider.createAccessToken(highestBidder.getId());
             final int bidAmount = auctionArt.getPrice() + 5_000;
             callBidApi(auction, highestBidder, bidAmount);
 
             // when
+            final String accessToken = jwtTokenProvider.createAccessToken(highestBidder.getId());
             MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
                     .post(BASE_URL, auctionArt.getId())
                     .header(AUTHORIZATION, BEARER_TOKEN + accessToken);
@@ -161,9 +161,9 @@ class PurchaseApiControllerTest extends ControllerTest {
 
             // 다른 사용자의 구매 요청
             Member member = createMemberC();
-            String accessToken = jwtTokenProvider.createAccessToken(member.getId());
 
             // when
+            final String accessToken = jwtTokenProvider.createAccessToken(member.getId());
             MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
                     .post(BASE_URL, auctionArt.getId())
                     .header(AUTHORIZATION, BEARER_TOKEN + accessToken);
@@ -208,7 +208,6 @@ class PurchaseApiControllerTest extends ControllerTest {
 
             // 입찰 진행
             Member highestBidder = createMemberB();
-            String accessToken = jwtTokenProvider.createAccessToken(highestBidder.getId());
             final int bidAmount = auctionArt.getPrice() + 5_000;
             callBidApi(auction, highestBidder, bidAmount);
 
@@ -217,6 +216,7 @@ class PurchaseApiControllerTest extends ControllerTest {
             auctionArt.changeArtStatus(ArtStatus.SOLD_OUT);
 
             // when
+            final String accessToken = jwtTokenProvider.createAccessToken(highestBidder.getId());
             MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
                     .post(BASE_URL, auctionArt.getId())
                     .header(AUTHORIZATION, BEARER_TOKEN + accessToken);
@@ -261,7 +261,6 @@ class PurchaseApiControllerTest extends ControllerTest {
 
             // 입찰 진행
             Member highestBidder = createMemberB();
-            String accessToken = jwtTokenProvider.createAccessToken(highestBidder.getId());
             final int bidAmount = auctionArt.getPrice() + 5_000;
             callBidApi(auction, highestBidder, bidAmount);
 
@@ -270,6 +269,7 @@ class PurchaseApiControllerTest extends ControllerTest {
             highestBidder.decreasePoint(highestBidder.getAvailablePoint());
 
             // when
+            final String accessToken = jwtTokenProvider.createAccessToken(highestBidder.getId());
             MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
                     .post(BASE_URL, auctionArt.getId())
                     .header(AUTHORIZATION, BEARER_TOKEN + accessToken);
@@ -314,7 +314,6 @@ class PurchaseApiControllerTest extends ControllerTest {
 
             // 입찰 진행
             Member highestBidder = createMemberB();
-            String accessToken = jwtTokenProvider.createAccessToken(highestBidder.getId());
             final int bidAmount = auctionArt.getPrice() + 5_000;
             callBidApi(auction, highestBidder, bidAmount);
 
@@ -322,6 +321,7 @@ class PurchaseApiControllerTest extends ControllerTest {
             makeAuctionFinished(auction);
 
             // when
+            final String accessToken = jwtTokenProvider.createAccessToken(highestBidder.getId());
             MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
                     .post(BASE_URL, auctionArt.getId())
                     .header(AUTHORIZATION, BEARER_TOKEN + accessToken);
@@ -372,10 +372,11 @@ class PurchaseApiControllerTest extends ControllerTest {
             // 판매 완료 설정
             generalArt.changeArtStatus(ArtStatus.SOLD_OUT);
             
+            // 작품 구매자
             Member purchaser = createMemberB();
-            String accessToken = jwtTokenProvider.createAccessToken(purchaser.getId());
 
             // when
+            final String accessToken = jwtTokenProvider.createAccessToken(purchaser.getId());
             MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
                     .post(BASE_URL, generalArt.getId())
                     .header(AUTHORIZATION, BEARER_TOKEN + accessToken);
@@ -420,9 +421,9 @@ class PurchaseApiControllerTest extends ControllerTest {
             // 사용자 포인트 감소
             Member purchaser = createMemberB();
             purchaser.decreasePoint(purchaser.getAvailablePoint());
-            String accessToken = jwtTokenProvider.createAccessToken(purchaser.getId());
 
             // when
+            final String accessToken = jwtTokenProvider.createAccessToken(purchaser.getId());
             MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
                     .post(BASE_URL, generalArt.getId())
                     .header(AUTHORIZATION, BEARER_TOKEN + accessToken);
@@ -464,10 +465,11 @@ class PurchaseApiControllerTest extends ControllerTest {
             Member owner = createMemberA();
             Art generalArt = createGeneralArt(owner);
 
+            // 작품 구매자
             Member purchaser = createMemberB();
-            String accessToken = jwtTokenProvider.createAccessToken(purchaser.getId());
 
             // when
+            final String accessToken = jwtTokenProvider.createAccessToken(purchaser.getId());
             MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
                     .post(BASE_URL, generalArt.getId())
                     .header(AUTHORIZATION, BEARER_TOKEN + accessToken);

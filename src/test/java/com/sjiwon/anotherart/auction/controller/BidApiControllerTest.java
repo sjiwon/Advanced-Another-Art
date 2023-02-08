@@ -103,10 +103,10 @@ class BidApiControllerTest extends ControllerTest {
             ReflectionTestUtils.setField(auction.getPeriod(), "endDate", LocalDateTime.now().minusDays(1));
 
             Member bidder = createMemberB();
-            String accessToken = jwtTokenProvider.createAccessToken(bidder.getId());
             final int bidAmount = art.getPrice() + 5_000;
 
             // when
+            final String accessToken = jwtTokenProvider.createAccessToken(bidder.getId());
             MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
                     .post(BASE_URL, auction.getId())
                     .contentType(APPLICATION_FORM_URLENCODED)
@@ -151,13 +151,13 @@ class BidApiControllerTest extends ControllerTest {
         void test3() throws Exception {
             // given
             Member owner = createMemberA();
-            String accessToken = jwtTokenProvider.createAccessToken(owner.getId());
             Art art = createAuctionArt(owner);
             Auction auction = initAuction(art);
 
             final int bidAmount = art.getPrice() + 5_000;
 
             // when
+            final String accessToken = jwtTokenProvider.createAccessToken(owner.getId());
             MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
                     .post(BASE_URL, auction.getId())
                     .contentType(APPLICATION_FORM_URLENCODED)
@@ -206,10 +206,10 @@ class BidApiControllerTest extends ControllerTest {
             Auction auction = initAuction(art);
 
             Member bidder = createMemberB();
-            String accessToken = jwtTokenProvider.createAccessToken(bidder.getId());
             final int bidAmount = art.getPrice();
 
             // when
+            final String accessToken = jwtTokenProvider.createAccessToken(bidder.getId());
             MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
                     .post(BASE_URL, auction.getId())
                     .contentType(APPLICATION_FORM_URLENCODED)
@@ -258,11 +258,11 @@ class BidApiControllerTest extends ControllerTest {
             Auction auction = initAuction(art);
 
             Member bidder = createMemberB();
-            String accessToken = jwtTokenProvider.createAccessToken(bidder.getId());
             final int bidAmount1 = art.getPrice() + 5_000;
             final int bidAmount2 = bidAmount1 + 5_000;
 
             // when
+            final String accessToken = jwtTokenProvider.createAccessToken(bidder.getId());
             MockHttpServletRequestBuilder requestBuilder1 = RestDocumentationRequestBuilders
                     .post(BASE_URL, auction.getId())
                     .contentType(APPLICATION_FORM_URLENCODED)
@@ -318,10 +318,10 @@ class BidApiControllerTest extends ControllerTest {
             Auction auction = initAuction(art);
 
             Member bidder = createMemberB();
-            String accessToken = jwtTokenProvider.createAccessToken(bidder.getId());
             final int bidAmount = art.getPrice() + 5_000;
 
             // when
+            final String accessToken = jwtTokenProvider.createAccessToken(bidder.getId());
             MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
                     .post(BASE_URL, auction.getId())
                     .contentType(APPLICATION_FORM_URLENCODED)
@@ -349,6 +349,7 @@ class BidApiControllerTest extends ControllerTest {
                             )
                     );
 
+            // 경매 입찰 레코드 확인
             List<AuctionRecord> auctionRecord = auctionRecordRepository.findByAuctionId(auction.getId());
             assertThat(auctionRecord.size()).isEqualTo(1);
             assertThat(auctionRecord.get(0).getBidAmount()).isEqualTo(bidAmount);
@@ -356,6 +357,7 @@ class BidApiControllerTest extends ControllerTest {
             assertThat(auctionRecord.get(0).getBidder().getName()).isEqualTo(bidder.getName());
             assertThat(auctionRecord.get(0).getBidder().getNickname()).isEqualTo(bidder.getNickname());
 
+            // 경매 정보 확인
             Auction findAuction = auctionRepository.findByArtId(art.getId()).orElseThrow();
             assertThat(findAuction.getBidder()).isNotNull();
             assertThat(findAuction.getBidder().getId()).isEqualTo(bidder.getId());
@@ -363,6 +365,7 @@ class BidApiControllerTest extends ControllerTest {
             assertThat(findAuction.getBidder().getNickname()).isEqualTo(bidder.getNickname());
             assertThat(findAuction.getBidAmount()).isEqualTo(bidAmount);
 
+            // 입찰자 정보 확인
             Member findBidder = memberRepository.findById(bidder.getId()).orElseThrow();
             assertThat(findBidder.getAvailablePoint()).isEqualTo(INIT_AVAILABLE_POINT - bidAmount);
         }
@@ -377,9 +380,9 @@ class BidApiControllerTest extends ControllerTest {
 
             // 첫번째 입찰 진행
             Member bidder1 = createMemberB();
-            String accessToken1 = jwtTokenProvider.createAccessToken(bidder1.getId());
             final int bidAmount1 = art.getPrice() + 5_000;
 
+            final String accessToken1 = jwtTokenProvider.createAccessToken(bidder1.getId());
             MockHttpServletRequestBuilder requestBuilder1 = RestDocumentationRequestBuilders
                     .post(BASE_URL, auction.getId())
                     .contentType(APPLICATION_FORM_URLENCODED)
@@ -390,6 +393,7 @@ class BidApiControllerTest extends ControllerTest {
                     .andExpect(status().isNoContent())
                     .andExpect(jsonPath("$").doesNotExist());
 
+            // 첫번째 입찰 정보 확인
             List<AuctionRecord> auctionRecord1 = auctionRecordRepository.findByAuctionId(auction.getId());
             assertThat(auctionRecord1.size()).isEqualTo(1);
             assertThat(auctionRecord1.get(0).getBidAmount()).isEqualTo(bidAmount1);
@@ -409,9 +413,9 @@ class BidApiControllerTest extends ControllerTest {
  
             // 두번째 입찰 진행
             Member bidder2 = createMemberC();
-            String accessToken2 = jwtTokenProvider.createAccessToken(bidder2.getId());
             final int bidAmount2 = bidAmount1 + 5_000;
 
+            final String accessToken2 = jwtTokenProvider.createAccessToken(bidder2.getId());
             MockHttpServletRequestBuilder requestBuilder2 = RestDocumentationRequestBuilders
                     .post(BASE_URL, auction.getId())
                     .contentType(APPLICATION_FORM_URLENCODED)
@@ -422,6 +426,7 @@ class BidApiControllerTest extends ControllerTest {
                     .andExpect(status().isNoContent())
                     .andExpect(jsonPath("$").doesNotExist());
 
+            // 두번째 입찰 정보 확인
             List<AuctionRecord> auctionRecord2 = auctionRecordRepository.findByAuctionId(auction.getId());
             assertThat(auctionRecord2.size()).isEqualTo(2);
             assertThat(auctionRecord2.get(0).getBidAmount()).isEqualTo(bidAmount1);

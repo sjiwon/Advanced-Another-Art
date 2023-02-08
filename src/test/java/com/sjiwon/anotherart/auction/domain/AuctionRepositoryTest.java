@@ -201,10 +201,6 @@ class AuctionRepositoryTest extends RepositoryTest {
         return artRepository.save(ArtFixture.A.toArt(member, HASHTAGS));
     }
 
-    private Art createAuctionArtC(Member member) {
-        return artRepository.save(ArtFixture.C.toArt(member, HASHTAGS));
-    }
-
     private Art createGeneralArt(Member member) {
         return artRepository.save(ArtFixture.B.toArt(member, HASHTAGS));
     }

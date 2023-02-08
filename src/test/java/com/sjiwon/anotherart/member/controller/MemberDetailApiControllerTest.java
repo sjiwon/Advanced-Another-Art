@@ -87,11 +87,11 @@ class MemberDetailApiControllerTest extends ControllerTest {
         void test2() throws Exception {
             // given
             Member member = createMemberA();
-            String accessToken = jwtTokenProvider.createAccessToken(member.getId());
             final String changeNickname = member.getNickname();
             ChangeNicknameRequest request = ChangeNicknameRequestUtils.createRequest(changeNickname);
 
             // when
+            final String accessToken = jwtTokenProvider.createAccessToken(member.getId());
             MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                     .patch(BASE_URL)
                     .contentType(APPLICATION_JSON)
@@ -133,13 +133,13 @@ class MemberDetailApiControllerTest extends ControllerTest {
         void test3() throws Exception {
             // given
             Member memberA = createMemberA();
-            String accessToken = jwtTokenProvider.createAccessToken(memberA.getId());
 
             Member memberB = createMemberB();
             final String changeNickname = memberB.getNickname();
             ChangeNicknameRequest request = ChangeNicknameRequestUtils.createRequest(changeNickname);
 
             // when
+            final String accessToken = jwtTokenProvider.createAccessToken(memberA.getId());
             MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                     .patch(BASE_URL)
                     .contentType(APPLICATION_JSON)
@@ -181,11 +181,11 @@ class MemberDetailApiControllerTest extends ControllerTest {
         void test4() throws Exception {
             // given
             Member member = createMemberA();
-            String accessToken = jwtTokenProvider.createAccessToken(member.getId());
             final String changeNickname = member.getNickname() + "diff";
             ChangeNicknameRequest request = ChangeNicknameRequestUtils.createRequest(changeNickname);
 
             // when
+            final String accessToken = jwtTokenProvider.createAccessToken(member.getId());
             MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                     .patch(BASE_URL)
                     .contentType(APPLICATION_JSON)

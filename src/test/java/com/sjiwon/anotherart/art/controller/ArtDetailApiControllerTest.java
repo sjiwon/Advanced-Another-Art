@@ -95,10 +95,10 @@ class ArtDetailApiControllerTest extends ControllerTest {
         void test2() throws Exception {
             // given
             Member owner = createMemberA();
-            String accessToken = jwtTokenProvider.createAccessToken(owner.getId());
             Art art = createGeneralArt(owner);
 
             // when
+            final String accessToken = jwtTokenProvider.createAccessToken(owner.getId());
             MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                     .post(BASE_URL)
                     .contentType(APPLICATION_FORM_URLENCODED)
@@ -140,10 +140,10 @@ class ArtDetailApiControllerTest extends ControllerTest {
         void test3() throws Exception {
             // given
             Member owner = createMemberA();
-            String accessToken = jwtTokenProvider.createAccessToken(owner.getId());
             Art art = createGeneralArt(owner);
 
             // when
+            final String accessToken = jwtTokenProvider.createAccessToken(owner.getId());
             MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                     .post(BASE_URL)
                     .contentType(APPLICATION_FORM_URLENCODED)
@@ -181,7 +181,8 @@ class ArtDetailApiControllerTest extends ControllerTest {
             // given
             Member owner = createMemberA();
             Art art = createGeneralArt(owner);
-            ChangeArtDescriptionRequest request = ChangeArtDescriptionRequestUtils.createRequest(art.getDescription() + "change");
+            final String changeDescription = art.getDescription() + "change";
+            ChangeArtDescriptionRequest request = ChangeArtDescriptionRequestUtils.createRequest(changeDescription);
 
             // when
             MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
@@ -224,12 +225,12 @@ class ArtDetailApiControllerTest extends ControllerTest {
         void test2() throws Exception {
             // given
             Member owner = createMemberA();
-            String accessToken = jwtTokenProvider.createAccessToken(owner.getId());
             Art art = createGeneralArt(owner);
             final String changeDescription = art.getDescription() + "change";
             ChangeArtDescriptionRequest request = ChangeArtDescriptionRequestUtils.createRequest(changeDescription);
 
             // when
+            final String accessToken = jwtTokenProvider.createAccessToken(owner.getId());
             MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
                     .patch(BASE_URL, art.getId())
                     .contentType(APPLICATION_JSON)
@@ -315,11 +316,11 @@ class ArtDetailApiControllerTest extends ControllerTest {
         void test2() throws Exception {
             // given
             Member owner = createMemberA();
-            String accessToken = jwtTokenProvider.createAccessToken(owner.getId());
             Art art = createGeneralArt(owner);
             UpdateArtHashtagRequest request = UpdateArtHashtagRequestUtils.createRequest(EMPTY_HASHTAGS);
 
             // when
+            final String accessToken = jwtTokenProvider.createAccessToken(owner.getId());
             MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
                     .patch(BASE_URL, art.getId())
                     .contentType(APPLICATION_JSON)
@@ -365,11 +366,11 @@ class ArtDetailApiControllerTest extends ControllerTest {
         void test3() throws Exception {
             // given
             Member owner = createMemberA();
-            String accessToken = jwtTokenProvider.createAccessToken(owner.getId());
             Art art = createGeneralArt(owner);
             UpdateArtHashtagRequest request = UpdateArtHashtagRequestUtils.createRequest(OVERFLOW_HASHTAGS);
 
             // when
+            final String accessToken = jwtTokenProvider.createAccessToken(owner.getId());
             MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
                     .patch(BASE_URL, art.getId())
                     .contentType(APPLICATION_JSON)
@@ -415,11 +416,11 @@ class ArtDetailApiControllerTest extends ControllerTest {
         void test4() throws Exception {
             // given
             Member owner = createMemberA();
-            String accessToken = jwtTokenProvider.createAccessToken(owner.getId());
             Art art = createGeneralArt(owner);
             UpdateArtHashtagRequest request = UpdateArtHashtagRequestUtils.createRequest(UPDATE_HASHTAGS);
 
             // when
+            final String accessToken = jwtTokenProvider.createAccessToken(owner.getId());
             MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
                     .patch(BASE_URL, art.getId())
                     .contentType(APPLICATION_JSON)
@@ -501,10 +502,9 @@ class ArtDetailApiControllerTest extends ControllerTest {
             Member owner = createMemberA();
             Art art = createGeneralArt(owner);
 
-            Member memberB = createMemberB();
-            String accessToken = jwtTokenProvider.createAccessToken(memberB.getId());
-
             // when
+            Member memberB = createMemberB();
+            final String accessToken = jwtTokenProvider.createAccessToken(memberB.getId());
             MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
                     .delete(BASE_URL, art.getId())
                     .header(AUTHORIZATION, BEARER_TOKEN + accessToken);
@@ -544,10 +544,10 @@ class ArtDetailApiControllerTest extends ControllerTest {
         void test3() throws Exception {
             // given
             Member owner = createMemberA();
-            String accessToken = jwtTokenProvider.createAccessToken(owner.getId());
             Art art = createSoldOutGeneralArt(owner);
 
             // when
+            final String accessToken = jwtTokenProvider.createAccessToken(owner.getId());
             MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
                     .delete(BASE_URL, art.getId())
                     .header(AUTHORIZATION, BEARER_TOKEN + accessToken);
@@ -587,10 +587,10 @@ class ArtDetailApiControllerTest extends ControllerTest {
         void test4() throws Exception {
             // given
             Member owner = createMemberA();
-            String accessToken = jwtTokenProvider.createAccessToken(owner.getId());
             Art art = createGeneralArt(owner);
 
             // when
+            final String accessToken = jwtTokenProvider.createAccessToken(owner.getId());
             MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
                     .delete(BASE_URL, art.getId())
                     .header(AUTHORIZATION, BEARER_TOKEN + accessToken);
@@ -621,10 +621,10 @@ class ArtDetailApiControllerTest extends ControllerTest {
         void test5() throws Exception {
             // given
             Member owner = createMemberA();
-            String accessToken = jwtTokenProvider.createAccessToken(owner.getId());
             Art art = createBidProcessAuctionArt(owner);
 
             // when
+            final String accessToken = jwtTokenProvider.createAccessToken(owner.getId());
             MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
                     .delete(BASE_URL, art.getId())
                     .header(AUTHORIZATION, BEARER_TOKEN + accessToken);
@@ -664,10 +664,10 @@ class ArtDetailApiControllerTest extends ControllerTest {
         void test6() throws Exception {
             // given
             Member owner = createMemberA();
-            String accessToken = jwtTokenProvider.createAccessToken(owner.getId());
             Art art = createAuctionArt(owner);
 
             // when
+            final String accessToken = jwtTokenProvider.createAccessToken(owner.getId());
             MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
                     .delete(BASE_URL, art.getId())
                     .header(AUTHORIZATION, BEARER_TOKEN + accessToken);
