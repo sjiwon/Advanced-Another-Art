@@ -9,7 +9,7 @@ import org.springframework.http.HttpStatus;
 @RequiredArgsConstructor
 public enum PurchaseErrorCode implements ErrorCode {
     ART_ALREADY_SOLD_OUT(HttpStatus.CONFLICT, "PURCHASE_001", "이미 판매된 작품입니다."),
-    INSUFFICIENT_AVAILABLE_POINT(HttpStatus.CONFLICT, "PURCHASE_002", "작품 구매에 필요한 포인트가 부족합니다."),
+    INSUFFICIENT_AVAILABLE_POINT(HttpStatus.BAD_REQUEST, "PURCHASE_002", "작품 구매에 필요한 포인트가 부족합니다."),
     AUCTION_NOT_FINISHED(HttpStatus.CONFLICT, "PURCHASE_003", "경매가 진행중인 작품은 구매할 수 없습니다."),
     INVALID_HIGHEST_BIDDER(HttpStatus.FORBIDDEN, "PURCHASE_004", "최종 입찰자가 아닌 사용자는 구매할 수 없습니다."),
     ;

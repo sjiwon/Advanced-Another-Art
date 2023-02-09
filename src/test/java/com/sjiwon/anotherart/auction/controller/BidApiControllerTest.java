@@ -116,7 +116,7 @@ class BidApiControllerTest extends ControllerTest {
             // then
             final AuctionErrorCode expectedError = AuctionErrorCode.AUCTION_ALREADY_FINISHED;
             mockMvc.perform(requestBuilder)
-                    .andExpect(status().isBadRequest())
+                    .andExpect(status().isConflict())
                     .andExpect(jsonPath("$.statusCode").exists())
                     .andExpect(jsonPath("$.statusCode").value(expectedError.getStatus().value()))
                     .andExpect(jsonPath("$.errorCode").exists())
@@ -167,7 +167,7 @@ class BidApiControllerTest extends ControllerTest {
             // then
             final AuctionErrorCode expectedError = AuctionErrorCode.INVALID_OWNER_BID;
             mockMvc.perform(requestBuilder)
-                    .andExpect(status().isBadRequest())
+                    .andExpect(status().isForbidden())
                     .andExpect(jsonPath("$.statusCode").exists())
                     .andExpect(jsonPath("$.statusCode").value(expectedError.getStatus().value()))
                     .andExpect(jsonPath("$.errorCode").exists())
@@ -279,7 +279,7 @@ class BidApiControllerTest extends ControllerTest {
             // then
             final AuctionErrorCode expectedError = AuctionErrorCode.INVALID_DUPLICATE_BID;
             mockMvc.perform(requestBuilder2)
-                    .andExpect(status().isBadRequest())
+                    .andExpect(status().isConflict())
                     .andExpect(jsonPath("$.statusCode").exists())
                     .andExpect(jsonPath("$.statusCode").value(expectedError.getStatus().value()))
                     .andExpect(jsonPath("$.errorCode").exists())

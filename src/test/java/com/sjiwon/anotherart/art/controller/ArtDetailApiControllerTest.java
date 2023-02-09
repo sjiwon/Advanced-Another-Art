@@ -555,7 +555,7 @@ class ArtDetailApiControllerTest extends ControllerTest {
             // then
             final ArtErrorCode expectedError = ArtErrorCode.ALREADY_SALE;
             mockMvc.perform(requestBuilder)
-                    .andExpect(status().isBadRequest())
+                    .andExpect(status().isConflict())
                     .andExpect(jsonPath("$.statusCode").exists())
                     .andExpect(jsonPath("$.statusCode").value(expectedError.getStatus().value()))
                     .andExpect(jsonPath("$.errorCode").exists())
@@ -632,7 +632,7 @@ class ArtDetailApiControllerTest extends ControllerTest {
             // then
             final ArtErrorCode expectedError = ArtErrorCode.ALREADY_BID_EXISTS;
             mockMvc.perform(requestBuilder)
-                    .andExpect(status().isBadRequest())
+                    .andExpect(status().isConflict())
                     .andExpect(jsonPath("$.statusCode").exists())
                     .andExpect(jsonPath("$.statusCode").value(expectedError.getStatus().value()))
                     .andExpect(jsonPath("$.errorCode").exists())

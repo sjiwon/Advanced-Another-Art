@@ -277,7 +277,7 @@ class PurchaseApiControllerTest extends ControllerTest {
             // then
             final PurchaseErrorCode expectedError = PurchaseErrorCode.INSUFFICIENT_AVAILABLE_POINT;
             mockMvc.perform(requestBuilder)
-                    .andExpect(status().isConflict())
+                    .andExpect(status().isBadRequest())
                     .andExpect(jsonPath("$.statusCode").exists())
                     .andExpect(jsonPath("$.statusCode").value(expectedError.getStatus().value()))
                     .andExpect(jsonPath("$.errorCode").exists())
@@ -431,7 +431,7 @@ class PurchaseApiControllerTest extends ControllerTest {
             // then
             final PurchaseErrorCode expectedError = PurchaseErrorCode.INSUFFICIENT_AVAILABLE_POINT;
             mockMvc.perform(requestBuilder)
-                    .andExpect(status().isConflict())
+                    .andExpect(status().isBadRequest())
                     .andExpect(jsonPath("$.statusCode").exists())
                     .andExpect(jsonPath("$.statusCode").value(expectedError.getStatus().value()))
                     .andExpect(jsonPath("$.errorCode").exists())

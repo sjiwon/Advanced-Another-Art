@@ -90,7 +90,7 @@ class FavoriteApiControllerTest extends ControllerTest {
             // then
             final FavoriteErrorCode expectedError = FavoriteErrorCode.INVALID_LIKE_REQUEST_BY_ART_OWNER;
             mockMvc.perform(requestBuilder)
-                    .andExpect(status().isBadRequest())
+                    .andExpect(status().isForbidden())
                     .andExpect(jsonPath("$.statusCode").exists())
                     .andExpect(jsonPath("$.statusCode").value(expectedError.getStatus().value()))
                     .andExpect(jsonPath("$.errorCode").exists())
@@ -136,7 +136,7 @@ class FavoriteApiControllerTest extends ControllerTest {
             // then
             final FavoriteErrorCode expectedError = FavoriteErrorCode.ALREADY_LIKE_MARKING;
             mockMvc.perform(requestBuilder)
-                    .andExpect(status().isBadRequest())
+                    .andExpect(status().isConflict())
                     .andExpect(jsonPath("$.statusCode").exists())
                     .andExpect(jsonPath("$.statusCode").value(expectedError.getStatus().value()))
                     .andExpect(jsonPath("$.errorCode").exists())
@@ -259,7 +259,7 @@ class FavoriteApiControllerTest extends ControllerTest {
             // then
             final FavoriteErrorCode expectedError = FavoriteErrorCode.INVALID_LIKE_REQUEST_BY_ART_OWNER;
             mockMvc.perform(requestBuilder)
-                    .andExpect(status().isBadRequest())
+                    .andExpect(status().isForbidden())
                     .andExpect(jsonPath("$.statusCode").exists())
                     .andExpect(jsonPath("$.statusCode").value(expectedError.getStatus().value()))
                     .andExpect(jsonPath("$.errorCode").exists())
@@ -304,7 +304,7 @@ class FavoriteApiControllerTest extends ControllerTest {
             // then
             final FavoriteErrorCode expectedError = FavoriteErrorCode.NEVER_OR_ALREADY_CANCEL;
             mockMvc.perform(requestBuilder)
-                    .andExpect(status().isBadRequest())
+                    .andExpect(status().isConflict())
                     .andExpect(jsonPath("$.statusCode").exists())
                     .andExpect(jsonPath("$.statusCode").value(expectedError.getStatus().value()))
                     .andExpect(jsonPath("$.errorCode").exists())
