@@ -9,26 +9,24 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class TokenReissueService {
+    private final TokenPersistenceService tokenPersistenceService;
     private final JwtTokenProvider jwtTokenProvider;
-    private final RedisTokenService redisTokenService;
 
-    public TokenResponse reissueTokens(String refreshToken) {
-        // RTR -> 사용 가능한 Refresh Token인지 확인 (Redis에 존재하면 사용 가능)
-        if (!redisTokenService.isRefreshTokenExists(refreshToken)) {
+    @Transactional
+    public TokenResponse reissueTokens(Long memberId, String refreshToken) {
+        // 사용자가 보유하고 있는 Refresh Token인지
+        if (!tokenPersistenceService.isRefreshTokenExists(memberId, refreshToken)) {
             throw AnotherArtException.type(AuthErrorCode.INVALID_TOKEN);
         }
 
-        // RTR -> 기존 Refresh Token 제거
-        redisTokenService.deleteRefreshToken(refreshToken);
-
         // Access Token & Refresh Token 발급
-        Long memberId = jwtTokenProvider.getPayload(refreshToken);
         String newAccessToken = jwtTokenProvider.createAccessToken(memberId);
         String newRefreshToken = jwtTokenProvider.createRefreshToken(memberId);
-        redisTokenService.saveRefreshToken(newRefreshToken, memberId);
+
+        // RTR 정책에 의해 memberId에 해당하는 사용자가 보유하고 있는 Refresh Token 업데이트
+        tokenPersistenceService.reissueRefreshTokenByRtrPolicy(memberId, newRefreshToken);
 
         return TokenResponse.builder()
                 .accessToken(newAccessToken)

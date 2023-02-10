@@ -6,6 +6,7 @@ import com.sjiwon.anotherart.global.exception.AnotherArtException;
 import com.sjiwon.anotherart.global.security.TokenResponse;
 import com.sjiwon.anotherart.global.security.exception.AuthErrorCode;
 import com.sjiwon.anotherart.member.domain.Member;
+import com.sjiwon.anotherart.token.domain.RefreshToken;
 import com.sjiwon.anotherart.token.utils.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.DisplayName;
@@ -28,7 +29,7 @@ class TokenReissueServiceTest extends ServiceIntegrateTest {
         String refreshToken = jwtTokenProvider.createRefreshToken(member.getId());
 
         // when - then
-        assertThatThrownBy(() -> tokenReissueService.reissueTokens(refreshToken))
+        assertThatThrownBy(() -> tokenReissueService.reissueTokens(member.getId(), refreshToken))
                 .isInstanceOf(AnotherArtException.class)
                 .hasMessage(AuthErrorCode.INVALID_TOKEN.getMessage());
     }
@@ -39,16 +40,15 @@ class TokenReissueServiceTest extends ServiceIntegrateTest {
         // given
         Member member = createMember();
         String refreshToken = jwtTokenProvider.createRefreshToken(member.getId());
-        redisTokenService.saveRefreshToken(refreshToken, member.getId());
+        refreshTokenRepository.save(RefreshToken.issueRefreshToken(member.getId(), refreshToken));
 
         // when
-        TokenResponse tokenResponse = tokenReissueService.reissueTokens(refreshToken);
+        TokenResponse tokenResponse = tokenReissueService.reissueTokens(member.getId(), refreshToken);
 
         // then
         assertThat(tokenResponse).isNotNull();
         assertThat(tokenResponse.getAccessToken()).isNotNull();
         assertThat(tokenResponse.getRefreshToken()).isNotNull();
-//        assertThat(redisTokenService.isRefreshTokenExists(refreshToken)).isFalse();
     }
 
     private Member createMember() {
