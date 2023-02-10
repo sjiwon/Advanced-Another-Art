@@ -56,10 +56,6 @@ dependencies {
 	testCompileOnly 'org.projectlombok:lombok'
 	testAnnotationProcessor 'org.projectlombok:lombok'
 
-	// Swagger & p6spy
-	implementation 'io.springfox:springfox-boot-starter:3.0.0' // localhost:7777/swagger-ui/index.html
-	implementation 'com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.8.1'
-
 	// test
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'

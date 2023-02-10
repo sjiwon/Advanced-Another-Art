@@ -12,13 +12,11 @@ import com.sjiwon.anotherart.token.domain.RefreshTokenRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestConstructor;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.transaction.annotation.Transactional;
 
 @SpringBootTest
 @Transactional
 @TestConstructor(autowireMode = TestConstructor.AutowireMode.ALL)
-@TestPropertySource(properties = "file.dir=src/test/resources/images/storage/")
 public abstract class ServiceIntegrateTest {
     @Autowired
     protected MemberRepository memberRepository;
