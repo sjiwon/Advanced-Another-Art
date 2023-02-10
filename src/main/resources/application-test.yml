@@ -6,4 +6,3 @@ spring:
       - application-server.yml
       - application-test-datasource.yml
       - application-static-resources.yml
-      - application-redis.yml

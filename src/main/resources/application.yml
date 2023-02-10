@@ -6,4 +6,3 @@ spring:
       - security/application-local-datasource.yml
       - application-server.yml
       - application-static-resources.yml
-      - application-redis.yml
