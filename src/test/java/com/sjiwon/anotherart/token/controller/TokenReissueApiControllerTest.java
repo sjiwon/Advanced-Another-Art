@@ -69,7 +69,7 @@ class TokenReissueApiControllerTest extends ControllerTest {
 
             // when
             final String refreshToken = jwtTokenProvider.createRefreshToken(member.getId());
-            redisTokenService.saveRefreshToken(refreshToken, member.getId());
+            tokenPersistenceService.saveRefreshToken(member.getId(), refreshToken);
             MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                     .post(BASE_URL)
                     .header(AUTHORIZATION, BEARER_TOKEN + refreshToken);
@@ -109,11 +109,10 @@ class TokenReissueApiControllerTest extends ControllerTest {
             Member member = createMember();
             
             // when
-            final String refreshToken = jwtTokenProvider.createRefreshToken(member.getId()); // Redis에 저장하지 않음에 따라 이미 사용했다고 가정
+            final String refreshToken = jwtTokenProvider.createRefreshToken(member.getId()); // DB에 저장하지 않음에 따라 이미 사용했다고 가정
             MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                     .post(BASE_URL)
                     .header(AUTHORIZATION, BEARER_TOKEN + refreshToken);
-            mockMvc.perform(requestBuilder);
 
             // then
             final AuthErrorCode expectedError = AuthErrorCode.INVALID_TOKEN;
@@ -151,7 +150,7 @@ class TokenReissueApiControllerTest extends ControllerTest {
 
             // when
             final String refreshToken = jwtTokenProvider.createRefreshToken(member.getId());
-            redisTokenService.saveRefreshToken(refreshToken, member.getId());
+            tokenPersistenceService.saveRefreshToken(member.getId(), refreshToken);
             MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                     .post(BASE_URL)
                     .header(AUTHORIZATION, BEARER_TOKEN + refreshToken);

@@ -9,7 +9,7 @@ import com.sjiwon.anotherart.global.security.handler.*;
 import com.sjiwon.anotherart.global.security.provider.AjaxAuthenticationProvider;
 import com.sjiwon.anotherart.global.security.service.CustomUserDetailsService;
 import com.sjiwon.anotherart.member.domain.MemberRepository;
-import com.sjiwon.anotherart.token.service.RedisTokenService;
+import com.sjiwon.anotherart.token.service.TokenPersistenceService;
 import com.sjiwon.anotherart.token.utils.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -45,7 +45,7 @@ public class SecurityConfiguration {
     private final AuthenticationConfiguration authenticationConfiguration;
     private final ObjectMapper objectMapper;
     private final JwtTokenProvider jwtTokenProvider;
-    private final RedisTokenService redisTokenService;
+    private final TokenPersistenceService tokenPersistenceService;
 
     @Bean
     PasswordEncoder passwordEncoder() {
@@ -84,7 +84,7 @@ public class SecurityConfiguration {
 
     @Bean
     AuthenticationSuccessHandler ajaxAuthenticationSuccessHandler() {
-        return new AjaxAuthenticationSuccessHandler(jwtTokenProvider, redisTokenService, objectMapper);
+        return new AjaxAuthenticationSuccessHandler(jwtTokenProvider, tokenPersistenceService, objectMapper);
     }
 
     @Bean
@@ -123,7 +123,7 @@ public class SecurityConfiguration {
 
     @Bean
     JwtLogoutSuccessHandler jwtLogoutSuccessHandler() {
-        return new JwtLogoutSuccessHandler(redisTokenService);
+        return new JwtLogoutSuccessHandler(jwtTokenProvider, tokenPersistenceService);
     }
 
     @Bean

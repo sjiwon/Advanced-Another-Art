@@ -1,3 +1,4 @@
+DROP TABLE IF EXISTS refresh_token;
 DROP TABLE IF EXISTS purchase;
 DROP TABLE IF EXISTS auction_record;
 DROP TABLE IF EXISTS auction;
@@ -97,6 +98,14 @@ CREATE TABLE purchase (
     PRIMARY KEY (id)
 ) ENGINE=INNODB DEFAULT CHARSET=utf8mb4;
 
+CREATE TABLE refresh_token (
+    id BIGINT AUTO_INCREMENT,
+    member_id BIGINT NOT NULL UNIQUE COMMENT '토큰 보유 사용자 ID (FK)',
+    refresh_token VARCHAR(255) NOT NULL UNIQUE COMMENT 'Refresh Token (RTR)',
+
+    PRIMARY KEY (id)
+) ENGINE=INNODB DEFAULT CHARSET=utf8mb4;
+
 ALTER TABLE art
 ADD CONSTRAINT art_ibfk1_member_id
 FOREIGN KEY (member_id)
@@ -157,3 +166,8 @@ ALTER TABLE purchase
 ADD CONSTRAINT purchase_ibfk2_art_id
 FOREIGN KEY (art_id)
 REFERENCES art(id);
+
+ALTER TABLE refresh_token
+ADD CONSTRAINT refresh_token_ibfk1_member_id
+FOREIGN KEY (member_id)
+REFERENCES member(id);

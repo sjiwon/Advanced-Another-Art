@@ -3,7 +3,7 @@ package com.sjiwon.anotherart.global.security.handler;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sjiwon.anotherart.global.security.TokenResponse;
 import com.sjiwon.anotherart.global.security.principal.MemberPrincipal;
-import com.sjiwon.anotherart.token.service.RedisTokenService;
+import com.sjiwon.anotherart.token.service.TokenPersistenceService;
 import com.sjiwon.anotherart.token.utils.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
@@ -16,7 +16,7 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class AjaxAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
     private final JwtTokenProvider jwtTokenProvider;
-    private final RedisTokenService redisTokenService;
+    private final TokenPersistenceService tokenPersistenceService;
     private final ObjectMapper objectMapper;
 
     @Override
@@ -25,7 +25,7 @@ public class AjaxAuthenticationSuccessHandler implements AuthenticationSuccessHa
         String accessToken = jwtTokenProvider.createAccessToken(memberId);
         String refreshToken = jwtTokenProvider.createRefreshToken(memberId);
 
-        redisTokenService.saveRefreshToken(refreshToken, memberId);
+        tokenPersistenceService.saveRefreshToken(memberId, refreshToken);
         sendAccessTokenAndRefreshToken(response, accessToken, refreshToken);
     }
 

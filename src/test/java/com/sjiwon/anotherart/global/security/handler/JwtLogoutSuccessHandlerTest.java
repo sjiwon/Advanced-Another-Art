@@ -60,15 +60,15 @@ class JwtLogoutSuccessHandlerTest extends ControllerTest {
     }
     
     @Test
-    @DisplayName("Authorization Header에 Refresh Token이 존재하면 로그아웃에 성공하고 Redis에 존재하는 해당 Refresh Token이 삭제된다")
+    @DisplayName("Authorization Header에 Refresh Token이 존재하면 로그아웃에 성공하고 DB에 존재하는 Refresh Token이 삭제된다")
     void test2() throws Exception {
         // given
         Member member = createMember();
 
         // when
         final String refreshToken = jwtTokenProvider.createRefreshToken(member.getId());
-        redisTokenService.saveRefreshToken(refreshToken, member.getId());
-        assertThat(redisTokenService.isRefreshTokenExists(refreshToken)).isTrue();
+        tokenPersistenceService.saveRefreshToken(member.getId(), refreshToken);
+        assertThat(tokenPersistenceService.isRefreshTokenExists(member.getId(), refreshToken)).isTrue();
 
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .post(BASE_URL)
@@ -89,7 +89,7 @@ class JwtLogoutSuccessHandlerTest extends ControllerTest {
                         )
                 );
 
-        assertThat(redisTokenService.isRefreshTokenExists(refreshToken)).isFalse();
+        assertThat(tokenPersistenceService.isRefreshTokenExists(member.getId(), refreshToken)).isFalse();
     }
 
     private Member createMember() {

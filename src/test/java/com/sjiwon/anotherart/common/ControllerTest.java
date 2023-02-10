@@ -8,8 +8,8 @@ import com.sjiwon.anotherart.favorite.domain.FavoriteRepository;
 import com.sjiwon.anotherart.member.domain.MemberRepository;
 import com.sjiwon.anotherart.member.domain.point.PointDetailRepository;
 import com.sjiwon.anotherart.purchase.domain.PurchaseRepository;
-import com.sjiwon.anotherart.token.domain.RedisTokenRepository;
-import com.sjiwon.anotherart.token.service.RedisTokenService;
+import com.sjiwon.anotherart.token.domain.RefreshTokenRepository;
+import com.sjiwon.anotherart.token.service.TokenPersistenceService;
 import com.sjiwon.anotherart.token.utils.JwtTokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
@@ -24,7 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 @AutoConfigureMockMvc
 @AutoConfigureRestDocs
 @TestPropertySource(properties = "file.dir=src/test/resources/images/storage/")
-public abstract class ControllerTest extends RedisTestContainers {
+public abstract class ControllerTest {
     @Autowired
     protected MockMvc mockMvc;
     @Autowired
@@ -46,7 +46,7 @@ public abstract class ControllerTest extends RedisTestContainers {
     @Autowired
     protected PurchaseRepository purchaseRepository;
     @Autowired
-    protected RedisTokenRepository redisTokenRepository;
+    protected RefreshTokenRepository refreshTokenRepository;
     @Autowired
-    protected RedisTokenService redisTokenService;
+    protected TokenPersistenceService tokenPersistenceService;
 }

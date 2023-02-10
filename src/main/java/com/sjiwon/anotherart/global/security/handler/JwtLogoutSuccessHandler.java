@@ -2,26 +2,27 @@ package com.sjiwon.anotherart.global.security.handler;
 
 import com.sjiwon.anotherart.global.security.exception.AnotherArtAccessDeniedException;
 import com.sjiwon.anotherart.global.security.exception.AuthErrorCode;
-import com.sjiwon.anotherart.token.service.RedisTokenService;
+import com.sjiwon.anotherart.token.service.TokenPersistenceService;
 import com.sjiwon.anotherart.token.utils.AuthorizationExtractor;
+import com.sjiwon.anotherart.token.utils.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
-import org.springframework.util.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 @RequiredArgsConstructor
 public class JwtLogoutSuccessHandler implements LogoutSuccessHandler {
-    private final RedisTokenService redisTokenService;
+    private final JwtTokenProvider jwtTokenProvider;
+    private final TokenPersistenceService tokenPersistenceService;
 
     @Override
     public void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
-        removeRefreshTokenInRedis(request);
+        removeRefreshToken(request);
         clearSecurityContextHolder();
 
         response.setStatus(HttpStatus.OK.value());
@@ -29,14 +30,16 @@ public class JwtLogoutSuccessHandler implements LogoutSuccessHandler {
         response.setCharacterEncoding("UTF-8");
     }
 
-    private void removeRefreshTokenInRedis(HttpServletRequest request) {
+    private void removeRefreshToken(HttpServletRequest request) {
         String refreshToken = AuthorizationExtractor.extractToken(request);
         validateRefreshToken(refreshToken);
-        redisTokenService.deleteRefreshToken(refreshToken);
+
+        Long memberId = jwtTokenProvider.getPayload(refreshToken);
+        tokenPersistenceService.deleteRefreshTokenViaMemberId(memberId);
     }
 
     private void validateRefreshToken(String refreshToken) {
-        if (!StringUtils.hasText(refreshToken)) {
+        if (refreshToken == null) {
             throw AnotherArtAccessDeniedException.type(AuthErrorCode.INVALID_TOKEN);
         }
     }
