@@ -1,95 +1,77 @@
 package com.sjiwon.anotherart.member.service;
 
-import com.sjiwon.anotherart.common.ServiceTest;
+import com.sjiwon.anotherart.common.ServiceIntegrateTest;
 import com.sjiwon.anotherart.fixture.MemberFixture;
 import com.sjiwon.anotherart.global.exception.AnotherArtException;
-import com.sjiwon.anotherart.member.domain.Email;
 import com.sjiwon.anotherart.member.domain.Member;
-import com.sjiwon.anotherart.member.domain.MemberRepository;
 import com.sjiwon.anotherart.member.exception.MemberErrorCode;
+import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.BDDMockito.given;
 
 @DisplayName("Member [Service Layer] -> MemberFindService 테스트")
-class MemberFindServiceTest extends ServiceTest {
-    @InjectMocks
-    private MemberFindService memberFindService;
-
-    @Mock
-    private MemberRepository memberRepository;
+@RequiredArgsConstructor
+class MemberFindServiceTest extends ServiceIntegrateTest {
+    private final MemberFindService memberFindService;
 
     @Test
     @DisplayName("ID(PK)로 사용자 조회하기")
     void test1() {
         // given
-        final Member member = MemberFixture.A.toMember();
-        final Long memberId = 1L;
-        given(memberRepository.findById(memberId)).willReturn(Optional.ofNullable(member));
+        Member member = createMember();
 
         // when
-        final Long fakeId = 100L;
-        Member actualMember = memberFindService.findById(memberId);
-        assertThatThrownBy(() -> memberFindService.findById(fakeId))
+        assertThatThrownBy(() -> memberFindService.findById(member.getId() + 10000L))
                 .isInstanceOf(AnotherArtException.class)
                 .hasMessage(MemberErrorCode.MEMBER_NOT_FOUND.getMessage());
+        Member findMember = memberFindService.findById(member.getId());
 
         // then
-        assertThat(actualMember).isNotNull();
-        assertThat(actualMember.getName()).isEqualTo(member.getName());
-        assertThat(actualMember.getNickname()).isEqualTo(member.getNickname());
-        assertThat(actualMember.getLoginId()).isEqualTo(member.getLoginId());
+        assertThat(findMember.getName()).isEqualTo(member.getName());
+        assertThat(findMember.getNickname()).isEqualTo(member.getNickname());
+        assertThat(findMember.getLoginId()).isEqualTo(member.getLoginId());
     }
 
     @Test
     @DisplayName("로그인 아이디로 사용자 조회하기")
     void test2() {
         // given
-        final Member member = MemberFixture.A.toMember();
-        final String loginId = member.getLoginId();
-        given(memberRepository.findByLoginId(loginId)).willReturn(Optional.ofNullable(member));
+        Member member = createMember();
 
         // when
-        final String fakeLoginId = "fake" + loginId;
-        Member actualMember = memberFindService.findByLoginId(loginId);
-        assertThatThrownBy(() -> memberFindService.findByLoginId(fakeLoginId))
+        assertThatThrownBy(() -> memberFindService.findByLoginId(member.getLoginId() + "fake"))
                 .isInstanceOf(AnotherArtException.class)
                 .hasMessage(MemberErrorCode.MEMBER_NOT_FOUND.getMessage());
+        Member findMember = memberFindService.findByLoginId(member.getLoginId());
 
         // then
-        assertThat(actualMember).isNotNull();
-        assertThat(actualMember.getName()).isEqualTo(member.getName());
-        assertThat(actualMember.getNickname()).isEqualTo(member.getNickname());
-        assertThat(actualMember.getLoginId()).isEqualTo(member.getLoginId());
+        assertThat(findMember.getName()).isEqualTo(member.getName());
+        assertThat(findMember.getNickname()).isEqualTo(member.getNickname());
+        assertThat(findMember.getLoginId()).isEqualTo(member.getLoginId());
     }
 
     @Test
     @DisplayName("이름, 이메일로 사용자 조회하기")
     void test3() {
         // given
-        final Member member = MemberFixture.A.toMember();
-        final String name = member.getName();
-        final Email email = member.getEmail();
-        given(memberRepository.findByNameAndEmail(name, email)).willReturn(Optional.ofNullable(member));
+        Member member = createMember();
 
         // when
-        final String fakeName = "fake" + name;
-        Member actualMember = memberFindService.findByNameAndEmail(name, email);
-        assertThatThrownBy(() -> memberFindService.findByNameAndEmail(fakeName, email))
+        assertThatThrownBy(() -> memberFindService.findByNameAndEmail(member.getName() + "fake", member.getEmail()))
                 .isInstanceOf(AnotherArtException.class)
                 .hasMessage(MemberErrorCode.MEMBER_NOT_FOUND.getMessage());
+        Member findMember = memberFindService.findByNameAndEmail(member.getName(), member.getEmail());
 
         // then
-        assertThat(actualMember).isNotNull();
-        assertThat(actualMember.getName()).isEqualTo(member.getName());
-        assertThat(actualMember.getNickname()).isEqualTo(member.getNickname());
-        assertThat(actualMember.getLoginId()).isEqualTo(member.getLoginId());
+        assertThat(findMember.getName()).isEqualTo(member.getName());
+        assertThat(findMember.getNickname()).isEqualTo(member.getNickname());
+        assertThat(findMember.getLoginId()).isEqualTo(member.getLoginId());
+    }
+
+    private Member createMember() {
+        return memberRepository.save(MemberFixture.A.toMember());
     }
 }

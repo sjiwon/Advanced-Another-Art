@@ -8,6 +8,9 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.FileInputStream;
 import java.util.List;
 
+import static com.sjiwon.anotherart.common.utils.ArtUtils.currentTime1DayLater;
+import static com.sjiwon.anotherart.common.utils.ArtUtils.currentTime3DayLater;
+
 public class ArtRegistrationRequestUtils {
     private static final String GENERAL_TYPE = "general";
     private static final String AUCTION_TYPE = "auction";
@@ -54,6 +57,8 @@ public class ArtRegistrationRequestUtils {
                 .price(auctionArt.getPrice())
                 .file(createMultipartFile(auctionArt))
                 .hashtagList(hashtagList)
+                .startDate(currentTime1DayLater)
+                .endDate(currentTime3DayLater)
                 .build();
     }
 

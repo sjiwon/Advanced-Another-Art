@@ -1,26 +1,18 @@
 package com.sjiwon.anotherart.token.service;
 
-import com.sjiwon.anotherart.common.RedisTestContainers;
+import com.sjiwon.anotherart.common.ServiceIntegrateTest;
 import com.sjiwon.anotherart.token.domain.RedisRefreshToken;
-import com.sjiwon.anotherart.token.domain.RedisTokenRepository;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.TestConstructor;
 
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@SpringBootTest
-@TestConstructor(autowireMode = TestConstructor.AutowireMode.ALL)
-@RequiredArgsConstructor
 @DisplayName("Token [Redis] -> RedisTokenService 테스트")
-class RedisTokenServiceTest extends RedisTestContainers {
-    private final RedisTokenService redisTokenService;
-    private final RedisTokenRepository redisTokenRepository;
-
+@RequiredArgsConstructor
+class RedisTokenServiceTest extends ServiceIntegrateTest {
     @Test
     @DisplayName("memberId, RefreshToken을 통해서 Redis에 RedisRefreshToken을 저장한다")
     void test1() {

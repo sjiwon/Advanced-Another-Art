@@ -1,21 +1,15 @@
 package com.sjiwon.anotherart.common;
 
-import org.junit.ClassRule;
 import org.testcontainers.containers.GenericContainer;
+import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
+import org.testcontainers.utility.DockerImageName;
 
 @Testcontainers
 public abstract class RedisTestContainers {
     private static final String DOCKER_REDIS_IMAGE = "redis:latest";
 
-    @ClassRule
-    public static final GenericContainer<?> REDIS_CONTAINER;
-
-    static {
-
-        REDIS_CONTAINER = new GenericContainer<>(DOCKER_REDIS_IMAGE)
-                .withExposedPorts(6379)
-                .withReuse(true);
-        REDIS_CONTAINER.start();
-    }
+    @Container
+    static GenericContainer<?> REDIS_CONTAINER = new GenericContainer<>(DockerImageName.parse(DOCKER_REDIS_IMAGE))
+            .withExposedPorts(6379);
 }

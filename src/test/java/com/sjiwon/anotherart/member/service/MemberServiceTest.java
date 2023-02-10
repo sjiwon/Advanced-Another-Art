@@ -1,76 +1,105 @@
 package com.sjiwon.anotherart.member.service;
 
-import com.sjiwon.anotherart.common.ServiceTest;
+import com.sjiwon.anotherart.common.ServiceIntegrateTest;
+import com.sjiwon.anotherart.common.utils.PasswordEncoderUtils;
 import com.sjiwon.anotherart.fixture.MemberFixture;
 import com.sjiwon.anotherart.global.exception.AnotherArtException;
 import com.sjiwon.anotherart.member.domain.Email;
 import com.sjiwon.anotherart.member.domain.Member;
-import com.sjiwon.anotherart.member.domain.MemberRepository;
 import com.sjiwon.anotherart.member.exception.MemberErrorCode;
+import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.springframework.test.util.ReflectionTestUtils;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.mockito.BDDMockito.given;
 
 @DisplayName("Member [Service Layer] -> MemberService 테스트")
-class MemberServiceTest extends ServiceTest {
-    @InjectMocks
-    private MemberService memberService;
+@RequiredArgsConstructor
+class MemberServiceTest extends ServiceIntegrateTest {
+    private final MemberService memberService;
 
-    @Mock
-    private MemberValidator memberValidator;
+    @Nested
+    @DisplayName("회원가입")
+    class signUp {
+        @Test
+        @DisplayName("중복되는 닉네임으로 인해 회원가입에 실패한다")
+        void test1() {
+            // given
+            Member member = createMemberA();
+            Member sameMember = MemberFixture.A.toMember();
 
-    @Mock
-    private MemberFindService memberFindService;
+            // when - then
+            assertThatThrownBy(() -> memberService.signUp(sameMember))
+                    .isInstanceOf(AnotherArtException.class)
+                    .hasMessage(MemberErrorCode.DUPLICATE_NICKNAME.getMessage());
+        }
 
-    @Mock
-    private MemberRepository memberRepository;
+        @Test
+        @DisplayName("회원가입에 성공한다")
+        void test2() {
+            // given
+            Member member = MemberFixture.A.toMember();
 
-    @Test
-    @DisplayName("사용자에 대한 회원가입을 성공한다")
-    void test1() {
-        // given
-        final Member member = MemberFixture.A.toMember();
-        final Long savedMemberId = 1L;
-        given(memberRepository.save(member)).willReturn(member);
-        ReflectionTestUtils.setField(member, "id", savedMemberId);
+            // when
+            Long memberId = memberService.signUp(member);
 
-        // when
-        Long memberId = memberService.signUp(member);
-
-        // then
-        assertThat(memberId).isNotNull();
-        assertThat(memberId).isEqualTo(savedMemberId);
+            // then
+            assertThat(memberId).isNotNull();
+        }
     }
 
-    @Test
-    @DisplayName("사용자의 닉네임을 수정한다")
-    void test2() {
-        // given
-        final Member member = MemberFixture.A.toMember();
-        final Long memberId = 1L;
-        final String changeNickname = member.getNickname() + "hello world";
-        given(memberFindService.findById(memberId)).willReturn(member);
+    @Nested
+    @DisplayName("닉네임 수정")
+    class changeNickname {
+        @Test
+        @DisplayName("이전과 동일한 닉네임으로 수정할 수 없다")
+        void test1() {
+            // given
+            Member member = createMemberA();
 
-        // when
-        memberService.changeNickname(memberId, changeNickname);
+            // when - then
+            assertThatThrownBy(() -> memberService.changeNickname(member.getId(), member.getNickname()))
+                    .isInstanceOf(AnotherArtException.class)
+                    .hasMessage(MemberErrorCode.NICKNAME_SAME_AS_BEFORE.getMessage());
+        }
 
-        // then
-        assertThat(member.getNickname()).isEqualTo(changeNickname);
+        @Test
+        @DisplayName("중복되는 닉네임으로 수정할 수 없다")
+        void test2() {
+            // given
+            Member memberA = createMemberA();
+            Member memberB = createMemberB();
+
+            // when - then
+            assertThatThrownBy(() -> memberService.changeNickname(memberA.getId(), memberB.getNickname()))
+                    .isInstanceOf(AnotherArtException.class)
+                    .hasMessage(MemberErrorCode.DUPLICATE_NICKNAME.getMessage());
+        }
+
+        @Test
+        @DisplayName("닉네임 수정에 성공한다")
+        void test3() {
+            // given
+            Member member = createMemberA();
+            final String changeNickname = member.getNickname() + "change";
+
+            // when
+            memberService.changeNickname(member.getId(), changeNickname);
+
+            // then
+            assertThat(member.getNickname()).isEqualTo(changeNickname);
+        }
     }
-    
+
     @Test
     @DisplayName("이름, 이메일에 해당되는 사용자의 로그인 아이디를 찾는다")
-    void test3() {
+    void test6() {
         // given
-        final Member member = MemberFixture.A.toMember();
-        given(memberFindService.findByNameAndEmail(member.getName(), member.getEmail())).willReturn(member);
+        Member member = createMemberA();
 
         // when
         String loginId = memberService.findLoginId(member.getName(), member.getEmail());
@@ -81,13 +110,12 @@ class MemberServiceTest extends ServiceTest {
 
     @Test
     @DisplayName("이름, 로그인 아이디, 이메일에 해당하는 사용자가 존재하는지 확인한다")
-    void test4() {
+    void test7() {
         // given
-        final Member member = MemberFixture.A.toMember();
+        Member member = createMemberA();
         final String name = member.getName();
         final String loginId = member.getLoginId();
         final Email email = member.getEmail();
-        given(memberRepository.existsByNameAndLoginIdAndEmail(name, loginId, email)).willReturn(true);
 
         // when - then
         assertDoesNotThrow(() -> memberService.authMemberForResetPassword(name, loginId, email));
@@ -100,5 +128,28 @@ class MemberServiceTest extends ServiceTest {
         assertThatThrownBy(() -> memberService.authMemberForResetPassword(name, loginId, Email.from("diff" + email.getValue())))
                 .isInstanceOf(AnotherArtException.class)
                 .hasMessage(MemberErrorCode.MEMBER_NOT_FOUND.getMessage());
+    }
+
+    @Test
+    @DisplayName("비밀번호를 재설정한다")
+    void test8() {
+        // given
+        Member member = createMemberA();
+        final String changePassword = MemberFixture.A.getPassword() + "change";
+
+        // when
+        memberService.resetPassword(member.getLoginId(), changePassword);
+
+        // then
+        PasswordEncoder encoder = PasswordEncoderUtils.getEncoder();
+        assertThat(encoder.matches(changePassword, member.getPasswordValue())).isTrue();
+    }
+
+    private Member createMemberA() {
+        return memberRepository.save(MemberFixture.A.toMember());
+    }
+
+    private Member createMemberB() {
+        return memberRepository.save(MemberFixture.B.toMember());
     }
 }

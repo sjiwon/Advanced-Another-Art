@@ -6,7 +6,6 @@ import com.sjiwon.anotherart.favorite.domain.Favorite;
 import com.sjiwon.anotherart.favorite.domain.FavoriteRepository;
 import com.sjiwon.anotherart.favorite.exception.FavoriteErrorCode;
 import com.sjiwon.anotherart.global.exception.AnotherArtException;
-import com.sjiwon.anotherart.member.service.MemberFindService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,7 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class FavoriteService {
     private final ArtFindService artFindService;
-    private final MemberFindService memberFindService;
     private final FavoriteRepository favoriteRepository;
 
     @Transactional

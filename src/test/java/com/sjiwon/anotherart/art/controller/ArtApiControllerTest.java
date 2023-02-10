@@ -18,7 +18,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.util.LinkedMultiValueMap;
@@ -43,7 +42,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @DisplayName("Art [Controller Layer] -> ArtApiController 테스트")
-@TestPropertySource(properties = "file.dir=src/test/resources/images/storage/")
 class ArtApiControllerTest extends ControllerTest {
     private static final ArtFixture AUCTION_ART = ArtFixture.A;
     private static final ArtFixture GENERAL_ART = ArtFixture.B;
