@@ -1,6 +1,8 @@
 package com.sjiwon.anotherart.art.domain;
 
 import com.sjiwon.anotherart.art.domain.hashtag.Hashtag;
+import com.sjiwon.anotherart.art.exception.ArtErrorCode;
+import com.sjiwon.anotherart.global.exception.AnotherArtException;
 import com.sjiwon.anotherart.member.domain.Member;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -83,8 +85,11 @@ public class Art {
         );
     }
 
-    public void changeDescription(String description) {
-        this.description = description;
+    public void changeDescription(String changeDescription) {
+        if (this.description.equals(changeDescription)) {
+            throw AnotherArtException.type(ArtErrorCode.NAME_SAME_AS_BEFORE);
+        }
+        this.description = changeDescription;
     }
 
     public void changeArtStatus(ArtStatus artStatus) {
