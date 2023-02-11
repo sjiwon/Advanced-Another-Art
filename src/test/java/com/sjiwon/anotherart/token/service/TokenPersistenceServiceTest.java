@@ -6,6 +6,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 @DisplayName("Token [Service Layer] -> TokenPersistenceService 테스트")
 @RequiredArgsConstructor
@@ -39,8 +40,10 @@ class TokenPersistenceServiceTest extends ServiceIntegrateTest {
         tokenPersistenceService.reissueRefreshTokenByRtrPolicy(memberId, newRefreshToken);
 
         // then
-        assertThat(refreshTokenRepository.existsByMemberIdAndRefreshToken(memberId, refreshToken)).isFalse();
-        assertThat(refreshTokenRepository.existsByMemberIdAndRefreshToken(memberId, newRefreshToken)).isTrue();
+        assertAll(
+                () -> assertThat(refreshTokenRepository.existsByMemberIdAndRefreshToken(memberId, refreshToken)).isFalse(),
+                () -> assertThat(refreshTokenRepository.existsByMemberIdAndRefreshToken(memberId, newRefreshToken)).isTrue()
+        );
     }
 
     @Test
@@ -72,7 +75,9 @@ class TokenPersistenceServiceTest extends ServiceIntegrateTest {
         boolean actual2 = tokenPersistenceService.isRefreshTokenExists(memberId, fakeRefreshToken);
 
         // then
-        assertThat(actual1).isTrue();
-        assertThat(actual2).isFalse();
+        assertAll(
+                () -> assertThat(actual1).isTrue(),
+                () -> assertThat(actual2).isFalse()
+        );
     }
 }

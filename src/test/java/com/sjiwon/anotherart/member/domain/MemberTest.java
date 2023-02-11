@@ -80,9 +80,11 @@ class MemberTest {
         memberA.changeAddress(changePostcode, changeDefault, changeDetail);
 
         // then
-        assertThat(memberA.getAddress().getPostcode()).isEqualTo(changePostcode);
-        assertThat(memberA.getAddress().getDefaultAddress()).isEqualTo(changeDefault);
-        assertThat(memberA.getAddress().getDetailAddress()).isEqualTo(changeDetail);
+        assertAll(
+                () -> assertThat(memberA.getAddress().getPostcode()).isEqualTo(changePostcode),
+                () -> assertThat(memberA.getAddress().getDefaultAddress()).isEqualTo(changeDefault),
+                () -> assertThat(memberA.getAddress().getDetailAddress()).isEqualTo(changeDetail)
+        );
     }
 
     @Test
@@ -128,8 +130,10 @@ class MemberTest {
         boolean actual2 = memberA.isSameNickname(diff);
 
         // then
-        assertThat(actual1).isTrue();
-        assertThat(actual2).isFalse();
+        assertAll(
+                () -> assertThat(actual1).isTrue(),
+                () -> assertThat(actual2).isFalse()
+        );
     }
 
     @Test
@@ -145,8 +149,10 @@ class MemberTest {
         boolean actual2 = memberA.isSameName(diff);
 
         // then
-        assertThat(actual1).isTrue();
-        assertThat(actual2).isFalse();
+        assertAll(
+                () -> assertThat(actual1).isTrue(),
+                () -> assertThat(actual2).isFalse()
+        );
     }
 
     @Test
@@ -162,7 +168,9 @@ class MemberTest {
         boolean actual2 = memberA.isSameEmail(diff);
 
         // then
-        assertThat(actual1).isTrue();
-        assertThat(actual2).isFalse();
+        assertAll(
+                () -> assertThat(actual1).isTrue(),
+                () -> assertThat(actual2).isFalse()
+        );
     }
 }

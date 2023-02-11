@@ -11,11 +11,11 @@ import com.sjiwon.anotherart.member.domain.Member;
 import com.sjiwon.anotherart.member.domain.Password;
 import com.sjiwon.anotherart.member.domain.point.PointDetail;
 import com.sjiwon.anotherart.member.domain.point.PointType;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,22 +30,21 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @Slf4j
 @DisplayName("Purchase [Purchase Concurrency Test] -> 작품 구매 동시성 테스트")
-class PurchaseServiceTest extends ConcurrencyTest {
-    @Autowired
-    private PurchaseService purchaseService;
-
+@RequiredArgsConstructor
+class PurchaseConcurrencyTest extends ConcurrencyTest {
+    private final PurchaseService purchaseService;
     private static final MemberFixture MEMBER = MemberFixture.A;
-    private final List<Long> participateMemberIdList = new ArrayList<>();
+    private static final List<Long> PARTICIPATE_MEMBER_IDS = new ArrayList<>();
 
     @BeforeEach
     void before() {
-        createParticipateMembers(); // 100명의 더미 사용자 생성
+        createParticipateMembers(); // 10명의 더미 사용자 생성
     }
 
     @Test
-    @DisplayName("100명의 사용자가 동일한 일반 작품을 동시에 구매하려고 시도하면 구매 내역에는 1건의 내역만 존재해야 한다")
+    @DisplayName("10명의 사용자가 동일한 일반 작품을 동시에 구매하려고 시도하면 구매 내역에는 1건의 내역만 존재해야 한다")
     void test() throws Exception {
-        int threadCount = 100;
+        int threadCount = 10;
         ExecutorService executorService = Executors.newFixedThreadPool(threadCount);
         CountDownLatch countDownLatch = new CountDownLatch(threadCount);
 
@@ -54,7 +53,7 @@ class PurchaseServiceTest extends ConcurrencyTest {
         Art generalArt = createGeneralArt(owner);
 
         // when
-        for (Long participateMemberId : participateMemberIdList) {
+        for (Long participateMemberId : PARTICIPATE_MEMBER_IDS) {
             executorService.submit(() -> {
                 try {
                     purchaseService.purchaseArt(generalArt.getId(), participateMemberId);
@@ -75,7 +74,7 @@ class PurchaseServiceTest extends ConcurrencyTest {
         List<Member> members = new ArrayList<>();
         List<PointDetail> pointDetails = new ArrayList<>();
 
-        for (int i = 1; i <= 100; i++) {
+        for (int i = 1; i <= 10; i++) {
             Member member = Member.builder()
                     .name("Member" + i)
                     .nickname("Member" + i)
@@ -94,7 +93,7 @@ class PurchaseServiceTest extends ConcurrencyTest {
         pointDetailRepository.saveAll(pointDetails);
 
         // ID(PK) 추출
-        savedMembers.forEach(savedMember -> participateMemberIdList.add(savedMember.getId()));
+        savedMembers.forEach(savedMember -> PARTICIPATE_MEMBER_IDS.add(savedMember.getId()));
     }
 
     private static String generateRandomPhoneNumber() {

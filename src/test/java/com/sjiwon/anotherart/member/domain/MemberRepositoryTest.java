@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 @DisplayName("Member [Repository Layer] -> MemberRepository 테스트")
 class MemberRepositoryTest extends RepositoryTest {
@@ -26,8 +27,10 @@ class MemberRepositoryTest extends RepositoryTest {
         boolean actual2 = memberRepository.existsByNickname("Fake Nickname");
 
         // then
-        assertThat(actual1).isTrue();
-        assertThat(actual2).isFalse();
+        assertAll(
+                () -> assertThat(actual1).isTrue(),
+                () -> assertThat(actual2).isFalse()
+        );
     }
 
     @Test
@@ -41,8 +44,10 @@ class MemberRepositoryTest extends RepositoryTest {
         boolean actual2 = memberRepository.existsByLoginId("Fake LoginId");
 
         // then
-        assertThat(actual1).isTrue();
-        assertThat(actual2).isFalse();
+        assertAll(
+                () -> assertThat(actual1).isTrue(),
+                () -> assertThat(actual2).isFalse()
+        );
     }
 
     @Test
@@ -56,8 +61,10 @@ class MemberRepositoryTest extends RepositoryTest {
         boolean actual2 = memberRepository.existsByPhone("99988887777");
 
         // then
-        assertThat(actual1).isTrue();
-        assertThat(actual2).isFalse();
+        assertAll(
+                () -> assertThat(actual1).isTrue(),
+                () -> assertThat(actual2).isFalse()
+        );
     }
 
     @Test
@@ -71,8 +78,10 @@ class MemberRepositoryTest extends RepositoryTest {
         boolean actual2 = memberRepository.existsByEmail(Email.from("fake@gmail.com"));
 
         // then
-        assertThat(actual1).isTrue();
-        assertThat(actual2).isFalse();
+        assertAll(
+                () -> assertThat(actual1).isTrue(),
+                () -> assertThat(actual2).isFalse()
+        );
     }
 
     @Test
@@ -87,11 +96,13 @@ class MemberRepositoryTest extends RepositoryTest {
         Optional<Member> emptyMember = memberRepository.findByLoginId("fakeLoginId");
 
         // then
-        assertThat(emptyMember).isEmpty();
-        assertThat(actualMember).isPresent();
-        assertThat(actualMember.get().getId()).isEqualTo(expectedMember.getId());
-        assertThat(actualMember.get().getName()).isEqualTo(expectedMember.getName());
-        assertThat(actualMember.get().getNickname()).isEqualTo(expectedMember.getNickname());
+        assertAll(
+                () -> assertThat(emptyMember).isEmpty(),
+                () -> assertThat(actualMember).isPresent(),
+                () -> assertThat(actualMember.get().getId()).isEqualTo(expectedMember.getId()),
+                () -> assertThat(actualMember.get().getName()).isEqualTo(expectedMember.getName()),
+                () -> assertThat(actualMember.get().getNickname()).isEqualTo(expectedMember.getNickname())
+        );
     }
 
     @Test
@@ -108,12 +119,14 @@ class MemberRepositoryTest extends RepositoryTest {
         Optional<Member> actualMember = memberRepository.findByNameAndEmail(name, email);
 
         // then
-        assertThat(emptyMember1).isEmpty();
-        assertThat(emptyMember2).isEmpty();
-        assertThat(actualMember).isPresent();
-        assertThat(actualMember.get().getId()).isEqualTo(expectedMember.getId());
-        assertThat(actualMember.get().getName()).isEqualTo(expectedMember.getName());
-        assertThat(actualMember.get().getNickname()).isEqualTo(expectedMember.getNickname());
+        assertAll(
+                () -> assertThat(emptyMember1).isEmpty(),
+                () -> assertThat(emptyMember2).isEmpty(),
+                () -> assertThat(actualMember).isPresent(),
+                () -> assertThat(actualMember.get().getId()).isEqualTo(expectedMember.getId()),
+                () -> assertThat(actualMember.get().getName()).isEqualTo(expectedMember.getName()),
+                () -> assertThat(actualMember.get().getNickname()).isEqualTo(expectedMember.getNickname())
+        );
     }
 
     @Test
@@ -132,10 +145,12 @@ class MemberRepositoryTest extends RepositoryTest {
         boolean actual4 = memberRepository.existsByNameAndLoginIdAndEmail(name, loginId, Email.from("diff" + email.getValue()));
 
         // then
-        assertThat(actual1).isTrue();
-        assertThat(actual2).isFalse();
-        assertThat(actual3).isFalse();
-        assertThat(actual4).isFalse();
+        assertAll(
+                () -> assertThat(actual1).isTrue(),
+                () -> assertThat(actual2).isFalse(),
+                () -> assertThat(actual3).isFalse(),
+                () -> assertThat(actual4).isFalse()
+        );
     }
 
     private Member createMemberA() {

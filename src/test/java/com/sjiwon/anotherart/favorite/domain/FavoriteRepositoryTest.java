@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import static com.sjiwon.anotherart.common.utils.ArtUtils.HASHTAGS;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 @DisplayName("Favorite [Repository Layer] -> FavoriteRepository 테스트")
 class FavoriteRepositoryTest extends RepositoryTest {
@@ -41,8 +42,10 @@ class FavoriteRepositoryTest extends RepositoryTest {
         boolean actual2 = favoriteRepository.existsByArtIdAndMemberId(auctionArt.getId(), member.getId());
 
         // then
-        assertThat(actual1).isTrue();
-        assertThat(actual2).isFalse();
+        assertAll(
+                () -> assertThat(actual1).isTrue(),
+                () -> assertThat(actual2).isFalse()
+        );
     }
 
     @Test

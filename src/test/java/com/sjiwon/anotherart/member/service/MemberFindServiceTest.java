@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 @DisplayName("Member [Service Layer] -> MemberFindService 테스트")
 @RequiredArgsConstructor
@@ -30,9 +31,11 @@ class MemberFindServiceTest extends ServiceIntegrateTest {
         Member findMember = memberFindService.findById(member.getId());
 
         // then
-        assertThat(findMember.getName()).isEqualTo(member.getName());
-        assertThat(findMember.getNickname()).isEqualTo(member.getNickname());
-        assertThat(findMember.getLoginId()).isEqualTo(member.getLoginId());
+        assertAll(
+                () -> assertThat(findMember.getName()).isEqualTo(member.getName()),
+                () -> assertThat(findMember.getNickname()).isEqualTo(member.getNickname()),
+                () -> assertThat(findMember.getLoginId()).isEqualTo(member.getLoginId())
+        );
     }
 
     @Test
@@ -48,9 +51,11 @@ class MemberFindServiceTest extends ServiceIntegrateTest {
         Member findMember = memberFindService.findByLoginId(member.getLoginId());
 
         // then
-        assertThat(findMember.getName()).isEqualTo(member.getName());
-        assertThat(findMember.getNickname()).isEqualTo(member.getNickname());
-        assertThat(findMember.getLoginId()).isEqualTo(member.getLoginId());
+        assertAll(
+                () -> assertThat(findMember.getName()).isEqualTo(member.getName()),
+                () -> assertThat(findMember.getNickname()).isEqualTo(member.getNickname()),
+                () -> assertThat(findMember.getLoginId()).isEqualTo(member.getLoginId())
+        );
     }
 
     @Test
@@ -66,9 +71,11 @@ class MemberFindServiceTest extends ServiceIntegrateTest {
         Member findMember = memberFindService.findByNameAndEmail(member.getName(), member.getEmail());
 
         // then
-        assertThat(findMember.getName()).isEqualTo(member.getName());
-        assertThat(findMember.getNickname()).isEqualTo(member.getNickname());
-        assertThat(findMember.getLoginId()).isEqualTo(member.getLoginId());
+        assertAll(
+                () -> assertThat(findMember.getName()).isEqualTo(member.getName()),
+                () -> assertThat(findMember.getNickname()).isEqualTo(member.getNickname()),
+                () -> assertThat(findMember.getLoginId()).isEqualTo(member.getLoginId())
+        );
     }
 
     private Member createMember() {

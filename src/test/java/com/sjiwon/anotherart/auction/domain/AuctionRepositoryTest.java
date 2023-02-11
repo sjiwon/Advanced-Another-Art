@@ -16,12 +16,11 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.time.LocalDateTime;
-
 import static com.sjiwon.anotherart.common.utils.ArtUtils.*;
 import static com.sjiwon.anotherart.common.utils.MemberUtils.INIT_AVAILABLE_POINT;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 @DisplayName("Auction [Repository Layer] -> AuctionRepository 테스트")
 class AuctionRepositoryTest extends RepositoryTest {
@@ -56,17 +55,19 @@ class AuctionRepositoryTest extends RepositoryTest {
             // given
             Member member = createMemberA();
             Art auctionArt = createAuctionArtA(member);
-            final Period period = Period.of(LocalDateTime.now().minusDays(1), LocalDateTime.now().plusDays(1));
+            final Period period = Period.of(currentTime1DayAgo, currentTime1DayLater);
 
             // when
             Auction auction = Auction.initAuction(auctionArt, period);
 
             // then
-            assertThat(auction.getArt().getId()).isEqualTo(auctionArt.getId());
-            assertThat(auction.getArt().getName()).isEqualTo(auctionArt.getName());
-            assertThat(auction.getArt().getArtType()).isEqualTo(ArtType.AUCTION);
-            assertThat(auction.getBidder()).isNull();
-            assertThat(auction.getBidAmount()).isEqualTo(auctionArt.getPrice());
+            assertAll(
+                    () -> assertThat(auction.getArt().getId()).isEqualTo(auctionArt.getId()),
+                    () -> assertThat(auction.getArt().getName()).isEqualTo(auctionArt.getName()),
+                    () -> assertThat(auction.getArt().getArtType()).isEqualTo(ArtType.AUCTION),
+                    () -> assertThat(auction.getBidder()).isNull(),
+                    () -> assertThat(auction.getBidAmount()).isEqualTo(auctionArt.getPrice())
+            );
         }
     }
 
@@ -145,14 +146,18 @@ class AuctionRepositoryTest extends RepositoryTest {
             Member memberC = createMemberC();
             final int currentBidPrice = 200000;
             auction.applyNewBid(memberC, currentBidPrice);
-            assertThat(memberB.getAvailablePoint()).isEqualTo(INIT_AVAILABLE_POINT);
-            assertThat(memberC.getAvailablePoint()).isEqualTo(INIT_AVAILABLE_POINT - currentBidPrice);
+            assertAll(
+                    () -> assertThat(memberB.getAvailablePoint()).isEqualTo(INIT_AVAILABLE_POINT),
+                    () -> assertThat(memberC.getAvailablePoint()).isEqualTo(INIT_AVAILABLE_POINT - currentBidPrice)
+            );
 
             // then
-            assertThat(auction.getBidder().getId()).isEqualTo(memberC.getId());
-            assertThat(auction.getBidder().getName()).isEqualTo(memberC.getName());
-            assertThat(auction.getBidder().getNickname()).isEqualTo(memberC.getNickname());
-            assertThat(auction.getBidAmount()).isEqualTo(currentBidPrice);
+            assertAll(
+                    () -> assertThat(auction.getBidder().getId()).isEqualTo(memberC.getId()),
+                    () -> assertThat(auction.getBidder().getName()).isEqualTo(memberC.getName()),
+                    () -> assertThat(auction.getBidder().getNickname()).isEqualTo(memberC.getNickname()),
+                    () -> assertThat(auction.getBidAmount()).isEqualTo(currentBidPrice)
+            );
         }
     }
 
@@ -168,15 +173,17 @@ class AuctionRepositoryTest extends RepositoryTest {
         Auction findAuction = auctionRepository.findByArtId(auctionArt.getId()).orElseThrow();
 
         // then
-        assertThat(findAuction.getBidder()).isNull();
-        assertThat(findAuction.getBidAmount()).isEqualTo(auctionArt.getPrice());
-        assertThat(findAuction.getArt().getId()).isEqualTo(auctionArt.getId());
-        assertThat(findAuction.getArt().getName()).isEqualTo(auctionArt.getName());
-        assertThat(findAuction.getArt().getArtStatus()).isEqualTo(ArtStatus.FOR_SALE);
-        assertThat(findAuction.getArt().getArtType()).isEqualTo(ArtType.AUCTION);
-        assertThat(findAuction.getArt().getOwner().getId()).isEqualTo(owner.getId());
-        assertThat(findAuction.getArt().getOwner().getName()).isEqualTo(owner.getName());
-        assertThat(findAuction.getArt().getOwner().getNickname()).isEqualTo(owner.getNickname());
+        assertAll(
+                () -> assertThat(findAuction.getBidder()).isNull(),
+                () -> assertThat(findAuction.getBidAmount()).isEqualTo(auctionArt.getPrice()),
+                () -> assertThat(findAuction.getArt().getId()).isEqualTo(auctionArt.getId()),
+                () -> assertThat(findAuction.getArt().getName()).isEqualTo(auctionArt.getName()),
+                () -> assertThat(findAuction.getArt().getArtStatus()).isEqualTo(ArtStatus.FOR_SALE),
+                () -> assertThat(findAuction.getArt().getArtType()).isEqualTo(ArtType.AUCTION),
+                () -> assertThat(findAuction.getArt().getOwner().getId()).isEqualTo(owner.getId()),
+                () -> assertThat(findAuction.getArt().getOwner().getName()).isEqualTo(owner.getName()),
+                () -> assertThat(findAuction.getArt().getOwner().getNickname()).isEqualTo(owner.getNickname())
+        );
     }
 
     private Member createMemberA() {
@@ -206,6 +213,6 @@ class AuctionRepositoryTest extends RepositoryTest {
     }
 
     private Auction initAuction(Art art) {
-        return auctionRepository.save(Auction.initAuction(art, Period.of(currentTime1DayLater, currentTime3DayLater)));
+        return auctionRepository.save(Auction.initAuction(art, Period.of(currentTime1DayAgo, currentTime1DayLater)));
     }
 }

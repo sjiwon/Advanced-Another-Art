@@ -9,6 +9,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 @DisplayName("Member 도메인 {Email VO} 테스트")
 class EmailTest {
@@ -34,7 +35,9 @@ class EmailTest {
         boolean actual2 = email.isSameEmail(diffEmail);
 
         // then
-        assertThat(actual1).isTrue();
-        assertThat(actual2).isFalse();
+        assertAll(
+                () -> assertThat(actual1).isTrue(),
+                () -> assertThat(actual2).isFalse()
+        );
     }
 }

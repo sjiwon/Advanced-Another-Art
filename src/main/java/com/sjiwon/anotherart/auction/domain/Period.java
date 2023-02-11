@@ -40,7 +40,7 @@ public class Period {
         return endDate.isBefore(startDate);
     }
 
-    public boolean isAuctionFinished(LocalDateTime bidTime) {
-        return bidTime.isAfter(this.endDate);
+    public boolean isAuctionInProgress(LocalDateTime bidTime) {
+        return bidTime.isAfter(this.startDate) && bidTime.isBefore(this.endDate);
     }
 }

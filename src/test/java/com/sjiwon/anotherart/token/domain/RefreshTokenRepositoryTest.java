@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 @DisplayName("Token [Repository Layer] -> RefreshTokenRepository 테스트")
 class RefreshTokenRepositoryTest extends RepositoryTest {
@@ -25,8 +26,10 @@ class RefreshTokenRepositoryTest extends RepositoryTest {
         refreshTokenRepository.reissueRefreshTokenByRtrPolicy(memberId, newRefreshToken);
 
         // then
-        assertThat(refreshTokenRepository.existsByMemberIdAndRefreshToken(memberId, refreshToken)).isFalse();
-        assertThat(refreshTokenRepository.existsByMemberIdAndRefreshToken(memberId, newRefreshToken)).isTrue();
+        assertAll(
+                () -> assertThat(refreshTokenRepository.existsByMemberIdAndRefreshToken(memberId, refreshToken)).isFalse(),
+                () -> assertThat(refreshTokenRepository.existsByMemberIdAndRefreshToken(memberId, newRefreshToken)).isTrue()
+        );
     }
     
     @Test
@@ -42,8 +45,10 @@ class RefreshTokenRepositoryTest extends RepositoryTest {
         boolean actual2 = refreshTokenRepository.existsByMemberIdAndRefreshToken(memberId, refreshToken + "diff");
 
         // then
-        assertThat(actual1).isTrue();
-        assertThat(actual2).isFalse();
+        assertAll(
+                () -> assertThat(actual1).isTrue(),
+                () -> assertThat(actual2).isFalse()
+        );
     }
 
     @Test

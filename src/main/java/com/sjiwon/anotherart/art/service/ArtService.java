@@ -105,7 +105,7 @@ public class ArtService {
 
     private void validateSaleStatus(Art art) {
         if (art.isSoldOut()) {
-            throw AnotherArtException.type(ArtErrorCode.ALREADY_SALE);
+            throw AnotherArtException.type(ArtErrorCode.ALREADY_SOLD_OUT);
         }
     }
 

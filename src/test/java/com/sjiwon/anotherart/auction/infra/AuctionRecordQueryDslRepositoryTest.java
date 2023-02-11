@@ -21,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import static com.sjiwon.anotherart.common.utils.ArtUtils.*;
 import static com.sjiwon.anotherart.common.utils.MemberUtils.INIT_AVAILABLE_POINT;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 @DisplayName("AuctionRecord [Repository Layer] -> AuctionRecordQueryDslRepository 테스트")
 class AuctionRecordQueryDslRepositoryTest extends RepositoryTest {
@@ -54,9 +55,11 @@ class AuctionRecordQueryDslRepositoryTest extends RepositoryTest {
         processBid(auction, bidder, BID_AMOUNT);
 
         boolean actual2 = auctionRecordRepository.existsAuctionRecordByArtId(auctionArt.getId());
-        assertThat(actual2).isTrue();
-        assertThat(bidder.getAvailablePoint()).isEqualTo(INIT_AVAILABLE_POINT - BID_AMOUNT);
-        assertThat(bidder.getTotalPoints()).isEqualTo(INIT_AVAILABLE_POINT);
+        assertAll(
+                () -> assertThat(actual2).isTrue(),
+                () -> assertThat(bidder.getAvailablePoint()).isEqualTo(INIT_AVAILABLE_POINT - BID_AMOUNT),
+                () -> assertThat(bidder.getTotalPoints()).isEqualTo(INIT_AVAILABLE_POINT)
+        );
     }
 
     private void processBid(Auction auction, Member bidder, int bidAmount) {
@@ -81,6 +84,6 @@ class AuctionRecordQueryDslRepositoryTest extends RepositoryTest {
     }
 
     private Auction initAuction(Art art) {
-        return auctionRepository.save(Auction.initAuction(art, Period.of(currentTime1DayLater, currentTime3DayLater)));
+        return auctionRepository.save(Auction.initAuction(art, Period.of(currentTime1DayAgo, currentTime1DayLater)));
     }
 }

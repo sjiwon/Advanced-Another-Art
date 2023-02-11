@@ -23,6 +23,7 @@ import java.util.List;
 import static com.sjiwon.anotherart.common.utils.ArtUtils.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 @DisplayName("Art [Service Layer] -> ArtService 테스트")
@@ -47,9 +48,11 @@ class ArtServiceTest extends ServiceIntegrateTest {
         assertThat(ownerArts.size()).isEqualTo(1);
 
         Art art = ownerArts.get(0);
-        assertThat(art.getName()).isEqualTo(generalArtFixture.getName());
-        assertThat(art.getDescription()).isEqualTo(generalArtFixture.getDescription());
-        assertThat(art.getUploadName()).isEqualTo(generalArtFixture.getUploadName());
+        assertAll(
+                () -> assertThat(art.getName()).isEqualTo(generalArtFixture.getName()),
+                () -> assertThat(art.getDescription()).isEqualTo(generalArtFixture.getDescription()),
+                () -> assertThat(art.getUploadName()).isEqualTo(generalArtFixture.getUploadName())
+        );
     }
 
     @Test
@@ -69,13 +72,17 @@ class ArtServiceTest extends ServiceIntegrateTest {
         assertThat(ownerArts.size()).isEqualTo(1);
 
         Art art = ownerArts.get(0);
-        assertThat(art.getName()).isEqualTo(auctionArtFixture.getName());
-        assertThat(art.getDescription()).isEqualTo(auctionArtFixture.getDescription());
-        assertThat(art.getUploadName()).isEqualTo(auctionArtFixture.getUploadName());
+        assertAll(
+                () -> assertThat(art.getName()).isEqualTo(auctionArtFixture.getName()),
+                () -> assertThat(art.getDescription()).isEqualTo(auctionArtFixture.getDescription()),
+                () -> assertThat(art.getUploadName()).isEqualTo(auctionArtFixture.getUploadName())
+        );
 
         Auction auction = auctionRepository.findByArtId(art.getId()).orElseThrow();
-        assertThat(auction.getBidder()).isNull();
-        assertThat(auction.getBidAmount()).isEqualTo(art.getPrice());
+        assertAll(
+                () -> assertThat(auction.getBidder()).isNull(),
+                () -> assertThat(auction.getBidAmount()).isEqualTo(art.getPrice())
+        );
     }
 
     @Test
@@ -100,6 +107,10 @@ class ArtServiceTest extends ServiceIntegrateTest {
         Art art = createGeneralArt(owner);
 
         // when
+        assertThatThrownBy(() -> artService.changeDescription(art.getId(), art.getDescription()))
+                .isInstanceOf(AnotherArtException.class)
+                .hasMessage(ArtErrorCode.NAME_SAME_AS_BEFORE.getMessage());
+
         final String changeDescription = art.getDescription() + "change";
         artService.changeDescription(art.getId(), changeDescription);
 
@@ -131,10 +142,8 @@ class ArtServiceTest extends ServiceIntegrateTest {
             Member owner = createMemberA();
             Art art = createGeneralArt(owner);
 
-            Member member = createMemberB();
-
             // when - then
-            assertThatThrownBy(() -> artService.deleteArt(art.getId(), member.getId()))
+            assertThatThrownBy(() -> artService.deleteArt(art.getId(), owner.getId() + 100L))
                     .isInstanceOf(AnotherArtException.class)
                     .hasMessage(ArtErrorCode.INVALID_ART_DELETE_BY_ANONYMOUS.getMessage());
         }
@@ -150,7 +159,7 @@ class ArtServiceTest extends ServiceIntegrateTest {
             // when - then
             assertThatThrownBy(() -> artService.deleteArt(art.getId(), owner.getId()))
                     .isInstanceOf(AnotherArtException.class)
-                    .hasMessage(ArtErrorCode.ALREADY_SALE.getMessage());
+                    .hasMessage(ArtErrorCode.ALREADY_SOLD_OUT.getMessage());
         }
 
         @Test

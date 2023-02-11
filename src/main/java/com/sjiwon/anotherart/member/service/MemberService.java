@@ -50,13 +50,13 @@ public class MemberService {
         }
     }
 
-    public String findLoginId(String name, Email email) {
-        Member member = memberFindService.findByNameAndEmail(name, email);
+    public String findLoginId(String name, String email) {
+        Member member = memberFindService.findByNameAndEmail(name, Email.from(email));
         return member.getLoginId();
     }
 
-    public void authMemberForResetPassword(String name, String loginId, Email email) {
-        if (!memberRepository.existsByNameAndLoginIdAndEmail(name, loginId, email)) {
+    public void authMemberForResetPassword(String name, String loginId, String email) {
+        if (!memberRepository.existsByNameAndLoginIdAndEmail(name, loginId, Email.from(email))) {
             throw AnotherArtException.type(MemberErrorCode.MEMBER_NOT_FOUND);
         }
     }

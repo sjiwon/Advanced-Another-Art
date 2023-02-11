@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 @DisplayName("Token [Utils] -> JwtTokenProvider 테스트")
 class JwtTokenProviderTest {
@@ -29,9 +30,11 @@ class JwtTokenProviderTest {
             String accessToken = JWT_TOKEN_PROVIDER.createAccessToken(memberId);
 
             // then
-            assertThat(accessToken).isNotNull();
-            assertThat(JWT_TOKEN_PROVIDER.getPayload(accessToken)).isEqualTo(memberId);
-            assertThat(JWT_TOKEN_PROVIDER.isTokenValid(accessToken)).isTrue();
+            assertAll(
+                    () -> assertThat(accessToken).isNotNull(),
+                    () -> assertThat(JWT_TOKEN_PROVIDER.getPayload(accessToken)).isEqualTo(memberId),
+                    () -> assertThat(JWT_TOKEN_PROVIDER.isTokenValid(accessToken)).isTrue()
+            );
         }
 
         @Test
@@ -44,9 +47,11 @@ class JwtTokenProviderTest {
             String refreshToken = JWT_TOKEN_PROVIDER.createRefreshToken(memberId);
 
             // then
-            assertThat(refreshToken).isNotNull();
-            assertThat(JWT_TOKEN_PROVIDER.getPayload(refreshToken)).isEqualTo(memberId);
-            assertThat(JWT_TOKEN_PROVIDER.isTokenValid(refreshToken)).isTrue();
+            assertAll(
+                    () -> assertThat(refreshToken).isNotNull(),
+                    () -> assertThat(JWT_TOKEN_PROVIDER.getPayload(refreshToken)).isEqualTo(memberId),
+                    () -> assertThat(JWT_TOKEN_PROVIDER.isTokenValid(refreshToken)).isTrue()
+            );
         }
     }
 
@@ -63,10 +68,12 @@ class JwtTokenProviderTest {
         String refreshToken = JWT_TOKEN_PROVIDER.createRefreshToken(memberId);
 
         // then
-        assertThat(accessToken).isNotNull();
-        assertThat(refreshToken).isNotNull();
-        assertThat(JWT_TOKEN_PROVIDER.isTokenValid(accessToken)).isFalse();
-        assertThat(JWT_TOKEN_PROVIDER.isTokenValid(refreshToken)).isFalse();
+        assertAll(
+                () -> assertThat(accessToken).isNotNull(),
+                () -> assertThat(refreshToken).isNotNull(),
+                () -> assertThat(JWT_TOKEN_PROVIDER.isTokenValid(accessToken)).isFalse(),
+                () -> assertThat(JWT_TOKEN_PROVIDER.isTokenValid(refreshToken)).isFalse()
+        );
     }
     
     @Test
@@ -81,9 +88,11 @@ class JwtTokenProviderTest {
         String invalidRefreshToken = JWT_TOKEN_PROVIDER.createRefreshToken(memberId) + "fake";
 
         // then
-        assertThat(invalidAccessToken).isNotNull();
-        assertThat(invalidRefreshToken).isNotNull();
-        assertThat(JWT_TOKEN_PROVIDER.isTokenValid(invalidAccessToken)).isFalse();
-        assertThat(JWT_TOKEN_PROVIDER.isTokenValid(invalidRefreshToken)).isFalse();
+        assertAll(
+                () -> assertThat(invalidAccessToken).isNotNull(),
+                () -> assertThat(invalidRefreshToken).isNotNull(),
+                () -> assertThat(JWT_TOKEN_PROVIDER.isTokenValid(invalidAccessToken)).isFalse(),
+                () -> assertThat(JWT_TOKEN_PROVIDER.isTokenValid(invalidRefreshToken)).isFalse()
+        );
     }
 }

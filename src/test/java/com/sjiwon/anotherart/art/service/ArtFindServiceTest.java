@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test;
 import static com.sjiwon.anotherart.common.utils.ArtUtils.HASHTAGS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 @DisplayName("Art [Service Layer] -> ArtFindService 테스트")
 @RequiredArgsConstructor
@@ -34,12 +35,14 @@ class ArtFindServiceTest extends ServiceIntegrateTest {
                 .hasMessage(ArtErrorCode.ART_NOT_FOUND.getMessage());
 
         // then
-        assertThat(findArt.getId()).isEqualTo(art.getId());
-        assertThat(findArt.getName()).isEqualTo(art.getName());
-        assertThat(findArt.getHashtagList()).containsAll(HASHTAGS);
-        assertThat(findArt.getOwner().getId()).isEqualTo(owner.getId());
-        assertThat(findArt.getOwner().getName()).isEqualTo(owner.getName());
-        assertThat(findArt.getOwner().getNickname()).isEqualTo(owner.getNickname());
+        assertAll(
+                () -> assertThat(findArt.getId()).isEqualTo(art.getId()),
+                () -> assertThat(findArt.getName()).isEqualTo(art.getName()),
+                () -> assertThat(findArt.getHashtagList()).containsAll(HASHTAGS),
+                () -> assertThat(findArt.getOwner().getId()).isEqualTo(owner.getId()),
+                () -> assertThat(findArt.getOwner().getName()).isEqualTo(owner.getName()),
+                () -> assertThat(findArt.getOwner().getNickname()).isEqualTo(owner.getNickname())
+        );
     }
 
     private Member createMember() {

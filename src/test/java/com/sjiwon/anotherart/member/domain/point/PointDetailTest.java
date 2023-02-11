@@ -6,6 +6,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 @DisplayName("PointDetail 도메인 테스트")
 class PointDetailTest {
@@ -19,8 +20,10 @@ class PointDetailTest {
         PointDetail pointDetail = PointDetail.createPointDetail(memberA);
 
         // then
-        assertThat(pointDetail.getPointType()).isEqualTo(PointType.JOIN);
-        assertThat(pointDetail.getAmount()).isEqualTo(0);
+        assertAll(
+                () -> assertThat(pointDetail.getPointType()).isEqualTo(PointType.JOIN),
+                () -> assertThat(pointDetail.getAmount()).isEqualTo(0)
+        );
     }
 
     @Test
@@ -34,10 +37,12 @@ class PointDetailTest {
         PointDetail pointDetail = PointDetail.insertPointDetail(memberA, PointType.CHARGE, chargeAmount);
 
         // then
-        assertThat(pointDetail.getPointType()).isEqualTo(PointType.CHARGE);
-        assertThat(pointDetail.getAmount()).isEqualTo(chargeAmount);
-        assertThat(pointDetail.isPointIncreaseType()).isTrue();
-        assertThat(memberA.getAvailablePoint()).isEqualTo(chargeAmount);
+        assertAll(
+                () -> assertThat(pointDetail.getPointType()).isEqualTo(PointType.CHARGE),
+                () -> assertThat(pointDetail.getAmount()).isEqualTo(chargeAmount),
+                () -> assertThat(pointDetail.isPointIncreaseType()).isTrue(),
+                () -> assertThat(memberA.getAvailablePoint()).isEqualTo(chargeAmount)
+        );
     }
 
     @Test
@@ -53,10 +58,12 @@ class PointDetailTest {
         PointDetail pointDetail = PointDetail.insertPointDetail(memberA, PointType.REFUND, refundAmount);
 
         // then
-        assertThat(pointDetail.getPointType()).isEqualTo(PointType.REFUND);
-        assertThat(pointDetail.getAmount()).isEqualTo(refundAmount);
-        assertThat(pointDetail.isPointIncreaseType()).isFalse();
-        assertThat(memberA.getAvailablePoint()).isEqualTo(increasePoint - refundAmount);
+        assertAll(
+                () -> assertThat(pointDetail.getPointType()).isEqualTo(PointType.REFUND),
+                () -> assertThat(pointDetail.getAmount()).isEqualTo(refundAmount),
+                () -> assertThat(pointDetail.isPointIncreaseType()).isFalse(),
+                () -> assertThat(memberA.getAvailablePoint()).isEqualTo(increasePoint - refundAmount)
+        );
     }
 
     @Test
@@ -72,10 +79,12 @@ class PointDetailTest {
         PointDetail pointDetail = PointDetail.insertPointDetail(memberA, PointType.PURCHASE, artPrice);
 
         // then
-        assertThat(pointDetail.getPointType()).isEqualTo(PointType.PURCHASE);
-        assertThat(pointDetail.getAmount()).isEqualTo(artPrice);
-        assertThat(pointDetail.isPointIncreaseType()).isFalse();
-        assertThat(memberA.getAvailablePoint()).isEqualTo(increasePoint - artPrice);
+        assertAll(
+                () -> assertThat(pointDetail.getPointType()).isEqualTo(PointType.PURCHASE),
+                () -> assertThat(pointDetail.getAmount()).isEqualTo(artPrice),
+                () -> assertThat(pointDetail.isPointIncreaseType()).isFalse(),
+                () -> assertThat(memberA.getAvailablePoint()).isEqualTo(increasePoint - artPrice)
+        );
     }
 
     @Test
@@ -91,9 +100,11 @@ class PointDetailTest {
         PointDetail pointDetail = PointDetail.insertPointDetail(memberA, PointType.SOLD, artPrice);
 
         // then
-        assertThat(pointDetail.getPointType()).isEqualTo(PointType.SOLD);
-        assertThat(pointDetail.getAmount()).isEqualTo(artPrice);
-        assertThat(pointDetail.isPointIncreaseType()).isTrue();
-        assertThat(memberA.getAvailablePoint()).isEqualTo(increasePoint + artPrice);
+        assertAll(
+                () -> assertThat(pointDetail.getPointType()).isEqualTo(PointType.SOLD),
+                () -> assertThat(pointDetail.getAmount()).isEqualTo(artPrice),
+                () -> assertThat(pointDetail.isPointIncreaseType()).isTrue(),
+                () -> assertThat(memberA.getAvailablePoint()).isEqualTo(increasePoint + artPrice)
+        );
     }
 }

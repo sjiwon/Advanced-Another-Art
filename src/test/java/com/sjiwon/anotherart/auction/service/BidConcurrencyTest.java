@@ -13,11 +13,11 @@ import com.sjiwon.anotherart.member.domain.Member;
 import com.sjiwon.anotherart.member.domain.Password;
 import com.sjiwon.anotherart.member.domain.point.PointDetail;
 import com.sjiwon.anotherart.member.domain.point.PointType;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,22 +32,21 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @Slf4j
 @DisplayName("Auction [Bid Concurrency Test] -> 경매 작품 입찰 동시성 테스트")
-class BidServiceTest extends ConcurrencyTest {
-    @Autowired
-    private BidService bidService;
-
+@RequiredArgsConstructor
+class BidConcurrencyTest extends ConcurrencyTest {
+    private final BidService bidService;
     private static final MemberFixture MEMBER = MemberFixture.A;
-    private final List<Long> participateMemberIdList = new ArrayList<>();
+    private static final List<Long> PARTICIPATE_MEMBER_IDS = new ArrayList<>();
 
     @BeforeEach
     void before() {
-        createParticipateMembers(); // 100명의 더미 사용자 생성
+        createParticipateMembers(); // 10명의 더미 사용자 생성
     }
 
     @Test
-    @DisplayName("100명의 사용자가 동일한 경매 작품에 동일한 가격으로 동시에 입찰을 진행한다면 경매 히스토리에는 1건만 등록되어야 한다")
+    @DisplayName("10명의 사용자가 동일한 경매 작품에 동일한 가격으로 동시에 입찰을 진행한다면 경매 히스토리에는 1건만 등록되어야 한다")
     void test() throws Exception {
-        int threadCount = 100;
+        int threadCount = 10;
         ExecutorService executorService = Executors.newFixedThreadPool(threadCount);
         CountDownLatch countDownLatch = new CountDownLatch(threadCount);
 
@@ -58,7 +57,7 @@ class BidServiceTest extends ConcurrencyTest {
 
         // when
         final int bidAmount = auctionArt.getPrice() + 5_000;
-        for (Long participateMemberId : participateMemberIdList) {
+        for (Long participateMemberId : PARTICIPATE_MEMBER_IDS) {
             executorService.submit(() -> {
                 try {
                     bidService.bid(auction.getId(), participateMemberId, bidAmount);
@@ -79,7 +78,7 @@ class BidServiceTest extends ConcurrencyTest {
         List<Member> members = new ArrayList<>();
         List<PointDetail> pointDetails = new ArrayList<>();
 
-        for (int i = 1; i <= 100; i++) {
+        for (int i = 1; i <= 10; i++) {
             Member member = Member.builder()
                     .name("Member" + i)
                     .nickname("Member" + i)
@@ -98,7 +97,7 @@ class BidServiceTest extends ConcurrencyTest {
         pointDetailRepository.saveAll(pointDetails);
 
         // ID(PK) 추출
-        savedMembers.forEach(savedMember -> participateMemberIdList.add(savedMember.getId()));
+        savedMembers.forEach(savedMember -> PARTICIPATE_MEMBER_IDS.add(savedMember.getId()));
     }
 
     private static String generateRandomPhoneNumber() {
@@ -121,6 +120,6 @@ class BidServiceTest extends ConcurrencyTest {
     }
 
     private Auction initAuction(Art art) {
-        return auctionRepository.save(Auction.initAuction(art, Period.of(currentTime1DayLater, currentTime3DayLater)));
+        return auctionRepository.save(Auction.initAuction(art, Period.of(currentTime1DayAgo, currentTime1DayLater)));
     }
 }

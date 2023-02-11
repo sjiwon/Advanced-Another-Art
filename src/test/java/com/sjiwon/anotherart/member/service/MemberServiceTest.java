@@ -4,7 +4,6 @@ import com.sjiwon.anotherart.common.ServiceIntegrateTest;
 import com.sjiwon.anotherart.common.utils.PasswordEncoderUtils;
 import com.sjiwon.anotherart.fixture.MemberFixture;
 import com.sjiwon.anotherart.global.exception.AnotherArtException;
-import com.sjiwon.anotherart.member.domain.Email;
 import com.sjiwon.anotherart.member.domain.Member;
 import com.sjiwon.anotherart.member.exception.MemberErrorCode;
 import lombok.RequiredArgsConstructor;
@@ -102,7 +101,7 @@ class MemberServiceTest extends ServiceIntegrateTest {
         Member member = createMemberA();
 
         // when
-        String loginId = memberService.findLoginId(member.getName(), member.getEmail());
+        String loginId = memberService.findLoginId(member.getName(), member.getEmailValue());
 
         // then
         assertThat(loginId).isEqualTo(member.getLoginId());
@@ -115,7 +114,7 @@ class MemberServiceTest extends ServiceIntegrateTest {
         Member member = createMemberA();
         final String name = member.getName();
         final String loginId = member.getLoginId();
-        final Email email = member.getEmail();
+        final String email = member.getEmailValue();
 
         // when - then
         assertDoesNotThrow(() -> memberService.authMemberForResetPassword(name, loginId, email));
@@ -125,7 +124,7 @@ class MemberServiceTest extends ServiceIntegrateTest {
         assertThatThrownBy(() -> memberService.authMemberForResetPassword(name, loginId + "diff", email))
                 .isInstanceOf(AnotherArtException.class)
                 .hasMessage(MemberErrorCode.MEMBER_NOT_FOUND.getMessage());
-        assertThatThrownBy(() -> memberService.authMemberForResetPassword(name, loginId, Email.from("diff" + email.getValue())))
+        assertThatThrownBy(() -> memberService.authMemberForResetPassword(name, loginId, "diff" + email))
                 .isInstanceOf(AnotherArtException.class)
                 .hasMessage(MemberErrorCode.MEMBER_NOT_FOUND.getMessage());
     }

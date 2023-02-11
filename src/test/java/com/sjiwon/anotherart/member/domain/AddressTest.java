@@ -11,6 +11,7 @@ import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 @DisplayName("Member 도메인 {Address VO} 테스트")
 class AddressTest {
@@ -66,9 +67,11 @@ class AddressTest {
         Address updateAddress = address.update(postcode, defaultAddress, detailAddress);
 
         // then
-        assertThat(updateAddress.getPostcode()).isEqualTo(postcode);
-        assertThat(updateAddress.getDefaultAddress()).isEqualTo(defaultAddress);
-        assertThat(updateAddress.getDetailAddress()).isEqualTo(detailAddress);
+        assertAll(
+                () -> assertThat(updateAddress.getPostcode()).isEqualTo(postcode),
+                () -> assertThat(updateAddress.getDefaultAddress()).isEqualTo(defaultAddress),
+                () -> assertThat(updateAddress.getDetailAddress()).isEqualTo(detailAddress)
+        );
     }
 
     private static Stream<Arguments> successAddressUpdate() {

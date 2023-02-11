@@ -69,13 +69,13 @@ public class Auction {
     }
 
     private void validateBidTime() {
-        if (isAuctionFinished()) {
-            throw AnotherArtException.type(AuctionErrorCode.AUCTION_ALREADY_FINISHED);
+        if (!isAuctionInProgress()) {
+            throw AnotherArtException.type(AuctionErrorCode.AUCTION_NOT_START_OR_ALREADY_FINISHED);
         }
     }
 
-    public boolean isAuctionFinished() {
-        return this.period.isAuctionFinished(LocalDateTime.now());
+    public boolean isAuctionInProgress() {
+        return this.period.isAuctionInProgress(LocalDateTime.now());
     }
 
     private void verifyArtOwnerBid(Long newBidMemberId) {

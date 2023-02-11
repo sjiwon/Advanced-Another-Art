@@ -13,6 +13,7 @@ import java.util.List;
 
 import static com.sjiwon.anotherart.common.utils.ArtUtils.HASHTAGS;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 @DisplayName("Art [Repository Layer] -> ArtRepository 테스트")
 class ArtRepositoryTest extends RepositoryTest {
@@ -30,11 +31,13 @@ class ArtRepositoryTest extends RepositoryTest {
         Member memberB = createMemberB();
 
         // when
-        Art art = createArt(owner);
+        Art art = createArtA(owner);
 
         // then
-        assertThat(art.isArtOwner(owner.getId())).isTrue();
-        assertThat(art.isArtOwner(memberB.getId())).isFalse();
+        assertAll(
+                () -> assertThat(art.isArtOwner(owner.getId())).isTrue(),
+                () -> assertThat(art.isArtOwner(memberB.getId())).isFalse()
+        );
     }
     
     @Test
@@ -42,27 +45,32 @@ class ArtRepositoryTest extends RepositoryTest {
     void test2() {
         // given
         Member owner = createMemberA();
-        Art art = createArt(owner);
-        
+        Art artA = createArtA(owner);
+        Art artB = createArtB(owner);
+
         // when
         List<Art> ownerArtList = artRepository.findByOwnerId(owner.getId());
 
         // then
-        assertThat(ownerArtList.size()).isEqualTo(1);
+        assertThat(ownerArtList.size()).isEqualTo(2);
         
-        // 작품 정보 확인
-        Art findArt = ownerArtList.get(0);
-        assertThat(findArt.getId()).isEqualTo(art.getId());
-        assertThat(findArt.getName()).isEqualTo(art.getName());
-        assertThat(findArt.getPrice()).isEqualTo(art.getPrice());
-        assertThat(findArt.getArtType()).isEqualTo(art.getArtType());
-        assertThat(findArt.getArtStatus()).isEqualTo(ArtStatus.FOR_SALE);
+        Art findArtA = ownerArtList.get(0);
+        assertAll(
+                () -> assertThat(findArtA.getId()).isEqualTo(artA.getId()),
+                () -> assertThat(findArtA.getName()).isEqualTo(artA.getName()),
+                () -> assertThat(findArtA.getPrice()).isEqualTo(artA.getPrice()),
+                () -> assertThat(findArtA.getArtType()).isEqualTo(artA.getArtType()),
+                () -> assertThat(findArtA.getArtStatus()).isEqualTo(ArtStatus.FOR_SALE)
+        );
 
-        // 작품 소유자 정보 확인
-        Member findOwner = findArt.getOwner();
-        assertThat(findOwner.getId()).isEqualTo(owner.getId());
-        assertThat(findOwner.getName()).isEqualTo(owner.getName());
-        assertThat(findOwner.getNickname()).isEqualTo(owner.getNickname());
+        Art findArtB = ownerArtList.get(1);
+        assertAll(
+                () -> assertThat(findArtB.getId()).isEqualTo(artB.getId()),
+                () -> assertThat(findArtB.getName()).isEqualTo(artB.getName()),
+                () -> assertThat(findArtB.getPrice()).isEqualTo(artB.getPrice()),
+                () -> assertThat(findArtB.getArtType()).isEqualTo(artB.getArtType()),
+                () -> assertThat(findArtB.getArtStatus()).isEqualTo(ArtStatus.FOR_SALE)
+        );
     }
 
     @Test
@@ -70,15 +78,17 @@ class ArtRepositoryTest extends RepositoryTest {
     void test3() {
         // given
         Member owner = createMemberA();
-        Art art = createArt(owner);
+        Art art = createArtA(owner);
 
         // when
         boolean actual1 = artRepository.existsByName(art.getName());
         boolean actual2 = artRepository.existsByName(art.getName() + "fake");
 
         // then
-        assertThat(actual1).isTrue();
-        assertThat(actual2).isFalse();
+        assertAll(
+                () -> assertThat(actual1).isTrue(),
+                () -> assertThat(actual2).isFalse()
+        );
     }
 
     @Test
@@ -86,7 +96,7 @@ class ArtRepositoryTest extends RepositoryTest {
     void test4() {
         // given
         Member owner = createMemberA();
-        Art art = createArt(owner);
+        Art art = createArtA(owner);
 
         // when
         artRepository.deleteHashtagsByArtId(art.getId());
@@ -104,7 +114,11 @@ class ArtRepositoryTest extends RepositoryTest {
         return memberRepository.save(MemberFixture.B.toMember());
     }
 
-    private Art createArt(Member member) {
+    private Art createArtA(Member member) {
         return artRepository.save(ArtFixture.A.toArt(member, HASHTAGS));
+    }
+
+    private Art createArtB(Member member) {
+        return artRepository.save(ArtFixture.B.toArt(member, HASHTAGS));
     }
 }

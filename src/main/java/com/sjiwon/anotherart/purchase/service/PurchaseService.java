@@ -27,44 +27,51 @@ public class PurchaseService {
     private final PurchaseRepository purchaseRepository;
 
     @Transactional
-    public void purchaseArt(Long artId, Long memberId) {
+    public void purchaseArt(Long artId, Long buyerId) {
         Art art = artFindService.findById(artId);
+        validateArtOwnerPurchase(art, buyerId);
         try {
             if (art.isAuctionType()) {
-                auctionArtPurchaseProcess(art, memberId);
+                auctionArtPurchaseProcess(art, buyerId);
             } else {
-                generalArtPurchaseProcess(art, memberId);
+                generalArtPurchaseProcess(art, buyerId);
             }
         } catch (DataIntegrityViolationException e) {
             throw AnotherArtException.type(PurchaseErrorCode.ART_ALREADY_SOLD_OUT);
         }
     }
 
-    private void auctionArtPurchaseProcess(Art art, Long memberId) {
-        Auction auction = auctionFindService.findByArtId(art.getId());
-        validateAuctionIsProceeding(auction);
-        validateHighestBidder(auction, memberId);
+    private void validateArtOwnerPurchase(Art art, Long buyerId) {
+        if (art.isArtOwner(buyerId)) {
+            throw AnotherArtException.type(PurchaseErrorCode.INVALID_OWNER_PURCHASE);
+        }
+    }
 
-        Member buyer = memberFindService.findById(memberId);
+    private void auctionArtPurchaseProcess(Art art, Long buyerId) {
+        Auction auction = auctionFindService.findByArtId(art.getId());
+        validateAuctionInProgress(auction);
+        validateHighestBidder(auction, buyerId);
+
+        Member buyer = memberFindService.findById(buyerId);
         purchaseRepository.save(Purchase.purchaseArt(buyer, art, auction.getBidAmount()));
         proceedingPointTransaction(auction, art, buyer);
     }
 
-    private void validateAuctionIsProceeding(Auction auction) {
-        if (!auction.isAuctionFinished()) {
+    private void validateAuctionInProgress(Auction auction) {
+        if (auction.isAuctionInProgress()) {
             throw AnotherArtException.type(PurchaseErrorCode.AUCTION_NOT_FINISHED);
         }
     }
 
-    private void validateHighestBidder(Auction auction, Long memberId) {
+    private void validateHighestBidder(Auction auction, Long buyerId) {
         Member bidder = auction.getBidder();
-        if (!bidder.isSameMember(memberId)) {
+        if (!bidder.isSameMember(buyerId)) {
             throw AnotherArtException.type(PurchaseErrorCode.INVALID_HIGHEST_BIDDER);
         }
     }
 
-    private void generalArtPurchaseProcess(Art art, Long memberId) {
-        Member buyer = memberFindService.findById(memberId);
+    private void generalArtPurchaseProcess(Art art, Long buyerId) {
+        Member buyer = memberFindService.findById(buyerId);
         purchaseRepository.save(Purchase.purchaseArt(buyer, art, art.getPrice()));
         proceedingPointTransaction(null, art, buyer);
     }

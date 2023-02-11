@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 @DisplayName("Token [Service Layer] -> TokenReissueService 테스트")
 @RequiredArgsConstructor
@@ -46,9 +47,11 @@ class TokenReissueServiceTest extends ServiceIntegrateTest {
         TokenResponse tokenResponse = tokenReissueService.reissueTokens(member.getId(), refreshToken);
 
         // then
-        assertThat(tokenResponse).isNotNull();
-        assertThat(tokenResponse.getAccessToken()).isNotNull();
-        assertThat(tokenResponse.getRefreshToken()).isNotNull();
+        assertAll(
+                () -> assertThat(tokenResponse).isNotNull(),
+                () -> assertThat(tokenResponse.getAccessToken()).isNotNull(),
+                () -> assertThat(tokenResponse.getRefreshToken()).isNotNull()
+        );
     }
 
     private Member createMember() {
