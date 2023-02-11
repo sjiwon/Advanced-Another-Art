@@ -2,21 +2,24 @@ package com.sjiwon.anotherart.favorite.controller;
 
 import com.sjiwon.anotherart.art.domain.Art;
 import com.sjiwon.anotherart.common.ControllerTest;
-import com.sjiwon.anotherart.favorite.domain.Favorite;
 import com.sjiwon.anotherart.favorite.exception.FavoriteErrorCode;
 import com.sjiwon.anotherart.fixture.ArtFixture;
 import com.sjiwon.anotherart.fixture.MemberFixture;
+import com.sjiwon.anotherart.global.exception.AnotherArtException;
 import com.sjiwon.anotherart.global.security.exception.AuthErrorCode;
-import com.sjiwon.anotherart.member.domain.Member;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
+import java.util.List;
+
 import static com.sjiwon.anotherart.common.utils.ArtUtils.HASHTAGS;
 import static com.sjiwon.anotherart.common.utils.TokenUtils.BEARER_TOKEN;
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
@@ -40,12 +43,13 @@ class FavoriteApiControllerTest extends ControllerTest {
         @DisplayName("Authorization 헤더에 Access Token이 없음에 따라 예외가 발생한다")
         void test1() throws Exception {
             // given
-            Member owner = createMemberA();
-            Art art = createArt(owner);
+            Long artId = 1L;
+            Art art = createMockArt(HASHTAGS);
+            given(artFindService.findById(artId)).willReturn(art);
 
             // when
             MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
-                    .post(BASE_URL, art.getId());
+                    .post(BASE_URL, artId);
 
             // then
             final AuthErrorCode expectedError = AuthErrorCode.INVALID_TOKEN;
@@ -78,13 +82,20 @@ class FavoriteApiControllerTest extends ControllerTest {
         @DisplayName("작품 소유자는 본인의 작품을 좋아요 등록할 수 없고 그에 따라서 예외가 발생한다")
         void test2() throws Exception {
             // given
-            Member owner = createMemberA();
-            Art art = createArt(owner);
+            Long ownerId = 1L;
+            final String accessToken = jwtTokenProvider.createAccessToken(ownerId);
+
+            Long artId = 1L;
+            Art art = createMockArt(HASHTAGS);
+            given(artFindService.findById(artId)).willReturn(art);
+
+            doThrow(AnotherArtException.type(FavoriteErrorCode.INVALID_LIKE_REQUEST_BY_ART_OWNER))
+                    .when(favoriteService)
+                    .like(artId, ownerId);
 
             // when
-            final String accessToken = jwtTokenProvider.createAccessToken(owner.getId());
             MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
-                    .post(BASE_URL, art.getId())
+                    .post(BASE_URL, artId)
                     .header(AUTHORIZATION, BEARER_TOKEN + accessToken);
 
             // then
@@ -121,16 +132,20 @@ class FavoriteApiControllerTest extends ControllerTest {
         @DisplayName("이미 좋아요 등록을 한 후 또 다시 좋아요 등록 요청을 하게 되면 예외가 발생한다")
         void test3() throws Exception {
             // given
-            Member owner = createMemberA();
-            Art art = createArt(owner);
+            Long artId = 1L;
+            Art art = createMockArt(HASHTAGS);
+            given(artFindService.findById(artId)).willReturn(art);
 
-            Member member = createMemberB();
-            advanceLikeMarking(art, member);
+            Long memberId = 2L;
+            final String accessToken = jwtTokenProvider.createAccessToken(memberId);
+
+            doThrow(AnotherArtException.type(FavoriteErrorCode.ALREADY_LIKE_MARKING))
+                    .when(favoriteService)
+                    .like(artId, memberId);
 
             // when
-            final String accessToken = jwtTokenProvider.createAccessToken(member.getId());
             MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
-                    .post(BASE_URL, art.getId())
+                    .post(BASE_URL, artId)
                     .header(AUTHORIZATION, BEARER_TOKEN + accessToken);
 
             // then
@@ -162,20 +177,25 @@ class FavoriteApiControllerTest extends ControllerTest {
                             )
                     );
         }
-        
+
         @Test
         @DisplayName("작품에 대한 좋아요 등록을 성공한다")
         void test4() throws Exception {
             // given
-            Member owner = createMemberA();
-            Art art = createArt(owner);
+            Long artId = 1L;
+            Art art = createMockArt(HASHTAGS);
+            given(artFindService.findById(artId)).willReturn(art);
 
-            Member member = createMemberB();
+            Long memberId = 2L;
+            final String accessToken = jwtTokenProvider.createAccessToken(memberId);
+
+            doNothing()
+                    .when(favoriteService)
+                    .like(artId, memberId);
 
             // when
-            final String accessToken = jwtTokenProvider.createAccessToken(member.getId());
             MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
-                    .post(BASE_URL, art.getId())
+                    .post(BASE_URL, artId)
                     .header(AUTHORIZATION, BEARER_TOKEN + accessToken);
 
             // then
@@ -195,8 +215,6 @@ class FavoriteApiControllerTest extends ControllerTest {
                                     )
                             )
                     );
-
-            assertThat(favoriteRepository.existsByArtIdAndMemberId(art.getId(), member.getId())).isTrue();
         }
     }
 
@@ -209,12 +227,13 @@ class FavoriteApiControllerTest extends ControllerTest {
         @DisplayName("Authorization 헤더에 Access Token이 없음에 따라 예외가 발생한다")
         void test1() throws Exception {
             // given
-            Member owner = createMemberA();
-            Art art = createArt(owner);
+            Long artId = 1L;
+            Art art = createMockArt(HASHTAGS);
+            given(artFindService.findById(artId)).willReturn(art);
 
             // when
             MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
-                    .delete(BASE_URL, art.getId());
+                    .delete(BASE_URL, artId);
 
             // then
             final AuthErrorCode expectedError = AuthErrorCode.INVALID_TOKEN;
@@ -247,13 +266,20 @@ class FavoriteApiControllerTest extends ControllerTest {
         @DisplayName("작품 소유자는 본인의 작품에 대해서 좋아요 취소 요청을 할 수 없고 그에 따라서 예외가 발생한다")
         void test2() throws Exception {
             // given
-            Member owner = createMemberA();
-            Art art = createArt(owner);
+            Long ownerId = 1L;
+            final String accessToken = jwtTokenProvider.createAccessToken(ownerId);
+
+            Long artId = 1L;
+            Art art = createMockArt(HASHTAGS);
+            given(artFindService.findById(artId)).willReturn(art);
+
+            doThrow(AnotherArtException.type(FavoriteErrorCode.INVALID_LIKE_REQUEST_BY_ART_OWNER))
+                    .when(favoriteService)
+                    .likeCancel(artId, ownerId);
 
             // when
-            final String accessToken = jwtTokenProvider.createAccessToken(owner.getId());
             MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
-                    .delete(BASE_URL, art.getId())
+                    .delete(BASE_URL, artId)
                     .header(AUTHORIZATION, BEARER_TOKEN + accessToken);
 
             // then
@@ -290,15 +316,20 @@ class FavoriteApiControllerTest extends ControllerTest {
         @DisplayName("좋아요 등록을 한 적이 없거나 이미 취소한 작품에 대해서 좋아요 취소 요청을 하게 되면 예외가 발생한다")
         void test3() throws Exception {
             // given
-            Member owner = createMemberA();
-            Art art = createArt(owner);
+            Long artId = 1L;
+            Art art = createMockArt(HASHTAGS);
+            given(artFindService.findById(artId)).willReturn(art);
 
-            Member member = createMemberB();
+            Long memberId = 2L;
+            final String accessToken = jwtTokenProvider.createAccessToken(memberId);
+
+            doThrow(AnotherArtException.type(FavoriteErrorCode.NEVER_OR_ALREADY_CANCEL))
+                    .when(favoriteService)
+                    .likeCancel(artId, memberId);
 
             // when
-            final String accessToken = jwtTokenProvider.createAccessToken(member.getId());
             MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
-                    .delete(BASE_URL, art.getId())
+                    .delete(BASE_URL, artId)
                     .header(AUTHORIZATION, BEARER_TOKEN + accessToken);
 
             // then
@@ -335,16 +366,20 @@ class FavoriteApiControllerTest extends ControllerTest {
         @DisplayName("작품에 대한 좋아요 취소를 성공한다")
         void test4() throws Exception {
             // given
-            Member owner = createMemberA();
-            Art art = createArt(owner);
+            Long artId = 1L;
+            Art art = createMockArt(HASHTAGS);
+            given(artFindService.findById(artId)).willReturn(art);
 
-            Member member = createMemberB();
-            advanceLikeMarking(art, member);
+            Long memberId = 2L;
+            final String accessToken = jwtTokenProvider.createAccessToken(memberId);
+
+            doNothing()
+                    .when(favoriteService)
+                    .likeCancel(artId, memberId);
 
             // when
-            final String accessToken = jwtTokenProvider.createAccessToken(member.getId());
             MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
-                    .delete(BASE_URL, art.getId())
+                    .delete(BASE_URL, artId)
                     .header(AUTHORIZATION, BEARER_TOKEN + accessToken);
 
             // then
@@ -364,24 +399,10 @@ class FavoriteApiControllerTest extends ControllerTest {
                                     )
                             )
                     );
-
-            assertThat(favoriteRepository.existsByArtIdAndMemberId(art.getId(), member.getId())).isFalse();
         }
     }
 
-    private void advanceLikeMarking(Art art, Member member) {
-        favoriteRepository.save(Favorite.favoriteMarking(art.getId(), member.getId()));
-    }
-
-    private Member createMemberA() {
-        return memberRepository.save(MemberFixture.A.toMember());
-    }
-
-    private Member createMemberB() {
-        return memberRepository.save(MemberFixture.B.toMember());
-    }
-
-    private Art createArt(Member owner) {
-        return artRepository.save(ArtFixture.B.toArt(owner, HASHTAGS));
+    private Art createMockArt(List<String> hashtags) {
+        return ArtFixture.A.toArt(MemberFixture.A.toMember(), hashtags);
     }
 }

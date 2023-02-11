@@ -3,12 +3,12 @@ package com.sjiwon.anotherart.member.controller;
 import com.sjiwon.anotherart.common.ControllerTest;
 import com.sjiwon.anotherart.common.utils.ObjectMapperUtils;
 import com.sjiwon.anotherart.fixture.MemberFixture;
+import com.sjiwon.anotherart.global.exception.AnotherArtException;
 import com.sjiwon.anotherart.global.exception.GlobalErrorCode;
 import com.sjiwon.anotherart.member.controller.dto.request.DuplicateCheckRequest;
 import com.sjiwon.anotherart.member.controller.dto.request.SignUpRequest;
 import com.sjiwon.anotherart.member.controller.utils.DuplicateCheckRequestUtils;
 import com.sjiwon.anotherart.member.controller.utils.SignUpRequestUtils;
-import com.sjiwon.anotherart.member.domain.Email;
 import com.sjiwon.anotherart.member.domain.Member;
 import com.sjiwon.anotherart.member.exception.MemberErrorCode;
 import org.junit.jupiter.api.DisplayName;
@@ -17,7 +17,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
@@ -27,6 +30,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @DisplayName("Member [Controller Layer] -> MemberApiController 테스트")
 class MemberApiControllerTest extends ControllerTest {
+    private static final Member member = MemberFixture.A.toMember();
+
     @Nested
     @DisplayName("회원가입 테스트 [POST /api/member]")
     class signUp {
@@ -83,8 +88,8 @@ class MemberApiControllerTest extends ControllerTest {
         @DisplayName("중복되는 값(닉네임)에 의해서 회원가입에 실패한다")
         void test2() throws Exception {
             // given
-            Member member = createMember();
-            SignUpRequest signUpRequest = SignUpRequestUtils.createFailureSignUpRequest(member);
+            SignUpRequest signUpRequest = SignUpRequestUtils.createFailureSignUpRequest();
+            given(memberService.signUp(any())).willThrow(AnotherArtException.type(MemberErrorCode.DUPLICATE_NICKNAME));
 
             // when
             MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
@@ -132,7 +137,9 @@ class MemberApiControllerTest extends ControllerTest {
         @DisplayName("회원가입에 성공한다")
         void test3() throws Exception {
             // given
+            Long memberId = 1L;
             SignUpRequest signUpRequest = SignUpRequestUtils.createSuccessSignUpRequest();
+            given(memberService.signUp(member)).willReturn(memberId);
 
             // when
             MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
@@ -163,10 +170,6 @@ class MemberApiControllerTest extends ControllerTest {
                                     )
                             )
                     );
-
-            assertThat(memberRepository.existsByLoginId(signUpRequest.getLoginId())).isTrue();
-            assertThat(memberRepository.existsByNickname(signUpRequest.getNickname())).isTrue();
-            assertThat(memberRepository.existsByEmail(Email.from(signUpRequest.getEmail()))).isTrue();
         }
     }
 
@@ -179,13 +182,19 @@ class MemberApiControllerTest extends ControllerTest {
         @DisplayName("닉네임에 대한 중복 체크")
         void test1() throws Exception {
             // given
-            Member member = createMember();
             final String resource = "nickname";
             final String successValue = "success" + member.getNickname();
             final String failureValue = member.getNickname();
 
             DuplicateCheckRequest successRequest = DuplicateCheckRequestUtils.createRequest(resource, successValue);
+            doNothing()
+                    .when(memberService)
+                    .duplicateCheck(resource, successValue);
+
             DuplicateCheckRequest failureRequest = DuplicateCheckRequestUtils.createRequest(resource, failureValue);
+            doThrow(AnotherArtException.type(MemberErrorCode.DUPLICATE_NICKNAME))
+                    .when(memberService)
+                    .duplicateCheck(resource, failureValue);
 
             // when
             MockHttpServletRequestBuilder successRequestBuilder = MockMvcRequestBuilders
@@ -240,18 +249,24 @@ class MemberApiControllerTest extends ControllerTest {
                             )
                     );
         }
-        
+
         @Test
         @DisplayName("로그인 아이디에 대한 중복 체크")
         void test2() throws Exception {
             // given
-            Member member = createMember();
             final String resource = "loginId";
             final String successValue = "success" + member.getLoginId();
             final String failureValue = member.getLoginId();
 
             DuplicateCheckRequest successRequest = DuplicateCheckRequestUtils.createRequest(resource, successValue);
+            doNothing()
+                    .when(memberService)
+                    .duplicateCheck(resource, successValue);
+
             DuplicateCheckRequest failureRequest = DuplicateCheckRequestUtils.createRequest(resource, failureValue);
+            doThrow(AnotherArtException.type(MemberErrorCode.DUPLICATE_LOGIN_ID))
+                    .when(memberService)
+                    .duplicateCheck(resource, failureValue);
 
             // when
             MockHttpServletRequestBuilder successRequestBuilder = MockMvcRequestBuilders
@@ -306,18 +321,24 @@ class MemberApiControllerTest extends ControllerTest {
                             )
                     );
         }
-        
+
         @Test
         @DisplayName("전화번호에 대한 중복 체크")
         void test3() throws Exception {
             // given
-            Member member = createMember();
             final String resource = "phone";
             final String successValue = member.getPhone().replaceAll("0", "9");
             final String failureValue = member.getPhone();
 
             DuplicateCheckRequest successRequest = DuplicateCheckRequestUtils.createRequest(resource, successValue);
+            doNothing()
+                    .when(memberService)
+                    .duplicateCheck(resource, successValue);
+
             DuplicateCheckRequest failureRequest = DuplicateCheckRequestUtils.createRequest(resource, failureValue);
+            doThrow(AnotherArtException.type(MemberErrorCode.DUPLICATE_PHONE))
+                    .when(memberService)
+                    .duplicateCheck(resource, failureValue);
 
             // when
             MockHttpServletRequestBuilder successRequestBuilder = MockMvcRequestBuilders
@@ -372,18 +393,24 @@ class MemberApiControllerTest extends ControllerTest {
                             )
                     );
         }
-        
+
         @Test
         @DisplayName("이메일에 대한 중복 체크")
         void test4() throws Exception {
             // given
-            Member member = createMember();
             final String resource = "email";
             final String successValue = "success" + member.getEmailValue();
             final String failureValue = member.getEmailValue();
 
             DuplicateCheckRequest successRequest = DuplicateCheckRequestUtils.createRequest(resource, successValue);
+            doNothing()
+                    .when(memberService)
+                    .duplicateCheck(resource, successValue);
+
             DuplicateCheckRequest failureRequest = DuplicateCheckRequestUtils.createRequest(resource, failureValue);
+            doThrow(AnotherArtException.type(MemberErrorCode.DUPLICATE_EMAIL))
+                    .when(memberService)
+                    .duplicateCheck(resource, failureValue);
 
             // when
             MockHttpServletRequestBuilder successRequestBuilder = MockMvcRequestBuilders
@@ -438,7 +465,7 @@ class MemberApiControllerTest extends ControllerTest {
                             )
                     );
         }
-        
+
         @Test
         @DisplayName("중복 체크 대상이 아닌 필드에 대해서 중복 체크 요청을 보내면 예외가 발생한다")
         void test5() throws Exception {
@@ -447,6 +474,9 @@ class MemberApiControllerTest extends ControllerTest {
             final String value = "value";
 
             DuplicateCheckRequest request = DuplicateCheckRequestUtils.createRequest(resource, value);
+            doThrow(AnotherArtException.type(GlobalErrorCode.VALIDATION_ERROR))
+                    .when(memberService)
+                    .duplicateCheck(resource, value);
 
             // when
             MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
@@ -481,9 +511,5 @@ class MemberApiControllerTest extends ControllerTest {
                             )
                     );
         }
-    }
-
-    private Member createMember() {
-        return memberRepository.save(MemberFixture.A.toMember());
     }
 }

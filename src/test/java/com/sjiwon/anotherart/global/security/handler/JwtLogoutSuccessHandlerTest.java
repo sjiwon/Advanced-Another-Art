@@ -1,16 +1,13 @@
 package com.sjiwon.anotherart.global.security.handler;
 
 import com.sjiwon.anotherart.common.ControllerTest;
-import com.sjiwon.anotherart.fixture.MemberFixture;
 import com.sjiwon.anotherart.global.security.exception.AuthErrorCode;
-import com.sjiwon.anotherart.member.domain.Member;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import static com.sjiwon.anotherart.common.utils.TokenUtils.BEARER_TOKEN;
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
@@ -28,13 +25,10 @@ class JwtLogoutSuccessHandlerTest extends ControllerTest {
     @Test
     @DisplayName("Authorization 헤더에 Refresh Token이 없으면 로그아웃에 실패한다")
     void test1() throws Exception {
-        // given
-        Member member = createMember();
-        
-        // when
+        // given - when
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .post(BASE_URL);
-        
+
         // then
         final AuthErrorCode expectedError = AuthErrorCode.INVALID_TOKEN;
         mockMvc.perform(requestBuilder)
@@ -58,17 +52,15 @@ class JwtLogoutSuccessHandlerTest extends ControllerTest {
                         )
                 );
     }
-    
+
     @Test
     @DisplayName("Authorization Header에 Refresh Token이 존재하면 로그아웃에 성공하고 DB에 존재하는 Refresh Token이 삭제된다")
     void test2() throws Exception {
         // given
-        Member member = createMember();
+        Long memberId = 1L;
 
         // when
-        final String refreshToken = jwtTokenProvider.createRefreshToken(member.getId());
-        tokenPersistenceService.saveRefreshToken(member.getId(), refreshToken);
-        assertThat(tokenPersistenceService.isRefreshTokenExists(member.getId(), refreshToken)).isTrue();
+        final String refreshToken = jwtTokenProvider.createRefreshToken(memberId);
 
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .post(BASE_URL)
@@ -88,11 +80,5 @@ class JwtLogoutSuccessHandlerTest extends ControllerTest {
                                 )
                         )
                 );
-
-        assertThat(tokenPersistenceService.isRefreshTokenExists(member.getId(), refreshToken)).isFalse();
-    }
-
-    private Member createMember() {
-        return memberRepository.save(MemberFixture.A.toMember());
     }
 }

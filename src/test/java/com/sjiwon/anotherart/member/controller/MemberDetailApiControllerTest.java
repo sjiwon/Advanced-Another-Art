@@ -2,8 +2,8 @@ package com.sjiwon.anotherart.member.controller;
 
 import com.sjiwon.anotherart.common.ControllerTest;
 import com.sjiwon.anotherart.common.utils.ObjectMapperUtils;
-import com.sjiwon.anotherart.common.utils.PasswordEncoderUtils;
 import com.sjiwon.anotherart.fixture.MemberFixture;
+import com.sjiwon.anotherart.global.exception.AnotherArtException;
 import com.sjiwon.anotherart.global.security.exception.AuthErrorCode;
 import com.sjiwon.anotherart.member.controller.dto.request.AuthForResetPasswordRequest;
 import com.sjiwon.anotherart.member.controller.dto.request.ChangeNicknameRequest;
@@ -18,12 +18,13 @@ import com.sjiwon.anotherart.member.exception.MemberErrorCode;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import static com.sjiwon.anotherart.common.utils.TokenUtils.BEARER_TOKEN;
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
@@ -36,6 +37,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @DisplayName("Member [Controller Layer] -> MemberDetailApiController 테스트")
 class MemberDetailApiControllerTest extends ControllerTest {
+    private static final Member member = MemberFixture.A.toMember();
+    private static final String CHANGE_PREFIX = "change_";
+    private static final String DUPLICATE_PREFIX = "duplicate_";
+
     @Nested
     @DisplayName("사용자 닉네임 수정 테스트 [PATCH /api/member/nickname]")
     class changeNickname {
@@ -45,8 +50,7 @@ class MemberDetailApiControllerTest extends ControllerTest {
         @DisplayName("Authorization 헤더에 Access Token이 없음에 따라 예외가 발생한다")
         void test1() throws Exception {
             // given
-            Member member = createMemberA();
-            final String changeNickname = member.getNickname();
+            final String changeNickname = CHANGE_PREFIX + member.getNickname();
             ChangeNicknameRequest request = ChangeNicknameRequestUtils.createRequest(changeNickname);
 
             // when
@@ -81,17 +85,22 @@ class MemberDetailApiControllerTest extends ControllerTest {
                             )
                     );
         }
-        
+
         @Test
         @DisplayName("이전에 사용하던 닉네임에 대해서 수정 요청을 보내면 예외가 발생한다")
         void test2() throws Exception {
             // given
-            Member member = createMemberA();
+            Long memberId = 1L;
+            final String accessToken = jwtTokenProvider.createAccessToken(memberId);
+
             final String changeNickname = member.getNickname();
+            doThrow(AnotherArtException.type(MemberErrorCode.NICKNAME_SAME_AS_BEFORE))
+                    .when(memberService)
+                    .changeNickname(memberId, changeNickname);
+
             ChangeNicknameRequest request = ChangeNicknameRequestUtils.createRequest(changeNickname);
 
             // when
-            final String accessToken = jwtTokenProvider.createAccessToken(member.getId());
             MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                     .patch(BASE_URL)
                     .contentType(APPLICATION_JSON)
@@ -132,14 +141,17 @@ class MemberDetailApiControllerTest extends ControllerTest {
         @DisplayName("타인이 사용하는 닉네임으로 수정 요청을 보내면 예외가 발생한다")
         void test3() throws Exception {
             // given
-            Member memberA = createMemberA();
+            Long memberId = 1L;
+            final String accessToken = jwtTokenProvider.createAccessToken(memberId);
 
-            Member memberB = createMemberB();
-            final String changeNickname = memberB.getNickname();
+            final String changeNickname = DUPLICATE_PREFIX + member.getNickname();
+            doThrow(AnotherArtException.type(MemberErrorCode.DUPLICATE_NICKNAME))
+                    .when(memberService)
+                    .changeNickname(memberId, changeNickname);
+
             ChangeNicknameRequest request = ChangeNicknameRequestUtils.createRequest(changeNickname);
 
             // when
-            final String accessToken = jwtTokenProvider.createAccessToken(memberA.getId());
             MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                     .patch(BASE_URL)
                     .contentType(APPLICATION_JSON)
@@ -180,12 +192,17 @@ class MemberDetailApiControllerTest extends ControllerTest {
         @DisplayName("닉네임 수정에 성공한다")
         void test4() throws Exception {
             // given
-            Member member = createMemberA();
-            final String changeNickname = member.getNickname() + "diff";
+            Long memberId = 1L;
+            final String accessToken = jwtTokenProvider.createAccessToken(memberId);
+
+            final String changeNickname = CHANGE_PREFIX + member.getNickname();
+            doNothing()
+                    .when(memberService)
+                    .changeNickname(memberId, changeNickname);
+
             ChangeNicknameRequest request = ChangeNicknameRequestUtils.createRequest(changeNickname);
 
             // when
-            final String accessToken = jwtTokenProvider.createAccessToken(member.getId());
             MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                     .patch(BASE_URL)
                     .contentType(APPLICATION_JSON)
@@ -209,8 +226,6 @@ class MemberDetailApiControllerTest extends ControllerTest {
                                     )
                             )
                     );
-
-            assertThat(member.getNickname()).isEqualTo(changeNickname);
         }
     }
 
@@ -223,8 +238,11 @@ class MemberDetailApiControllerTest extends ControllerTest {
         @DisplayName("요청으로 보낸 [이름, 이메일] 데이터중 이름에 대한 사용자 정보가 없는 경우 예외가 발생한다")
         void test1() throws Exception {
             /// given
-            Member member = createMemberA();
-            FindIdRequest request = FindIdRequestUtils.createRequest(member.getName() + "diff", member.getEmailValue());
+            final String name = member.getName() + "diff";
+            final String email = member.getEmailValue();
+            given(memberService.findLoginId(name, email)).willThrow(AnotherArtException.type(MemberErrorCode.MEMBER_NOT_FOUND));
+
+            FindIdRequest request = FindIdRequestUtils.createRequest(name, email);
 
             // when
             MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
@@ -264,8 +282,11 @@ class MemberDetailApiControllerTest extends ControllerTest {
         @DisplayName("요청으로 보낸 [이름, 이메일] 데이터중 이메일에 대한 사용자 정보가 없는 경우 예외가 발생한다")
         void test2() throws Exception {
             /// given
-            Member member = createMemberA();
-            FindIdRequest request = FindIdRequestUtils.createRequest(member.getName(), "diff" + member.getEmailValue());
+            final String name = member.getName();
+            final String email = "diff" + member.getEmailValue();
+            given(memberService.findLoginId(name, email)).willThrow(AnotherArtException.type(MemberErrorCode.MEMBER_NOT_FOUND));
+
+            FindIdRequest request = FindIdRequestUtils.createRequest(name, email);
 
             // when
             MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
@@ -305,8 +326,11 @@ class MemberDetailApiControllerTest extends ControllerTest {
         @DisplayName("이름, 이메일을 통해서 사용자 로그인 아이디 조회에 성공한다")
         void test3() throws Exception {
             // given
-            Member member = createMemberA();
-            FindIdRequest request = FindIdRequestUtils.createRequest(member.getName(), member.getEmailValue());
+            final String name = member.getName();
+            final String email = member.getEmailValue();
+            given(memberService.findLoginId(name, email)).willReturn(member.getLoginId());
+
+            FindIdRequest request = FindIdRequestUtils.createRequest(name, email);
 
             // when
             MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
@@ -344,8 +368,14 @@ class MemberDetailApiControllerTest extends ControllerTest {
         @DisplayName("요청으로 보낸 정보와 일치하는 사용자가 존재하지 않음에 따라 예외가 발생한다")
         void test1() throws Exception {
             // given
-            Member member = createMemberA();
-            AuthForResetPasswordRequest request = AuthForResetPasswordRequestUtils.createRequest(member.getName() + "diff", member.getLoginId(), member.getEmailValue());
+            final String name = member.getName() + "diff";
+            final String loginId = member.getLoginId();
+            final String email = member.getEmailValue();
+            doThrow(AnotherArtException.type(MemberErrorCode.MEMBER_NOT_FOUND))
+                    .when(memberService)
+                    .authMemberForResetPassword(name, loginId, email);
+
+            AuthForResetPasswordRequest request = AuthForResetPasswordRequestUtils.createRequest(name, loginId, email);
 
             // when
             MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
@@ -383,11 +413,17 @@ class MemberDetailApiControllerTest extends ControllerTest {
         }
 
         @Test
-        @DisplayName("인증을 성공적으로 완료한다")
+        @DisplayName("사용자 인증에 성공한다")
         void test2() throws Exception {
             // given
-            Member member = createMemberA();
-            AuthForResetPasswordRequest request = AuthForResetPasswordRequestUtils.createRequest(member.getName(), member.getLoginId(), member.getEmailValue());
+            final String name = member.getName();
+            final String loginId = member.getLoginId();
+            final String email = member.getEmailValue();
+            doNothing()
+                    .when(memberService)
+                    .authMemberForResetPassword(name, loginId, email);
+
+            AuthForResetPasswordRequest request = AuthForResetPasswordRequestUtils.createRequest(name, loginId, email);
 
             // when
             MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
@@ -423,9 +459,12 @@ class MemberDetailApiControllerTest extends ControllerTest {
         @DisplayName("이전과 동일한 비밀번호로 재설정하면 예외가 발생한다")
         void test1() throws Exception {
             // given
-            Member member = createMemberA();
-            String loginId = member.getLoginId();
-            String chnagePassword = MemberFixture.A.getPassword();
+            final String loginId = member.getLoginId();
+            final String chnagePassword = MemberFixture.A.getPassword();
+            doThrow(AnotherArtException.type(MemberErrorCode.PASSWORD_SAME_AS_BEFORE))
+                    .when(memberService)
+                    .resetPassword(loginId, chnagePassword);
+
             ResetPasswordRequest request = ResetPasswordRequestUtils.createRequest(loginId, chnagePassword);
 
             // when
@@ -466,9 +505,12 @@ class MemberDetailApiControllerTest extends ControllerTest {
         @DisplayName("비밀번호 재설정에 성공한다")
         void test2() throws Exception {
             // given
-            Member member = createMemberA();
-            String loginId = member.getLoginId();
-            String chnagePassword = MemberFixture.A.getPassword() + "456";
+            final String loginId = member.getLoginId();
+            final String chnagePassword = MemberFixture.A.getPassword() + "diff123";
+            doNothing()
+                    .when(memberService)
+                    .resetPassword(loginId, chnagePassword);
+
             ResetPasswordRequest request = ResetPasswordRequestUtils.createRequest(loginId, chnagePassword);
 
             // when
@@ -492,17 +534,6 @@ class MemberDetailApiControllerTest extends ControllerTest {
                                     )
                             )
                     );
-
-            PasswordEncoder encoder = PasswordEncoderUtils.getEncoder();
-            assertThat(encoder.matches(chnagePassword, member.getPasswordValue())).isTrue();
         }
-    }
-
-    private Member createMemberA() {
-        return memberRepository.save(MemberFixture.A.toMember());
-    }
-
-    private Member createMemberB() {
-        return memberRepository.save(MemberFixture.B.toMember());
     }
 }

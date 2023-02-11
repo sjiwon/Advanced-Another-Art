@@ -1,11 +1,8 @@
 package com.sjiwon.anotherart.member.controller;
 
 import com.sjiwon.anotherart.common.ControllerTest;
-import com.sjiwon.anotherart.fixture.MemberFixture;
+import com.sjiwon.anotherart.global.exception.AnotherArtException;
 import com.sjiwon.anotherart.global.security.exception.AuthErrorCode;
-import com.sjiwon.anotherart.member.domain.Member;
-import com.sjiwon.anotherart.member.domain.point.PointDetail;
-import com.sjiwon.anotherart.member.domain.point.PointType;
 import com.sjiwon.anotherart.member.exception.MemberErrorCode;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -13,10 +10,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import java.util.List;
-
 import static com.sjiwon.anotherart.common.utils.TokenUtils.BEARER_TOKEN;
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.MediaType.APPLICATION_FORM_URLENCODED;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
@@ -41,16 +37,15 @@ class MemberPointApiControllerTest extends ControllerTest {
         @DisplayName("Authorization 헤더에 Access Token이 없음에 따라 예외가 발생한다")
         void test1() throws Exception {
             // given
-            Member member = signUpMember();
-            final int initAmount = member.getAvailablePoint();
+            Long memberId = 1L;
             final int chargeAmount = 15000;
-            
+
             // when
             MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                     .post(BASE_URL)
                     .contentType(APPLICATION_FORM_URLENCODED)
                     .param("chargeAmount", String.valueOf(chargeAmount));
-            
+
             // then
             final AuthErrorCode expectedError = AuthErrorCode.INVALID_TOKEN;
             mockMvc.perform(requestBuilder)
@@ -76,26 +71,19 @@ class MemberPointApiControllerTest extends ControllerTest {
                                     )
                             )
                     );
-
-            // 포인트 내역 -> 충전 실패에 따라 회원가입 내역만 존재
-            List<PointDetail> pointDetails = pointDetailRepository.findAll();
-            assertThat(pointDetails.size()).isEqualTo(1);
-            assertThat(pointDetails.get(0).getMember().getId()).isEqualTo(member.getId());
-            assertThat(pointDetails.get(0).getPointType()).isEqualTo(PointType.JOIN);
-            assertThat(pointDetails.get(0).getAmount()).isEqualTo(0);
-
-            assertThat(member.getAvailablePoint()).isEqualTo(initAmount);
-            assertThat(member.getTotalPoints()).isEqualTo(initAmount);
         }
-        
+
         @Test
         @DisplayName("포인트 충전에 성공한다")
         void test2() throws Exception {
             // given
-            Member member = signUpMember();
-            String accessToken = jwtTokenProvider.createAccessToken(member.getId());
-            final int initAmount = member.getAvailablePoint();
+            Long memberId = 1L;
+            final String accessToken = jwtTokenProvider.createAccessToken(memberId);
+
             final int chargeAmount = 15000;
+            doNothing()
+                    .when(memberPointService)
+                    .chargePoint(memberId, chargeAmount);
 
             // when
             MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
@@ -121,23 +109,6 @@ class MemberPointApiControllerTest extends ControllerTest {
                                     )
                             )
                     );
-
-            // 포인트 내역 -> 충전 성공에 따라 회원가입 + 충전 내역 존재
-            List<PointDetail> pointDetails = pointDetailRepository.findAll();
-            assertThat(pointDetails.size()).isEqualTo(2);
-
-            PointDetail joinDetail = pointDetails.get(0);
-            assertThat(joinDetail.getMember().getId()).isEqualTo(member.getId());
-            assertThat(joinDetail.getPointType()).isEqualTo(PointType.JOIN);
-            assertThat(joinDetail.getAmount()).isEqualTo(0);
-
-            PointDetail chargeDetail = pointDetails.get(1);
-            assertThat(chargeDetail.getMember().getId()).isEqualTo(member.getId());
-            assertThat(chargeDetail.getPointType()).isEqualTo(PointType.CHARGE);
-            assertThat(chargeDetail.getAmount()).isEqualTo(chargeAmount);
-
-            assertThat(member.getAvailablePoint()).isEqualTo(initAmount + chargeAmount);
-            assertThat(member.getTotalPoints()).isEqualTo(initAmount + chargeAmount);
         }
     }
 
@@ -150,9 +121,7 @@ class MemberPointApiControllerTest extends ControllerTest {
         @DisplayName("Authorization 헤더에 Access Token이 없음에 따라 예외가 발생한다")
         void test1() throws Exception {
             // given
-            final int chargeAmount = 10000;
-            Member member = signUpAndChargePoint(chargeAmount);
-            final int initAmount = member.getAvailablePoint();
+            Long memberId = 1L;
             final int refundAmount = 15000;
 
             // when
@@ -186,34 +155,19 @@ class MemberPointApiControllerTest extends ControllerTest {
                                     )
                             )
                     );
-            
-            // 포인트 내역 -> 환불 실패에 따라 회원가입 + 충전 내역만 존재
-            List<PointDetail> pointDetails = pointDetailRepository.findAll();
-            assertThat(pointDetails.size()).isEqualTo(2);
-
-            PointDetail joinDetail = pointDetails.get(0);
-            assertThat(joinDetail.getMember().getId()).isEqualTo(member.getId());
-            assertThat(joinDetail.getPointType()).isEqualTo(PointType.JOIN);
-            assertThat(joinDetail.getAmount()).isEqualTo(0);
-
-            PointDetail chargeDetail = pointDetails.get(1);
-            assertThat(chargeDetail.getMember().getId()).isEqualTo(member.getId());
-            assertThat(chargeDetail.getPointType()).isEqualTo(PointType.CHARGE);
-            assertThat(chargeDetail.getAmount()).isEqualTo(chargeAmount);
-
-            assertThat(member.getAvailablePoint()).isEqualTo(initAmount);
-            assertThat(member.getTotalPoints()).isEqualTo(initAmount);
         }
-        
+
         @Test
         @DisplayName("보유한 포인트가 부족함에 따라 포인트 환불이 불가능하다")
         void test2() throws Exception {
             // given
-            final int chargeAmount = 10000;
-            Member member = signUpAndChargePoint(chargeAmount);
-            String accessToken = jwtTokenProvider.createAccessToken(member.getId());
-            final int initAmount = member.getAvailablePoint();
+            Long memberId = 1L;
+            final String accessToken = jwtTokenProvider.createAccessToken(memberId);
+
             final int refundAmount = 15000;
+            doThrow(AnotherArtException.type(MemberErrorCode.INVALID_POINT_DECREASE))
+                    .when(memberPointService)
+                    .refundPoint(memberId, refundAmount);
 
             // when
             MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
@@ -250,34 +204,19 @@ class MemberPointApiControllerTest extends ControllerTest {
                                     )
                             )
                     );
-
-            // 포인트 내역 -> 환불 실패에 따라 회원가입 + 충전 내역만 존재
-            List<PointDetail> pointDetails = pointDetailRepository.findAll();
-            assertThat(pointDetails.size()).isEqualTo(2);
-
-            PointDetail joinDetail = pointDetails.get(0);
-            assertThat(joinDetail.getMember().getId()).isEqualTo(member.getId());
-            assertThat(joinDetail.getPointType()).isEqualTo(PointType.JOIN);
-            assertThat(joinDetail.getAmount()).isEqualTo(0);
-
-            PointDetail chargeDetail = pointDetails.get(1);
-            assertThat(chargeDetail.getMember().getId()).isEqualTo(member.getId());
-            assertThat(chargeDetail.getPointType()).isEqualTo(PointType.CHARGE);
-            assertThat(chargeDetail.getAmount()).isEqualTo(chargeAmount);
-
-            assertThat(member.getAvailablePoint()).isEqualTo(initAmount);
-            assertThat(member.getTotalPoints()).isEqualTo(initAmount);
         }
-        
+
         @Test
         @DisplayName("포인트 환불에 성공한다")
         void test3() throws Exception {
             // given
-            final int chargeAmount = 20000;
-            Member member = signUpAndChargePoint(chargeAmount);
-            String accessToken = jwtTokenProvider.createAccessToken(member.getId());
-            final int initAmount = member.getAvailablePoint();
+            Long memberId = 1L;
+            final String accessToken = jwtTokenProvider.createAccessToken(memberId);
+
             final int refundAmount = 15000;
+            doNothing()
+                    .when(memberPointService)
+                    .refundPoint(memberId, refundAmount);
 
             // when
             MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
@@ -303,38 +242,6 @@ class MemberPointApiControllerTest extends ControllerTest {
                                     )
                             )
                     );
-
-            // 포인트 내역 -> 환불 성공에 따라 회원가입 + 충전 + 환불 내역 존재
-            List<PointDetail> pointDetails = pointDetailRepository.findAll();
-            assertThat(pointDetails.size()).isEqualTo(3);
-
-            PointDetail joinDetail = pointDetails.get(0);
-            assertThat(joinDetail.getMember().getId()).isEqualTo(member.getId());
-            assertThat(joinDetail.getPointType()).isEqualTo(PointType.JOIN);
-            assertThat(joinDetail.getAmount()).isEqualTo(0);
-
-            PointDetail chargeDetail = pointDetails.get(1);
-            assertThat(chargeDetail.getMember().getId()).isEqualTo(member.getId());
-            assertThat(chargeDetail.getPointType()).isEqualTo(PointType.CHARGE);
-            assertThat(chargeDetail.getAmount()).isEqualTo(chargeAmount);
-
-            PointDetail refundDetail = pointDetails.get(2);
-            assertThat(refundDetail.getMember().getId()).isEqualTo(member.getId());
-            assertThat(refundDetail.getPointType()).isEqualTo(PointType.REFUND);
-            assertThat(refundDetail.getAmount()).isEqualTo(refundAmount);
-
-            assertThat(member.getAvailablePoint()).isEqualTo(initAmount - refundAmount);
-            assertThat(member.getTotalPoints()).isEqualTo(initAmount - refundAmount);
         }
-    }
-
-    private Member signUpMember() {
-        return memberRepository.save(MemberFixture.A.toMember());
-    }
-
-    private Member signUpAndChargePoint(int chargeAmount) {
-        Member member = MemberFixture.A.toMember();
-        member.addPointDetail(PointDetail.insertPointDetail(member, PointType.CHARGE, chargeAmount));
-        return memberRepository.save(member);
     }
 }

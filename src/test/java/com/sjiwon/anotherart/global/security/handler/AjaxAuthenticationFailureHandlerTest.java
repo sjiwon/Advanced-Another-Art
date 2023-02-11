@@ -113,7 +113,6 @@ class AjaxAuthenticationFailureHandlerTest extends ControllerTest {
     @DisplayName("로그인 아이디에 해당하는 사용자 정보가 DB에 없음에 따라 예외가 발생한다")
     void test3() throws Exception {
         // given
-        createMember();
         MemberLoginRequest loginRequest = MemberLoginRequestUtils.createRequest(WRONG_LOGIN_ID, DEFAULT_LOGIN_PASSWORD);
 
         // when
@@ -154,7 +153,6 @@ class AjaxAuthenticationFailureHandlerTest extends ControllerTest {
     @DisplayName("비밀번호가 사용자 정보와 일치하지 않음에 따라 예외가 발생한다")
     void test4() throws Exception {
         // given
-        createMember();
         MemberLoginRequest loginRequest = MemberLoginRequestUtils.createRequest(DEFAULT_LOGIN_ID, WRONG_LOGIN_PASSWORD);
 
         // when
@@ -189,9 +187,5 @@ class AjaxAuthenticationFailureHandlerTest extends ControllerTest {
                                 )
                         )
                 );
-    }
-
-    private void createMember() {
-        memberRepository.save(MEMBER.toMember());
     }
 }

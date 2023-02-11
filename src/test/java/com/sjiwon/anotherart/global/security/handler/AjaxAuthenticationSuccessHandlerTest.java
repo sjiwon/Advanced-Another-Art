@@ -28,7 +28,6 @@ class AjaxAuthenticationSuccessHandlerTest extends ControllerTest {
     @DisplayName("로그인을 성공하면 Access Token & Refresh Token이 발급된다")
     void test() throws Exception {
         // given
-        createMember();
         MemberLoginRequest loginRequest = MemberLoginRequestUtils.createRequest(DEFAULT_LOGIN_ID, DEFAULT_LOGIN_PASSWORD);
 
         // when
@@ -57,9 +56,5 @@ class AjaxAuthenticationSuccessHandlerTest extends ControllerTest {
                                 )
                         )
                 );
-    }
-
-    private void createMember() {
-        memberRepository.save(MEMBER.toMember());
     }
 }

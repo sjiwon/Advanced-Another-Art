@@ -1,9 +1,9 @@
 package com.sjiwon.anotherart.token.controller;
 
 import com.sjiwon.anotherart.common.ControllerTest;
-import com.sjiwon.anotherart.fixture.MemberFixture;
+import com.sjiwon.anotherart.global.exception.AnotherArtException;
+import com.sjiwon.anotherart.global.security.TokenResponse;
 import com.sjiwon.anotherart.global.security.exception.AuthErrorCode;
-import com.sjiwon.anotherart.member.domain.Member;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -12,6 +12,7 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import static com.sjiwon.anotherart.common.utils.TokenUtils.BEARER_TOKEN;
+import static org.mockito.BDDMockito.given;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
@@ -65,11 +66,11 @@ class TokenReissueApiControllerTest extends ControllerTest {
         void test2() throws Exception {
             // given
             ReflectionTestUtils.setField(jwtTokenProvider, "refreshTokenValidityInMilliseconds", 0L);
-            Member member = createMember();
+
+            Long memberId = 1L;
+            final String refreshToken = jwtTokenProvider.createRefreshToken(memberId);
 
             // when
-            final String refreshToken = jwtTokenProvider.createRefreshToken(member.getId());
-            tokenPersistenceService.saveRefreshToken(member.getId(), refreshToken);
             MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                     .post(BASE_URL)
                     .header(AUTHORIZATION, BEARER_TOKEN + refreshToken);
@@ -100,16 +101,20 @@ class TokenReissueApiControllerTest extends ControllerTest {
                             )
                     );
         }
-        
+
         @Test
         @DisplayName("RTR 정책에 의해서 이미 사용한 Refresh Token으로 Access Token + Refresh Token 재발급은 불가능하다")
         void test3() throws Exception {
             // given
             ReflectionTestUtils.setField(jwtTokenProvider, "refreshTokenValidityInMilliseconds", 1209600L);
-            Member member = createMember();
-            
+
+            Long memberId = 1L;
+            final String refreshToken = jwtTokenProvider.createRefreshToken(memberId);
+            given(tokenPersistenceService.isRefreshTokenExists(memberId, refreshToken)).willReturn(false);
+
+            given(tokenReissueService.reissueTokens(memberId, refreshToken)).willThrow(AnotherArtException.type(AuthErrorCode.INVALID_TOKEN));
+
             // when
-            final String refreshToken = jwtTokenProvider.createRefreshToken(member.getId()); // DB에 저장하지 않음에 따라 이미 사용했다고 가정
             MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                     .post(BASE_URL)
                     .header(AUTHORIZATION, BEARER_TOKEN + refreshToken);
@@ -146,11 +151,18 @@ class TokenReissueApiControllerTest extends ControllerTest {
         void test4() throws Exception {
             // given
             ReflectionTestUtils.setField(jwtTokenProvider, "refreshTokenValidityInMilliseconds", 1209600L);
-            Member member = createMember();
+
+            Long memberId = 1L;
+            final String refreshToken = jwtTokenProvider.createRefreshToken(memberId);
+            given(tokenPersistenceService.isRefreshTokenExists(memberId, refreshToken)).willReturn(true);
+
+            TokenResponse response = TokenResponse.builder()
+                    .accessToken(jwtTokenProvider.createAccessToken(memberId))
+                    .refreshToken(jwtTokenProvider.createRefreshToken(memberId))
+                    .build();
+            given(tokenReissueService.reissueTokens(memberId, refreshToken)).willReturn(response);
 
             // when
-            final String refreshToken = jwtTokenProvider.createRefreshToken(member.getId());
-            tokenPersistenceService.saveRefreshToken(member.getId(), refreshToken);
             MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                     .post(BASE_URL)
                     .header(AUTHORIZATION, BEARER_TOKEN + refreshToken);
@@ -159,7 +171,9 @@ class TokenReissueApiControllerTest extends ControllerTest {
             mockMvc.perform(requestBuilder)
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.accessToken").exists())
+                    .andExpect(jsonPath("$.accessToken").value(response.getAccessToken()))
                     .andExpect(jsonPath("$.refreshToken").exists())
+                    .andExpect(jsonPath("$.refreshToken").value(response.getRefreshToken()))
                     .andDo(
                             document(
                                     "TokenApi/Reissue/Success",
@@ -175,9 +189,5 @@ class TokenReissueApiControllerTest extends ControllerTest {
                             )
                     );
         }
-    }
-
-    private Member createMember() {
-        return memberRepository.save(MemberFixture.A.toMember());
     }
 }

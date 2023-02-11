@@ -39,14 +39,14 @@ public enum MemberFixture {
                 .build();
     }
 
-    private static String generateRandomEmail() {
-        return UUID.randomUUID().toString().replaceAll("-", "").substring(0, 10) + "@gmail.com";
-    }
-
     private static String generateRandomPhoneNumber() {
         String result = "010";
         result += String.valueOf((int) (Math.random() * 9000 + 1000));
         result += String.valueOf((int) (Math.random() * 9000 + 1000));
         return result;
+    }
+
+    private static String generateRandomEmail() {
+        return UUID.randomUUID().toString().replaceAll("-", "").substring(0, 10) + "@gmail.com";
     }
 }

@@ -6,7 +6,6 @@ import com.sjiwon.anotherart.member.controller.dto.request.AuthForResetPasswordR
 import com.sjiwon.anotherart.member.controller.dto.request.ChangeNicknameRequest;
 import com.sjiwon.anotherart.member.controller.dto.request.FindIdRequest;
 import com.sjiwon.anotherart.member.controller.dto.request.ResetPasswordRequest;
-import com.sjiwon.anotherart.member.domain.Email;
 import com.sjiwon.anotherart.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -30,13 +29,13 @@ public class MemberDetailApiController {
 
     @PostMapping("/find/id")
     public ResponseEntity<SimpleWrapper<String>> findLoginId(@Valid @RequestBody FindIdRequest request) {
-        String loginId = memberService.findLoginId(request.getName(), Email.from(request.getEmail()));
+        String loginId = memberService.findLoginId(request.getName(), request.getEmail());
         return ResponseEntity.ok(new SimpleWrapper<>(loginId));
     }
 
     @PostMapping("/reset/password/auth")
     public ResponseEntity<Void> authMemberForResetPassword(@Valid @RequestBody AuthForResetPasswordRequest request) {
-        memberService.authMemberForResetPassword(request.getName(), request.getLoginId(), Email.from(request.getEmail()));
+        memberService.authMemberForResetPassword(request.getName(), request.getLoginId(), request.getEmail());
         return ResponseEntity.noContent().build();
     }
 

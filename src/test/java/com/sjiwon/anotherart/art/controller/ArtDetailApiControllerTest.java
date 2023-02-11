@@ -5,19 +5,15 @@ import com.sjiwon.anotherart.art.controller.dto.request.UpdateArtHashtagRequest;
 import com.sjiwon.anotherart.art.controller.utils.ChangeArtDescriptionRequestUtils;
 import com.sjiwon.anotherart.art.controller.utils.UpdateArtHashtagRequestUtils;
 import com.sjiwon.anotherart.art.domain.Art;
-import com.sjiwon.anotherart.art.domain.ArtStatus;
 import com.sjiwon.anotherart.art.exception.ArtErrorCode;
 import com.sjiwon.anotherart.art.exception.ArtRequestValidationMessage;
-import com.sjiwon.anotherart.auction.domain.Auction;
-import com.sjiwon.anotherart.auction.domain.Period;
-import com.sjiwon.anotherart.auction.domain.record.AuctionRecord;
 import com.sjiwon.anotherart.common.ControllerTest;
 import com.sjiwon.anotherart.common.utils.ObjectMapperUtils;
 import com.sjiwon.anotherart.fixture.ArtFixture;
 import com.sjiwon.anotherart.fixture.MemberFixture;
+import com.sjiwon.anotherart.global.exception.AnotherArtException;
 import com.sjiwon.anotherart.global.exception.GlobalErrorCode;
 import com.sjiwon.anotherart.global.security.exception.AuthErrorCode;
-import com.sjiwon.anotherart.member.domain.Member;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -25,9 +21,14 @@ import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import java.util.List;
+
 import static com.sjiwon.anotherart.common.utils.ArtUtils.*;
 import static com.sjiwon.anotherart.common.utils.TokenUtils.BEARER_TOKEN;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.MediaType.APPLICATION_FORM_URLENCODED;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
@@ -42,9 +43,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @DisplayName("Art [Controller Layer] -> ArtDetailApiController 테스트")
 class ArtDetailApiControllerTest extends ControllerTest {
-    private static final ArtFixture AUCTION_ART = ArtFixture.A;
-    private static final ArtFixture GENERAL_ART = ArtFixture.B;
-
     @Nested
     @DisplayName("작품명 중복 체크 테스트 [POST /api/art/duplicate-check]")
     class artNameDuplicateCheck {
@@ -54,14 +52,13 @@ class ArtDetailApiControllerTest extends ControllerTest {
         @DisplayName("Authorization 헤더에 Access Token이 없음에 따라 예외가 발생한다")
         void test1() throws Exception {
             // given
-            Member owner = createMemberA();
-            Art art = createGeneralArt(owner);
+            final String artName = ArtFixture.A.name();
 
             // when
             MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                     .post(BASE_URL)
                     .contentType(APPLICATION_FORM_URLENCODED)
-                    .param("artName", art.getName());
+                    .param("artName", artName);
 
             // then
             final AuthErrorCode expectedError = AuthErrorCode.INVALID_TOKEN;
@@ -94,16 +91,20 @@ class ArtDetailApiControllerTest extends ControllerTest {
         @DisplayName("작품명이 중복됨에 따라 예외가 발생한다")
         void test2() throws Exception {
             // given
-            Member owner = createMemberA();
-            Art art = createGeneralArt(owner);
+            Long memberId = 1L;
+            final String accessToken = jwtTokenProvider.createAccessToken(memberId);
+
+            final String artName = ArtFixture.A.name();
+            doThrow(AnotherArtException.type(ArtErrorCode.INVALID_ART_NAME))
+                    .when(artService)
+                    .artNameDuplicateCheck(artName);
 
             // when
-            final String accessToken = jwtTokenProvider.createAccessToken(owner.getId());
             MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                     .post(BASE_URL)
                     .contentType(APPLICATION_FORM_URLENCODED)
                     .header(AUTHORIZATION, BEARER_TOKEN + accessToken)
-                    .param("artName", art.getName());
+                    .param("artName", artName);
 
             // then
             final ArtErrorCode expectedError = ArtErrorCode.INVALID_ART_NAME;
@@ -136,19 +137,23 @@ class ArtDetailApiControllerTest extends ControllerTest {
         }
 
         @Test
-        @DisplayName("작품명이 중복되지 않기 때문에 중복 체크에 성공한다")
+        @DisplayName("작품명이 중복되지 않고 그에 따라서 중복 체크에 성공한다")
         void test3() throws Exception {
             // given
-            Member owner = createMemberA();
-            Art art = createGeneralArt(owner);
+            Long memberId = 1L;
+            final String accessToken = jwtTokenProvider.createAccessToken(memberId);
+
+            final String artName = ArtFixture.A.name();
+            doNothing()
+                    .when(artService)
+                    .artNameDuplicateCheck(artName);
 
             // when
-            final String accessToken = jwtTokenProvider.createAccessToken(owner.getId());
             MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                     .post(BASE_URL)
                     .contentType(APPLICATION_FORM_URLENCODED)
                     .header(AUTHORIZATION, BEARER_TOKEN + accessToken)
-                    .param("artName", art.getName() + "diff");
+                    .param("artName", artName);
 
             // then
             mockMvc.perform(requestBuilder)
@@ -179,14 +184,16 @@ class ArtDetailApiControllerTest extends ControllerTest {
         @DisplayName("Authorization 헤더에 Access Token이 없음에 따라 예외가 발생한다")
         void test1() throws Exception {
             // given
-            Member owner = createMemberA();
-            Art art = createGeneralArt(owner);
-            final String changeDescription = art.getDescription() + "change";
+            Art art = createMockArt(HASHTAGS);
+            Long artId = 1L;
+            given(artFindService.findById(artId)).willReturn(art);
+
+            final String changeDescription = "change-description";
             ChangeArtDescriptionRequest request = ChangeArtDescriptionRequestUtils.createRequest(changeDescription);
 
             // when
             MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
-                    .patch(BASE_URL, art.getId())
+                    .patch(BASE_URL, artId)
                     .contentType(APPLICATION_JSON)
                     .content(ObjectMapperUtils.objectToJson(request));
 
@@ -224,15 +231,22 @@ class ArtDetailApiControllerTest extends ControllerTest {
         @DisplayName("작품 설명 수정에 성공한다")
         void test2() throws Exception {
             // given
-            Member owner = createMemberA();
-            Art art = createGeneralArt(owner);
-            final String changeDescription = art.getDescription() + "change";
+            Long memberId = 1L;
+            final String accessToken = jwtTokenProvider.createAccessToken(memberId);
+
+            Art art = createMockArt(HASHTAGS);
+            Long artId = 1L;
+            given(artFindService.findById(artId)).willReturn(art);
+
+            final String changeDescription = "change-description";
             ChangeArtDescriptionRequest request = ChangeArtDescriptionRequestUtils.createRequest(changeDescription);
+            doNothing()
+                    .when(artService)
+                    .changeDescription(artId, changeDescription);
 
             // when
-            final String accessToken = jwtTokenProvider.createAccessToken(owner.getId());
             MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
-                    .patch(BASE_URL, art.getId())
+                    .patch(BASE_URL, artId)
                     .contentType(APPLICATION_JSON)
                     .header(AUTHORIZATION, BEARER_TOKEN + accessToken)
                     .content(ObjectMapperUtils.objectToJson(request));
@@ -257,8 +271,6 @@ class ArtDetailApiControllerTest extends ControllerTest {
                                     )
                             )
                     );
-
-            assertThat(art.getDescription()).isEqualTo(changeDescription);
         }
     }
 
@@ -271,13 +283,15 @@ class ArtDetailApiControllerTest extends ControllerTest {
         @DisplayName("Authorization 헤더에 Access Token이 없음에 따라 예외가 발생한다")
         void test1() throws Exception {
             // given
-            Member owner = createMemberA();
-            Art art = createGeneralArt(owner);
+            Art art = createMockArt(HASHTAGS);
+            Long artId = 1L;
+            given(artFindService.findById(artId)).willReturn(art);
+
             UpdateArtHashtagRequest request = UpdateArtHashtagRequestUtils.createRequest(UPDATE_HASHTAGS);
 
             // when
             MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
-                    .patch(BASE_URL, art.getId())
+                    .patch(BASE_URL, artId)
                     .contentType(APPLICATION_JSON)
                     .content(ObjectMapperUtils.objectToJson(request));
 
@@ -315,14 +329,18 @@ class ArtDetailApiControllerTest extends ControllerTest {
         @DisplayName("업데이트 하려는 해시태그의 개수가 최소 개수(1개)보다 적음에 따라 예외가 발생한다")
         void test2() throws Exception {
             // given
-            Member owner = createMemberA();
-            Art art = createGeneralArt(owner);
+            Long memberId = 1L;
+            final String accessToken = jwtTokenProvider.createAccessToken(memberId);
+
+            Art art = createMockArt(EMPTY_HASHTAGS);
+            Long artId = 1L;
+            given(artFindService.findById(artId)).willReturn(art);
+
             UpdateArtHashtagRequest request = UpdateArtHashtagRequestUtils.createRequest(EMPTY_HASHTAGS);
 
             // when
-            final String accessToken = jwtTokenProvider.createAccessToken(owner.getId());
             MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
-                    .patch(BASE_URL, art.getId())
+                    .patch(BASE_URL, artId)
                     .contentType(APPLICATION_JSON)
                     .header(AUTHORIZATION, BEARER_TOKEN + accessToken)
                     .content(ObjectMapperUtils.objectToJson(request));
@@ -365,14 +383,18 @@ class ArtDetailApiControllerTest extends ControllerTest {
         @DisplayName("업데이트 하려는 해시태그의 개수가 최대 개수(10개)보다 많음에 따라 예외가 발생한다")
         void test3() throws Exception {
             // given
-            Member owner = createMemberA();
-            Art art = createGeneralArt(owner);
+            Long memberId = 1L;
+            final String accessToken = jwtTokenProvider.createAccessToken(memberId);
+
+            Art art = createMockArt(OVERFLOW_HASHTAGS);
+            Long artId = 1L;
+            given(artFindService.findById(artId)).willReturn(art);
+
             UpdateArtHashtagRequest request = UpdateArtHashtagRequestUtils.createRequest(OVERFLOW_HASHTAGS);
 
             // when
-            final String accessToken = jwtTokenProvider.createAccessToken(owner.getId());
             MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
-                    .patch(BASE_URL, art.getId())
+                    .patch(BASE_URL, artId)
                     .contentType(APPLICATION_JSON)
                     .header(AUTHORIZATION, BEARER_TOKEN + accessToken)
                     .content(ObjectMapperUtils.objectToJson(request));
@@ -415,14 +437,21 @@ class ArtDetailApiControllerTest extends ControllerTest {
         @DisplayName("작품의 해시태그 업데이트에 성공한다")
         void test4() throws Exception {
             // given
-            Member owner = createMemberA();
-            Art art = createGeneralArt(owner);
+            Long memberId = 1L;
+            final String accessToken = jwtTokenProvider.createAccessToken(memberId);
+
+            Art art = createMockArt(UPDATE_HASHTAGS);
+            Long artId = 1L;
+            given(artFindService.findById(artId)).willReturn(art);
+
             UpdateArtHashtagRequest request = UpdateArtHashtagRequestUtils.createRequest(UPDATE_HASHTAGS);
+            doNothing()
+                    .when(artService)
+                    .updateHashtags(artId, UPDATE_HASHTAGS);
 
             // when
-            final String accessToken = jwtTokenProvider.createAccessToken(owner.getId());
             MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
-                    .patch(BASE_URL, art.getId())
+                    .patch(BASE_URL, artId)
                     .contentType(APPLICATION_JSON)
                     .header(AUTHORIZATION, BEARER_TOKEN + accessToken)
                     .content(ObjectMapperUtils.objectToJson(request));
@@ -461,12 +490,15 @@ class ArtDetailApiControllerTest extends ControllerTest {
         @DisplayName("Authorization 헤더에 Access Token이 없음에 따라 예외가 발생한다")
         void test1() throws Exception {
             // given
-            Member owner = createMemberA();
-            Art art = createGeneralArt(owner);
+            Long memberId = 1L;
+
+            Art art = createMockArt(UPDATE_HASHTAGS);
+            Long artId = 1L;
+            given(artFindService.findById(artId)).willReturn(art);
 
             // when
             MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
-                    .delete(BASE_URL, art.getId());
+                    .delete(BASE_URL, artId);
 
             // then
             final AuthErrorCode expectedError = AuthErrorCode.INVALID_TOKEN;
@@ -499,14 +531,20 @@ class ArtDetailApiControllerTest extends ControllerTest {
         @DisplayName("작품 소유자가 아닌 사용자가 작품 삭제 요청을 보냄에 따라 예외가 발생한다")
         void test2() throws Exception {
             // given
-            Member owner = createMemberA();
-            Art art = createGeneralArt(owner);
+            Long memberId = 1L;
+            final String accessToken = jwtTokenProvider.createAccessToken(memberId);
+
+            Art art = createMockArt(HASHTAGS);
+            Long artId = 1L;
+            given(artFindService.findById(artId)).willReturn(art);
+
+            doThrow(AnotherArtException.type(ArtErrorCode.INVALID_ART_DELETE_BY_ANONYMOUS))
+                    .when(artService)
+                    .deleteArt(artId, memberId);
 
             // when
-            Member memberB = createMemberB();
-            final String accessToken = jwtTokenProvider.createAccessToken(memberB.getId());
             MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
-                    .delete(BASE_URL, art.getId())
+                    .delete(BASE_URL, artId)
                     .header(AUTHORIZATION, BEARER_TOKEN + accessToken);
 
             // then
@@ -543,17 +581,24 @@ class ArtDetailApiControllerTest extends ControllerTest {
         @DisplayName("이미 판매된 작품에 대해서 삭제 요청을 보내면 예외가 발생한다")
         void test3() throws Exception {
             // given
-            Member owner = createMemberA();
-            Art art = createSoldOutGeneralArt(owner);
+            Long memberId = 1L;
+            final String accessToken = jwtTokenProvider.createAccessToken(memberId);
+
+            Art art = createMockArt(HASHTAGS);
+            Long artId = 1L;
+            given(artFindService.findById(artId)).willReturn(art);
+
+            doThrow(AnotherArtException.type(ArtErrorCode.ALREADY_SOLD_OUT))
+                    .when(artService)
+                    .deleteArt(artId, memberId);
 
             // when
-            final String accessToken = jwtTokenProvider.createAccessToken(owner.getId());
             MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
-                    .delete(BASE_URL, art.getId())
+                    .delete(BASE_URL, artId)
                     .header(AUTHORIZATION, BEARER_TOKEN + accessToken);
 
             // then
-            final ArtErrorCode expectedError = ArtErrorCode.ALREADY_SALE;
+            final ArtErrorCode expectedError = ArtErrorCode.ALREADY_SOLD_OUT;
             mockMvc.perform(requestBuilder)
                     .andExpect(status().isConflict())
                     .andExpect(jsonPath("$.statusCode").exists())
@@ -586,13 +631,20 @@ class ArtDetailApiControllerTest extends ControllerTest {
         @DisplayName("일반 작품 삭제에 성공한다")
         void test4() throws Exception {
             // given
-            Member owner = createMemberA();
-            Art art = createGeneralArt(owner);
+            Long memberId = 1L;
+            final String accessToken = jwtTokenProvider.createAccessToken(memberId);
+
+            Art art = createMockArt(HASHTAGS);
+            Long artId = 1L;
+            given(artFindService.findById(artId)).willReturn(art);
+
+            doNothing()
+                    .when(artService)
+                    .deleteArt(artId, memberId);
 
             // when
-            final String accessToken = jwtTokenProvider.createAccessToken(owner.getId());
             MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
-                    .delete(BASE_URL, art.getId())
+                    .delete(BASE_URL, artId)
                     .header(AUTHORIZATION, BEARER_TOKEN + accessToken);
 
             // then
@@ -612,21 +664,26 @@ class ArtDetailApiControllerTest extends ControllerTest {
                                     )
                             )
                     );
-
-            assertThat(artRepository.findById(art.getId())).isEmpty();
         }
 
         @Test
         @DisplayName("경매 작품일 경우 입찰이 한번이라도 진행되었다면 삭제할 수 없고 예외가 발생한다")
         void test5() throws Exception {
             // given
-            Member owner = createMemberA();
-            Art art = createBidProcessAuctionArt(owner);
+            Long memberId = 1L;
+            final String accessToken = jwtTokenProvider.createAccessToken(memberId);
+
+            Art art = createMockArt(HASHTAGS);
+            Long artId = 1L;
+            given(artFindService.findById(artId)).willReturn(art);
+
+            doThrow(AnotherArtException.type(ArtErrorCode.ALREADY_BID_EXISTS))
+                    .when(artService)
+                    .deleteArt(artId, memberId);
 
             // when
-            final String accessToken = jwtTokenProvider.createAccessToken(owner.getId());
             MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
-                    .delete(BASE_URL, art.getId())
+                    .delete(BASE_URL, artId)
                     .header(AUTHORIZATION, BEARER_TOKEN + accessToken);
 
             // then
@@ -658,18 +715,25 @@ class ArtDetailApiControllerTest extends ControllerTest {
                             )
                     );
         }
-        
+
         @Test
         @DisplayName("경매 작품 삭제에 성공한다")
         void test6() throws Exception {
             // given
-            Member owner = createMemberA();
-            Art art = createAuctionArt(owner);
+            Long memberId = 1L;
+            final String accessToken = jwtTokenProvider.createAccessToken(memberId);
+
+            Art art = createMockArt(HASHTAGS);
+            Long artId = 1L;
+            given(artFindService.findById(artId)).willReturn(art);
+
+            doNothing()
+                    .when(artService)
+                    .deleteArt(artId, memberId);
 
             // when
-            final String accessToken = jwtTokenProvider.createAccessToken(owner.getId());
             MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
-                    .delete(BASE_URL, art.getId())
+                    .delete(BASE_URL, artId)
                     .header(AUTHORIZATION, BEARER_TOKEN + accessToken);
 
             // then
@@ -689,43 +753,10 @@ class ArtDetailApiControllerTest extends ControllerTest {
                                     )
                             )
                     );
-
-            assertThat(artRepository.findById(art.getId())).isEmpty();
         }
     }
 
-    private Member createMemberA() {
-        return memberRepository.save(MemberFixture.A.toMember());
-    }
-
-    private Member createMemberB() {
-        return memberRepository.save(MemberFixture.B.toMember());
-    }
-
-    private Art createGeneralArt(Member owner) {
-        Art art = GENERAL_ART.toArt(owner, HASHTAGS);
-        return artRepository.save(art);
-    }
-
-    private Art createSoldOutGeneralArt(Member owner) {
-        Art art = GENERAL_ART.toArt(owner, HASHTAGS);
-        art.changeArtStatus(ArtStatus.SOLD_OUT);
-        return artRepository.save(art);
-    }
-
-    private Art createAuctionArt(Member owner) {
-        Art art = artRepository.save(AUCTION_ART.toArt(owner, HASHTAGS));
-        auctionRepository.save(Auction.initAuction(art, Period.of(currentTime1DayLater, currentTime3DayLater)));
-        return art;
-    }
-    
-    private Art createBidProcessAuctionArt(Member owner) {
-        Art art = artRepository.save(AUCTION_ART.toArt(owner, HASHTAGS));
-
-        // 입찰 진행
-        Auction auction = auctionRepository.save(Auction.initAuction(art, Period.of(currentTime1DayLater, currentTime3DayLater)));
-        Member memberB = createMemberB();
-        auctionRecordRepository.save(AuctionRecord.createAuctionRecord(auction, memberB, AUCTION_ART.toArt(owner, HASHTAGS).getPrice() + 1_000_000));
-        return art;
+    private Art createMockArt(List<String> hashtags) {
+        return ArtFixture.A.toArt(MemberFixture.A.toMember(), hashtags);
     }
 }
