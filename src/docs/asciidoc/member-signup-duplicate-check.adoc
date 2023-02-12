@@ -73,7 +73,7 @@ include::{snippets}/MemberApi/DuplicateCheck/Email/Failure/request-fields.adoc[]
 HTTP Response
 include::{snippets}/MemberApi/DuplicateCheck/Email/Failure/response-body.adoc[]
 
-=== 5. 중복 체크 대상이 아닌 필드에 대해서 중복 체크 요청을 보내면 예외가 발생한다
+== 5. 중복 체크 대상이 아닌 필드에 대해서 중복 체크 요청을 보내면 예외가 발생한다
 HTTP Request
 include::{snippets}/MemberApi/DuplicateCheck/AnonymousFailure/http-request.adoc[]
 include::{snippets}/MemberApi/DuplicateCheck/AnonymousFailure/request-fields.adoc[]
