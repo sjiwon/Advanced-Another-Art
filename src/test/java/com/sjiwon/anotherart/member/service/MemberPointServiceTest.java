@@ -12,9 +12,12 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
+
 import static com.sjiwon.anotherart.common.utils.MemberUtils.INIT_AVAILABLE_POINT;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 @DisplayName("Member [Service Layer] -> MemberPointService 테스트")
 @RequiredArgsConstructor
@@ -33,7 +36,21 @@ class MemberPointServiceTest extends ServiceIntegrateTest {
         memberPointService.chargePoint(member.getId(), chargeAmount);
 
         // then
-        assertThat(member.getAvailablePoint()).isEqualTo(initAmount + chargeAmount);
+        List<PointDetail> pointDetails = pointDetailRepository.findByMemberId(member.getId());
+        assertAll(
+                () -> assertThat(pointDetails.size()).isEqualTo(2),
+                // 회원가입
+                () -> assertThat(pointDetails.get(0).getPointType()).isEqualTo(PointType.JOIN),
+                () -> assertThat(pointDetails.get(0).getAmount()).isEqualTo(0),
+                () -> assertThat(pointDetails.get(0).getMember().getId()).isEqualTo(member.getId()),
+                // 포인트 충전
+                () -> assertThat(pointDetails.get(1).getPointType()).isEqualTo(PointType.CHARGE),
+                () -> assertThat(pointDetails.get(1).getAmount()).isEqualTo(chargeAmount),
+                () -> assertThat(pointDetails.get(1).getMember().getId()).isEqualTo(member.getId()),
+                // 최종 사용자 포인트 현황
+                () -> assertThat(member.getAvailablePoint()).isEqualTo(initAmount + chargeAmount),
+                () -> assertThat(member.getTotalPoints()).isEqualTo(initAmount + chargeAmount)
+        );
     }
 
     @Nested
@@ -65,7 +82,25 @@ class MemberPointServiceTest extends ServiceIntegrateTest {
             memberPointService.refundPoint(member.getId(), refundAmount);
 
             // then
-            assertThat(member.getAvailablePoint()).isEqualTo(initAmount - refundAmount);
+            List<PointDetail> pointDetails = pointDetailRepository.findByMemberId(member.getId());
+            assertAll(
+                    () -> assertThat(pointDetails.size()).isEqualTo(3),
+                    // 회원가입
+                    () -> assertThat(pointDetails.get(0).getPointType()).isEqualTo(PointType.JOIN),
+                    () -> assertThat(pointDetails.get(0).getAmount()).isEqualTo(0),
+                    () -> assertThat(pointDetails.get(0).getMember().getId()).isEqualTo(member.getId()),
+                    // 포인트 충전
+                    () -> assertThat(pointDetails.get(1).getPointType()).isEqualTo(PointType.CHARGE),
+                    () -> assertThat(pointDetails.get(1).getAmount()).isEqualTo(INIT_AVAILABLE_POINT),
+                    () -> assertThat(pointDetails.get(1).getMember().getId()).isEqualTo(member.getId()),
+                    // 포인트 환불
+                    () -> assertThat(pointDetails.get(2).getPointType()).isEqualTo(PointType.REFUND),
+                    () -> assertThat(pointDetails.get(2).getAmount()).isEqualTo(refundAmount),
+                    () -> assertThat(pointDetails.get(2).getMember().getId()).isEqualTo(member.getId()),
+                    // 최종 사용자 포인트 현황
+                    () -> assertThat(member.getAvailablePoint()).isEqualTo(INIT_AVAILABLE_POINT - refundAmount),
+                    () -> assertThat(member.getTotalPoints()).isEqualTo(INIT_AVAILABLE_POINT - refundAmount)
+            );
         }
     }
 
