@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 @DisplayName("Point [Repository Layer] -> MemberPointQueryDslRepository 테스트")
 class MemberPointQueryDslRepositoryTest extends RepositoryTest {
@@ -26,36 +27,49 @@ class MemberPointQueryDslRepositoryTest extends RepositoryTest {
     void test() {
         // 1. 회원가입
         Member member = createMember();
-        assertThat(memberRepository.getTotalPointsByMemberId(member.getId())).isEqualTo(0);
+        assertAll(
+                () -> assertThat(member.getAvailablePoint()).isEqualTo(0),
+                () -> assertThat(memberRepository.getTotalPointsByMemberId(member.getId())).isEqualTo(0)
+        );
 
         // 2. 포인트 충전 1회
         final int chargeAmount1 = 100_000_000;
         doCharge(member, chargeAmount1);
-        assertThat(memberRepository.getTotalPointsByMemberId(member.getId())).isEqualTo(chargeAmount1);
+        assertAll(
+                () -> assertThat(member.getAvailablePoint()).isEqualTo(chargeAmount1),
+                () -> assertThat(memberRepository.getTotalPointsByMemberId(member.getId())).isEqualTo(chargeAmount1)
+        );
 
         // 3. 포인트 충전 2회
         final int chargeAmount2 = 300_000_000;
         doCharge(member, chargeAmount2);
-        assertThat(memberRepository.getTotalPointsByMemberId(member.getId())).isEqualTo(chargeAmount1 + chargeAmount2);
+        assertAll(
+                () -> assertThat(member.getAvailablePoint()).isEqualTo(chargeAmount1 + chargeAmount2),
+                () -> assertThat(memberRepository.getTotalPointsByMemberId(member.getId())).isEqualTo(chargeAmount1 + chargeAmount2)
+        );
 
         // 4. 포인트 환불 1회
         final int refundAmount1 = 50_000_000;
         doRefund(member, refundAmount1);
-        assertThat(memberRepository.getTotalPointsByMemberId(member.getId())).isEqualTo(chargeAmount1 + chargeAmount2 - refundAmount1);
+        assertAll(
+                () -> assertThat(member.getAvailablePoint()).isEqualTo(chargeAmount1 + chargeAmount2 - refundAmount1),
+                () -> assertThat(memberRepository.getTotalPointsByMemberId(member.getId())).isEqualTo(chargeAmount1 + chargeAmount2 - refundAmount1)
+        );
 
         // 5. 포인트 환불 2회
         final int refundAmount2 = 20_000_000;
         doRefund(member, refundAmount2);
-        assertThat(memberRepository.getTotalPointsByMemberId(member.getId())).isEqualTo(chargeAmount1 + chargeAmount2 - refundAmount1 - refundAmount2);
+        assertAll(
+                () -> assertThat(member.getAvailablePoint()).isEqualTo(chargeAmount1 + chargeAmount2 - refundAmount1 - refundAmount2),
+                () -> assertThat(memberRepository.getTotalPointsByMemberId(member.getId())).isEqualTo(chargeAmount1 + chargeAmount2 - refundAmount1 - refundAmount2)
+        );
     }
 
     private void doCharge(Member member, int chargeAmount) {
-        member.increasePoint(chargeAmount);
         pointDetailRepository.save(PointDetail.insertPointDetail(member, PointType.CHARGE, chargeAmount));
     }
 
     private void doRefund(Member member, int refundAmount) {
-        member.decreasePoint(refundAmount);
         pointDetailRepository.save(PointDetail.insertPointDetail(member, PointType.REFUND, refundAmount));
     }
 
