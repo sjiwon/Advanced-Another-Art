@@ -56,7 +56,7 @@ class BidConcurrencyTest extends ConcurrencyTest {
         Auction auction = initAuction(auctionArt);
 
         // when
-        final int bidAmount = auctionArt.getPrice() + 5_000;
+        final int bidAmount = auction.getBidAmount() + 5_000;
         for (Long participateMemberId : PARTICIPATE_MEMBER_IDS) {
             executorService.submit(() -> {
                 try {

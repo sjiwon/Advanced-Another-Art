@@ -32,7 +32,7 @@ class AuctionFindServiceTest extends ServiceIntegrateTest {
         Auction auction = initAuction(auctionArt);
 
         // when
-        Auction findAuction = auctionFindService.findByIdWithPessimisticLock(auction.getId());
+        Auction findAuction = auctionFindService.findById(auction.getId());
 
         // then
         assertAll(

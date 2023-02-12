@@ -18,6 +18,8 @@ public interface ArtRepository extends JpaRepository<Art, Long> {
     @Query("DELETE FROM Hashtag h WHERE h.art.id = :artId")
     void deleteHashtagsByArtId(@Param("artId") Long artId);
 
+    boolean existsByIdAndOwnerId(Long artId, Long ownerId);
+
     // Query Method
     boolean existsByName(String artName);
 }

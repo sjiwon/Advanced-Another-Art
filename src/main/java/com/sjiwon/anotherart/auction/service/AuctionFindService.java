@@ -14,6 +14,11 @@ import org.springframework.transaction.annotation.Transactional;
 public class AuctionFindService {
     private final AuctionRepository auctionRepository;
 
+    public Auction findById(Long auctionId) {
+        return auctionRepository.findById(auctionId)
+                .orElseThrow(() -> AnotherArtException.type(AuctionErrorCode.AUCTION_NOT_FOUND));
+    }
+
     public Auction findByIdWithPessimisticLock(Long auctionId) {
         return auctionRepository.findByIdWithPessimisticLock(auctionId)
                 .orElseThrow(() -> AnotherArtException.type(AuctionErrorCode.AUCTION_NOT_FOUND));

@@ -17,6 +17,7 @@ public interface AuctionRepository extends JpaRepository<Auction, Long> {
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("SELECT ac" +
             " FROM Auction ac" +
+            " JOIN FETCH ac.art" +
             " WHERE ac.id = :auctionId")
     Optional<Auction> findByIdWithPessimisticLock(@Param("auctionId") Long auctionId);
 }

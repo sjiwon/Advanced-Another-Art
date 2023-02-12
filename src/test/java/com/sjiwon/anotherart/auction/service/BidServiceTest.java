@@ -74,7 +74,7 @@ class BidServiceTest extends ServiceIntegrateTest {
         Auction auction = initAuction(auctionArt, currentTime3DayAgo, currentTime3DayLater);
 
         Member bidder = createMemberB(ENOUGH_POINT);
-        final int bidAmount = auction.getBidAmount();
+        final int bidAmount = auction.getBidAmount() - 5_000;
 
         // when - then
         assertThatThrownBy(() -> bidService.bid(auction.getId(), bidder.getId(), bidAmount))

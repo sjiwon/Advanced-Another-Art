@@ -52,7 +52,7 @@ class BidApiControllerTest extends ControllerTest {
 
             Long auctionId = 1L;
             Auction auction = createMockAuction(art, currentTime1DayLater, currentTime3DayLater);
-            given(auctionFindService.findByIdWithPessimisticLock(auctionId)).willReturn(auction);
+            given(auctionFindService.findById(auctionId)).willReturn(auction);
 
             final int bidAmount = art.getPrice() + 5_000;
 
@@ -102,7 +102,7 @@ class BidApiControllerTest extends ControllerTest {
 
             Long auctionId = 1L;
             Auction auction = createMockAuction(art, LocalDateTime.now().minusDays(2), LocalDateTime.now().minusDays(1));
-            given(auctionFindService.findByIdWithPessimisticLock(auctionId)).willReturn(auction);
+            given(auctionFindService.findById(auctionId)).willReturn(auction);
 
             Long bidderId = 2L;
             final String accessToken = jwtTokenProvider.createAccessToken(bidderId);
@@ -165,7 +165,7 @@ class BidApiControllerTest extends ControllerTest {
 
             Long auctionId = 1L;
             Auction auction = createMockAuction(art, currentTime1DayLater, currentTime3DayLater);
-            given(auctionFindService.findByIdWithPessimisticLock(auctionId)).willReturn(auction);
+            given(auctionFindService.findById(auctionId)).willReturn(auction);
 
             final int bidAmount = art.getPrice() + 5_000;
             doThrow(AnotherArtException.type(AuctionErrorCode.INVALID_OWNER_BID))
@@ -222,7 +222,7 @@ class BidApiControllerTest extends ControllerTest {
 
             Long auctionId = 1L;
             Auction auction = createMockAuction(art, currentTime1DayLater, currentTime3DayLater);
-            given(auctionFindService.findByIdWithPessimisticLock(auctionId)).willReturn(auction);
+            given(auctionFindService.findById(auctionId)).willReturn(auction);
 
             Long bidderId = 2L;
             final String accessToken = jwtTokenProvider.createAccessToken(bidderId);
@@ -282,7 +282,7 @@ class BidApiControllerTest extends ControllerTest {
 
             Long auctionId = 1L;
             Auction auction = createMockAuction(art, currentTime1DayLater, currentTime3DayLater);
-            given(auctionFindService.findByIdWithPessimisticLock(auctionId)).willReturn(auction);
+            given(auctionFindService.findById(auctionId)).willReturn(auction);
 
             Long bidderId = 2L;
             final String accessToken = jwtTokenProvider.createAccessToken(bidderId);
@@ -350,7 +350,7 @@ class BidApiControllerTest extends ControllerTest {
 
             Long auctionId = 1L;
             Auction auction = createMockAuction(art, currentTime1DayLater, currentTime3DayLater);
-            given(auctionFindService.findByIdWithPessimisticLock(auctionId)).willReturn(auction);
+            given(auctionFindService.findById(auctionId)).willReturn(auction);
 
             Long bidderId = 2L;
             final String accessToken = jwtTokenProvider.createAccessToken(bidderId);
