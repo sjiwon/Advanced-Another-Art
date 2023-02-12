@@ -4,6 +4,7 @@ import com.sjiwon.anotherart.common.ServiceIntegrateTest;
 import com.sjiwon.anotherart.common.utils.PasswordEncoderUtils;
 import com.sjiwon.anotherart.fixture.MemberFixture;
 import com.sjiwon.anotherart.global.exception.AnotherArtException;
+import com.sjiwon.anotherart.global.exception.GlobalErrorCode;
 import com.sjiwon.anotherart.member.domain.Member;
 import com.sjiwon.anotherart.member.exception.MemberErrorCode;
 import lombok.RequiredArgsConstructor;
@@ -52,6 +53,79 @@ class MemberServiceTest extends ServiceIntegrateTest {
     }
 
     @Nested
+    @DisplayName("중복 체크")
+    class duplicateCheck {
+        @Test
+        @DisplayName("닉네임 중복 체크를 진행한다")
+        void test1() {
+            // given
+            Member member = createMemberA();
+            final String resource = "nickname";
+
+            // when - then
+            assertDoesNotThrow(() -> memberService.duplicateCheck(resource, member.getNickname() + "diff"));
+            assertThatThrownBy(() -> memberService.duplicateCheck(resource, member.getNickname()))
+                    .isInstanceOf(AnotherArtException.class)
+                    .hasMessage(MemberErrorCode.DUPLICATE_NICKNAME.getMessage());
+        }
+
+        @Test
+        @DisplayName("로그인 아이디 중복 체크를 진행한다")
+        void test2() {
+            // given
+            Member member = createMemberA();
+            final String resource = "loginId";
+
+            // when - then
+            assertDoesNotThrow(() -> memberService.duplicateCheck(resource, member.getLoginId() + "diff"));
+            assertThatThrownBy(() -> memberService.duplicateCheck(resource, member.getLoginId()))
+                    .isInstanceOf(AnotherArtException.class)
+                    .hasMessage(MemberErrorCode.DUPLICATE_LOGIN_ID.getMessage());
+        }
+
+        @Test
+        @DisplayName("전화번호 중복 체크를 진행한다")
+        void test3() {
+            // given
+            Member member = createMemberA();
+            final String resource = "phone";
+
+            // when - then
+            assertDoesNotThrow(() -> memberService.duplicateCheck(resource, member.getPhone() + "diff"));
+            assertThatThrownBy(() -> memberService.duplicateCheck(resource, member.getPhone()))
+                    .isInstanceOf(AnotherArtException.class)
+                    .hasMessage(MemberErrorCode.DUPLICATE_PHONE.getMessage());
+        }
+
+        @Test
+        @DisplayName("이메일 중복 체크를 진행한다")
+        void test4() {
+            // given
+            Member member = createMemberA();
+            final String resource = "email";
+
+            // when - then
+            assertDoesNotThrow(() -> memberService.duplicateCheck(resource, "diff" + member.getEmailValue()));
+            assertThatThrownBy(() -> memberService.duplicateCheck(resource, member.getEmailValue()))
+                    .isInstanceOf(AnotherArtException.class)
+                    .hasMessage(MemberErrorCode.DUPLICATE_EMAIL.getMessage());
+        }
+
+        @Test
+        @DisplayName("중복 체크 대상이 아닌 필드는 예외가 발생한다")
+        void test5() {
+            // given
+            Member member = createMemberA();
+            final String resource = "anonymous";
+
+            // when - then
+            assertThatThrownBy(() -> memberService.duplicateCheck(resource, member.getNickname()))
+                    .isInstanceOf(AnotherArtException.class)
+                    .hasMessage(GlobalErrorCode.VALIDATION_ERROR.getMessage());
+        }
+    }
+
+    @Nested
     @DisplayName("닉네임 수정")
     class changeNickname {
         @Test
@@ -96,7 +170,7 @@ class MemberServiceTest extends ServiceIntegrateTest {
 
     @Test
     @DisplayName("이름, 이메일에 해당되는 사용자의 로그인 아이디를 찾는다")
-    void test6() {
+    void test1() {
         // given
         Member member = createMemberA();
 
@@ -109,7 +183,7 @@ class MemberServiceTest extends ServiceIntegrateTest {
 
     @Test
     @DisplayName("이름, 로그인 아이디, 이메일에 해당하는 사용자가 존재하는지 확인한다")
-    void test7() {
+    void test2() {
         // given
         Member member = createMemberA();
         final String name = member.getName();
@@ -131,7 +205,7 @@ class MemberServiceTest extends ServiceIntegrateTest {
 
     @Test
     @DisplayName("비밀번호를 재설정한다")
-    void test8() {
+    void test3() {
         // given
         Member member = createMemberA();
         final String changePassword = MemberFixture.A.getPassword() + "change";
