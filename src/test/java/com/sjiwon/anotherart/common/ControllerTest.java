@@ -10,10 +10,10 @@ import com.sjiwon.anotherart.auction.controller.BidApiController;
 import com.sjiwon.anotherart.auction.service.AuctionFindService;
 import com.sjiwon.anotherart.auction.service.BidService;
 import com.sjiwon.anotherart.common.config.JwtTestConfiguration;
-import com.sjiwon.anotherart.common.config.SecurityTestConfiguration;
 import com.sjiwon.anotherart.favorite.controller.FavoriteApiController;
 import com.sjiwon.anotherart.favorite.service.FavoriteService;
 import com.sjiwon.anotherart.fixture.MemberFixture;
+import com.sjiwon.anotherart.global.security.SecurityConfiguration;
 import com.sjiwon.anotherart.member.controller.MemberApiController;
 import com.sjiwon.anotherart.member.controller.MemberDetailApiController;
 import com.sjiwon.anotherart.member.controller.MemberPointApiController;
@@ -52,7 +52,7 @@ import static org.mockito.BDDMockito.given;
         PurchaseApiController.class,
         TokenReissueApiController.class
 })
-@Import({JwtTestConfiguration.class, SecurityTestConfiguration.class})
+@Import({JwtTestConfiguration.class, SecurityConfiguration.class})
 @AutoConfigureRestDocs
 public abstract class ControllerTest {
     @Autowired

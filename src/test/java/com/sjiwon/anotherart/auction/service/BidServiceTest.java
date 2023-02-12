@@ -126,7 +126,7 @@ class BidServiceTest extends ServiceIntegrateTest {
                 () -> assertThat(auction.getBidAmount()).isEqualTo(bidAmount),
                 // 현재 최고 입찰자 포인트
                 () -> assertThat(bidder.getAvailablePoint()).isEqualTo(ENOUGH_POINT - bidAmount),
-                () -> assertThat(bidder.getTotalPoints()).isEqualTo(ENOUGH_POINT)
+                () -> assertThat(memberRepository.getTotalPointsByMemberId(bidder.getId())).isEqualTo(ENOUGH_POINT)
         );
     }
 
@@ -156,7 +156,7 @@ class BidServiceTest extends ServiceIntegrateTest {
                 () -> assertThat(auction.getBidAmount()).isEqualTo(bidAmount1),
                 // 현재 최고 입찰자 포인트
                 () -> assertThat(bidder1.getAvailablePoint()).isEqualTo(ENOUGH_POINT - bidAmount1),
-                () -> assertThat(bidder1.getTotalPoints()).isEqualTo(ENOUGH_POINT)
+                () -> assertThat(memberRepository.getTotalPointsByMemberId(bidder1.getId())).isEqualTo(ENOUGH_POINT)
         );
 
         // 입찰 2회
@@ -178,10 +178,10 @@ class BidServiceTest extends ServiceIntegrateTest {
                 () -> assertThat(auction.getBidAmount()).isEqualTo(bidAmount2),
                 // 이전 최고 입찰자 포인트
                 () -> assertThat(bidder1.getAvailablePoint()).isEqualTo(ENOUGH_POINT),
-                () -> assertThat(bidder1.getTotalPoints()).isEqualTo(ENOUGH_POINT),
+                () -> assertThat(memberRepository.getTotalPointsByMemberId(bidder1.getId())).isEqualTo(ENOUGH_POINT),
                 // 현재 최고 입찰자 포인트
                 () -> assertThat(bidder2.getAvailablePoint()).isEqualTo(ENOUGH_POINT - bidAmount2),
-                () -> assertThat(bidder2.getTotalPoints()).isEqualTo(ENOUGH_POINT)
+                () -> assertThat(memberRepository.getTotalPointsByMemberId(bidder2.getId())).isEqualTo(ENOUGH_POINT)
         );
     }
 
@@ -192,19 +192,19 @@ class BidServiceTest extends ServiceIntegrateTest {
 
     private Member createMemberA(int chargeAmount) {
         Member member = memberRepository.save(MemberFixture.A.toMember());
-        member.addPointDetail(PointDetail.insertPointDetail(member, PointType.CHARGE, chargeAmount));
+        pointDetailRepository.save(PointDetail.insertPointDetail(member, PointType.CHARGE, chargeAmount));
         return member;
     }
 
     private Member createMemberB(int chargeAmount) {
         Member member = memberRepository.save(MemberFixture.B.toMember());
-        member.addPointDetail(PointDetail.insertPointDetail(member, PointType.CHARGE, chargeAmount));
+        pointDetailRepository.save(PointDetail.insertPointDetail(member, PointType.CHARGE, chargeAmount));
         return member;
     }
 
     private Member createMemberC(int chargeAmount) {
         Member member = memberRepository.save(MemberFixture.C.toMember());
-        member.addPointDetail(PointDetail.insertPointDetail(member, PointType.CHARGE, chargeAmount));
+        pointDetailRepository.save(PointDetail.insertPointDetail(member, PointType.CHARGE, chargeAmount));
         return member;
     }
 

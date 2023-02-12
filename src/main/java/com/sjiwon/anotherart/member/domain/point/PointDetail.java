@@ -43,19 +43,16 @@ public class PointDetail {
         this.amount = amount;
     }
 
-    public static PointDetail createPointDetail(Member member) {
-        return new PointDetail(member, PointType.JOIN, 0);
-    }
-
     public static PointDetail insertPointDetail(Member member, PointType pointType, int dealAmount) {
         updateMemberAvailablePoint(member, pointType, dealAmount);
         return new PointDetail(member, pointType, dealAmount);
     }
 
     private static void updateMemberAvailablePoint(Member member, PointType pointType, int dealAmount) {
-        switch (pointType) {
-            case CHARGE, SOLD -> member.increasePoint(dealAmount);
-            default -> member.decreasePoint(dealAmount);
+        if (pointType.isChargeType()) {
+            member.increasePoint(dealAmount);
+        } else if (pointType.isRefundType()) {
+            member.decreasePoint(dealAmount);
         }
     }
 

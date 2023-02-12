@@ -8,6 +8,7 @@ import com.sjiwon.anotherart.fixture.MemberFixture;
 import com.sjiwon.anotherart.member.domain.Member;
 import com.sjiwon.anotherart.member.domain.MemberRepository;
 import com.sjiwon.anotherart.member.domain.point.PointDetail;
+import com.sjiwon.anotherart.member.domain.point.PointDetailRepository;
 import com.sjiwon.anotherart.member.domain.point.PointType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -20,12 +21,16 @@ import static com.sjiwon.anotherart.common.utils.MemberUtils.INIT_AVAILABLE_POIN
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
+@DisplayName("Purchase [Repository Layer] -> PurchaseRepository 테스트")
 class PurchaseRepositoryTest extends RepositoryTest {
     @Autowired
     private PurchaseRepository purchaseRepository;
 
     @Autowired
     private MemberRepository memberRepository;
+
+    @Autowired
+    private PointDetailRepository pointDetailRepository;
 
     @Autowired
     private ArtRepository artRepository;
@@ -62,13 +67,13 @@ class PurchaseRepositoryTest extends RepositoryTest {
 
     private Member createMemberA(int chargePoint) {
         Member member = memberRepository.save(MemberFixture.A.toMember());
-        member.addPointDetail(PointDetail.insertPointDetail(member, PointType.CHARGE, chargePoint));
+        pointDetailRepository.save(PointDetail.insertPointDetail(member, PointType.CHARGE, chargePoint));
         return member;
     }
 
     private Member createMemberB(int chargePoint) {
         Member member = memberRepository.save(MemberFixture.B.toMember());
-        member.addPointDetail(PointDetail.insertPointDetail(member, PointType.CHARGE, chargePoint));
+        pointDetailRepository.save(PointDetail.insertPointDetail(member, PointType.CHARGE, chargePoint));
         return member;
     }
 

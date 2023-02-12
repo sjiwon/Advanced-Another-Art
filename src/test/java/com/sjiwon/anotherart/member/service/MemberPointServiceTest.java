@@ -38,18 +38,14 @@ class MemberPointServiceTest extends ServiceIntegrateTest {
         // then
         List<PointDetail> pointDetails = pointDetailRepository.findByMemberId(member.getId());
         assertAll(
-                () -> assertThat(pointDetails.size()).isEqualTo(2),
-                // 회원가입
-                () -> assertThat(pointDetails.get(0).getPointType()).isEqualTo(PointType.JOIN),
-                () -> assertThat(pointDetails.get(0).getAmount()).isEqualTo(0),
-                () -> assertThat(pointDetails.get(0).getMember().getId()).isEqualTo(member.getId()),
+                () -> assertThat(pointDetails.size()).isEqualTo(1),
                 // 포인트 충전
-                () -> assertThat(pointDetails.get(1).getPointType()).isEqualTo(PointType.CHARGE),
-                () -> assertThat(pointDetails.get(1).getAmount()).isEqualTo(chargeAmount),
-                () -> assertThat(pointDetails.get(1).getMember().getId()).isEqualTo(member.getId()),
+                () -> assertThat(pointDetails.get(0).getPointType()).isEqualTo(PointType.CHARGE),
+                () -> assertThat(pointDetails.get(0).getAmount()).isEqualTo(chargeAmount),
+                () -> assertThat(pointDetails.get(0).getMember().getId()).isEqualTo(member.getId()),
                 // 최종 사용자 포인트 현황
                 () -> assertThat(member.getAvailablePoint()).isEqualTo(initAmount + chargeAmount),
-                () -> assertThat(member.getTotalPoints()).isEqualTo(initAmount + chargeAmount)
+                () -> assertThat(memberRepository.getTotalPointsByMemberId(member.getId())).isEqualTo(initAmount + chargeAmount)
         );
     }
 
@@ -84,22 +80,18 @@ class MemberPointServiceTest extends ServiceIntegrateTest {
             // then
             List<PointDetail> pointDetails = pointDetailRepository.findByMemberId(member.getId());
             assertAll(
-                    () -> assertThat(pointDetails.size()).isEqualTo(3),
-                    // 회원가입
-                    () -> assertThat(pointDetails.get(0).getPointType()).isEqualTo(PointType.JOIN),
-                    () -> assertThat(pointDetails.get(0).getAmount()).isEqualTo(0),
-                    () -> assertThat(pointDetails.get(0).getMember().getId()).isEqualTo(member.getId()),
+                    () -> assertThat(pointDetails.size()).isEqualTo(2),
                     // 포인트 충전
-                    () -> assertThat(pointDetails.get(1).getPointType()).isEqualTo(PointType.CHARGE),
-                    () -> assertThat(pointDetails.get(1).getAmount()).isEqualTo(INIT_AVAILABLE_POINT),
-                    () -> assertThat(pointDetails.get(1).getMember().getId()).isEqualTo(member.getId()),
+                    () -> assertThat(pointDetails.get(0).getPointType()).isEqualTo(PointType.CHARGE),
+                    () -> assertThat(pointDetails.get(0).getAmount()).isEqualTo(INIT_AVAILABLE_POINT),
+                    () -> assertThat(pointDetails.get(0).getMember().getId()).isEqualTo(member.getId()),
                     // 포인트 환불
-                    () -> assertThat(pointDetails.get(2).getPointType()).isEqualTo(PointType.REFUND),
-                    () -> assertThat(pointDetails.get(2).getAmount()).isEqualTo(refundAmount),
-                    () -> assertThat(pointDetails.get(2).getMember().getId()).isEqualTo(member.getId()),
+                    () -> assertThat(pointDetails.get(1).getPointType()).isEqualTo(PointType.REFUND),
+                    () -> assertThat(pointDetails.get(1).getAmount()).isEqualTo(refundAmount),
+                    () -> assertThat(pointDetails.get(1).getMember().getId()).isEqualTo(member.getId()),
                     // 최종 사용자 포인트 현황
                     () -> assertThat(member.getAvailablePoint()).isEqualTo(INIT_AVAILABLE_POINT - refundAmount),
-                    () -> assertThat(member.getTotalPoints()).isEqualTo(INIT_AVAILABLE_POINT - refundAmount)
+                    () -> assertThat(memberRepository.getTotalPointsByMemberId(member.getId())).isEqualTo(INIT_AVAILABLE_POINT - refundAmount)
             );
         }
     }
@@ -110,7 +102,7 @@ class MemberPointServiceTest extends ServiceIntegrateTest {
 
     private Member createMemberAndChargePoint() {
         Member member = memberRepository.save(MemberFixture.A.toMember());
-        member.addPointDetail(PointDetail.insertPointDetail(member, PointType.CHARGE, INIT_AVAILABLE_POINT));
+        pointDetailRepository.save(PointDetail.insertPointDetail(member, PointType.CHARGE, INIT_AVAILABLE_POINT));
         return member;
     }
 }

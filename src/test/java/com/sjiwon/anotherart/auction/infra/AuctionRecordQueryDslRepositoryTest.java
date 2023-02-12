@@ -13,6 +13,7 @@ import com.sjiwon.anotherart.fixture.MemberFixture;
 import com.sjiwon.anotherart.member.domain.Member;
 import com.sjiwon.anotherart.member.domain.MemberRepository;
 import com.sjiwon.anotherart.member.domain.point.PointDetail;
+import com.sjiwon.anotherart.member.domain.point.PointDetailRepository;
 import com.sjiwon.anotherart.member.domain.point.PointType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -30,6 +31,9 @@ class AuctionRecordQueryDslRepositoryTest extends RepositoryTest {
 
     @Autowired
     private MemberRepository memberRepository;
+
+    @Autowired
+    private PointDetailRepository pointDetailRepository;
 
     @Autowired
     private ArtRepository artRepository;
@@ -58,7 +62,7 @@ class AuctionRecordQueryDslRepositoryTest extends RepositoryTest {
         assertAll(
                 () -> assertThat(actual2).isTrue(),
                 () -> assertThat(bidder.getAvailablePoint()).isEqualTo(INIT_AVAILABLE_POINT - BID_AMOUNT),
-                () -> assertThat(bidder.getTotalPoints()).isEqualTo(INIT_AVAILABLE_POINT)
+                () -> assertThat(memberRepository.getTotalPointsByMemberId(bidder.getId())).isEqualTo(INIT_AVAILABLE_POINT)
         );
     }
 
@@ -68,15 +72,15 @@ class AuctionRecordQueryDslRepositoryTest extends RepositoryTest {
     }
 
     private Member createMemberA() {
-        Member member = MemberFixture.A.toMember();
-        member.addPointDetail(PointDetail.insertPointDetail(member, PointType.CHARGE, INIT_AVAILABLE_POINT));
-        return memberRepository.save(member);
+        Member member = memberRepository.save(MemberFixture.A.toMember());
+        pointDetailRepository.save(PointDetail.insertPointDetail(member, PointType.CHARGE, INIT_AVAILABLE_POINT));
+        return member;
     }
 
     private Member createMemberB() {
-        Member member = MemberFixture.B.toMember();
-        member.addPointDetail(PointDetail.insertPointDetail(member, PointType.CHARGE, INIT_AVAILABLE_POINT));
-        return memberRepository.save(member);
+        Member member = memberRepository.save(MemberFixture.B.toMember());
+        pointDetailRepository.save(PointDetail.insertPointDetail(member, PointType.CHARGE, INIT_AVAILABLE_POINT));
+        return member;
     }
 
     private Art createAuctionArt(Member owner) {

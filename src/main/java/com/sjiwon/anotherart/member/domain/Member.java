@@ -1,7 +1,6 @@
 package com.sjiwon.anotherart.member.domain;
 
 import com.sjiwon.anotherart.global.exception.AnotherArtException;
-import com.sjiwon.anotherart.member.domain.point.PointDetail;
 import com.sjiwon.anotherart.member.exception.MemberErrorCode;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -10,8 +9,6 @@ import lombok.NoArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 @Getter
@@ -54,9 +51,6 @@ public class Member {
     @Column(name = "role", nullable = false, updatable = false, length = 20)
     private Role role;
 
-    @OneToMany(mappedBy = "member", cascade = CascadeType.PERSIST)
-    private List<PointDetail> pointDetails = new ArrayList<>();
-
     @Builder
     private Member(String name, String nickname, String loginId, Password password, String school, Address address, String phone, Email email) {
         this.name = name;
@@ -69,15 +63,10 @@ public class Member {
         this.email = email;
         this.availablePoint = AvailablePoint.from(0);
         this.role = Role.USER;
-        addPointDetail(PointDetail.createPointDetail(this));
     }
 
     public static Member createMember(String name, String nickname, String loginId, Password password, String school, Address address, String phone, Email email) {
         return new Member(name, nickname, loginId, password, school, address, phone, email);
-    }
-
-    public void addPointDetail(PointDetail pointDetail) {
-        this.pointDetails.add(pointDetail);
     }
 
     public void changeNickname(String nickname) {
@@ -134,19 +123,5 @@ public class Member {
 
     public int getAvailablePoint() {
         return this.availablePoint.getValue();
-    }
-
-    public int getTotalPoints() {
-        int result = 0;
-
-        for (PointDetail pointDetail : pointDetails) {
-            if (pointDetail.isPointIncreaseType()) {
-                result += pointDetail.getAmount();
-            } else {
-                result -= pointDetail.getAmount();
-            }
-        }
-
-        return result;
     }
 }

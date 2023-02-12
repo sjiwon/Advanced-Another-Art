@@ -11,24 +11,8 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 @DisplayName("PointDetail 도메인 테스트")
 class PointDetailTest {
     @Test
-    @DisplayName("회원가입한 멤버의 포인트 내역")
-    void test1(){
-        // given
-        Member memberA = MemberFixture.A.toMember();
-
-        // when
-        PointDetail pointDetail = PointDetail.createPointDetail(memberA);
-
-        // then
-        assertAll(
-                () -> assertThat(pointDetail.getPointType()).isEqualTo(PointType.JOIN),
-                () -> assertThat(pointDetail.getAmount()).isEqualTo(0)
-        );
-    }
-
-    @Test
     @DisplayName("포인트 충전 후 멤버의 포인트 내역")
-    void test2(){
+    void test1(){
         // given
         Member memberA = MemberFixture.A.toMember();
 
@@ -47,7 +31,7 @@ class PointDetailTest {
 
     @Test
     @DisplayName("포인트 환불 후 멤버의 포인트 내역")
-    void test3(){
+    void test2(){
         // given
         Member memberA = MemberFixture.A.toMember();
         final int increasePoint = 10000;
@@ -63,48 +47,6 @@ class PointDetailTest {
                 () -> assertThat(pointDetail.getAmount()).isEqualTo(refundAmount),
                 () -> assertThat(pointDetail.isPointIncreaseType()).isFalse(),
                 () -> assertThat(memberA.getAvailablePoint()).isEqualTo(increasePoint - refundAmount)
-        );
-    }
-
-    @Test
-    @DisplayName("작품 구매 후 멤버의 포인트 내역")
-    void test4(){
-        // given
-        Member memberA = MemberFixture.A.toMember();
-        final int increasePoint = 10000;
-        memberA.increasePoint(increasePoint);
-
-        // when
-        final int artPrice = 5000;
-        PointDetail pointDetail = PointDetail.insertPointDetail(memberA, PointType.PURCHASE, artPrice);
-
-        // then
-        assertAll(
-                () -> assertThat(pointDetail.getPointType()).isEqualTo(PointType.PURCHASE),
-                () -> assertThat(pointDetail.getAmount()).isEqualTo(artPrice),
-                () -> assertThat(pointDetail.isPointIncreaseType()).isFalse(),
-                () -> assertThat(memberA.getAvailablePoint()).isEqualTo(increasePoint - artPrice)
-        );
-    }
-
-    @Test
-    @DisplayName("작품 판매 후 멤버의 포인트 내역")
-    void test5(){
-        // given
-        Member memberA = MemberFixture.A.toMember();
-        final int increasePoint = 10000;
-        memberA.increasePoint(increasePoint);
-
-        // when
-        final int artPrice = 5000;
-        PointDetail pointDetail = PointDetail.insertPointDetail(memberA, PointType.SOLD, artPrice);
-
-        // then
-        assertAll(
-                () -> assertThat(pointDetail.getPointType()).isEqualTo(PointType.SOLD),
-                () -> assertThat(pointDetail.getAmount()).isEqualTo(artPrice),
-                () -> assertThat(pointDetail.isPointIncreaseType()).isTrue(),
-                () -> assertThat(memberA.getAvailablePoint()).isEqualTo(increasePoint + artPrice)
         );
     }
 }
