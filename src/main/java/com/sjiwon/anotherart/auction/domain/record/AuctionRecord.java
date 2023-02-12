@@ -42,8 +42,6 @@ public class AuctionRecord {
         this.auction = auction;
         this.bidder = bidder;
         this.bidAmount = bidAmount;
-
-        auction.getAuctionRecords().add(this);
     }
 
     public static AuctionRecord createAuctionRecord(Auction auction, Member bidder, int bidPrice) {
