@@ -6,13 +6,14 @@ import com.sjiwon.anotherart.auction.domain.Auction;
 import com.sjiwon.anotherart.auction.service.AuctionFindService;
 import com.sjiwon.anotherart.global.exception.AnotherArtException;
 import com.sjiwon.anotherart.member.domain.Member;
-import com.sjiwon.anotherart.member.domain.point.PointDetail;
-import com.sjiwon.anotherart.member.domain.point.PointType;
 import com.sjiwon.anotherart.member.service.MemberFindService;
 import com.sjiwon.anotherart.purchase.domain.Purchase;
 import com.sjiwon.anotherart.purchase.domain.PurchaseRepository;
+import com.sjiwon.anotherart.purchase.event.AuctionArtDealEvent;
+import com.sjiwon.anotherart.purchase.event.GeneralArtDealEvent;
 import com.sjiwon.anotherart.purchase.exception.PurchaseErrorCode;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
@@ -25,6 +26,7 @@ public class PurchaseService {
     private final ArtFindService artFindService;
     private final AuctionFindService auctionFindService;
     private final PurchaseRepository purchaseRepository;
+    private final ApplicationEventPublisher applicationEventPublisher;
 
     @Transactional
     public void purchaseArt(Long artId, Long buyerId) {
@@ -54,7 +56,7 @@ public class PurchaseService {
 
         Member buyer = memberFindService.findById(buyerId);
         purchaseRepository.save(Purchase.purchaseArt(buyer, art, auction.getBidAmount()));
-        proceedingPointTransaction(auction, art, buyer);
+        publishPointTransactionEvent(auction, art, buyer);
     }
 
     private void validateAuctionInProgress(Auction auction) {
@@ -73,16 +75,15 @@ public class PurchaseService {
     private void generalArtPurchaseProcess(Art art, Long buyerId) {
         Member buyer = memberFindService.findById(buyerId);
         purchaseRepository.save(Purchase.purchaseArt(buyer, art, art.getPrice()));
-        proceedingPointTransaction(null, art, buyer);
+        publishPointTransactionEvent(null, art, buyer);
     }
 
-    private void proceedingPointTransaction(@Nullable Auction auction, Art art, Member buyer) {
+    private void publishPointTransactionEvent(@Nullable Auction auction, Art art, Member buyer) {
         Member owner = art.getOwner();
         if (auction == null) {
-            owner.addPointDetail(PointDetail.insertPointDetail(owner, PointType.SOLD, art.getPrice()));
-            buyer.addPointDetail(PointDetail.insertPointDetail(buyer, PointType.PURCHASE, art.getPrice()));
+            applicationEventPublisher.publishEvent(new GeneralArtDealEvent(owner.getId(), buyer.getId(), art.getPrice()));
         } else {
-            owner.addPointDetail(PointDetail.insertPointDetail(owner, PointType.SOLD, auction.getBidAmount()));
+            applicationEventPublisher.publishEvent(new AuctionArtDealEvent(owner.getId(), buyer.getId(), auction.getBidAmount()));
         }
     }
 }
