@@ -2,6 +2,7 @@ package com.sjiwon.anotherart.global.security.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sjiwon.anotherart.global.exception.ErrorResponse;
+import com.sjiwon.anotherart.global.security.exception.AnotherArtAccessDeniedException;
 import com.sjiwon.anotherart.global.security.exception.AuthErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -22,6 +23,11 @@ public class JwtAccessDeniedHandler implements AccessDeniedHandler {
         response.setStatus(HttpStatus.FORBIDDEN.value());
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setCharacterEncoding("UTF-8");
-        objectMapper.writeValue(response.getWriter(), ErrorResponse.from(AuthErrorCode.INVALID_TOKEN));
+
+        if (accessDeniedException instanceof AnotherArtAccessDeniedException ex) {
+            objectMapper.writeValue(response.getWriter(), ErrorResponse.from(ex.getCode()));
+        } else {
+            objectMapper.writeValue(response.getWriter(), ErrorResponse.from(AuthErrorCode.INVALID_TOKEN));
+        }
     }
 }

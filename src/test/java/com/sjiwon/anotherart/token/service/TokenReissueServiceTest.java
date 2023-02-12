@@ -32,7 +32,7 @@ class TokenReissueServiceTest extends ServiceIntegrateTest {
         // when - then
         assertThatThrownBy(() -> tokenReissueService.reissueTokens(member.getId(), refreshToken))
                 .isInstanceOf(AnotherArtException.class)
-                .hasMessage(AuthErrorCode.INVALID_TOKEN.getMessage());
+                .hasMessage(AuthErrorCode.EXPIRED_OR_POLLUTED_TOKEN.getMessage());
     }
 
     @Test

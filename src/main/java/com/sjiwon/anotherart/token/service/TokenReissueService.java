@@ -18,7 +18,7 @@ public class TokenReissueService {
     public TokenResponse reissueTokens(Long memberId, String refreshToken) {
         // 사용자가 보유하고 있는 Refresh Token인지
         if (!tokenPersistenceService.isRefreshTokenExists(memberId, refreshToken)) {
-            throw AnotherArtException.type(AuthErrorCode.INVALID_TOKEN);
+            throw AnotherArtException.type(AuthErrorCode.EXPIRED_OR_POLLUTED_TOKEN);
         }
 
         // Access Token & Refresh Token 발급

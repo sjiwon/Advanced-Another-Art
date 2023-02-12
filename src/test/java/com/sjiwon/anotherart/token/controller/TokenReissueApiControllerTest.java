@@ -76,7 +76,7 @@ class TokenReissueApiControllerTest extends ControllerTest {
                     .header(AUTHORIZATION, BEARER_TOKEN + refreshToken);
 
             // then
-            final AuthErrorCode expectedError = AuthErrorCode.INVALID_TOKEN;
+            final AuthErrorCode expectedError = AuthErrorCode.EXPIRED_OR_POLLUTED_TOKEN;
             mockMvc.perform(requestBuilder)
                     .andExpect(status().isForbidden())
                     .andExpect(jsonPath("$.statusCode").exists())

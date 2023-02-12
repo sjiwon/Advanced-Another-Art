@@ -41,7 +41,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
                 UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(principal, "", generateMemberRole());
                 SecurityContextHolder.getContext().setAuthentication(authenticationToken);
             } else {
-                throw AnotherArtAccessDeniedException.type(AuthErrorCode.INVALID_TOKEN);
+                throw AnotherArtAccessDeniedException.type(AuthErrorCode.EXPIRED_OR_POLLUTED_TOKEN);
             }
         }
 
