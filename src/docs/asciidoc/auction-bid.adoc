@@ -15,7 +15,7 @@ include::{snippets}/AuctionApi/Bid/Failure/Case1/request-parameters.adoc[]
 HTTP Response
 include::{snippets}/AuctionApi/Bid/Failure/Case1/response-body.adoc[]
 
-=== 2. 경매가 종료된 후 입찰을 진행함에 따라 예외가 발생한다
+=== 2. 아직 시작하지 않았거나 이미 종료된 경매에 대해서 입찰을 진행함에 따라 예외가 발생한다
 HTTP Request
 include::{snippets}/AuctionApi/Bid/Failure/Case2/http-request.adoc[]
 include::{snippets}/AuctionApi/Bid/Failure/Case2/request-headers.adoc[]

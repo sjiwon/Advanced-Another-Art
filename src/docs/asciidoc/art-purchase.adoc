@@ -14,7 +14,7 @@ include::{snippets}/PurchaseApi/PurchaseAuctionArt/Failure/Case1/path-parameters
 HTTP Response
 include::{snippets}/PurchaseApi/PurchaseAuctionArt/Failure/Case1/response-body.adoc[]
 
-=== 2. 아직 종료되지 않은 경매 작품은 구매할 수 없고 예외가 발생한다
+=== 2. 작품 소유자는 본인의 작품을 구매할 수 없고 예외가 발생한다
 HTTP Request
 include::{snippets}/PurchaseApi/PurchaseAuctionArt/Failure/Case2/http-request.adoc[]
 include::{snippets}/PurchaseApi/PurchaseAuctionArt/Failure/Case2/request-headers.adoc[]
@@ -23,7 +23,7 @@ include::{snippets}/PurchaseApi/PurchaseAuctionArt/Failure/Case2/path-parameters
 HTTP Response
 include::{snippets}/PurchaseApi/PurchaseAuctionArt/Failure/Case2/response-body.adoc[]
 
-=== 3. 종료된 경매에 대해서 최고 입찰자가 아닌 사용자가 구매 요청을 하면 예외가 발생한다
+=== 3. 경매가 진행중인 작품은 구매할 수 없고 예외가 발생한다
 HTTP Request
 include::{snippets}/PurchaseApi/PurchaseAuctionArt/Failure/Case3/http-request.adoc[]
 include::{snippets}/PurchaseApi/PurchaseAuctionArt/Failure/Case3/request-headers.adoc[]
@@ -32,7 +32,7 @@ include::{snippets}/PurchaseApi/PurchaseAuctionArt/Failure/Case3/path-parameters
 HTTP Response
 include::{snippets}/PurchaseApi/PurchaseAuctionArt/Failure/Case3/response-body.adoc[]
 
-=== 4. 이미 판매 완료된 경매 작품에 대한 고의적인 API 호출로 구매 요청을 진행할 경우 예외가 발생한다
+=== 4. 종료된 경매에 대해서 최고 입찰자가 아닌 사용자가 구매 요청을 하면 예외가 발생한다
 HTTP Request
 include::{snippets}/PurchaseApi/PurchaseAuctionArt/Failure/Case4/http-request.adoc[]
 include::{snippets}/PurchaseApi/PurchaseAuctionArt/Failure/Case4/request-headers.adoc[]
@@ -41,7 +41,7 @@ include::{snippets}/PurchaseApi/PurchaseAuctionArt/Failure/Case4/path-parameters
 HTTP Response
 include::{snippets}/PurchaseApi/PurchaseAuctionArt/Failure/Case4/response-body.adoc[]
 
-=== 5. 입찰된 경매 작품에 대해서 구매 확정을 진행할 때 사용 가능한 포인트가 부족함에 따라 예외가 발생한다
+=== 5. 이미 판매 완료된 경매 작품에 대한 고의적인 API 호출로 구매 요청을 진행할 경우 예외가 발생한다
 HTTP Request
 include::{snippets}/PurchaseApi/PurchaseAuctionArt/Failure/Case5/http-request.adoc[]
 include::{snippets}/PurchaseApi/PurchaseAuctionArt/Failure/Case5/request-headers.adoc[]
@@ -50,7 +50,16 @@ include::{snippets}/PurchaseApi/PurchaseAuctionArt/Failure/Case5/path-parameters
 HTTP Response
 include::{snippets}/PurchaseApi/PurchaseAuctionArt/Failure/Case5/response-body.adoc[]
 
-=== 6. 경매 작품 구매에 성공한다
+=== 6. 입찰된 경매 작품에 대해서 구매 확정을 진행할 때 사용 가능한 포인트가 부족함에 따라 예외가 발생한다
+HTTP Request
+include::{snippets}/PurchaseApi/PurchaseAuctionArt/Failure/Case6/http-request.adoc[]
+include::{snippets}/PurchaseApi/PurchaseAuctionArt/Failure/Case6/request-headers.adoc[]
+include::{snippets}/PurchaseApi/PurchaseAuctionArt/Failure/Case6/path-parameters.adoc[]
+
+HTTP Response
+include::{snippets}/PurchaseApi/PurchaseAuctionArt/Failure/Case6/response-body.adoc[]
+
+=== 7. 경매 작품 구매에 성공한다
 HTTP Request
 include::{snippets}/PurchaseApi/PurchaseAuctionArt/Success/http-request.adoc[]
 include::{snippets}/PurchaseApi/PurchaseAuctionArt/Success/request-headers.adoc[]
