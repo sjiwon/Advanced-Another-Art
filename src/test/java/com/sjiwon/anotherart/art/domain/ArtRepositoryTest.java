@@ -31,7 +31,7 @@ class ArtRepositoryTest extends RepositoryTest {
         Member memberB = createMemberB();
 
         // when
-        Art art = createArtA(owner);
+        Art art = createAuctionArt(owner);
 
         // then
         assertAll(
@@ -45,8 +45,8 @@ class ArtRepositoryTest extends RepositoryTest {
     void test2() {
         // given
         Member owner = createMemberA();
-        Art artA = createArtA(owner);
-        Art artB = createArtB(owner);
+        Art artA = createAuctionArt(owner);
+        Art artB = createGeneralArt(owner);
 
         // when
         List<Art> ownerArtList = artRepository.findByOwnerId(owner.getId());
@@ -78,7 +78,7 @@ class ArtRepositoryTest extends RepositoryTest {
     void test3() {
         // given
         Member owner = createMemberA();
-        Art art = createArtA(owner);
+        Art art = createAuctionArt(owner);
 
         // when
         boolean actual1 = artRepository.existsByName(art.getName());
@@ -96,7 +96,7 @@ class ArtRepositoryTest extends RepositoryTest {
     void test4() {
         // given
         Member owner = createMemberA();
-        Art art = createArtA(owner);
+        Art art = createAuctionArt(owner);
 
         // when
         artRepository.deleteHashtagsByArtId(art.getId());
@@ -104,6 +104,25 @@ class ArtRepositoryTest extends RepositoryTest {
         // then
         Art findArt = artRepository.findById(art.getId()).orElseThrow();
         assertThat(findArt.getHashtags()).isEmpty();
+    }
+
+    @Test
+    @DisplayName("작품의 타입을 조회한다")
+    void test5() {
+        // given
+        Member owner = createMemberA();
+        Art generalArt = createGeneralArt(owner);
+        Art auctionArt = createAuctionArt(owner);
+
+        // when
+        ArtType generalType = artRepository.searchArtType(generalArt.getId());
+        ArtType auctionType = artRepository.searchArtType(auctionArt.getId());
+
+        // then
+        assertAll(
+                () -> assertThat(generalType).isEqualTo(ArtType.GENERAL),
+                () -> assertThat(auctionType).isEqualTo(ArtType.AUCTION)
+        );
     }
 
     private Member createMemberA() {
@@ -114,11 +133,11 @@ class ArtRepositoryTest extends RepositoryTest {
         return memberRepository.save(MemberFixture.B.toMember());
     }
 
-    private Art createArtA(Member member) {
+    private Art createAuctionArt(Member member) {
         return artRepository.save(ArtFixture.A.toArt(member, HASHTAGS));
     }
 
-    private Art createArtB(Member member) {
+    private Art createGeneralArt(Member member) {
         return artRepository.save(ArtFixture.B.toArt(member, HASHTAGS));
     }
 }
