@@ -1,6 +1,7 @@
 package com.sjiwon.anotherart.art.infra.query.dto.response;
 
 import com.querydsl.core.annotations.QueryProjection;
+import lombok.Builder;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
@@ -31,6 +32,7 @@ public class BasicAuctionArt {
     private final String ownerNickname;
     private final String ownerSchool;
 
+    @Builder
     @QueryProjection
     public BasicAuctionArt(
             Long auctionId, Integer highestBidPrice, LocalDateTime auctionStartDate, LocalDateTime auctionEndDate,
