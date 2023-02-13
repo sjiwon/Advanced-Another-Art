@@ -1,4 +1,4 @@
-package com.sjiwon.anotherart.auction.infra;
+package com.sjiwon.anotherart.auction.infra.query;
 
 import com.sjiwon.anotherart.art.domain.Art;
 import com.sjiwon.anotherart.art.domain.ArtRepository;
@@ -24,8 +24,8 @@ import static com.sjiwon.anotherart.common.utils.MemberUtils.INIT_AVAILABLE_POIN
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-@DisplayName("AuctionRecord [Repository Layer] -> AuctionRecordQueryDslRepository 테스트")
-class AuctionRecordQueryDslRepositoryTest extends RepositoryTest {
+@DisplayName("AuctionRecord [Repository Layer] -> AuctionRecordQueryRepository 테스트")
+class AuctionRecordQueryRepositoryTest extends RepositoryTest {
     @Autowired
     private AuctionRecordRepository auctionRecordRepository;
 

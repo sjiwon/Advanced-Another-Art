@@ -1,4 +1,4 @@
-package com.sjiwon.anotherart.member.infra;
+package com.sjiwon.anotherart.member.infra.query;
 
 import com.sjiwon.anotherart.common.RepositoryTest;
 import com.sjiwon.anotherart.fixture.MemberFixture;
@@ -14,8 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-@DisplayName("Point [Repository Layer] -> MemberPointQueryDslRepository 테스트")
-class MemberPointQueryDslRepositoryTest extends RepositoryTest {
+@DisplayName("Point [Repository Layer] -> MemberPointQueryRepository 테스트")
+class MemberPointQueryRepositoryTest extends RepositoryTest {
     @Autowired
     private MemberRepository memberRepository;
 

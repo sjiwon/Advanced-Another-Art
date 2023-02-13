@@ -1,4 +1,4 @@
-package com.sjiwon.anotherart.auction.infra;
+package com.sjiwon.anotherart.auction.infra.query;
 
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -8,9 +8,9 @@ import org.springframework.transaction.annotation.Transactional;
 import static com.sjiwon.anotherart.auction.domain.QAuction.auction;
 import static com.sjiwon.anotherart.auction.domain.record.QAuctionRecord.auctionRecord;
 
-@RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class AuctionRecordQueryDslRepositoryImpl implements AuctionRecordQueryDslRepository {
+@RequiredArgsConstructor
+public class AuctionRecordQueryRepositoryImpl implements AuctionRecordQueryRepository {
     private final JPAQueryFactory query;
 
     @Override

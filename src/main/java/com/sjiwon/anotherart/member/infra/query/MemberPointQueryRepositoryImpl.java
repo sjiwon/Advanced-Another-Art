@@ -1,4 +1,4 @@
-package com.sjiwon.anotherart.member.infra;
+package com.sjiwon.anotherart.member.infra.query;
 
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -10,9 +10,9 @@ import java.util.List;
 
 import static com.sjiwon.anotherart.member.domain.point.QPointDetail.pointDetail;
 
-@RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class MemberPointQueryDslRepositoryImpl implements MemberPointQueryDslRepository{
+@RequiredArgsConstructor
+public class MemberPointQueryRepositoryImpl implements MemberPointQueryRepository {
     private final JPAQueryFactory query;
 
     @Override
