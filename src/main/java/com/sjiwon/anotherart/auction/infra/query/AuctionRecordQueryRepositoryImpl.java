@@ -25,6 +25,17 @@ public class AuctionRecordQueryRepositoryImpl implements AuctionRecordQueryRepos
         return count != null;
     }
 
+    @Override
+    public int getBidCountByArtId(Long artId) {
+        return query
+                .select(auctionRecord.id)
+                .from(auctionRecord)
+                .innerJoin(auctionRecord.auction, auction)
+                .where(artIdEq(artId))
+                .fetch()
+                .size();
+    }
+
     private BooleanExpression artIdEq(Long artId) {
         return (artId != null) ? auction.art.id.eq(artId) : null;
     }

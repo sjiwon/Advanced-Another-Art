@@ -43,7 +43,7 @@ class AuctionRecordQueryRepositoryTest extends RepositoryTest {
 
     @Test
     @DisplayName("작품의 경매 기록이 존재하는지 조회한다")
-    void test() {
+    void test1() {
         // given
         Member owner = createMemberA();
         Art auctionArt = createAuctionArt(owner);
@@ -66,6 +66,30 @@ class AuctionRecordQueryRepositoryTest extends RepositoryTest {
         );
     }
 
+    @Test
+    @DisplayName("경매 작품의 입찰 횟수를 조회한다")
+    void test2() {
+        // given
+        Member owner = createMemberA();
+        Art auctionArt = createAuctionArt(owner);
+        Auction auction = initAuction(auctionArt);
+
+        Member memberB = createMemberB();
+        Member memberC = createMemberC();
+
+        // 입찰 1회
+        processBid(auction, memberB, auction.getBidAmount() + 5_000);
+        assertThat(auctionRecordRepository.getBidCountByArtId(auctionArt.getId())).isEqualTo(1);
+
+        // 입찰 2회
+        processBid(auction, memberC, auction.getBidAmount() + 5_000);
+        assertThat(auctionRecordRepository.getBidCountByArtId(auctionArt.getId())).isEqualTo(2);
+
+        // 입찰 3회
+        processBid(auction, memberB, auction.getBidAmount() + 5_000);
+        assertThat(auctionRecordRepository.getBidCountByArtId(auctionArt.getId())).isEqualTo(3);
+    }
+
     private void processBid(Auction auction, Member bidder, int bidAmount) {
         auction.applyNewBid(bidder, bidAmount);
         auctionRecordRepository.save(AuctionRecord.createAuctionRecord(auction, bidder, bidAmount));
@@ -79,6 +103,12 @@ class AuctionRecordQueryRepositoryTest extends RepositoryTest {
 
     private Member createMemberB() {
         Member member = memberRepository.save(MemberFixture.B.toMember());
+        pointDetailRepository.save(PointDetail.insertPointDetail(member, PointType.CHARGE, INIT_AVAILABLE_POINT));
+        return member;
+    }
+
+    private Member createMemberC() {
+        Member member = memberRepository.save(MemberFixture.C.toMember());
         pointDetailRepository.save(PointDetail.insertPointDetail(member, PointType.CHARGE, INIT_AVAILABLE_POINT));
         return member;
     }
