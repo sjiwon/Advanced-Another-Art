@@ -249,7 +249,6 @@ class ArtSpecificSimpleQueryRepositoryTest extends RepositoryTest {
         );
     }
 
-
     private void processLikeMarking(Art art, Member member) {
         favoriteRepository.save(Favorite.favoriteMarking(art.getId(), member.getId()));
     }
