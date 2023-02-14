@@ -91,7 +91,7 @@ class FavoriteApiControllerTest extends ControllerTest {
 
             doThrow(AnotherArtException.type(FavoriteErrorCode.INVALID_LIKE_REQUEST_BY_ART_OWNER))
                     .when(favoriteService)
-                    .like(artId, ownerId);
+                    .addLike(artId, ownerId);
 
             // when
             MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
@@ -141,7 +141,7 @@ class FavoriteApiControllerTest extends ControllerTest {
 
             doThrow(AnotherArtException.type(FavoriteErrorCode.ALREADY_LIKE_MARKING))
                     .when(favoriteService)
-                    .like(artId, memberId);
+                    .addLike(artId, memberId);
 
             // when
             MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
@@ -191,7 +191,7 @@ class FavoriteApiControllerTest extends ControllerTest {
 
             doNothing()
                     .when(favoriteService)
-                    .like(artId, memberId);
+                    .addLike(artId, memberId);
 
             // when
             MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
@@ -275,7 +275,7 @@ class FavoriteApiControllerTest extends ControllerTest {
 
             doThrow(AnotherArtException.type(FavoriteErrorCode.INVALID_LIKE_REQUEST_BY_ART_OWNER))
                     .when(favoriteService)
-                    .likeCancel(artId, ownerId);
+                    .removeLike(artId, ownerId);
 
             // when
             MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
@@ -325,7 +325,7 @@ class FavoriteApiControllerTest extends ControllerTest {
 
             doThrow(AnotherArtException.type(FavoriteErrorCode.NEVER_OR_ALREADY_CANCEL))
                     .when(favoriteService)
-                    .likeCancel(artId, memberId);
+                    .removeLike(artId, memberId);
 
             // when
             MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
@@ -375,7 +375,7 @@ class FavoriteApiControllerTest extends ControllerTest {
 
             doNothing()
                     .when(favoriteService)
-                    .likeCancel(artId, memberId);
+                    .removeLike(artId, memberId);
 
             // when
             MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders

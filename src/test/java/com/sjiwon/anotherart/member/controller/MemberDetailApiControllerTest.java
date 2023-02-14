@@ -7,11 +7,9 @@ import com.sjiwon.anotherart.global.exception.AnotherArtException;
 import com.sjiwon.anotherart.global.security.exception.AuthErrorCode;
 import com.sjiwon.anotherart.member.controller.dto.request.AuthForResetPasswordRequest;
 import com.sjiwon.anotherart.member.controller.dto.request.ChangeNicknameRequest;
-import com.sjiwon.anotherart.member.controller.dto.request.FindIdRequest;
 import com.sjiwon.anotherart.member.controller.dto.request.ResetPasswordRequest;
 import com.sjiwon.anotherart.member.controller.utils.AuthForResetPasswordRequestUtils;
 import com.sjiwon.anotherart.member.controller.utils.ChangeNicknameRequestUtils;
-import com.sjiwon.anotherart.member.controller.utils.FindIdRequestUtils;
 import com.sjiwon.anotherart.member.controller.utils.ResetPasswordRequestUtils;
 import com.sjiwon.anotherart.member.domain.Member;
 import com.sjiwon.anotherart.member.exception.MemberErrorCode;
@@ -32,6 +30,8 @@ import static org.springframework.restdocs.headers.HeaderDocumentation.requestHe
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.requestParameters;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -230,9 +230,9 @@ class MemberDetailApiControllerTest extends ControllerTest {
     }
 
     @Nested
-    @DisplayName("사용자의 로그인 아이디 조회 테스트 [POST /api/member/find/id]")
+    @DisplayName("사용자의 로그인 아이디 조회 테스트 [GET /api/member/id]")
     class findLoginId {
-        private static final String BASE_URL = "/api/member/find/id";
+        private static final String BASE_URL = "/api/member/id";
 
         @Test
         @DisplayName("요청으로 보낸 [이름, 이메일] 데이터중 이름에 대한 사용자 정보가 없는 경우 예외가 발생한다")
@@ -242,13 +242,11 @@ class MemberDetailApiControllerTest extends ControllerTest {
             final String email = member.getEmailValue();
             given(memberService.findLoginId(name, email)).willThrow(AnotherArtException.type(MemberErrorCode.MEMBER_NOT_FOUND));
 
-            FindIdRequest request = FindIdRequestUtils.createRequest(name, email);
-
             // when
             MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                    .post(BASE_URL)
-                    .contentType(APPLICATION_JSON)
-                    .content(ObjectMapperUtils.objectToJson(request));
+                    .get(BASE_URL)
+                    .param("name", name)
+                    .param("email", email);
 
             // then
             final MemberErrorCode expectedError = MemberErrorCode.MEMBER_NOT_FOUND;
@@ -265,9 +263,9 @@ class MemberDetailApiControllerTest extends ControllerTest {
                                     "MemberApi/FindId/Failure/Case1",
                                     preprocessRequest(prettyPrint()),
                                     preprocessResponse(prettyPrint()),
-                                    requestFields(
-                                            fieldWithPath("name").description("사용자 이름"),
-                                            fieldWithPath("email").description("사용자 이메일")
+                                    requestParameters(
+                                            parameterWithName("name").description("사용자 이름"),
+                                            parameterWithName("email").description("사용자 이메일")
                                     ),
                                     responseFields(
                                             fieldWithPath("statusCode").description("HTTP 상태 코드"),
@@ -286,13 +284,11 @@ class MemberDetailApiControllerTest extends ControllerTest {
             final String email = "diff" + member.getEmailValue();
             given(memberService.findLoginId(name, email)).willThrow(AnotherArtException.type(MemberErrorCode.MEMBER_NOT_FOUND));
 
-            FindIdRequest request = FindIdRequestUtils.createRequest(name, email);
-
             // when
             MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                    .post(BASE_URL)
-                    .contentType(APPLICATION_JSON)
-                    .content(ObjectMapperUtils.objectToJson(request));
+                    .get(BASE_URL)
+                    .param("name", name)
+                    .param("email", email);
 
             // then
             final MemberErrorCode expectedError = MemberErrorCode.MEMBER_NOT_FOUND;
@@ -309,9 +305,9 @@ class MemberDetailApiControllerTest extends ControllerTest {
                                     "MemberApi/FindId/Failure/Case2",
                                     preprocessRequest(prettyPrint()),
                                     preprocessResponse(prettyPrint()),
-                                    requestFields(
-                                            fieldWithPath("name").description("사용자 이름"),
-                                            fieldWithPath("email").description("사용자 이메일")
+                                    requestParameters(
+                                            parameterWithName("name").description("사용자 이름"),
+                                            parameterWithName("email").description("사용자 이메일")
                                     ),
                                     responseFields(
                                             fieldWithPath("statusCode").description("HTTP 상태 코드"),
@@ -330,29 +326,27 @@ class MemberDetailApiControllerTest extends ControllerTest {
             final String email = member.getEmailValue();
             given(memberService.findLoginId(name, email)).willReturn(member.getLoginId());
 
-            FindIdRequest request = FindIdRequestUtils.createRequest(name, email);
-
             // when
             MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                    .post(BASE_URL)
-                    .contentType(APPLICATION_JSON)
-                    .content(ObjectMapperUtils.objectToJson(request));
+                    .get(BASE_URL)
+                    .param("name", name)
+                    .param("email", email);
 
             // then
             mockMvc.perform(requestBuilder)
                     .andExpect(status().isOk())
-                    .andExpect(jsonPath("$.value").value(member.getLoginId()))
+                    .andExpect(jsonPath("$.result").value(member.getLoginId()))
                     .andDo(
                             document(
                                     "MemberApi/FindId/Success",
                                     preprocessRequest(prettyPrint()),
                                     preprocessResponse(prettyPrint()),
-                                    requestFields(
-                                            fieldWithPath("name").description("사용자 이름"),
-                                            fieldWithPath("email").description("사용자 이메일")
+                                    requestParameters(
+                                            parameterWithName("name").description("사용자 이름"),
+                                            parameterWithName("email").description("사용자 이메일")
                                     ),
                                     responseFields(
-                                            fieldWithPath("value").description("사용자 로그인 아이디")
+                                            fieldWithPath("result").description("사용자 로그인 아이디")
                                     )
                             )
                     );
@@ -360,9 +354,9 @@ class MemberDetailApiControllerTest extends ControllerTest {
     }
 
     @Nested
-    @DisplayName("비밀번호 재설정을 위한 사용자 인증 테스트 [POST /api/member/reset/password/auth]")
+    @DisplayName("비밀번호 재설정을 위한 사용자 인증 테스트 [POST /api/member/reset-password/auth]")
     class authMemberForResetPassword {
-        private static final String BASE_URL = "/api/member/reset/password/auth";
+        private static final String BASE_URL = "/api/member/reset-password/auth";
 
         @Test
         @DisplayName("요청으로 보낸 정보와 일치하는 사용자가 존재하지 않음에 따라 예외가 발생한다")
@@ -373,7 +367,7 @@ class MemberDetailApiControllerTest extends ControllerTest {
             final String email = member.getEmailValue();
             doThrow(AnotherArtException.type(MemberErrorCode.MEMBER_NOT_FOUND))
                     .when(memberService)
-                    .authMemberForResetPassword(name, loginId, email);
+                    .authMemberForPasswordReset(name, loginId, email);
 
             AuthForResetPasswordRequest request = AuthForResetPasswordRequestUtils.createRequest(name, loginId, email);
 
@@ -421,7 +415,7 @@ class MemberDetailApiControllerTest extends ControllerTest {
             final String email = member.getEmailValue();
             doNothing()
                     .when(memberService)
-                    .authMemberForResetPassword(name, loginId, email);
+                    .authMemberForPasswordReset(name, loginId, email);
 
             AuthForResetPasswordRequest request = AuthForResetPasswordRequestUtils.createRequest(name, loginId, email);
 
@@ -451,9 +445,9 @@ class MemberDetailApiControllerTest extends ControllerTest {
     }
 
     @Nested
-    @DisplayName("비밀번호 재설정 테스트 [POST /api/member/reset/password]")
+    @DisplayName("비밀번호 재설정 테스트 [POST /api/member/reset-password]")
     class resetPassword {
-        private static final String BASE_URL = "/api/member/reset/password";
+        private static final String BASE_URL = "/api/member/reset-password";
 
         @Test
         @DisplayName("이전과 동일한 비밀번호로 재설정하면 예외가 발생한다")

@@ -9,7 +9,7 @@
 === 1. Authorization 헤더에 Access Token이 없음에 따라 예외가 발생한다
 HTTP Request
 include::{snippets}/MemberApi/ChargePoint/Failure/http-request.adoc[]
-include::{snippets}/MemberApi/ChargePoint/Failure/request-parameters.adoc[]
+include::{snippets}/MemberApi/ChargePoint/Failure/request-fields.adoc[]
 
 HTTP Response
 include::{snippets}/MemberApi/ChargePoint/Failure/response-body.adoc[]
@@ -18,7 +18,7 @@ include::{snippets}/MemberApi/ChargePoint/Failure/response-body.adoc[]
 HTTP Request
 include::{snippets}/MemberApi/ChargePoint/Success/http-request.adoc[]
 include::{snippets}/MemberApi/ChargePoint/Success/request-headers.adoc[]
-include::{snippets}/MemberApi/ChargePoint/Success/request-parameters.adoc[]
+include::{snippets}/MemberApi/ChargePoint/Success/request-fields.adoc[]
 
 HTTP Response
 include::{snippets}/MemberApi/ChargePoint/Success/http-response.adoc[]
@@ -27,7 +27,7 @@ include::{snippets}/MemberApi/ChargePoint/Success/http-response.adoc[]
 === 1. Authorization 헤더에 Access Token이 없음에 따라 예외가 발생한다
 HTTP Request
 include::{snippets}/MemberApi/RefundPoint/Failure/Case1/http-request.adoc[]
-include::{snippets}/MemberApi/RefundPoint/Failure/Case1/request-parameters.adoc[]
+include::{snippets}/MemberApi/RefundPoint/Failure/Case1/request-fields.adoc[]
 
 HTTP Response
 include::{snippets}/MemberApi/RefundPoint/Failure/Case1/response-body.adoc[]
@@ -36,7 +36,7 @@ include::{snippets}/MemberApi/RefundPoint/Failure/Case1/response-body.adoc[]
 HTTP Request
 include::{snippets}/MemberApi/RefundPoint/Failure/Case2/http-request.adoc[]
 include::{snippets}/MemberApi/RefundPoint/Failure/Case2/request-headers.adoc[]
-include::{snippets}/MemberApi/RefundPoint/Failure/Case2/request-parameters.adoc[]
+include::{snippets}/MemberApi/RefundPoint/Failure/Case2/request-fields.adoc[]
 
 HTTP Response
 include::{snippets}/MemberApi/RefundPoint/Failure/Case2/response-body.adoc[]
@@ -45,7 +45,7 @@ include::{snippets}/MemberApi/RefundPoint/Failure/Case2/response-body.adoc[]
 HTTP Request
 include::{snippets}/MemberApi/RefundPoint/Success/http-request.adoc[]
 include::{snippets}/MemberApi/RefundPoint/Success/request-headers.adoc[]
-include::{snippets}/MemberApi/RefundPoint/Success/request-parameters.adoc[]
+include::{snippets}/MemberApi/RefundPoint/Success/request-fields.adoc[]
 
 HTTP Response
 include::{snippets}/MemberApi/RefundPoint/Success/http-response.adoc[]

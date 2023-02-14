@@ -113,7 +113,7 @@ class ArtSpecificSimpleQueryRepositoryTest extends RepositoryTest {
         Art art = createGeneralArt(owner, HASHTAGS);
 
         // when - then
-        BasicGeneralArt generalArt1 = artRepository.findGeneralArtById(art.getId());
+        BasicGeneralArt generalArt1 = artRepository.getGeneralArtById(art.getId());
         assertAll(
                 // 작품 정보
                 () -> assertThat(generalArt1.getArtId()).isEqualTo(art.getId()),
@@ -136,7 +136,7 @@ class ArtSpecificSimpleQueryRepositoryTest extends RepositoryTest {
         Member buyer = createMemberB();
         processPurchase(art, buyer);
 
-        BasicGeneralArt generalArt2 = artRepository.findGeneralArtById(art.getId());
+        BasicGeneralArt generalArt2 = artRepository.getGeneralArtById(art.getId());
         assertAll(
                 // 작품 정보
                 () -> assertThat(generalArt2.getArtId()).isEqualTo(art.getId()),
@@ -165,7 +165,7 @@ class ArtSpecificSimpleQueryRepositoryTest extends RepositoryTest {
         Auction auction = initAuction(art);
 
         // when - then
-        BasicAuctionArt auctionArt1 = artRepository.findAuctionArtById(art.getId());
+        BasicAuctionArt auctionArt1 = artRepository.getAuctionArtById(art.getId());
         assertAll(
                 // 경매 정보
                 () -> assertThat(auctionArt1.getAuctionId()).isEqualTo(auction.getId()),
@@ -192,7 +192,7 @@ class ArtSpecificSimpleQueryRepositoryTest extends RepositoryTest {
         final int bidAmount1 = auction.getBidAmount() + 5_000;
         processBid(auction, bidder1, bidAmount1);
 
-        BasicAuctionArt auctionArt2 = artRepository.findAuctionArtById(art.getId());
+        BasicAuctionArt auctionArt2 = artRepository.getAuctionArtById(art.getId());
         assertAll(
                 // 경매 정보
                 () -> assertThat(auctionArt2.getAuctionId()).isEqualTo(auction.getId()),
@@ -218,7 +218,7 @@ class ArtSpecificSimpleQueryRepositoryTest extends RepositoryTest {
         final int bidAmount2 = auction.getBidAmount() + 5_000;
         processBid(auction, bidder2, bidAmount2);
 
-        BasicAuctionArt auctionArt3 = artRepository.findAuctionArtById(art.getId());
+        BasicAuctionArt auctionArt3 = artRepository.getAuctionArtById(art.getId());
         assertAll(
                 // 경매 정보
                 () -> assertThat(auctionArt3.getAuctionId()).isEqualTo(auction.getId()),

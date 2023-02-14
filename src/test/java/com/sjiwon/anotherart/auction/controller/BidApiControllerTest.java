@@ -1,9 +1,12 @@
 package com.sjiwon.anotherart.auction.controller;
 
 import com.sjiwon.anotherart.art.domain.Art;
+import com.sjiwon.anotherart.auction.controller.dto.request.BidRequest;
+import com.sjiwon.anotherart.auction.controller.utils.BidRequestUtils;
 import com.sjiwon.anotherart.auction.domain.Auction;
 import com.sjiwon.anotherart.auction.exception.AuctionErrorCode;
 import com.sjiwon.anotherart.common.ControllerTest;
+import com.sjiwon.anotherart.common.utils.ObjectMapperUtils;
 import com.sjiwon.anotherart.fixture.ArtFixture;
 import com.sjiwon.anotherart.fixture.AuctionFixture;
 import com.sjiwon.anotherart.fixture.MemberFixture;
@@ -24,14 +27,14 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
-import static org.springframework.http.MediaType.APPLICATION_FORM_URLENCODED;
+import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
-import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
-import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
-import static org.springframework.restdocs.request.RequestDocumentation.*;
+import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -55,12 +58,13 @@ class BidApiControllerTest extends ControllerTest {
             given(auctionFindService.findById(auctionId)).willReturn(auction);
 
             final int bidAmount = art.getPrice() + 5_000;
+            BidRequest request = BidRequestUtils.createRequest(bidAmount);
 
             // when
             MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
                     .post(BASE_URL, auctionId)
-                    .contentType(APPLICATION_FORM_URLENCODED)
-                    .param("bidAmount", String.valueOf(bidAmount));
+                    .contentType(APPLICATION_JSON)
+                    .content(ObjectMapperUtils.objectToJson(request));
 
             // then
             final AuthErrorCode expectedError = AuthErrorCode.INVALID_TOKEN;
@@ -80,8 +84,8 @@ class BidApiControllerTest extends ControllerTest {
                                     pathParameters(
                                             parameterWithName("auctionId").description("입찰을 진행할 경매 ID(PK)")
                                     ),
-                                    requestParameters(
-                                            parameterWithName("bidAmount").description("입찰 금액")
+                                    requestFields(
+                                            fieldWithPath("bidAmount").description("입찰 금액")
                                     ),
                                     responseFields(
                                             fieldWithPath("statusCode").description("HTTP 상태 코드"),
@@ -108,6 +112,7 @@ class BidApiControllerTest extends ControllerTest {
             final String accessToken = jwtTokenProvider.createAccessToken(bidderId);
 
             final int bidAmount = art.getPrice() + 5_000;
+            BidRequest request = BidRequestUtils.createRequest(bidAmount);
             doThrow(AnotherArtException.type(AuctionErrorCode.AUCTION_NOT_START_OR_ALREADY_FINISHED))
                     .when(bidService)
                     .bid(auctionId, bidderId, bidAmount);
@@ -115,9 +120,9 @@ class BidApiControllerTest extends ControllerTest {
             // when
             MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
                     .post(BASE_URL, auctionId)
-                    .contentType(APPLICATION_FORM_URLENCODED)
+                    .contentType(APPLICATION_JSON)
                     .header(AUTHORIZATION, BEARER_TOKEN + accessToken)
-                    .param("bidAmount", String.valueOf(bidAmount));
+                    .content(ObjectMapperUtils.objectToJson(request));
 
             // then
             final AuctionErrorCode expectedError = AuctionErrorCode.AUCTION_NOT_START_OR_ALREADY_FINISHED;
@@ -140,8 +145,8 @@ class BidApiControllerTest extends ControllerTest {
                                     pathParameters(
                                             parameterWithName("auctionId").description("입찰을 진행할 경매 ID(PK)")
                                     ),
-                                    requestParameters(
-                                            parameterWithName("bidAmount").description("입찰 금액")
+                                    requestFields(
+                                            fieldWithPath("bidAmount").description("입찰 금액")
                                     ),
                                     responseFields(
                                             fieldWithPath("statusCode").description("HTTP 상태 코드"),
@@ -168,6 +173,7 @@ class BidApiControllerTest extends ControllerTest {
             given(auctionFindService.findById(auctionId)).willReturn(auction);
 
             final int bidAmount = art.getPrice() + 5_000;
+            BidRequest request = BidRequestUtils.createRequest(bidAmount);
             doThrow(AnotherArtException.type(AuctionErrorCode.INVALID_OWNER_BID))
                     .when(bidService)
                     .bid(auctionId, ownerId, bidAmount);
@@ -175,9 +181,9 @@ class BidApiControllerTest extends ControllerTest {
             // when
             MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
                     .post(BASE_URL, auctionId)
-                    .contentType(APPLICATION_FORM_URLENCODED)
+                    .contentType(APPLICATION_JSON)
                     .header(AUTHORIZATION, BEARER_TOKEN + accessToken)
-                    .param("bidAmount", String.valueOf(bidAmount));
+                    .content(ObjectMapperUtils.objectToJson(request));
 
             // then
             final AuctionErrorCode expectedError = AuctionErrorCode.INVALID_OWNER_BID;
@@ -200,8 +206,8 @@ class BidApiControllerTest extends ControllerTest {
                                     pathParameters(
                                             parameterWithName("auctionId").description("입찰을 진행할 경매 ID(PK)")
                                     ),
-                                    requestParameters(
-                                            parameterWithName("bidAmount").description("입찰 금액")
+                                    requestFields(
+                                            fieldWithPath("bidAmount").description("입찰 금액")
                                     ),
                                     responseFields(
                                             fieldWithPath("statusCode").description("HTTP 상태 코드"),
@@ -228,6 +234,7 @@ class BidApiControllerTest extends ControllerTest {
             final String accessToken = jwtTokenProvider.createAccessToken(bidderId);
 
             final int bidAmount = art.getPrice();
+            BidRequest request = BidRequestUtils.createRequest(bidAmount);
             doThrow(AnotherArtException.type(AuctionErrorCode.INVALID_BID_PRICE))
                     .when(bidService)
                     .bid(auctionId, bidderId, bidAmount);
@@ -235,9 +242,9 @@ class BidApiControllerTest extends ControllerTest {
             // when
             MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
                     .post(BASE_URL, auctionId)
-                    .contentType(APPLICATION_FORM_URLENCODED)
+                    .contentType(APPLICATION_JSON)
                     .header(AUTHORIZATION, BEARER_TOKEN + accessToken)
-                    .param("bidAmount", String.valueOf(bidAmount));
+                    .content(ObjectMapperUtils.objectToJson(request));
 
             // then
             final AuctionErrorCode expectedError = AuctionErrorCode.INVALID_BID_PRICE;
@@ -260,8 +267,8 @@ class BidApiControllerTest extends ControllerTest {
                                     pathParameters(
                                             parameterWithName("auctionId").description("입찰을 진행할 경매 ID(PK)")
                                     ),
-                                    requestParameters(
-                                            parameterWithName("bidAmount").description("입찰 금액")
+                                    requestFields(
+                                            fieldWithPath("bidAmount").description("입찰 금액")
                                     ),
                                     responseFields(
                                             fieldWithPath("statusCode").description("HTTP 상태 코드"),
@@ -288,7 +295,9 @@ class BidApiControllerTest extends ControllerTest {
             final String accessToken = jwtTokenProvider.createAccessToken(bidderId);
 
             final int bidAmount1 = art.getPrice() + 5_000;
+            BidRequest request1 = BidRequestUtils.createRequest(bidAmount1);
             final int bidAmount2 = bidAmount1 + 5_000;
+            BidRequest request2 = BidRequestUtils.createRequest(bidAmount2);
             doThrow(AnotherArtException.type(AuctionErrorCode.INVALID_DUPLICATE_BID))
                     .when(bidService)
                     .bid(auctionId, bidderId, bidAmount2);
@@ -296,16 +305,16 @@ class BidApiControllerTest extends ControllerTest {
             // when
             MockHttpServletRequestBuilder requestBuilder1 = RestDocumentationRequestBuilders
                     .post(BASE_URL, auctionId)
-                    .contentType(APPLICATION_FORM_URLENCODED)
+                    .contentType(APPLICATION_JSON)
                     .header(AUTHORIZATION, BEARER_TOKEN + accessToken)
-                    .param("bidAmount", String.valueOf(bidAmount1));
+                    .content(ObjectMapperUtils.objectToJson(request1));
             mockMvc.perform(requestBuilder1);
 
             MockHttpServletRequestBuilder requestBuilder2 = RestDocumentationRequestBuilders
                     .post(BASE_URL, auctionId)
-                    .contentType(APPLICATION_FORM_URLENCODED)
+                    .contentType(APPLICATION_JSON)
                     .header(AUTHORIZATION, BEARER_TOKEN + accessToken)
-                    .param("bidAmount", String.valueOf(bidAmount2));
+                    .content(ObjectMapperUtils.objectToJson(request2));
 
             // then
             final AuctionErrorCode expectedError = AuctionErrorCode.INVALID_DUPLICATE_BID;
@@ -328,8 +337,8 @@ class BidApiControllerTest extends ControllerTest {
                                     pathParameters(
                                             parameterWithName("auctionId").description("입찰을 진행할 경매 ID(PK)")
                                     ),
-                                    requestParameters(
-                                            parameterWithName("bidAmount").description("입찰 금액")
+                                    requestFields(
+                                            fieldWithPath("bidAmount").description("입찰 금액")
                                     ),
                                     responseFields(
                                             fieldWithPath("statusCode").description("HTTP 상태 코드"),
@@ -356,6 +365,7 @@ class BidApiControllerTest extends ControllerTest {
             final String accessToken = jwtTokenProvider.createAccessToken(bidderId);
 
             final int bidAmount = art.getPrice() + 5_000;
+            BidRequest request = BidRequestUtils.createRequest(bidAmount);
             doNothing()
                     .when(bidService)
                     .bid(auctionId, bidderId, bidAmount);
@@ -363,9 +373,9 @@ class BidApiControllerTest extends ControllerTest {
             // when
             MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
                     .post(BASE_URL, auctionId)
-                    .contentType(APPLICATION_FORM_URLENCODED)
+                    .contentType(APPLICATION_JSON)
                     .header(AUTHORIZATION, BEARER_TOKEN + accessToken)
-                    .param("bidAmount", String.valueOf(bidAmount));
+                    .content(ObjectMapperUtils.objectToJson(request));
 
             // then
             mockMvc.perform(requestBuilder)
@@ -382,8 +392,8 @@ class BidApiControllerTest extends ControllerTest {
                                     pathParameters(
                                             parameterWithName("auctionId").description("입찰을 진행할 경매 ID(PK)")
                                     ),
-                                    requestParameters(
-                                            parameterWithName("bidAmount").description("입찰 금액")
+                                    requestFields(
+                                            fieldWithPath("bidAmount").description("입찰 금액")
                                     )
                             )
                     );

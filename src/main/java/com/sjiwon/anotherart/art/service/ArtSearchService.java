@@ -23,14 +23,14 @@ public class ArtSearchService {
         ArtType artType = getArtType(artId);
         if (artType == ArtType.AUCTION) {
             return AuctionArt.builder()
-                    .art(artRepository.findAuctionArtById(artId))
+                    .art(artRepository.getAuctionArtById(artId))
                     .hashtags(artRepository.getHashtagsById(artId))
                     .likeMarkingMembers(artRepository.getLikeMarkingMembersById(artId))
                     .bidCount(auctionRecordRepository.getBidCountByArtId(artId))
                     .build();
         } else if (artType == ArtType.GENERAL) {
             return GeneralArt.builder()
-                    .art(artRepository.findGeneralArtById(artId))
+                    .art(artRepository.getGeneralArtById(artId))
                     .hashtags(artRepository.getHashtagsById(artId))
                     .likeMarkingMembers(artRepository.getLikeMarkingMembersById(artId))
                     .build();

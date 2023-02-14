@@ -12,6 +12,7 @@ import lombok.Getter;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
@@ -30,6 +31,7 @@ public class ArtRegisterRequest {
     private final String description;
 
     @NotNull(message = ArtRequestValidationMessage.Registration.ART_PRICE)
+    @Min(message = ArtRequestValidationMessage.Registration.ART_PRICE_MIN, value = 1000)
     private final Integer price;
 
     @ValidArtImage

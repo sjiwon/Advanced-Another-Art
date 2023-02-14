@@ -38,4 +38,14 @@ public class MemberRequestValidationMessage {
         public static final String LOGIN_ID = "로그인 아이디는 필수입니다.";
         public static final String CHANGE_PASSWORD = "변경할 비밀번호는 필수입니다.";
     }
+
+    public static class PointCharge {
+        public static final String CHARGE_AMOUNT = "포인트 충전 금액은 필수입니다.";
+        public static final String CHARGE_AMOUNT_POSITIVE = "포인트 충전 금액은 양수여야 합니다.";
+    }
+
+    public static class PointRefund {
+        public static final String REFUND_AMOUNT = "포인트 환불 금액은 필수입니다.";
+        public static final String REFUND_AMOUNT_POSITIVE = "포인트 환불 금액은 양수여야 합니다.";
+    }
 }

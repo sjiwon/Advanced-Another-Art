@@ -30,7 +30,6 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
-import static org.springframework.http.MediaType.APPLICATION_FORM_URLENCODED;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
@@ -44,9 +43,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @DisplayName("Art [Controller Layer] -> ArtDetailApiController 테스트")
 class ArtDetailApiControllerTest extends ControllerTest {
     @Nested
-    @DisplayName("작품명 중복 체크 테스트 [POST /api/art/duplicate-check]")
+    @DisplayName("작품명 중복 체크 테스트 [GET /api/art/duplicate]")
     class artNameDuplicateCheck {
-        private static final String BASE_URL = "/api/art/duplicate-check";
+        private static final String BASE_URL = "/api/art/duplicate";
 
         @Test
         @DisplayName("Authorization 헤더에 Access Token이 없음에 따라 예외가 발생한다")
@@ -56,9 +55,8 @@ class ArtDetailApiControllerTest extends ControllerTest {
 
             // when
             MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                    .post(BASE_URL)
-                    .contentType(APPLICATION_FORM_URLENCODED)
-                    .param("artName", artName);
+                    .get(BASE_URL)
+                    .param("name", artName);
 
             // then
             final AuthErrorCode expectedError = AuthErrorCode.INVALID_TOKEN;
@@ -76,7 +74,7 @@ class ArtDetailApiControllerTest extends ControllerTest {
                                     preprocessRequest(prettyPrint()),
                                     preprocessResponse(prettyPrint()),
                                     requestParameters(
-                                            parameterWithName("artName").description("중복 체크를 진행할 작품명")
+                                            parameterWithName("name").description("중복 체크를 진행할 작품명")
                                     ),
                                     responseFields(
                                             fieldWithPath("statusCode").description("HTTP 상태 코드"),
@@ -97,14 +95,13 @@ class ArtDetailApiControllerTest extends ControllerTest {
             final String artName = ArtFixture.A.name();
             doThrow(AnotherArtException.type(ArtErrorCode.INVALID_ART_NAME))
                     .when(artService)
-                    .artNameDuplicateCheck(artName);
+                    .checkDuplicateArtName(artName);
 
             // when
             MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                    .post(BASE_URL)
-                    .contentType(APPLICATION_FORM_URLENCODED)
+                    .get(BASE_URL)
                     .header(AUTHORIZATION, BEARER_TOKEN + accessToken)
-                    .param("artName", artName);
+                    .param("name", artName);
 
             // then
             final ArtErrorCode expectedError = ArtErrorCode.INVALID_ART_NAME;
@@ -125,7 +122,7 @@ class ArtDetailApiControllerTest extends ControllerTest {
                                             headerWithName(AUTHORIZATION).description("Access Token")
                                     ),
                                     requestParameters(
-                                            parameterWithName("artName").description("중복 체크를 진행할 작품명")
+                                            parameterWithName("name").description("중복 체크를 진행할 작품명")
                                     ),
                                     responseFields(
                                             fieldWithPath("statusCode").description("HTTP 상태 코드"),
@@ -146,14 +143,13 @@ class ArtDetailApiControllerTest extends ControllerTest {
             final String artName = ArtFixture.A.name();
             doNothing()
                     .when(artService)
-                    .artNameDuplicateCheck(artName);
+                    .checkDuplicateArtName(artName);
 
             // when
             MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                    .post(BASE_URL)
-                    .contentType(APPLICATION_FORM_URLENCODED)
+                    .get(BASE_URL)
                     .header(AUTHORIZATION, BEARER_TOKEN + accessToken)
-                    .param("artName", artName);
+                    .param("name", artName);
 
             // then
             mockMvc.perform(requestBuilder)
@@ -168,7 +164,7 @@ class ArtDetailApiControllerTest extends ControllerTest {
                                             headerWithName(AUTHORIZATION).description("Access Token")
                                     ),
                                     requestParameters(
-                                            parameterWithName("artName").description("중복 체크를 진행할 작품명")
+                                            parameterWithName("name").description("중복 체크를 진행할 작품명")
                                     )
                             )
                     );
@@ -277,7 +273,7 @@ class ArtDetailApiControllerTest extends ControllerTest {
     @Nested
     @DisplayName("작품 해시태그 수정 테스트 [PATCH /api/art/{artId}/hashtags]")
     class updateHashtags {
-        private static final String BASE_URL = "/api/art/{artId}/hashtags";
+        private static final String BASE_URL = "/api/art/{artId}/hashtag";
 
         @Test
         @DisplayName("Authorization 헤더에 Access Token이 없음에 따라 예외가 발생한다")
@@ -447,7 +443,7 @@ class ArtDetailApiControllerTest extends ControllerTest {
             UpdateArtHashtagRequest request = UpdateArtHashtagRequestUtils.createRequest(UPDATE_HASHTAGS);
             doNothing()
                     .when(artService)
-                    .updateHashtags(artId, UPDATE_HASHTAGS);
+                    .updateArtHashtags(artId, UPDATE_HASHTAGS);
 
             // when
             MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders

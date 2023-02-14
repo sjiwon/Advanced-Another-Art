@@ -17,7 +17,7 @@ public class FileUploadUtils {
         this.fileDir = fileDir;
     }
 
-    public void proceedingFileUpload(MultipartFile file, String storageName) {
+    public void uploadArtImage(MultipartFile file, String storageName) {
         try {
             file.transferTo(new File(fileDir + storageName));
         } catch (IOException e) {

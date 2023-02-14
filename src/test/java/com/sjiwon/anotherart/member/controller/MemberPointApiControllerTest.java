@@ -1,8 +1,13 @@
 package com.sjiwon.anotherart.member.controller;
 
 import com.sjiwon.anotherart.common.ControllerTest;
+import com.sjiwon.anotherart.common.utils.ObjectMapperUtils;
 import com.sjiwon.anotherart.global.exception.AnotherArtException;
 import com.sjiwon.anotherart.global.security.exception.AuthErrorCode;
+import com.sjiwon.anotherart.member.controller.dto.request.PointChargeRequest;
+import com.sjiwon.anotherart.member.controller.dto.request.PointRefundRequest;
+import com.sjiwon.anotherart.member.controller.utils.PointChargeRequestUtils;
+import com.sjiwon.anotherart.member.controller.utils.PointRefundRequestUtils;
 import com.sjiwon.anotherart.member.exception.MemberErrorCode;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -14,15 +19,12 @@ import static com.sjiwon.anotherart.common.utils.TokenUtils.BEARER_TOKEN;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
-import static org.springframework.http.MediaType.APPLICATION_FORM_URLENCODED;
+import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
-import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
-import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
-import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
-import static org.springframework.restdocs.request.RequestDocumentation.requestParameters;
+import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -39,12 +41,13 @@ class MemberPointApiControllerTest extends ControllerTest {
             // given
             Long memberId = 1L;
             final int chargeAmount = 15000;
+            PointChargeRequest request = PointChargeRequestUtils.createRequest(chargeAmount);
 
             // when
             MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                     .post(BASE_URL)
-                    .contentType(APPLICATION_FORM_URLENCODED)
-                    .param("chargeAmount", String.valueOf(chargeAmount));
+                    .contentType(APPLICATION_JSON)
+                    .content(ObjectMapperUtils.objectToJson(request));
 
             // then
             final AuthErrorCode expectedError = AuthErrorCode.INVALID_TOKEN;
@@ -61,8 +64,8 @@ class MemberPointApiControllerTest extends ControllerTest {
                                     "MemberApi/ChargePoint/Failure",
                                     preprocessRequest(prettyPrint()),
                                     preprocessResponse(prettyPrint()),
-                                    requestParameters(
-                                            parameterWithName("chargeAmount").description("충전할 포인트 금액")
+                                    requestFields(
+                                            fieldWithPath("chargeAmount").description("충전할 포인트 금액")
                                     ),
                                     responseFields(
                                             fieldWithPath("statusCode").description("HTTP 상태 코드"),
@@ -81,6 +84,7 @@ class MemberPointApiControllerTest extends ControllerTest {
             final String accessToken = jwtTokenProvider.createAccessToken(memberId);
 
             final int chargeAmount = 15000;
+            PointChargeRequest request = PointChargeRequestUtils.createRequest(chargeAmount);
             doNothing()
                     .when(memberPointService)
                     .chargePoint(memberId, chargeAmount);
@@ -88,9 +92,9 @@ class MemberPointApiControllerTest extends ControllerTest {
             // when
             MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                     .post(BASE_URL)
-                    .contentType(APPLICATION_FORM_URLENCODED)
+                    .contentType(APPLICATION_JSON)
                     .header(AUTHORIZATION, BEARER_TOKEN + accessToken)
-                    .param("chargeAmount", String.valueOf(chargeAmount));
+                    .content(ObjectMapperUtils.objectToJson(request));
 
             // then
             mockMvc.perform(requestBuilder)
@@ -104,8 +108,8 @@ class MemberPointApiControllerTest extends ControllerTest {
                                     requestHeaders(
                                             headerWithName(AUTHORIZATION).description("Access Token")
                                     ),
-                                    requestParameters(
-                                            parameterWithName("chargeAmount").description("충전할 포인트 금액")
+                                    requestFields(
+                                            fieldWithPath("chargeAmount").description("충전할 포인트 금액")
                                     )
                             )
                     );
@@ -123,12 +127,13 @@ class MemberPointApiControllerTest extends ControllerTest {
             // given
             Long memberId = 1L;
             final int refundAmount = 15000;
+            PointRefundRequest request = PointRefundRequestUtils.createRequest(refundAmount);
 
             // when
             MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                     .post(BASE_URL)
-                    .contentType(APPLICATION_FORM_URLENCODED)
-                    .param("refundAmount", String.valueOf(refundAmount));
+                    .contentType(APPLICATION_JSON)
+                    .content(ObjectMapperUtils.objectToJson(request));
 
             // then
             final AuthErrorCode expectedError = AuthErrorCode.INVALID_TOKEN;
@@ -145,8 +150,8 @@ class MemberPointApiControllerTest extends ControllerTest {
                                     "MemberApi/RefundPoint/Failure/Case1",
                                     preprocessRequest(prettyPrint()),
                                     preprocessResponse(prettyPrint()),
-                                    requestParameters(
-                                            parameterWithName("refundAmount").description("환불할 포인트 금액")
+                                    requestFields(
+                                            fieldWithPath("refundAmount").description("환불할 포인트 금액")
                                     ),
                                     responseFields(
                                             fieldWithPath("statusCode").description("HTTP 상태 코드"),
@@ -165,6 +170,7 @@ class MemberPointApiControllerTest extends ControllerTest {
             final String accessToken = jwtTokenProvider.createAccessToken(memberId);
 
             final int refundAmount = 15000;
+            PointRefundRequest request = PointRefundRequestUtils.createRequest(refundAmount);
             doThrow(AnotherArtException.type(MemberErrorCode.INVALID_POINT_DECREASE))
                     .when(memberPointService)
                     .refundPoint(memberId, refundAmount);
@@ -172,9 +178,9 @@ class MemberPointApiControllerTest extends ControllerTest {
             // when
             MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                     .post(BASE_URL)
-                    .contentType(APPLICATION_FORM_URLENCODED)
+                    .contentType(APPLICATION_JSON)
                     .header(AUTHORIZATION, BEARER_TOKEN + accessToken)
-                    .param("refundAmount", String.valueOf(refundAmount));
+                    .content(ObjectMapperUtils.objectToJson(request));
 
             // then
             final MemberErrorCode expectedError = MemberErrorCode.INVALID_POINT_DECREASE;
@@ -194,8 +200,8 @@ class MemberPointApiControllerTest extends ControllerTest {
                                     requestHeaders(
                                             headerWithName(AUTHORIZATION).description("Access Token")
                                     ),
-                                    requestParameters(
-                                            parameterWithName("refundAmount").description("환불할 포인트 금액")
+                                    requestFields(
+                                            fieldWithPath("refundAmount").description("환불할 포인트 금액")
                                     ),
                                     responseFields(
                                             fieldWithPath("statusCode").description("HTTP 상태 코드"),
@@ -214,6 +220,7 @@ class MemberPointApiControllerTest extends ControllerTest {
             final String accessToken = jwtTokenProvider.createAccessToken(memberId);
 
             final int refundAmount = 15000;
+            PointRefundRequest request = PointRefundRequestUtils.createRequest(refundAmount);
             doNothing()
                     .when(memberPointService)
                     .refundPoint(memberId, refundAmount);
@@ -221,9 +228,9 @@ class MemberPointApiControllerTest extends ControllerTest {
             // when
             MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                     .post(BASE_URL)
-                    .contentType(APPLICATION_FORM_URLENCODED)
+                    .contentType(APPLICATION_JSON)
                     .header(AUTHORIZATION, BEARER_TOKEN + accessToken)
-                    .param("refundAmount", String.valueOf(refundAmount));
+                    .content(ObjectMapperUtils.objectToJson(request));
 
             // then
             mockMvc.perform(requestBuilder)
@@ -237,8 +244,8 @@ class MemberPointApiControllerTest extends ControllerTest {
                                     requestHeaders(
                                             headerWithName(AUTHORIZATION).description("Access Token")
                                     ),
-                                    requestParameters(
-                                            parameterWithName("refundAmount").description("환불할 포인트 금액")
+                                    requestFields(
+                                            fieldWithPath("refundAmount").description("환불할 포인트 금액")
                                     )
                             )
                     );

@@ -191,14 +191,14 @@ class MemberServiceTest extends ServiceIntegrateTest {
         final String email = member.getEmailValue();
 
         // when - then
-        assertDoesNotThrow(() -> memberService.authMemberForResetPassword(name, loginId, email));
-        assertThatThrownBy(() -> memberService.authMemberForResetPassword(name + "diff", loginId, email))
+        assertDoesNotThrow(() -> memberService.authMemberForPasswordReset(name, loginId, email));
+        assertThatThrownBy(() -> memberService.authMemberForPasswordReset(name + "diff", loginId, email))
                 .isInstanceOf(AnotherArtException.class)
                 .hasMessage(MemberErrorCode.MEMBER_NOT_FOUND.getMessage());
-        assertThatThrownBy(() -> memberService.authMemberForResetPassword(name, loginId + "diff", email))
+        assertThatThrownBy(() -> memberService.authMemberForPasswordReset(name, loginId + "diff", email))
                 .isInstanceOf(AnotherArtException.class)
                 .hasMessage(MemberErrorCode.MEMBER_NOT_FOUND.getMessage());
-        assertThatThrownBy(() -> memberService.authMemberForResetPassword(name, loginId, "diff" + email))
+        assertThatThrownBy(() -> memberService.authMemberForPasswordReset(name, loginId, "diff" + email))
                 .isInstanceOf(AnotherArtException.class)
                 .hasMessage(MemberErrorCode.MEMBER_NOT_FOUND.getMessage());
     }

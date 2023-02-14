@@ -15,15 +15,15 @@ public class FavoriteApiController {
 
     @PreAuthorize("hasRole('USER')")
     @PostMapping
-    public ResponseEntity<Void> like(@PathVariable Long artId, @ExtractPayload Long memberId) {
-        favoriteService.like(artId, memberId);
+    public ResponseEntity<Void> addLike(@PathVariable Long artId, @ExtractPayload Long memberId) {
+        favoriteService.addLike(artId, memberId);
         return ResponseEntity.noContent().build();
     }
 
     @PreAuthorize("hasRole('USER')")
     @DeleteMapping
-    public ResponseEntity<Void> likeCancel(@PathVariable Long artId, @ExtractPayload Long memberId) {
-        favoriteService.likeCancel(artId, memberId);
+    public ResponseEntity<Void> removeLike(@PathVariable Long artId, @ExtractPayload Long memberId) {
+        favoriteService.removeLike(artId, memberId);
         return ResponseEntity.noContent().build();
     }
 }

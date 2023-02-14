@@ -41,7 +41,7 @@ class ArtServiceTest extends ServiceIntegrateTest {
                 ArtRegistrationRequestUtils.createGeneralArtRequest(generalArtFixture, HASHTAGS).toGeneralArtDto();
 
         // when
-        artService.artRegistration(member.getId(), request);
+        artService.registerArt(member.getId(), request);
 
         // then
         List<Art> ownerArts = artRepository.findByOwnerId(member.getId());
@@ -65,7 +65,7 @@ class ArtServiceTest extends ServiceIntegrateTest {
                 ArtRegistrationRequestUtils.createAuctionArtRequest(auctionArtFixture, HASHTAGS).toAuctionArtDto();
 
         // when
-        artService.artRegistration(member.getId(), request);
+        artService.registerArt(member.getId(), request);
 
         // then
         List<Art> ownerArts = artRepository.findByOwnerId(member.getId());
@@ -93,8 +93,8 @@ class ArtServiceTest extends ServiceIntegrateTest {
         Art art = createGeneralArt(owner);
 
         // when - then
-        assertDoesNotThrow(() -> artService.artNameDuplicateCheck(art.getName() + "hello"));
-        assertThatThrownBy(() -> artService.artNameDuplicateCheck(art.getName()))
+        assertDoesNotThrow(() -> artService.checkDuplicateArtName(art.getName() + "hello"));
+        assertThatThrownBy(() -> artService.checkDuplicateArtName(art.getName()))
                 .isInstanceOf(AnotherArtException.class)
                 .hasMessage(ArtErrorCode.INVALID_ART_NAME.getMessage());
     }
@@ -126,7 +126,7 @@ class ArtServiceTest extends ServiceIntegrateTest {
         Art art = createGeneralArt(owner);
 
         // when
-        artService.updateHashtags(art.getId(), UPDATE_HASHTAGS);
+        artService.updateArtHashtags(art.getId(), UPDATE_HASHTAGS);
 
         // then
         assertThat(art.getHashtagList()).containsAll(UPDATE_HASHTAGS);

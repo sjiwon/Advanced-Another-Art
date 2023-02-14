@@ -27,19 +27,19 @@ public class MemberDetailApiController {
         return ResponseEntity.noContent().build();
     }
 
-    @PostMapping("/find/id")
-    public ResponseEntity<SimpleWrapper<String>> findLoginId(@Valid @RequestBody FindIdRequest request) {
+    @GetMapping("/id")
+    public ResponseEntity<SimpleWrapper<String>> findLoginId(@Valid @ModelAttribute FindIdRequest request) {
         String loginId = memberService.findLoginId(request.getName(), request.getEmail());
         return ResponseEntity.ok(new SimpleWrapper<>(loginId));
     }
 
-    @PostMapping("/reset/password/auth")
-    public ResponseEntity<Void> authMemberForResetPassword(@Valid @RequestBody AuthForResetPasswordRequest request) {
-        memberService.authMemberForResetPassword(request.getName(), request.getLoginId(), request.getEmail());
+    @PostMapping("/reset-password/auth")
+    public ResponseEntity<Void> authMemberForPasswordReset(@Valid @RequestBody AuthForResetPasswordRequest request) {
+        memberService.authMemberForPasswordReset(request.getName(), request.getLoginId(), request.getEmail());
         return ResponseEntity.noContent().build();
     }
 
-    @PostMapping("/reset/password")
+    @PostMapping("/reset-password")
     public ResponseEntity<Void> resetPassword(@Valid @RequestBody ResetPasswordRequest request) {
         memberService.resetPassword(request.getLoginId(), request.getChangePassword());
         return ResponseEntity.noContent().build();

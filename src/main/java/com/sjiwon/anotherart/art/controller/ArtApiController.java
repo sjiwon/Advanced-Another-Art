@@ -23,8 +23,8 @@ public class ArtApiController {
 
     @PreAuthorize("hasRole('USER')")
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<Void> artRegistration(@ExtractPayload Long memberId, @Valid @ModelAttribute ArtRegisterRequest request) {
-        artService.artRegistration(memberId, request.isAuctionType() ? request.toAuctionArtDto() : request.toGeneralArtDto());
+    public ResponseEntity<Void> registerArt(@ExtractPayload Long memberId, @Valid @ModelAttribute ArtRegisterRequest request) {
+        artService.registerArt(memberId, request.isAuctionType() ? request.toAuctionArtDto() : request.toGeneralArtDto());
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 }

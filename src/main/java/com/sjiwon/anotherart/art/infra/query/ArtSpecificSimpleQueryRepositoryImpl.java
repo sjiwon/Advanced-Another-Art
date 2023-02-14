@@ -49,7 +49,7 @@ public class ArtSpecificSimpleQueryRepositoryImpl implements ArtSpecificSimpleQu
     }
 
     @Override
-    public BasicGeneralArt findGeneralArtById(Long artId) {
+    public BasicGeneralArt getGeneralArtById(Long artId) {
         return query
                 .select(generalArtProjections())
                 .from(art)
@@ -64,7 +64,7 @@ public class ArtSpecificSimpleQueryRepositoryImpl implements ArtSpecificSimpleQu
     }
 
     @Override
-    public BasicAuctionArt findAuctionArtById(Long artId) {
+    public BasicAuctionArt getAuctionArtById(Long artId) {
         return query
                 .select(auctionArtProjections())
                 .from(art)

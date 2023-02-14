@@ -45,7 +45,7 @@ include::{snippets}/MemberApi/ChangeNickname/Success/http-response.adoc[]
 === 1. 요청으로 보낸 [이름, 이메일] 데이터중 이름에 대한 사용자 정보가 없는 경우 예외가 발생한다
 HTTP Request
 include::{snippets}/MemberApi/FindId/Failure/Case1/http-request.adoc[]
-include::{snippets}/MemberApi/FindId/Failure/Case1/request-fields.adoc[]
+include::{snippets}/MemberApi/FindId/Failure/Case1/request-parameters.adoc[]
 
 HTTP Response
 include::{snippets}/MemberApi/FindId/Failure/Case1/response-body.adoc[]
@@ -53,7 +53,7 @@ include::{snippets}/MemberApi/FindId/Failure/Case1/response-body.adoc[]
 === 2. 요청으로 보낸 [이름, 이메일] 데이터중 이메일에 대한 사용자 정보가 없는 경우 예외가 발생한다
 HTTP Request
 include::{snippets}/MemberApi/FindId/Failure/Case2/http-request.adoc[]
-include::{snippets}/MemberApi/FindId/Failure/Case2/request-fields.adoc[]
+include::{snippets}/MemberApi/FindId/Failure/Case2/request-parameters.adoc[]
 
 HTTP Response
 include::{snippets}/MemberApi/FindId/Failure/Case2/response-body.adoc[]
@@ -61,7 +61,7 @@ include::{snippets}/MemberApi/FindId/Failure/Case2/response-body.adoc[]
 === 3. 이름, 이메일을 통해서 사용자 로그인 아이디 조회에 성공한다
 HTTP Request
 include::{snippets}/MemberApi/FindId/Success/http-request.adoc[]
-include::{snippets}/MemberApi/FindId/Success/request-fields.adoc[]
+include::{snippets}/MemberApi/FindId/Success/request-parameters.adoc[]
 
 HTTP Response
 include::{snippets}/MemberApi/FindId/Success/response-body.adoc[]

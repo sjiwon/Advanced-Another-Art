@@ -11,8 +11,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
-import static org.springframework.http.MediaType.APPLICATION_FORM_URLENCODED_VALUE;
-
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/art")
@@ -20,9 +18,9 @@ public class ArtDetailApiController {
     private final ArtService artService;
 
     @PreAuthorize("hasRole('USER')")
-    @PostMapping(value = "/duplicate-check", consumes = APPLICATION_FORM_URLENCODED_VALUE)
-    public ResponseEntity<Void> artNameDuplicateCheck(@RequestParam String artName) {
-        artService.artNameDuplicateCheck(artName);
+    @GetMapping(value = "/duplicate")
+    public ResponseEntity<Void> checkDuplicateArtName(@RequestParam String name) {
+        artService.checkDuplicateArtName(name);
         return ResponseEntity.noContent().build();
     }
 
@@ -34,9 +32,9 @@ public class ArtDetailApiController {
     }
 
     @PreAuthorize("hasRole('USER')")
-    @PatchMapping("/{artId}/hashtags")
-    public ResponseEntity<Void> updateHashtags(@PathVariable Long artId, @Valid @RequestBody UpdateArtHashtagRequest request) {
-        artService.updateHashtags(artId, request.getHashtagList());
+    @PatchMapping("/{artId}/hashtag")
+    public ResponseEntity<Void> updateArtHashtags(@PathVariable Long artId, @Valid @RequestBody UpdateArtHashtagRequest request) {
+        artService.updateArtHashtags(artId, request.getHashtagList());
         return ResponseEntity.noContent().build();
     }
 

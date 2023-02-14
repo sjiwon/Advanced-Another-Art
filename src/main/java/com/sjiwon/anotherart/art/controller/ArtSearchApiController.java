@@ -17,7 +17,7 @@ public class ArtSearchApiController {
     private final ArtSearchService artSearchService;
 
     @GetMapping("/{artId}")
-    public ResponseEntity<SingleArtResponse<AbstractArt>> searchArt(@PathVariable Long artId) {
+    public ResponseEntity<SingleArtResponse<AbstractArt>> getSingleArt(@PathVariable Long artId) {
         return ResponseEntity.ok(new SingleArtResponse<>(artSearchService.getSingleArt(artId)));
     }
 }

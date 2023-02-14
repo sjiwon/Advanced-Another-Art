@@ -25,17 +25,17 @@ public class BidService {
     @Transactional
     public void bid(Long auctionId, Long bidderId, int bidAmount) {
         Auction auction = auctionFindService.findByIdWithPessimisticLock(auctionId);
-        validateBidTime(auction);
+        validateBidIsStillOpen(auction);
         validateArtOwner(auction.getArt().getId(), bidderId);
-        validateBidPrice(auction, bidAmount);
+        validateBidPriceIsHigher(auction, bidAmount);
 
         Member newBidder = memberFindService.findById(bidderId);
-        validateDuplicateBid(auction, newBidder);
+        validateConsecutiveBid(auction, newBidder);
 
         executeBidProcess(auction, newBidder, bidAmount);
     }
 
-    private void validateBidTime(Auction auction) {
+    private void validateBidIsStillOpen(Auction auction) {
         if (!auction.isAuctionInProgress()) {
             throw AnotherArtException.type(AuctionErrorCode.AUCTION_NOT_START_OR_ALREADY_FINISHED);
         }
@@ -51,7 +51,7 @@ public class BidService {
         return artRepository.existsByIdAndOwnerId(artId, bidderId);
     }
 
-    private void validateBidPrice(Auction auction, int bidAmount) {
+    private void validateBidPriceIsHigher(Auction auction, int bidAmount) {
         if (auction.isBidderExists()) {
             if (auction.getBidAmount() >= bidAmount) {
                 throw AnotherArtException.type(AuctionErrorCode.INVALID_BID_PRICE);
@@ -63,7 +63,7 @@ public class BidService {
         }
     }
 
-    private void validateDuplicateBid(Auction auction, Member newBidder) {
+    private void validateConsecutiveBid(Auction auction, Member newBidder) {
         if (auction.isBidderExists() && auction.getBidder().isSameMember(newBidder.getId())) {
             throw AnotherArtException.type(AuctionErrorCode.INVALID_DUPLICATE_BID);
         }

@@ -33,7 +33,7 @@ class FavoriteServiceTest extends ServiceIntegrateTest {
             Art art = createArt(owner);
 
             // when - then
-            assertThatThrownBy(() -> favoriteService.like(art.getId(), owner.getId()))
+            assertThatThrownBy(() -> favoriteService.addLike(art.getId(), owner.getId()))
                     .isInstanceOf(AnotherArtException.class)
                     .hasMessage(FavoriteErrorCode.INVALID_LIKE_REQUEST_BY_ART_OWNER.getMessage());
         }
@@ -49,7 +49,7 @@ class FavoriteServiceTest extends ServiceIntegrateTest {
             proceedingLikeMarking(art.getId(), member.getId());
 
             // when - then
-            assertThatThrownBy(() -> favoriteService.like(art.getId(), member.getId()))
+            assertThatThrownBy(() -> favoriteService.addLike(art.getId(), member.getId()))
                     .isInstanceOf(AnotherArtException.class)
                     .hasMessage(FavoriteErrorCode.ALREADY_LIKE_MARKING.getMessage());
         }
@@ -64,7 +64,7 @@ class FavoriteServiceTest extends ServiceIntegrateTest {
             Member member = createMemberB();
 
             // when
-            favoriteService.like(art.getId(), member.getId());
+            favoriteService.addLike(art.getId(), member.getId());
 
             // then
             assertThat(favoriteRepository.existsByArtIdAndMemberId(art.getId(), member.getId())).isTrue();
@@ -82,7 +82,7 @@ class FavoriteServiceTest extends ServiceIntegrateTest {
             Art art = createArt(owner);
 
             // when - then
-            assertThatThrownBy(() -> favoriteService.likeCancel(art.getId(), owner.getId()))
+            assertThatThrownBy(() -> favoriteService.removeLike(art.getId(), owner.getId()))
                     .isInstanceOf(AnotherArtException.class)
                     .hasMessage(FavoriteErrorCode.INVALID_LIKE_REQUEST_BY_ART_OWNER.getMessage());
         }
@@ -97,7 +97,7 @@ class FavoriteServiceTest extends ServiceIntegrateTest {
             Member member = createMemberB();
 
             // when - then
-            assertThatThrownBy(() -> favoriteService.likeCancel(art.getId(), member.getId()))
+            assertThatThrownBy(() -> favoriteService.removeLike(art.getId(), member.getId()))
                     .isInstanceOf(AnotherArtException.class)
                     .hasMessage(FavoriteErrorCode.NEVER_OR_ALREADY_CANCEL.getMessage());
         }
@@ -113,7 +113,7 @@ class FavoriteServiceTest extends ServiceIntegrateTest {
             proceedingLikeMarking(art.getId(), member.getId());
 
             // when
-            favoriteService.likeCancel(art.getId(), member.getId());
+            favoriteService.removeLike(art.getId(), member.getId());
 
             // then
             assertThat(favoriteRepository.existsByArtIdAndMemberId(art.getId(), member.getId())).isFalse();

@@ -9,7 +9,7 @@
 === 중복 X
 HTTP Request
 include::{snippets}/MemberApi/DuplicateCheck/Nickname/Success/http-request.adoc[]
-include::{snippets}/MemberApi/DuplicateCheck/Nickname/Success/request-fields.adoc[]
+include::{snippets}/MemberApi/DuplicateCheck/Nickname/Success/request-parameters.adoc[]
 
 HTTP Response
 include::{snippets}/MemberApi/DuplicateCheck/Nickname/Success/http-response.adoc[]
@@ -17,7 +17,7 @@ include::{snippets}/MemberApi/DuplicateCheck/Nickname/Success/http-response.adoc
 === 중복 O
 HTTP Request
 include::{snippets}/MemberApi/DuplicateCheck/Nickname/Failure/http-request.adoc[]
-include::{snippets}/MemberApi/DuplicateCheck/Nickname/Failure/request-fields.adoc[]
+include::{snippets}/MemberApi/DuplicateCheck/Nickname/Failure/request-parameters.adoc[]
 
 HTTP Response
 include::{snippets}/MemberApi/DuplicateCheck/Nickname/Failure/response-body.adoc[]
@@ -26,7 +26,7 @@ include::{snippets}/MemberApi/DuplicateCheck/Nickname/Failure/response-body.adoc
 === 중복 X
 HTTP Request
 include::{snippets}/MemberApi/DuplicateCheck/LoginId/Success/http-request.adoc[]
-include::{snippets}/MemberApi/DuplicateCheck/LoginId/Success/request-fields.adoc[]
+include::{snippets}/MemberApi/DuplicateCheck/LoginId/Success/request-parameters.adoc[]
 
 HTTP Response
 include::{snippets}/MemberApi/DuplicateCheck/LoginId/Success/http-response.adoc[]
@@ -34,7 +34,7 @@ include::{snippets}/MemberApi/DuplicateCheck/LoginId/Success/http-response.adoc[
 === 중복 O
 HTTP Request
 include::{snippets}/MemberApi/DuplicateCheck/LoginId/Failure/http-request.adoc[]
-include::{snippets}/MemberApi/DuplicateCheck/LoginId/Failure/request-fields.adoc[]
+include::{snippets}/MemberApi/DuplicateCheck/LoginId/Failure/request-parameters.adoc[]
 
 HTTP Response
 include::{snippets}/MemberApi/DuplicateCheck/LoginId/Failure/response-body.adoc[]
@@ -43,7 +43,7 @@ include::{snippets}/MemberApi/DuplicateCheck/LoginId/Failure/response-body.adoc[
 === 중복 X
 HTTP Request
 include::{snippets}/MemberApi/DuplicateCheck/Phone/Success/http-request.adoc[]
-include::{snippets}/MemberApi/DuplicateCheck/Phone/Success/request-fields.adoc[]
+include::{snippets}/MemberApi/DuplicateCheck/Phone/Success/request-parameters.adoc[]
 
 HTTP Response
 include::{snippets}/MemberApi/DuplicateCheck/Phone/Success/http-response.adoc[]
@@ -51,7 +51,7 @@ include::{snippets}/MemberApi/DuplicateCheck/Phone/Success/http-response.adoc[]
 === 중복 O
 HTTP Request
 include::{snippets}/MemberApi/DuplicateCheck/Phone/Failure/http-request.adoc[]
-include::{snippets}/MemberApi/DuplicateCheck/Phone/Failure/request-fields.adoc[]
+include::{snippets}/MemberApi/DuplicateCheck/Phone/Failure/request-parameters.adoc[]
 
 HTTP Response
 include::{snippets}/MemberApi/DuplicateCheck/Phone/Failure/response-body.adoc[]
@@ -60,7 +60,7 @@ include::{snippets}/MemberApi/DuplicateCheck/Phone/Failure/response-body.adoc[]
 === 중복 X
 HTTP Request
 include::{snippets}/MemberApi/DuplicateCheck/Email/Success/http-request.adoc[]
-include::{snippets}/MemberApi/DuplicateCheck/Email/Success/request-fields.adoc[]
+include::{snippets}/MemberApi/DuplicateCheck/Email/Success/request-parameters.adoc[]
 
 HTTP Response
 include::{snippets}/MemberApi/DuplicateCheck/Email/Success/http-response.adoc[]
@@ -68,7 +68,7 @@ include::{snippets}/MemberApi/DuplicateCheck/Email/Success/http-response.adoc[]
 === 중복 O
 HTTP Request
 include::{snippets}/MemberApi/DuplicateCheck/Email/Failure/http-request.adoc[]
-include::{snippets}/MemberApi/DuplicateCheck/Email/Failure/request-fields.adoc[]
+include::{snippets}/MemberApi/DuplicateCheck/Email/Failure/request-parameters.adoc[]
 
 HTTP Response
 include::{snippets}/MemberApi/DuplicateCheck/Email/Failure/response-body.adoc[]
@@ -76,7 +76,7 @@ include::{snippets}/MemberApi/DuplicateCheck/Email/Failure/response-body.adoc[]
 == 5. 중복 체크 대상이 아닌 필드에 대해서 중복 체크 요청을 보내면 예외가 발생한다
 HTTP Request
 include::{snippets}/MemberApi/DuplicateCheck/AnonymousFailure/http-request.adoc[]
-include::{snippets}/MemberApi/DuplicateCheck/AnonymousFailure/request-fields.adoc[]
+include::{snippets}/MemberApi/DuplicateCheck/AnonymousFailure/request-parameters.adoc[]
 
 HTTP Response
 include::{snippets}/MemberApi/DuplicateCheck/AnonymousFailure/response-body.adoc[]

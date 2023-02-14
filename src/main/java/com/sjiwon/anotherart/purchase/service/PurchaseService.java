@@ -31,25 +31,25 @@ public class PurchaseService {
     @Transactional
     public void purchaseArt(Long artId, Long buyerId) {
         Art art = artFindService.findById(artId);
-        validateArtOwnerPurchase(art, buyerId);
+        validatePurchaseEligibility(art, buyerId);
         try {
             if (art.isAuctionType()) {
-                auctionArtPurchaseProcess(art, buyerId);
+                processAuctionArtPurchase(art, buyerId);
             } else {
-                generalArtPurchaseProcess(art, buyerId);
+                processGeneralArtPurchase(art, buyerId);
             }
         } catch (DataIntegrityViolationException e) {
             throw AnotherArtException.type(PurchaseErrorCode.ART_ALREADY_SOLD_OUT);
         }
     }
 
-    private void validateArtOwnerPurchase(Art art, Long buyerId) {
+    private void validatePurchaseEligibility(Art art, Long buyerId) {
         if (art.isArtOwner(buyerId)) {
             throw AnotherArtException.type(PurchaseErrorCode.INVALID_OWNER_PURCHASE);
         }
     }
 
-    private void auctionArtPurchaseProcess(Art art, Long buyerId) {
+    private void processAuctionArtPurchase(Art art, Long buyerId) {
         Auction auction = auctionFindService.findByArtId(art.getId());
         validateAuctionInProgress(auction);
         validateHighestBidder(auction, buyerId);
@@ -72,7 +72,7 @@ public class PurchaseService {
         }
     }
 
-    private void generalArtPurchaseProcess(Art art, Long buyerId) {
+    private void processGeneralArtPurchase(Art art, Long buyerId) {
         Member buyer = memberFindService.findById(buyerId);
         purchaseRepository.save(Purchase.purchaseArt(buyer, art, art.getPrice()));
         publishPointTransactionEvent(null, art, buyer);

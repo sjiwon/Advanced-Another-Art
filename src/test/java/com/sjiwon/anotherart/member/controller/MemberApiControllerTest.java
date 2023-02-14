@@ -25,6 +25,8 @@ import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.requestParameters;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -174,9 +176,9 @@ class MemberApiControllerTest extends ControllerTest {
     }
 
     @Nested
-    @DisplayName("회원가입 간 중복 체크 테스트 [POST /api/member/duplicate-check]")
+    @DisplayName("회원가입 간 중복 체크 테스트 [GET /api/member/duplicate]")
     class duplicateCheckInSignUp {
-        private static final String BASE_URL = "/api/member/duplicate-check";
+        private static final String BASE_URL = "/api/member/duplicate";
 
         @Test
         @DisplayName("닉네임에 대한 중복 체크")
@@ -186,26 +188,24 @@ class MemberApiControllerTest extends ControllerTest {
             final String successValue = "success" + member.getNickname();
             final String failureValue = member.getNickname();
 
-            DuplicateCheckRequest successRequest = DuplicateCheckRequestUtils.createRequest(resource, successValue);
             doNothing()
                     .when(memberService)
                     .duplicateCheck(resource, successValue);
 
-            DuplicateCheckRequest failureRequest = DuplicateCheckRequestUtils.createRequest(resource, failureValue);
             doThrow(AnotherArtException.type(MemberErrorCode.DUPLICATE_NICKNAME))
                     .when(memberService)
                     .duplicateCheck(resource, failureValue);
 
             // when
             MockHttpServletRequestBuilder successRequestBuilder = MockMvcRequestBuilders
-                    .post(BASE_URL)
-                    .contentType(APPLICATION_JSON)
-                    .content(ObjectMapperUtils.objectToJson(successRequest));
+                    .get(BASE_URL)
+                    .param("resource", resource)
+                    .param("value", successValue);
 
             MockHttpServletRequestBuilder failureRequestBuilder = MockMvcRequestBuilders
-                    .post(BASE_URL)
-                    .contentType(APPLICATION_JSON)
-                    .content(ObjectMapperUtils.objectToJson(failureRequest));
+                    .get(BASE_URL)
+                    .param("resource", resource)
+                    .param("value", failureValue);
 
             // then
             mockMvc.perform(successRequestBuilder)
@@ -216,9 +216,9 @@ class MemberApiControllerTest extends ControllerTest {
                                     "MemberApi/DuplicateCheck/Nickname/Success",
                                     preprocessRequest(prettyPrint()),
                                     preprocessResponse(prettyPrint()),
-                                    requestFields(
-                                            fieldWithPath("resource").description("중복 체크 타입"),
-                                            fieldWithPath("value").description("중복 체크 값")
+                                    requestParameters(
+                                            parameterWithName("resource").description("중복 체크 타입"),
+                                            parameterWithName("value").description("중복 체크 값")
                                     )
                             )
                     );
@@ -237,9 +237,9 @@ class MemberApiControllerTest extends ControllerTest {
                                     "MemberApi/DuplicateCheck/Nickname/Failure",
                                     preprocessRequest(prettyPrint()),
                                     preprocessResponse(prettyPrint()),
-                                    requestFields(
-                                            fieldWithPath("resource").description("중복 체크 타입"),
-                                            fieldWithPath("value").description("중복 체크 값")
+                                    requestParameters(
+                                            parameterWithName("resource").description("중복 체크 타입"),
+                                            parameterWithName("value").description("중복 체크 값")
                                     ),
                                     responseFields(
                                             fieldWithPath("statusCode").description("HTTP 상태 코드"),
@@ -258,26 +258,24 @@ class MemberApiControllerTest extends ControllerTest {
             final String successValue = "success" + member.getLoginId();
             final String failureValue = member.getLoginId();
 
-            DuplicateCheckRequest successRequest = DuplicateCheckRequestUtils.createRequest(resource, successValue);
             doNothing()
                     .when(memberService)
                     .duplicateCheck(resource, successValue);
 
-            DuplicateCheckRequest failureRequest = DuplicateCheckRequestUtils.createRequest(resource, failureValue);
             doThrow(AnotherArtException.type(MemberErrorCode.DUPLICATE_LOGIN_ID))
                     .when(memberService)
                     .duplicateCheck(resource, failureValue);
 
             // when
             MockHttpServletRequestBuilder successRequestBuilder = MockMvcRequestBuilders
-                    .post(BASE_URL)
-                    .contentType(APPLICATION_JSON)
-                    .content(ObjectMapperUtils.objectToJson(successRequest));
+                    .get(BASE_URL)
+                    .param("resource", resource)
+                    .param("value", successValue);
 
             MockHttpServletRequestBuilder failureRequestBuilder = MockMvcRequestBuilders
-                    .post(BASE_URL)
-                    .contentType(APPLICATION_JSON)
-                    .content(ObjectMapperUtils.objectToJson(failureRequest));
+                    .get(BASE_URL)
+                    .param("resource", resource)
+                    .param("value", failureValue);
 
             // then
             mockMvc.perform(successRequestBuilder)
@@ -288,9 +286,9 @@ class MemberApiControllerTest extends ControllerTest {
                                     "MemberApi/DuplicateCheck/LoginId/Success",
                                     preprocessRequest(prettyPrint()),
                                     preprocessResponse(prettyPrint()),
-                                    requestFields(
-                                            fieldWithPath("resource").description("중복 체크 타입"),
-                                            fieldWithPath("value").description("중복 체크 값")
+                                    requestParameters(
+                                            parameterWithName("resource").description("중복 체크 타입"),
+                                            parameterWithName("value").description("중복 체크 값")
                                     )
                             )
                     );
@@ -309,9 +307,9 @@ class MemberApiControllerTest extends ControllerTest {
                                     "MemberApi/DuplicateCheck/LoginId/Failure",
                                     preprocessRequest(prettyPrint()),
                                     preprocessResponse(prettyPrint()),
-                                    requestFields(
-                                            fieldWithPath("resource").description("중복 체크 타입"),
-                                            fieldWithPath("value").description("중복 체크 값")
+                                    requestParameters(
+                                            parameterWithName("resource").description("중복 체크 타입"),
+                                            parameterWithName("value").description("중복 체크 값")
                                     ),
                                     responseFields(
                                             fieldWithPath("statusCode").description("HTTP 상태 코드"),
@@ -330,26 +328,24 @@ class MemberApiControllerTest extends ControllerTest {
             final String successValue = member.getPhone().replaceAll("0", "9");
             final String failureValue = member.getPhone();
 
-            DuplicateCheckRequest successRequest = DuplicateCheckRequestUtils.createRequest(resource, successValue);
             doNothing()
                     .when(memberService)
                     .duplicateCheck(resource, successValue);
 
-            DuplicateCheckRequest failureRequest = DuplicateCheckRequestUtils.createRequest(resource, failureValue);
             doThrow(AnotherArtException.type(MemberErrorCode.DUPLICATE_PHONE))
                     .when(memberService)
                     .duplicateCheck(resource, failureValue);
 
             // when
             MockHttpServletRequestBuilder successRequestBuilder = MockMvcRequestBuilders
-                    .post(BASE_URL)
-                    .contentType(APPLICATION_JSON)
-                    .content(ObjectMapperUtils.objectToJson(successRequest));
+                    .get(BASE_URL)
+                    .param("resource", resource)
+                    .param("value", successValue);
 
             MockHttpServletRequestBuilder failureRequestBuilder = MockMvcRequestBuilders
-                    .post(BASE_URL)
-                    .contentType(APPLICATION_JSON)
-                    .content(ObjectMapperUtils.objectToJson(failureRequest));
+                    .get(BASE_URL)
+                    .param("resource", resource)
+                    .param("value", failureValue);
 
             // then
             mockMvc.perform(successRequestBuilder)
@@ -360,9 +356,9 @@ class MemberApiControllerTest extends ControllerTest {
                                     "MemberApi/DuplicateCheck/Phone/Success",
                                     preprocessRequest(prettyPrint()),
                                     preprocessResponse(prettyPrint()),
-                                    requestFields(
-                                            fieldWithPath("resource").description("중복 체크 타입"),
-                                            fieldWithPath("value").description("중복 체크 값")
+                                    requestParameters(
+                                            parameterWithName("resource").description("중복 체크 타입"),
+                                            parameterWithName("value").description("중복 체크 값")
                                     )
                             )
                     );
@@ -381,9 +377,9 @@ class MemberApiControllerTest extends ControllerTest {
                                     "MemberApi/DuplicateCheck/Phone/Failure",
                                     preprocessRequest(prettyPrint()),
                                     preprocessResponse(prettyPrint()),
-                                    requestFields(
-                                            fieldWithPath("resource").description("중복 체크 타입"),
-                                            fieldWithPath("value").description("중복 체크 값")
+                                    requestParameters(
+                                            parameterWithName("resource").description("중복 체크 타입"),
+                                            parameterWithName("value").description("중복 체크 값")
                                     ),
                                     responseFields(
                                             fieldWithPath("statusCode").description("HTTP 상태 코드"),
@@ -402,26 +398,24 @@ class MemberApiControllerTest extends ControllerTest {
             final String successValue = "success" + member.getEmailValue();
             final String failureValue = member.getEmailValue();
 
-            DuplicateCheckRequest successRequest = DuplicateCheckRequestUtils.createRequest(resource, successValue);
             doNothing()
                     .when(memberService)
                     .duplicateCheck(resource, successValue);
 
-            DuplicateCheckRequest failureRequest = DuplicateCheckRequestUtils.createRequest(resource, failureValue);
             doThrow(AnotherArtException.type(MemberErrorCode.DUPLICATE_EMAIL))
                     .when(memberService)
                     .duplicateCheck(resource, failureValue);
 
             // when
             MockHttpServletRequestBuilder successRequestBuilder = MockMvcRequestBuilders
-                    .post(BASE_URL)
-                    .contentType(APPLICATION_JSON)
-                    .content(ObjectMapperUtils.objectToJson(successRequest));
+                    .get(BASE_URL)
+                    .param("resource", resource)
+                    .param("value", successValue);
 
             MockHttpServletRequestBuilder failureRequestBuilder = MockMvcRequestBuilders
-                    .post(BASE_URL)
-                    .contentType(APPLICATION_JSON)
-                    .content(ObjectMapperUtils.objectToJson(failureRequest));
+                    .get(BASE_URL)
+                    .param("resource", resource)
+                    .param("value", failureValue);
 
             // then
             mockMvc.perform(successRequestBuilder)
@@ -432,9 +426,9 @@ class MemberApiControllerTest extends ControllerTest {
                                     "MemberApi/DuplicateCheck/Email/Success",
                                     preprocessRequest(prettyPrint()),
                                     preprocessResponse(prettyPrint()),
-                                    requestFields(
-                                            fieldWithPath("resource").description("중복 체크 타입"),
-                                            fieldWithPath("value").description("중복 체크 값")
+                                    requestParameters(
+                                            parameterWithName("resource").description("중복 체크 타입"),
+                                            parameterWithName("value").description("중복 체크 값")
                                     )
                             )
                     );
@@ -453,9 +447,9 @@ class MemberApiControllerTest extends ControllerTest {
                                     "MemberApi/DuplicateCheck/Email/Failure",
                                     preprocessRequest(prettyPrint()),
                                     preprocessResponse(prettyPrint()),
-                                    requestFields(
-                                            fieldWithPath("resource").description("중복 체크 타입"),
-                                            fieldWithPath("value").description("중복 체크 값")
+                                    requestParameters(
+                                            parameterWithName("resource").description("중복 체크 타입"),
+                                            parameterWithName("value").description("중복 체크 값")
                                     ),
                                     responseFields(
                                             fieldWithPath("statusCode").description("HTTP 상태 코드"),
@@ -480,9 +474,9 @@ class MemberApiControllerTest extends ControllerTest {
 
             // when
             MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                    .post(BASE_URL)
-                    .contentType(APPLICATION_JSON)
-                    .content(ObjectMapperUtils.objectToJson(request));
+                    .get(BASE_URL)
+                    .param("resource", resource)
+                    .param("value", value);
 
             // then
             final GlobalErrorCode expectedError = GlobalErrorCode.VALIDATION_ERROR;
@@ -499,9 +493,9 @@ class MemberApiControllerTest extends ControllerTest {
                                     "MemberApi/DuplicateCheck/AnonymousFailure",
                                     preprocessRequest(prettyPrint()),
                                     preprocessResponse(prettyPrint()),
-                                    requestFields(
-                                            fieldWithPath("resource").description("중복 체크 타입"),
-                                            fieldWithPath("value").description("중복 체크 값")
+                                    requestParameters(
+                                            parameterWithName("resource").description("중복 체크 타입"),
+                                            parameterWithName("value").description("중복 체크 값")
                                     ),
                                     responseFields(
                                             fieldWithPath("statusCode").description("HTTP 상태 코드"),

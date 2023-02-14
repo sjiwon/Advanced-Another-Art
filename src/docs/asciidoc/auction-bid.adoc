@@ -10,7 +10,7 @@
 HTTP Request
 include::{snippets}/AuctionApi/Bid/Failure/Case1/http-request.adoc[]
 include::{snippets}/AuctionApi/Bid/Failure/Case1/path-parameters.adoc[]
-include::{snippets}/AuctionApi/Bid/Failure/Case1/request-parameters.adoc[]
+include::{snippets}/AuctionApi/Bid/Failure/Case1/request-fields.adoc[]
 
 HTTP Response
 include::{snippets}/AuctionApi/Bid/Failure/Case1/response-body.adoc[]
@@ -20,7 +20,7 @@ HTTP Request
 include::{snippets}/AuctionApi/Bid/Failure/Case2/http-request.adoc[]
 include::{snippets}/AuctionApi/Bid/Failure/Case2/request-headers.adoc[]
 include::{snippets}/AuctionApi/Bid/Failure/Case2/path-parameters.adoc[]
-include::{snippets}/AuctionApi/Bid/Failure/Case2/request-parameters.adoc[]
+include::{snippets}/AuctionApi/Bid/Failure/Case2/request-fields.adoc[]
 
 HTTP Response
 include::{snippets}/AuctionApi/Bid/Failure/Case2/response-body.adoc[]
@@ -30,7 +30,7 @@ HTTP Request
 include::{snippets}/AuctionApi/Bid/Failure/Case3/http-request.adoc[]
 include::{snippets}/AuctionApi/Bid/Failure/Case3/request-headers.adoc[]
 include::{snippets}/AuctionApi/Bid/Failure/Case3/path-parameters.adoc[]
-include::{snippets}/AuctionApi/Bid/Failure/Case3/request-parameters.adoc[]
+include::{snippets}/AuctionApi/Bid/Failure/Case3/request-fields.adoc[]
 
 HTTP Response
 include::{snippets}/AuctionApi/Bid/Failure/Case3/response-body.adoc[]
@@ -40,7 +40,7 @@ HTTP Request
 include::{snippets}/AuctionApi/Bid/Failure/Case4/http-request.adoc[]
 include::{snippets}/AuctionApi/Bid/Failure/Case4/request-headers.adoc[]
 include::{snippets}/AuctionApi/Bid/Failure/Case4/path-parameters.adoc[]
-include::{snippets}/AuctionApi/Bid/Failure/Case4/request-parameters.adoc[]
+include::{snippets}/AuctionApi/Bid/Failure/Case4/request-fields.adoc[]
 
 HTTP Response
 include::{snippets}/AuctionApi/Bid/Failure/Case4/response-body.adoc[]
@@ -50,7 +50,7 @@ HTTP Request
 include::{snippets}/AuctionApi/Bid/Failure/Case5/http-request.adoc[]
 include::{snippets}/AuctionApi/Bid/Failure/Case5/request-headers.adoc[]
 include::{snippets}/AuctionApi/Bid/Failure/Case5/path-parameters.adoc[]
-include::{snippets}/AuctionApi/Bid/Failure/Case5/request-parameters.adoc[]
+include::{snippets}/AuctionApi/Bid/Failure/Case5/request-fields.adoc[]
 
 HTTP Response
 include::{snippets}/AuctionApi/Bid/Failure/Case5/response-body.adoc[]
@@ -60,7 +60,7 @@ HTTP Request
 include::{snippets}/AuctionApi/Bid/Success/http-request.adoc[]
 include::{snippets}/AuctionApi/Bid/Success/request-headers.adoc[]
 include::{snippets}/AuctionApi/Bid/Success/path-parameters.adoc[]
-include::{snippets}/AuctionApi/Bid/Success/request-parameters.adoc[]
+include::{snippets}/AuctionApi/Bid/Success/request-fields.adoc[]
 
 HTTP Response
 include::{snippets}/AuctionApi/Bid/Success/http-response.adoc[]

@@ -32,10 +32,10 @@ public class ArtService {
     private final FileUploadUtils fileUploadUtils;
 
     @Transactional
-    public void artRegistration(Long ownerId, ArtRegisterRequestDto request) {
-        Member artOwner = memberFindService.findById(ownerId);
-        Art art = buildArt(artOwner, request);
-        validateArtTypeAndExecuteAuctionLogic(art, request.getPeriod());
+    public void registerArt(Long ownerId, ArtRegisterRequestDto request) {
+        Member owner = memberFindService.findById(ownerId);
+        Art art = buildArt(owner, request);
+        handleArtTypeAndStoreAuction(art, request.getPeriod());
     }
 
     private Art buildArt(Member artOwner, ArtRegisterRequestDto request) {
@@ -48,24 +48,24 @@ public class ArtService {
                 .uploadImage(UploadImage.from(request.getFile()))
                 .hashtags(new HashSet<>(request.getHashtagList()))
                 .build();
-        fileUploadUtils.proceedingFileUpload(request.getFile(), art.getStorageName());
+        fileUploadUtils.uploadArtImage(request.getFile(), art.getStorageName());
         return artRepository.save(art);
     }
 
-    private void validateArtTypeAndExecuteAuctionLogic(Art art, Period period) {
+    private void handleArtTypeAndStoreAuction(Art art, Period period) {
         if (art.isAuctionType()) {
             auctionRepository.save(Auction.initAuction(art, period));
         }
     }
 
-    public void artNameDuplicateCheck(String artName) {
-        if (isAlreadyExistsName(artName)) {
+    public void checkDuplicateArtName(String name) {
+        if (isArtNameAlreadyExists(name)) {
             throw AnotherArtException.type(ArtErrorCode.INVALID_ART_NAME);
         }
     }
 
-    private boolean isAlreadyExistsName(String artName) {
-        return artRepository.existsByName(artName);
+    private boolean isArtNameAlreadyExists(String name) {
+        return artRepository.existsByName(name);
     }
 
     @Transactional
@@ -75,7 +75,7 @@ public class ArtService {
     }
 
     @Transactional
-    public void updateHashtags(Long artId, List<String> hashtagList) {
+    public void updateArtHashtags(Long artId, List<String> hashtagList) {
         Art art = artFindService.findById(artId);
         artRepository.deleteHashtagsByArtId(artId);
         art.applyHashtags(new HashSet<>(hashtagList));
@@ -85,7 +85,7 @@ public class ArtService {
     public void deleteArt(Long artId, Long memberId) {
         Art art = artFindService.findById(artId);
         validateArtOwner(art, memberId);
-        executeArtDeleteProcess(art);
+        deleteArtProgress(art);
     }
 
     private void validateArtOwner(Art art, Long memberId) {
@@ -94,22 +94,22 @@ public class ArtService {
         }
     }
 
-    private void executeArtDeleteProcess(Art art) {
-        validateSaleStatus(art);
+    private void deleteArtProgress(Art art) {
+        validateArtStatus(art);
         if (art.isAuctionType()) {
-            validateAuctionArtBidRecord(art);
+            validateAuctionBidRecord(art);
         }
         artRepository.deleteHashtagsByArtId(art.getId());
         artRepository.deleteById(art.getId());
     }
 
-    private void validateSaleStatus(Art art) {
+    private void validateArtStatus(Art art) {
         if (art.isSoldOut()) {
             throw AnotherArtException.type(ArtErrorCode.ALREADY_SOLD_OUT);
         }
     }
 
-    private void validateAuctionArtBidRecord(Art art) {
+    private void validateAuctionBidRecord(Art art) {
         if (auctionRecordRepository.existsAuctionRecordByArtId(art.getId())) {
             throw AnotherArtException.type(ArtErrorCode.ALREADY_BID_EXISTS);
         }
