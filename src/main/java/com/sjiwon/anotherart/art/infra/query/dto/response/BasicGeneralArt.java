@@ -15,7 +15,7 @@ public class BasicGeneralArt {
     private final String artDescription;
     private final int artPrice;
     private final ArtStatus artStatus;
-    private final LocalDateTime artRegisterDate;
+    private final LocalDateTime artRegistrationDate;
     private final String artStorageName;
 
     // 작품 주인 정보 - NotNull
@@ -31,7 +31,7 @@ public class BasicGeneralArt {
     @Builder
     @QueryProjection
     public BasicGeneralArt(
-            Long artId, String artName, String artDescription, int artPrice, ArtStatus artStatus, LocalDateTime artRegisterDate, String artStorageName,
+            Long artId, String artName, String artDescription, int artPrice, ArtStatus artStatus, LocalDateTime artRegistrationDate, String artStorageName,
             Long ownerId, String ownerNickname, String ownerSchool,
             Long buyerId, String buyerNickname, String buyerSchool
     ) {
@@ -40,7 +40,7 @@ public class BasicGeneralArt {
         this.artDescription = artDescription;
         this.artPrice = artPrice;
         this.artStatus = artStatus;
-        this.artRegisterDate = artRegisterDate;
+        this.artRegistrationDate = artRegistrationDate;
         this.artStorageName = artStorageName;
         this.ownerId = ownerId;
         this.ownerNickname = ownerNickname;

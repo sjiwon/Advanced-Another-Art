@@ -24,7 +24,7 @@ public class BasicAuctionArt {
     private final String artName;
     private final String artDescription;
     private final int artPrice;
-    private final LocalDateTime artRegisterDate;
+    private final LocalDateTime artRegistrationDate;
     private final String artStorageName;
 
     // 작품 주인 정보
@@ -37,7 +37,7 @@ public class BasicAuctionArt {
     public BasicAuctionArt(
             Long auctionId, Integer highestBidPrice, LocalDateTime auctionStartDate, LocalDateTime auctionEndDate,
             Long highestBidderId, String highestBidderNickname, String highestBidderSchool,
-            Long artId, String artName, String artDescription, int artPrice, LocalDateTime artRegisterDate, String artStorageName,
+            Long artId, String artName, String artDescription, int artPrice, LocalDateTime artRegistrationDate, String artStorageName,
             Long ownerId, String ownerNickname, String ownerSchool
     ) {
         this.auctionId = auctionId;
@@ -51,7 +51,7 @@ public class BasicAuctionArt {
         this.artName = artName;
         this.artDescription = artDescription;
         this.artPrice = artPrice;
-        this.artRegisterDate = artRegisterDate;
+        this.artRegistrationDate = artRegistrationDate;
         this.artStorageName = artStorageName;
         this.ownerId = ownerId;
         this.ownerNickname = ownerNickname;

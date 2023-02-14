@@ -3,8 +3,10 @@ package com.sjiwon.anotherart.common;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sjiwon.anotherart.art.controller.ArtApiController;
 import com.sjiwon.anotherart.art.controller.ArtDetailApiController;
+import com.sjiwon.anotherart.art.controller.ArtSearchApiController;
 import com.sjiwon.anotherart.art.domain.ArtRepository;
 import com.sjiwon.anotherart.art.service.ArtFindService;
+import com.sjiwon.anotherart.art.service.ArtSearchService;
 import com.sjiwon.anotherart.art.service.ArtService;
 import com.sjiwon.anotherart.auction.controller.BidApiController;
 import com.sjiwon.anotherart.auction.service.AuctionFindService;
@@ -44,6 +46,7 @@ import static org.mockito.BDDMockito.given;
 @WebMvcTest({
         ArtApiController.class,
         ArtDetailApiController.class,
+        ArtSearchApiController.class,
         BidApiController.class,
         FavoriteApiController.class,
         MemberApiController.class,
@@ -69,6 +72,9 @@ public abstract class ControllerTest {
 
     @MockBean
     protected ArtFindService artFindService;
+
+    @MockBean
+    protected ArtSearchService artSearchService;
 
     @MockBean
     protected AuctionFindService auctionFindService;
@@ -101,10 +107,10 @@ public abstract class ControllerTest {
     protected TokenPersistenceService tokenPersistenceService;
 
     @MockBean
-    private ArtRepository artRepository;
+    protected ArtRepository artRepository;
 
     @MockBean
-    private MemberRepository memberRepository;
+    protected MemberRepository memberRepository;
 
     @BeforeEach
     void beforeMocking() {
