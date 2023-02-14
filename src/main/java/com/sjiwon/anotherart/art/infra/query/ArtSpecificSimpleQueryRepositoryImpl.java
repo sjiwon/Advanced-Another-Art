@@ -1,13 +1,10 @@
 package com.sjiwon.anotherart.art.infra.query;
 
-import com.querydsl.core.types.ConstructorExpression;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.sjiwon.anotherart.art.domain.ArtType;
 import com.sjiwon.anotherart.art.infra.query.dto.BasicAuctionArt;
 import com.sjiwon.anotherart.art.infra.query.dto.BasicGeneralArt;
-import com.sjiwon.anotherart.art.infra.query.dto.QBasicAuctionArt;
-import com.sjiwon.anotherart.art.infra.query.dto.QBasicGeneralArt;
 import com.sjiwon.anotherart.member.domain.QMember;
 import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,6 +15,8 @@ import static com.sjiwon.anotherart.art.domain.ArtType.AUCTION;
 import static com.sjiwon.anotherart.art.domain.ArtType.GENERAL;
 import static com.sjiwon.anotherart.art.domain.QArt.art;
 import static com.sjiwon.anotherart.art.domain.hashtag.QHashtag.hashtag;
+import static com.sjiwon.anotherart.art.utils.ArtQueryFetchingUtils.assembleAuctionArtProjections;
+import static com.sjiwon.anotherart.art.utils.ArtQueryFetchingUtils.assembleGeneralArtProjections;
 import static com.sjiwon.anotherart.auction.domain.QAuction.auction;
 import static com.sjiwon.anotherart.favorite.domain.QFavorite.favorite;
 import static com.sjiwon.anotherart.purchase.domain.QPurchase.purchase;
@@ -51,7 +50,7 @@ public class ArtSpecificSimpleQueryRepositoryImpl implements ArtSpecificSimpleQu
     @Override
     public BasicGeneralArt getGeneralArtById(Long artId) {
         return query
-                .select(generalArtProjections())
+                .select(assembleGeneralArtProjections())
                 .from(art)
                 .innerJoin(art.owner, owner)
                 .leftJoin(purchase).on(purchase.art.id.eq(art.id))
@@ -66,7 +65,7 @@ public class ArtSpecificSimpleQueryRepositoryImpl implements ArtSpecificSimpleQu
     @Override
     public BasicAuctionArt getAuctionArtById(Long artId) {
         return query
-                .select(auctionArtProjections())
+                .select(assembleAuctionArtProjections())
                 .from(art)
                 .innerJoin(art.owner, owner)
                 .innerJoin(auction).on(auction.art.id.eq(art.id))
@@ -76,23 +75,6 @@ public class ArtSpecificSimpleQueryRepositoryImpl implements ArtSpecificSimpleQu
                         artIdEq(artId)
                 )
                 .fetchOne();
-    }
-
-    private ConstructorExpression<BasicGeneralArt> generalArtProjections() {
-        return new QBasicGeneralArt(
-                art.id, art.name, art.description, art.price, art.artStatus, art.registrationDate, art.uploadImage.storageName,
-                owner.id, owner.nickname, owner.school,
-                buyer.id, buyer.nickname, buyer.school
-        );
-    }
-
-    private ConstructorExpression<BasicAuctionArt> auctionArtProjections() {
-        return new QBasicAuctionArt(
-                auction.id, auction.bidAmount, auction.period.startDate, auction.period.endDate,
-                highestBidder.id, highestBidder.nickname, highestBidder.school,
-                art.id, art.name, art.description, art.price, art.registrationDate, art.uploadImage.storageName,
-                owner.id, owner.nickname, owner.school
-        );
     }
 
     private BooleanExpression hashtagArtIdEq(Long artId) {

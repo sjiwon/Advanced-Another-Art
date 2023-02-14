@@ -36,7 +36,7 @@ import static com.sjiwon.anotherart.common.utils.MemberUtils.INIT_AVAILABLE_POIN
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-@DisplayName("Art [Repository Layer] -> ArtSpecificQueryRepository 테스트")
+@DisplayName("Art [Repository Layer] -> ArtSpecificSimpleQueryRepository 테스트")
 class ArtSpecificSimpleQueryRepositoryTest extends RepositoryTest {
     @Autowired
     private ArtRepository artRepository;
