@@ -3,8 +3,8 @@ package com.sjiwon.anotherart.art.service;
 import com.sjiwon.anotherart.art.domain.Art;
 import com.sjiwon.anotherart.art.domain.ArtStatus;
 import com.sjiwon.anotherart.art.exception.ArtErrorCode;
-import com.sjiwon.anotherart.art.infra.query.dto.response.BasicAuctionArt;
-import com.sjiwon.anotherart.art.infra.query.dto.response.BasicGeneralArt;
+import com.sjiwon.anotherart.art.infra.query.dto.BasicAuctionArt;
+import com.sjiwon.anotherart.art.infra.query.dto.BasicGeneralArt;
 import com.sjiwon.anotherart.art.service.dto.response.AuctionArt;
 import com.sjiwon.anotherart.art.service.dto.response.GeneralArt;
 import com.sjiwon.anotherart.auction.domain.Auction;
@@ -31,10 +31,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-@DisplayName("Art [Service Layer] -> ArtSearchService 테스트")
+@DisplayName("Art [Service Layer] -> ArtSimpleSearchService 테스트")
 @RequiredArgsConstructor
-class ArtSearchServiceTest extends ServiceIntegrateTest {
-    private final ArtSearchService artSearchService;
+class ArtSimpleSearchServiceTest extends ServiceIntegrateTest {
+    private final ArtSimpleSearchService artSimpleSearchService;
     
     @Test
     @DisplayName("일반 작품 정보를 조회한다 [작품 정보 + 해시태그 리스트 + 좋아요 등록 사용자 ID 리스트]")
@@ -49,7 +49,7 @@ class ArtSearchServiceTest extends ServiceIntegrateTest {
         processLikeMarking(art, buyer);
 
         // when - then
-        GeneralArt findGeneralArt1 = (GeneralArt) artSearchService.getSingleArt(art.getId());
+        GeneralArt findGeneralArt1 = (GeneralArt) artSimpleSearchService.getSingleArt(art.getId());
         
         BasicGeneralArt findArt1 = findGeneralArt1.getArt();
         List<String> hashtags1 = findGeneralArt1.getHashtags();
@@ -78,7 +78,7 @@ class ArtSearchServiceTest extends ServiceIntegrateTest {
 
         // 구매 진행
         processPurchase(art, buyer);
-        GeneralArt findGeneralArt2 = (GeneralArt) artSearchService.getSingleArt(art.getId());
+        GeneralArt findGeneralArt2 = (GeneralArt) artSimpleSearchService.getSingleArt(art.getId());
         
         BasicGeneralArt findArt2 = findGeneralArt2.getArt();
         List<String> hashtags2 = findGeneralArt2.getHashtags();
@@ -115,7 +115,7 @@ class ArtSearchServiceTest extends ServiceIntegrateTest {
         Auction auction = initAuction(art);
 
         // when - then
-        AuctionArt auctionArt1 = (AuctionArt) artSearchService.getSingleArt(art.getId());
+        AuctionArt auctionArt1 = (AuctionArt) artSimpleSearchService.getSingleArt(art.getId());
         BasicAuctionArt findArt1 = auctionArt1.getArt();
         List<String> hashtags1 = auctionArt1.getHashtags();
         List<Long> likeMarkingMembers1 = auctionArt1.getLikeMarkingMembers();
@@ -152,7 +152,7 @@ class ArtSearchServiceTest extends ServiceIntegrateTest {
         final int bidAmount1 = auction.getBidAmount() + 5_000;
         processBid(auction, bidder1, bidAmount1);
 
-        AuctionArt auctionArt2 = (AuctionArt) artSearchService.getSingleArt(art.getId());
+        AuctionArt auctionArt2 = (AuctionArt) artSimpleSearchService.getSingleArt(art.getId());
         BasicAuctionArt findArt2 = auctionArt2.getArt();
         List<String> hashtags2 = auctionArt2.getHashtags();
         List<Long> likeMarkingMembers2 = auctionArt2.getLikeMarkingMembers();
@@ -189,7 +189,7 @@ class ArtSearchServiceTest extends ServiceIntegrateTest {
         final int bidAmount2 = auction.getBidAmount() + 5_000;
         processBid(auction, bidder2, bidAmount2);
 
-        AuctionArt auctionArt3 = (AuctionArt) artSearchService.getSingleArt(art.getId());
+        AuctionArt auctionArt3 = (AuctionArt) artSimpleSearchService.getSingleArt(art.getId());
         BasicAuctionArt findArt3 = auctionArt3.getArt();
         List<String> hashtags3 = auctionArt3.getHashtags();
         List<Long> likeMarkingMembers3 = auctionArt3.getLikeMarkingMembers();
@@ -229,7 +229,7 @@ class ArtSearchServiceTest extends ServiceIntegrateTest {
         Art art = createGeneralArt(owner, HASHTAGS);
         
         // when - then
-        assertThatThrownBy(() -> artSearchService.getSingleArt(art.getId() + 10000L))
+        assertThatThrownBy(() -> artSimpleSearchService.getSingleArt(art.getId() + 10000L))
                 .isInstanceOf(AnotherArtException.class)
                 .hasMessage(ArtErrorCode.ART_NOT_FOUND.getMessage());
     }

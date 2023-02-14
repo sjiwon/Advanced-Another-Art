@@ -1,4 +1,4 @@
-package com.sjiwon.anotherart.art.infra.query.dto.response;
+package com.sjiwon.anotherart.art.infra.query.dto;
 
 import com.querydsl.core.annotations.QueryProjection;
 import com.sjiwon.anotherart.art.domain.ArtStatus;

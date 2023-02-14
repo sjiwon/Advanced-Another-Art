@@ -6,8 +6,8 @@ import com.sjiwon.anotherart.art.controller.ArtDetailApiController;
 import com.sjiwon.anotherart.art.controller.ArtSearchApiController;
 import com.sjiwon.anotherart.art.domain.ArtRepository;
 import com.sjiwon.anotherart.art.service.ArtFindService;
-import com.sjiwon.anotherart.art.service.ArtSearchService;
 import com.sjiwon.anotherart.art.service.ArtService;
+import com.sjiwon.anotherart.art.service.ArtSimpleSearchService;
 import com.sjiwon.anotherart.auction.controller.BidApiController;
 import com.sjiwon.anotherart.auction.service.AuctionFindService;
 import com.sjiwon.anotherart.auction.service.BidService;
@@ -74,7 +74,7 @@ public abstract class ControllerTest {
     protected ArtFindService artFindService;
 
     @MockBean
-    protected ArtSearchService artSearchService;
+    protected ArtSimpleSearchService artSimpleSearchService;
 
     @MockBean
     protected AuctionFindService auctionFindService;

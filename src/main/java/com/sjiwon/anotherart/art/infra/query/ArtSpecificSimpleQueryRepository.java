@@ -1,7 +1,7 @@
 package com.sjiwon.anotherart.art.infra.query;
 
-import com.sjiwon.anotherart.art.infra.query.dto.response.BasicAuctionArt;
-import com.sjiwon.anotherart.art.infra.query.dto.response.BasicGeneralArt;
+import com.sjiwon.anotherart.art.infra.query.dto.BasicAuctionArt;
+import com.sjiwon.anotherart.art.infra.query.dto.BasicGeneralArt;
 
 import java.util.List;
 

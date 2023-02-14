@@ -2,8 +2,8 @@ package com.sjiwon.anotherart.art.controller;
 
 import com.sjiwon.anotherart.art.controller.utils.BasicArtBuilder;
 import com.sjiwon.anotherart.art.exception.ArtErrorCode;
-import com.sjiwon.anotherart.art.infra.query.dto.response.BasicAuctionArt;
-import com.sjiwon.anotherart.art.infra.query.dto.response.BasicGeneralArt;
+import com.sjiwon.anotherart.art.infra.query.dto.BasicAuctionArt;
+import com.sjiwon.anotherart.art.infra.query.dto.BasicGeneralArt;
 import com.sjiwon.anotherart.art.service.dto.response.AuctionArt;
 import com.sjiwon.anotherart.art.service.dto.response.GeneralArt;
 import com.sjiwon.anotherart.common.ControllerTest;
@@ -52,7 +52,7 @@ class ArtSearchApiControllerSimpleFetchingTest extends ControllerTest {
                     .hashtags(DEFAULT_HASHTAGS)
                     .likeMarkingMembers(likeMarkingMembers)
                     .build();
-            given(artSearchService.getSingleArt(artId)).willReturn(response);
+            given(artSimpleSearchService.getSingleArt(artId)).willReturn(response);
 
             // when
             MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
@@ -110,7 +110,7 @@ class ArtSearchApiControllerSimpleFetchingTest extends ControllerTest {
                     .likeMarkingMembers(likeMarkingMembers)
                     .bidCount(bidCount)
                     .build();
-            given(artSearchService.getSingleArt(artId)).willReturn(response);
+            given(artSimpleSearchService.getSingleArt(artId)).willReturn(response);
 
             // when
             MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
@@ -164,7 +164,7 @@ class ArtSearchApiControllerSimpleFetchingTest extends ControllerTest {
         void test3() throws Exception {
             // given
             Long artId = 1L;
-            given(artSearchService.getSingleArt(artId)).willThrow(AnotherArtException.type(ArtErrorCode.ART_NOT_FOUND));
+            given(artSimpleSearchService.getSingleArt(artId)).willThrow(AnotherArtException.type(ArtErrorCode.ART_NOT_FOUND));
 
             // when
             MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders

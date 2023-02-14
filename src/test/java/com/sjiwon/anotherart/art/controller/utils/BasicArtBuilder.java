@@ -1,8 +1,8 @@
 package com.sjiwon.anotherart.art.controller.utils;
 
 import com.sjiwon.anotherart.art.domain.ArtStatus;
-import com.sjiwon.anotherart.art.infra.query.dto.response.BasicAuctionArt;
-import com.sjiwon.anotherart.art.infra.query.dto.response.BasicGeneralArt;
+import com.sjiwon.anotherart.art.infra.query.dto.BasicAuctionArt;
+import com.sjiwon.anotherart.art.infra.query.dto.BasicGeneralArt;
 import com.sjiwon.anotherart.fixture.ArtFixture;
 import com.sjiwon.anotherart.fixture.MemberFixture;
 

@@ -1,6 +1,6 @@
 package com.sjiwon.anotherart.art.service.dto.response;
 
-import com.sjiwon.anotherart.art.infra.query.dto.response.BasicAuctionArt;
+import com.sjiwon.anotherart.art.infra.query.dto.BasicAuctionArt;
 import lombok.*;
 
 import java.util.List;

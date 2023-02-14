@@ -15,7 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
-public class ArtSearchService {
+public class ArtSimpleSearchService {
     private final ArtRepository artRepository;
     private final AuctionRecordRepository auctionRecordRepository;
 
