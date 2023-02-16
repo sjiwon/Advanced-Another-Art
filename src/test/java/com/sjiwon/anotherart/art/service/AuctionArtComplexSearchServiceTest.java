@@ -35,6 +35,7 @@ import static com.sjiwon.anotherart.common.utils.MemberUtils.INIT_AVAILABLE_POIN
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
+@DisplayName("Art [Service Layer] -> AuctionArtComplexSearchService 현재 경매중인 작품 조회 테스트")
 @RequiredArgsConstructor
 class AuctionArtComplexSearchServiceTest extends ServiceIntegrateTest {
     private final AuctionArtComplexSearchService auctionArtComplexSearchService;

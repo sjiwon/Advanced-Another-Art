@@ -52,8 +52,9 @@ public class AuctionArtSpecificComplexQueryRepositoryImpl implements AuctionArtS
 
         List<BasicAuctionArt> result = completeAuctionArtPagingQuery(basicQuery, condition);
         Long count = query
-                .select(auction.count())
-                .from(auction)
+                .select(art.count())
+                .from(art)
+                .innerJoin(auction).on(auction.art.id.eq(art.id))
                 .where(
                         artTypeEq(AUCTION),
                         currentDateBetween(LocalDateTime.now())

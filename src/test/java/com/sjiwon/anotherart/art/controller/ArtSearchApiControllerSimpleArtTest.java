@@ -29,7 +29,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @DisplayName("Art [Controller Layer] -> ArtApiController 작품 단건 조회 테스트")
-class ArtSearchApiControllerSimpleFetchingTest extends ControllerTest {
+class ArtSearchApiControllerSimpleArtTest extends ControllerTest {
     private static final ArtFixture GENERAL_ART = ArtFixture.B;
     private static final ArtFixture AUCTION_ART = ArtFixture.A;
     private static final List<String> DEFAULT_HASHTAGS = HASHTAGS;
