@@ -39,6 +39,7 @@ class AjaxAuthenticationSuccessHandlerTest extends ControllerTest {
         // then
         mockMvc.perform(requestBuilder)
                 .andExpect(status().isOk())
+                .andExpect(jsonPath("$.username").exists())
                 .andExpect(jsonPath("$.accessToken").exists())
                 .andExpect(jsonPath("$.refreshToken").exists())
                 .andDo(
@@ -51,6 +52,7 @@ class AjaxAuthenticationSuccessHandlerTest extends ControllerTest {
                                         fieldWithPath("loginPassword").description("로그인 비밀번호")
                                 ),
                                 responseFields(
+                                        fieldWithPath("username").description("사용자 이름"),
                                         fieldWithPath("accessToken").description("발급된 Access Token (Expire - 2시간)"),
                                         fieldWithPath("refreshToken").description("발급된 Refresh Token (Expire - 2주)")
                                 )
