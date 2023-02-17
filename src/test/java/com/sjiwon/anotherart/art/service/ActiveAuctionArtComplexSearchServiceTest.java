@@ -35,9 +35,9 @@ import static com.sjiwon.anotherart.common.utils.MemberUtils.INIT_AVAILABLE_POIN
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-@DisplayName("Art [Service Layer] -> AuctionArtComplexSearchService 현재 경매중인 작품 조회 테스트")
+@DisplayName("Art [Service Layer] -> 현재 경매중인 작품 조회 테스트")
 @RequiredArgsConstructor
-class AuctionArtComplexSearchServiceTest extends ServiceIntegrateTest {
+class ActiveAuctionArtComplexSearchServiceTest extends ServiceIntegrateTest {
     private final AuctionArtComplexSearchService auctionArtComplexSearchService;
 
     // 총 작품 12건에 대한 Fetching
@@ -55,7 +55,7 @@ class AuctionArtComplexSearchServiceTest extends ServiceIntegrateTest {
     private static final String BID_COUNT_DESC = "rcount";
 
     @Nested
-    @DisplayName("현재 경매중인 작품 페이징 쿼리")
+    @DisplayName("현재 경매중인 작품 조회")
     class findCurrentActiceAuctionArtList {
         @Test
         @DisplayName("기본으로 제공되지 않는 정렬 기준은 빈 리스트가 반환된다")
@@ -526,7 +526,7 @@ class AuctionArtComplexSearchServiceTest extends ServiceIntegrateTest {
 
     public List<Art> createAuctionArtList(Member owner, int totalElements) {
         List<Art> arts = new ArrayList<>();
-        for (long i = 1; i <= totalElements; i++) {
+        for (int i = 0; i < totalElements; i++) {
             arts.add(
                     Art.builder()
                             .owner(owner)
