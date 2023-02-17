@@ -15,6 +15,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -63,6 +64,35 @@ public class AuctionArtSpecificComplexQueryRepositoryImpl implements AuctionArtS
         return PageableExecutionUtils.getPage(result, pageRequest, () -> count);
     }
 
+    @Override
+    public Page<BasicAuctionArt> findAuctionArtListByKeyword(SearchCondition condition, Pageable pageRequest) {
+        JPAQuery<BasicAuctionArt> basicQuery = query
+                .select(assembleAuctionArtProjections())
+                .from(art)
+                .innerJoin(art.owner, owner)
+                .innerJoin(auction).on(auction.art.id.eq(art.id))
+                .leftJoin(auction.bidder, highestBidder)
+                .where(
+                        artTypeEq(AUCTION),
+                        keywordContains(condition.getGivenText())
+                )
+                .orderBy(orderBySearchCondition(condition).toArray(OrderSpecifier[]::new))
+                .offset(pageRequest.getOffset())
+                .limit(pageRequest.getPageSize());
+
+        List<BasicAuctionArt> result = completeAuctionArtPagingQuery(basicQuery, condition);
+        Long count = query
+                .select(art.count())
+                .from(art)
+                .innerJoin(auction).on(auction.art.id.eq(art.id))
+                .where(
+                        artTypeEq(AUCTION),
+                        keywordContains(condition.getGivenText())
+                )
+                .fetchOne();
+        return PageableExecutionUtils.getPage(result, pageRequest, () -> count);
+    }
+
     private List<BasicAuctionArt> completeAuctionArtPagingQuery(JPAQuery<BasicAuctionArt> query, SearchCondition condition) {
         return switch (condition.getSortType()) {
             case LIKE_ASC, LIKE_DESC -> query
@@ -92,5 +122,9 @@ public class AuctionArtSpecificComplexQueryRepositoryImpl implements AuctionArtS
 
     private BooleanExpression currentDateBetween(LocalDateTime currentDateTime) {
         return (currentDateTime != null) ? auction.period.startDate.before(currentDateTime).and(auction.period.endDate.after(currentDateTime)) : null;
+    }
+
+    private BooleanExpression keywordContains(String givenKeyword) {
+        return StringUtils.hasText(givenKeyword) ? art.name.contains(givenKeyword).or(art.description.contains(givenKeyword)) : null;
     }
 }

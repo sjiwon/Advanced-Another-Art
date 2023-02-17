@@ -3,6 +3,7 @@ package com.sjiwon.anotherart.art.domain;
 import com.sjiwon.anotherart.art.infra.query.ArtSpecificSimpleQueryRepository;
 import com.sjiwon.anotherart.art.infra.query.ArtSummaryQueryRepository;
 import com.sjiwon.anotherart.art.infra.query.AuctionArtSpecificComplexQueryRepository;
+import com.sjiwon.anotherart.art.infra.query.GeneralArtSpecificComplexQueryRepository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -10,7 +11,8 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
-public interface ArtRepository extends JpaRepository<Art, Long>, ArtSpecificSimpleQueryRepository, ArtSummaryQueryRepository, AuctionArtSpecificComplexQueryRepository {
+public interface ArtRepository extends JpaRepository<Art, Long>,
+        ArtSpecificSimpleQueryRepository, ArtSummaryQueryRepository, AuctionArtSpecificComplexQueryRepository, GeneralArtSpecificComplexQueryRepository {
     // @Query
     @Query("SELECT a" +
             " FROM Art a" +
