@@ -1,6 +1,7 @@
 package com.sjiwon.anotherart.art.controller;
 
 import com.sjiwon.anotherart.art.controller.dto.Pagination;
+import com.sjiwon.anotherart.art.controller.dto.request.HashtagSearchArtRequest;
 import com.sjiwon.anotherart.art.controller.dto.request.KeywordSearchArtRequest;
 import com.sjiwon.anotherart.art.controller.dto.request.MainPageSearchRequest;
 import com.sjiwon.anotherart.art.controller.dto.response.PagingArtResponse;
@@ -47,6 +48,16 @@ public class ArtSearchApiController {
         Page<T> result = request.isAuctionType()
                 ? (Page<T>) auctionArtComplexSearchService.getAuctionArtListByKeyword(request.getKeyword(), request.getSort(), pageRequest)
                 : (Page<T>) generalArtComplexSearchService.getGeneralArtListByKeyword(request.getKeyword(), request.getSort(), pageRequest);
+
+        return assemblingResult(result, request.getPage());
+    }
+
+    @GetMapping("/hashtag")
+    public <T extends AbstractArt> PagingArtResponse<List<T>> getArtListByHashtag(@Valid @ModelAttribute HashtagSearchArtRequest request) {
+        Pageable pageRequest = getDefaultPageRequest(request.getPage());
+        Page<T> result = request.isAuctionType()
+                ? (Page<T>) auctionArtComplexSearchService.getAuctionArtListByHashtag(request.getHashtag(), request.getSort(), pageRequest)
+                : (Page<T>) generalArtComplexSearchService.getGeneralArtListByHashtag(request.getHashtag(), request.getSort(), pageRequest);
 
         return assemblingResult(result, request.getPage());
     }

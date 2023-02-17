@@ -29,4 +29,9 @@ public class ArtRequestValidationMessage {
         public static final String SEARCH_KEYWORD = "검색 키워드는 필수입니다.";
         public static final String SEARCH_TYPE = "작품 타입은 필수입니다.";
     }
+
+    public static class HashtagArt {
+        public static final String SEARCH_HASHTAG = "해시태그는 필수입니다.";
+        public static final String SEARCH_TYPE = "작품 타입은 필수입니다.";
+    }
 }
