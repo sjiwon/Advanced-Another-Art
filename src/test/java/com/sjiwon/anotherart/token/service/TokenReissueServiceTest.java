@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import static com.sjiwon.anotherart.common.utils.MemberUtils.ROLE_USER;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -27,7 +28,7 @@ class TokenReissueServiceTest extends ServiceIntegrateTest {
     void test1() {
         // given
         Member member = createMember();
-        String refreshToken = jwtTokenProvider.createRefreshToken(member.getId());
+        String refreshToken = jwtTokenProvider.createRefreshToken(member.getId(), ROLE_USER);
 
         // when - then
         assertThatThrownBy(() -> tokenReissueService.reissueTokens(member.getId(), refreshToken))
@@ -40,7 +41,7 @@ class TokenReissueServiceTest extends ServiceIntegrateTest {
     void test2() {
         // given
         Member member = createMember();
-        String refreshToken = jwtTokenProvider.createRefreshToken(member.getId());
+        String refreshToken = jwtTokenProvider.createRefreshToken(member.getId(), ROLE_USER);
         refreshTokenRepository.save(RefreshToken.issueRefreshToken(member.getId(), refreshToken));
 
         // when

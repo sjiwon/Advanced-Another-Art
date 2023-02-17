@@ -1,7 +1,7 @@
 package com.sjiwon.anotherart.favorite.controller;
 
 import com.sjiwon.anotherart.favorite.service.FavoriteService;
-import com.sjiwon.anotherart.global.annotation.ExtractPayload;
+import com.sjiwon.anotherart.global.annotation.ExtractPayloadId;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -15,14 +15,14 @@ public class FavoriteApiController {
 
     @PreAuthorize("hasRole('USER')")
     @PostMapping
-    public ResponseEntity<Void> addLike(@PathVariable Long artId, @ExtractPayload Long memberId) {
+    public ResponseEntity<Void> addLike(@PathVariable Long artId, @ExtractPayloadId Long memberId) {
         favoriteService.addLike(artId, memberId);
         return ResponseEntity.noContent().build();
     }
 
     @PreAuthorize("hasRole('USER')")
     @DeleteMapping
-    public ResponseEntity<Void> removeLike(@PathVariable Long artId, @ExtractPayload Long memberId) {
+    public ResponseEntity<Void> removeLike(@PathVariable Long artId, @ExtractPayloadId Long memberId) {
         favoriteService.removeLike(artId, memberId);
         return ResponseEntity.noContent().build();
     }

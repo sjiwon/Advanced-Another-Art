@@ -24,6 +24,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import java.util.List;
 
 import static com.sjiwon.anotherart.common.utils.ArtUtils.*;
+import static com.sjiwon.anotherart.common.utils.MemberUtils.ROLE_USER;
 import static com.sjiwon.anotherart.common.utils.TokenUtils.BEARER_TOKEN;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
@@ -90,7 +91,7 @@ class ArtDetailApiControllerTest extends ControllerTest {
         void test2() throws Exception {
             // given
             Long memberId = 1L;
-            final String accessToken = jwtTokenProvider.createAccessToken(memberId);
+            final String accessToken = jwtTokenProvider.createAccessToken(memberId, ROLE_USER);
 
             final String artName = ArtFixture.A.name();
             doThrow(AnotherArtException.type(ArtErrorCode.INVALID_ART_NAME))
@@ -138,7 +139,7 @@ class ArtDetailApiControllerTest extends ControllerTest {
         void test3() throws Exception {
             // given
             Long memberId = 1L;
-            final String accessToken = jwtTokenProvider.createAccessToken(memberId);
+            final String accessToken = jwtTokenProvider.createAccessToken(memberId, ROLE_USER);
 
             final String artName = ArtFixture.A.name();
             doNothing()
@@ -228,7 +229,7 @@ class ArtDetailApiControllerTest extends ControllerTest {
         void test2() throws Exception {
             // given
             Long memberId = 1L;
-            final String accessToken = jwtTokenProvider.createAccessToken(memberId);
+            final String accessToken = jwtTokenProvider.createAccessToken(memberId, ROLE_USER);
 
             Art art = createMockArt(HASHTAGS);
             Long artId = 1L;
@@ -326,7 +327,7 @@ class ArtDetailApiControllerTest extends ControllerTest {
         void test2() throws Exception {
             // given
             Long memberId = 1L;
-            final String accessToken = jwtTokenProvider.createAccessToken(memberId);
+            final String accessToken = jwtTokenProvider.createAccessToken(memberId, ROLE_USER);
 
             Art art = createMockArt(EMPTY_HASHTAGS);
             Long artId = 1L;
@@ -380,7 +381,7 @@ class ArtDetailApiControllerTest extends ControllerTest {
         void test3() throws Exception {
             // given
             Long memberId = 1L;
-            final String accessToken = jwtTokenProvider.createAccessToken(memberId);
+            final String accessToken = jwtTokenProvider.createAccessToken(memberId, ROLE_USER);
 
             Art art = createMockArt(OVERFLOW_HASHTAGS);
             Long artId = 1L;
@@ -434,7 +435,7 @@ class ArtDetailApiControllerTest extends ControllerTest {
         void test4() throws Exception {
             // given
             Long memberId = 1L;
-            final String accessToken = jwtTokenProvider.createAccessToken(memberId);
+            final String accessToken = jwtTokenProvider.createAccessToken(memberId, ROLE_USER);
 
             Art art = createMockArt(UPDATE_HASHTAGS);
             Long artId = 1L;
@@ -528,7 +529,7 @@ class ArtDetailApiControllerTest extends ControllerTest {
         void test2() throws Exception {
             // given
             Long memberId = 1L;
-            final String accessToken = jwtTokenProvider.createAccessToken(memberId);
+            final String accessToken = jwtTokenProvider.createAccessToken(memberId, ROLE_USER);
 
             Art art = createMockArt(HASHTAGS);
             Long artId = 1L;
@@ -578,7 +579,7 @@ class ArtDetailApiControllerTest extends ControllerTest {
         void test3() throws Exception {
             // given
             Long memberId = 1L;
-            final String accessToken = jwtTokenProvider.createAccessToken(memberId);
+            final String accessToken = jwtTokenProvider.createAccessToken(memberId, ROLE_USER);
 
             Art art = createMockArt(HASHTAGS);
             Long artId = 1L;
@@ -628,7 +629,7 @@ class ArtDetailApiControllerTest extends ControllerTest {
         void test4() throws Exception {
             // given
             Long memberId = 1L;
-            final String accessToken = jwtTokenProvider.createAccessToken(memberId);
+            final String accessToken = jwtTokenProvider.createAccessToken(memberId, ROLE_USER);
 
             Art art = createMockArt(HASHTAGS);
             Long artId = 1L;
@@ -667,7 +668,7 @@ class ArtDetailApiControllerTest extends ControllerTest {
         void test5() throws Exception {
             // given
             Long memberId = 1L;
-            final String accessToken = jwtTokenProvider.createAccessToken(memberId);
+            final String accessToken = jwtTokenProvider.createAccessToken(memberId, ROLE_USER);
 
             Art art = createMockArt(HASHTAGS);
             Long artId = 1L;
@@ -717,7 +718,7 @@ class ArtDetailApiControllerTest extends ControllerTest {
         void test6() throws Exception {
             // given
             Long memberId = 1L;
-            final String accessToken = jwtTokenProvider.createAccessToken(memberId);
+            final String accessToken = jwtTokenProvider.createAccessToken(memberId, ROLE_USER);
 
             Art art = createMockArt(HASHTAGS);
             Long artId = 1L;

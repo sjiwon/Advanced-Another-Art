@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import static com.sjiwon.anotherart.common.utils.MemberUtils.ROLE_USER;
 import static com.sjiwon.anotherart.common.utils.TokenUtils.BEARER_TOKEN;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
@@ -60,7 +61,7 @@ class JwtLogoutSuccessHandlerTest extends ControllerTest {
         Long memberId = 1L;
 
         // when
-        final String refreshToken = jwtTokenProvider.createRefreshToken(memberId);
+        final String refreshToken = jwtTokenProvider.createRefreshToken(memberId, ROLE_USER);
 
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .post(BASE_URL)

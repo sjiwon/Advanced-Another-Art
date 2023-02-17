@@ -20,6 +20,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import static com.sjiwon.anotherart.common.utils.ArtUtils.*;
+import static com.sjiwon.anotherart.common.utils.MemberUtils.ROLE_USER;
 import static com.sjiwon.anotherart.common.utils.TokenUtils.BEARER_TOKEN;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
@@ -90,7 +91,7 @@ class PurchaseApiControllerTest extends ControllerTest {
         void test2() throws Exception {
             // given
             Long ownerId = 1L;
-            final String accessToken = jwtTokenProvider.createAccessToken(ownerId);
+            final String accessToken = jwtTokenProvider.createAccessToken(ownerId, ROLE_USER);
 
             Long artId = 1L;
             Art auctionArt = createMockAuctionArt(ArtUtils.HASHTAGS);
@@ -150,7 +151,7 @@ class PurchaseApiControllerTest extends ControllerTest {
             given(auctionFindService.findByArtId(artId)).willReturn(auction);
 
             Long buyerId = 2L;
-            final String accessToken = jwtTokenProvider.createAccessToken(buyerId);
+            final String accessToken = jwtTokenProvider.createAccessToken(buyerId, ROLE_USER);
 
             doThrow(AnotherArtException.type(PurchaseErrorCode.AUCTION_NOT_FINISHED))
                     .when(purchaseService)
@@ -203,7 +204,7 @@ class PurchaseApiControllerTest extends ControllerTest {
             given(auctionFindService.findByArtId(artId)).willReturn(auction);
 
             Long buyerId = 2L;
-            final String accessToken = jwtTokenProvider.createAccessToken(buyerId);
+            final String accessToken = jwtTokenProvider.createAccessToken(buyerId, ROLE_USER);
 
             doThrow(AnotherArtException.type(PurchaseErrorCode.INVALID_HIGHEST_BIDDER))
                     .when(purchaseService)
@@ -256,7 +257,7 @@ class PurchaseApiControllerTest extends ControllerTest {
             given(auctionFindService.findByArtId(artId)).willReturn(auction);
 
             Long buyerId = 2L;
-            final String accessToken = jwtTokenProvider.createAccessToken(buyerId);
+            final String accessToken = jwtTokenProvider.createAccessToken(buyerId, ROLE_USER);
 
             doThrow(AnotherArtException.type(PurchaseErrorCode.ART_ALREADY_SOLD_OUT))
                     .when(purchaseService)
@@ -309,7 +310,7 @@ class PurchaseApiControllerTest extends ControllerTest {
             given(auctionFindService.findByArtId(artId)).willReturn(auction);
 
             Long buyerId = 2L;
-            final String accessToken = jwtTokenProvider.createAccessToken(buyerId);
+            final String accessToken = jwtTokenProvider.createAccessToken(buyerId, ROLE_USER);
 
             doThrow(AnotherArtException.type(PurchaseErrorCode.INSUFFICIENT_AVAILABLE_POINT))
                     .when(purchaseService)
@@ -362,7 +363,7 @@ class PurchaseApiControllerTest extends ControllerTest {
             given(auctionFindService.findByArtId(artId)).willReturn(auction);
 
             Long buyerId = 2L;
-            final String accessToken = jwtTokenProvider.createAccessToken(buyerId);
+            final String accessToken = jwtTokenProvider.createAccessToken(buyerId, ROLE_USER);
 
             doNothing()
                     .when(purchaseService)
@@ -401,7 +402,7 @@ class PurchaseApiControllerTest extends ControllerTest {
             given(artFindService.findById(artId)).willReturn(generalArt);
 
             Long buyerId = 2L;
-            final String accessToken = jwtTokenProvider.createAccessToken(buyerId);
+            final String accessToken = jwtTokenProvider.createAccessToken(buyerId, ROLE_USER);
 
             doThrow(AnotherArtException.type(PurchaseErrorCode.ART_ALREADY_SOLD_OUT))
                     .when(purchaseService)
@@ -451,7 +452,7 @@ class PurchaseApiControllerTest extends ControllerTest {
             given(artFindService.findById(artId)).willReturn(generalArt);
 
             Long buyerId = 2L;
-            final String accessToken = jwtTokenProvider.createAccessToken(buyerId);
+            final String accessToken = jwtTokenProvider.createAccessToken(buyerId, ROLE_USER);
 
             doThrow(AnotherArtException.type(PurchaseErrorCode.INSUFFICIENT_AVAILABLE_POINT))
                     .when(purchaseService)
@@ -500,7 +501,7 @@ class PurchaseApiControllerTest extends ControllerTest {
             given(artFindService.findById(artId)).willReturn(generalArt);
 
             Long buyerId = 2L;
-            final String accessToken = jwtTokenProvider.createAccessToken(buyerId);
+            final String accessToken = jwtTokenProvider.createAccessToken(buyerId, ROLE_USER);
 
             doNothing()
                     .when(purchaseService)

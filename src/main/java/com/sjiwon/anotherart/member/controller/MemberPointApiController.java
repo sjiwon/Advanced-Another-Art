@@ -1,7 +1,7 @@
 package com.sjiwon.anotherart.member.controller;
 
 
-import com.sjiwon.anotherart.global.annotation.ExtractPayload;
+import com.sjiwon.anotherart.global.annotation.ExtractPayloadId;
 import com.sjiwon.anotherart.member.controller.dto.request.PointChargeRequest;
 import com.sjiwon.anotherart.member.controller.dto.request.PointRefundRequest;
 import com.sjiwon.anotherart.member.service.MemberPointService;
@@ -23,14 +23,14 @@ public class MemberPointApiController {
 
     @PreAuthorize("hasRole('USER')")
     @PostMapping("/charge")
-    public ResponseEntity<Void> chargePoint(@ExtractPayload Long memberId, @Valid @RequestBody PointChargeRequest request) {
+    public ResponseEntity<Void> chargePoint(@ExtractPayloadId Long memberId, @Valid @RequestBody PointChargeRequest request) {
         memberPointService.chargePoint(memberId, request.getChargeAmount());
         return ResponseEntity.noContent().build();
     }
 
     @PreAuthorize("hasRole('USER')")
     @PostMapping("/refund")
-    public ResponseEntity<Void> refundPoint(@ExtractPayload Long memberId, @Valid @RequestBody PointRefundRequest request) {
+    public ResponseEntity<Void> refundPoint(@ExtractPayloadId Long memberId, @Valid @RequestBody PointRefundRequest request) {
         memberPointService.refundPoint(memberId, request.getRefundAmount());
         return ResponseEntity.noContent().build();
     }

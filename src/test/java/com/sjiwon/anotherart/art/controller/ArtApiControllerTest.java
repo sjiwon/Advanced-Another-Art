@@ -21,6 +21,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static com.sjiwon.anotherart.common.utils.ArtUtils.*;
+import static com.sjiwon.anotherart.common.utils.MemberUtils.ROLE_USER;
 import static com.sjiwon.anotherart.common.utils.TokenUtils.BEARER_TOKEN;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.MediaType.APPLICATION_FORM_URLENCODED;
@@ -100,7 +101,7 @@ class ArtApiControllerTest extends ControllerTest {
         void test2() throws Exception {
             // given
             Long memberId = 1L;
-            final String accessToken = jwtTokenProvider.createAccessToken(memberId);
+            final String accessToken = jwtTokenProvider.createAccessToken(memberId, ROLE_USER);
 
             ArtRegisterRequest request = ArtRegistrationRequestUtils.createGeneralArtRequest(GENERAL_ART, HASHTAGS);
 
@@ -156,7 +157,7 @@ class ArtApiControllerTest extends ControllerTest {
         void test3() throws Exception {
             // given
             Long memberId = 1L;
-            final String accessToken = jwtTokenProvider.createAccessToken(memberId);
+            final String accessToken = jwtTokenProvider.createAccessToken(memberId, ROLE_USER);
 
             ArtRegisterRequest request = ArtRegistrationRequestUtils.createGeneralArtRequestWithEmptyImage(GENERAL_ART, HASHTAGS);
 
@@ -211,7 +212,7 @@ class ArtApiControllerTest extends ControllerTest {
         void test4() throws Exception {
             // given
             Long memberId = 1L;
-            final String accessToken = jwtTokenProvider.createAccessToken(memberId);
+            final String accessToken = jwtTokenProvider.createAccessToken(memberId, ROLE_USER);
 
             ArtRegisterRequest request = ArtRegistrationRequestUtils.createGeneralArtRequestWithNotAcceptableFormat(GENERAL_ART_BMP, HASHTAGS);
 
@@ -269,7 +270,7 @@ class ArtApiControllerTest extends ControllerTest {
         void test5() throws Exception {
             // given
             Long memberId = 1L;
-            final String accessToken = jwtTokenProvider.createAccessToken(memberId);
+            final String accessToken = jwtTokenProvider.createAccessToken(memberId, ROLE_USER);
 
             ArtRegisterRequest request = ArtRegistrationRequestUtils.createGeneralArtRequest(GENERAL_ART, EMPTY_HASHTAGS);
 
@@ -326,7 +327,7 @@ class ArtApiControllerTest extends ControllerTest {
         void test6() throws Exception {
             // given
             Long memberId = 1L;
-            final String accessToken = jwtTokenProvider.createAccessToken(memberId);
+            final String accessToken = jwtTokenProvider.createAccessToken(memberId, ROLE_USER);
 
             ArtRegisterRequest request = ArtRegistrationRequestUtils.createGeneralArtRequest(GENERAL_ART, OVERFLOW_HASHTAGS);
 
@@ -384,7 +385,7 @@ class ArtApiControllerTest extends ControllerTest {
         void test7() throws Exception {
             // given
             Long memberId = 1L;
-            final String accessToken = jwtTokenProvider.createAccessToken(memberId);
+            final String accessToken = jwtTokenProvider.createAccessToken(memberId, ROLE_USER);
 
             ArtRegisterRequest request = ArtRegistrationRequestUtils.createGeneralArtRequest(GENERAL_ART, HASHTAGS);
 
@@ -430,7 +431,7 @@ class ArtApiControllerTest extends ControllerTest {
         void test8() throws Exception {
             // given
             Long memberId = 1L;
-            final String accessToken = jwtTokenProvider.createAccessToken(memberId);
+            final String accessToken = jwtTokenProvider.createAccessToken(memberId, ROLE_USER);
 
             ArtRegisterRequest request = ArtRegistrationRequestUtils.createAuctionArtRequest(AUCTION_ART, HASHTAGS);
 
@@ -492,7 +493,7 @@ class ArtApiControllerTest extends ControllerTest {
         void test9() throws Exception {
             // given
             Long memberId = 1L;
-            final String accessToken = jwtTokenProvider.createAccessToken(memberId);
+            final String accessToken = jwtTokenProvider.createAccessToken(memberId, ROLE_USER);
 
             ArtRegisterRequest request = ArtRegistrationRequestUtils.createAuctionArtRequest(AUCTION_ART, HASHTAGS);
 
@@ -553,7 +554,7 @@ class ArtApiControllerTest extends ControllerTest {
         void test10() throws Exception {
             // given
             Long memberId = 1L;
-            final String accessToken = jwtTokenProvider.createAccessToken(memberId);
+            final String accessToken = jwtTokenProvider.createAccessToken(memberId, ROLE_USER);
 
             ArtRegisterRequest request = ArtRegistrationRequestUtils.createAuctionArtRequest(AUCTION_ART, HASHTAGS);
 

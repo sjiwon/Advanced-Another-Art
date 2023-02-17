@@ -14,12 +14,12 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 import javax.servlet.http.HttpServletRequest;
 
 @RequiredArgsConstructor
-public class ExtractPayloadArgumentResolver implements HandlerMethodArgumentResolver {
+public class ExtractPayloadIdArgumentResolver implements HandlerMethodArgumentResolver {
     private final JwtTokenProvider jwtTokenProvider;
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
-        return parameter.hasParameterAnnotation(ExtractPayload.class);
+        return parameter.hasParameterAnnotation(ExtractPayloadId.class);
     }
 
     @Override
@@ -27,7 +27,7 @@ public class ExtractPayloadArgumentResolver implements HandlerMethodArgumentReso
         HttpServletRequest request = webRequest.getNativeRequest(HttpServletRequest.class);
         String token = AuthorizationExtractor.extractToken(request);
         validateToken(token);
-        return jwtTokenProvider.getPayload(token);
+        return jwtTokenProvider.getId(token);
     }
 
     private void validateToken(String token) {

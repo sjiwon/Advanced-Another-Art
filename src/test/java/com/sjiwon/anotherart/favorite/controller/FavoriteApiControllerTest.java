@@ -16,6 +16,7 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 import java.util.List;
 
 import static com.sjiwon.anotherart.common.utils.ArtUtils.HASHTAGS;
+import static com.sjiwon.anotherart.common.utils.MemberUtils.ROLE_USER;
 import static com.sjiwon.anotherart.common.utils.TokenUtils.BEARER_TOKEN;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
@@ -83,7 +84,7 @@ class FavoriteApiControllerTest extends ControllerTest {
         void test2() throws Exception {
             // given
             Long ownerId = 1L;
-            final String accessToken = jwtTokenProvider.createAccessToken(ownerId);
+            final String accessToken = jwtTokenProvider.createAccessToken(ownerId, ROLE_USER);
 
             Long artId = 1L;
             Art art = createMockArt(HASHTAGS);
@@ -137,7 +138,7 @@ class FavoriteApiControllerTest extends ControllerTest {
             given(artFindService.findById(artId)).willReturn(art);
 
             Long memberId = 2L;
-            final String accessToken = jwtTokenProvider.createAccessToken(memberId);
+            final String accessToken = jwtTokenProvider.createAccessToken(memberId, ROLE_USER);
 
             doThrow(AnotherArtException.type(FavoriteErrorCode.ALREADY_LIKE_MARKING))
                     .when(favoriteService)
@@ -187,7 +188,7 @@ class FavoriteApiControllerTest extends ControllerTest {
             given(artFindService.findById(artId)).willReturn(art);
 
             Long memberId = 2L;
-            final String accessToken = jwtTokenProvider.createAccessToken(memberId);
+            final String accessToken = jwtTokenProvider.createAccessToken(memberId, ROLE_USER);
 
             doNothing()
                     .when(favoriteService)
@@ -267,7 +268,7 @@ class FavoriteApiControllerTest extends ControllerTest {
         void test2() throws Exception {
             // given
             Long ownerId = 1L;
-            final String accessToken = jwtTokenProvider.createAccessToken(ownerId);
+            final String accessToken = jwtTokenProvider.createAccessToken(ownerId, ROLE_USER);
 
             Long artId = 1L;
             Art art = createMockArt(HASHTAGS);
@@ -321,7 +322,7 @@ class FavoriteApiControllerTest extends ControllerTest {
             given(artFindService.findById(artId)).willReturn(art);
 
             Long memberId = 2L;
-            final String accessToken = jwtTokenProvider.createAccessToken(memberId);
+            final String accessToken = jwtTokenProvider.createAccessToken(memberId, ROLE_USER);
 
             doThrow(AnotherArtException.type(FavoriteErrorCode.NEVER_OR_ALREADY_CANCEL))
                     .when(favoriteService)
@@ -371,7 +372,7 @@ class FavoriteApiControllerTest extends ControllerTest {
             given(artFindService.findById(artId)).willReturn(art);
 
             Long memberId = 2L;
-            final String accessToken = jwtTokenProvider.createAccessToken(memberId);
+            final String accessToken = jwtTokenProvider.createAccessToken(memberId, ROLE_USER);
 
             doNothing()
                     .when(favoriteService)

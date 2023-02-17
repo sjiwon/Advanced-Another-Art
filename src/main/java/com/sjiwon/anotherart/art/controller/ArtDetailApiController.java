@@ -3,7 +3,7 @@ package com.sjiwon.anotherart.art.controller;
 import com.sjiwon.anotherart.art.controller.dto.request.ChangeArtDescriptionRequest;
 import com.sjiwon.anotherart.art.controller.dto.request.UpdateArtHashtagRequest;
 import com.sjiwon.anotherart.art.service.ArtService;
-import com.sjiwon.anotherart.global.annotation.ExtractPayload;
+import com.sjiwon.anotherart.global.annotation.ExtractPayloadId;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -40,7 +40,7 @@ public class ArtDetailApiController {
 
     @PreAuthorize("hasRole('USER')")
     @DeleteMapping("/{artId}")
-    public ResponseEntity<Void> deleteArt(@PathVariable Long artId, @ExtractPayload Long memberId) {
+    public ResponseEntity<Void> deleteArt(@PathVariable Long artId, @ExtractPayloadId Long memberId) {
         artService.deleteArt(artId, memberId);
         return ResponseEntity.noContent().build();
     }

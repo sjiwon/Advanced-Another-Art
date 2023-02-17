@@ -27,16 +27,18 @@ public class JwtTokenProvider {
         this.refreshTokenValidityInMilliseconds = refreshTokenValidityInMilliseconds;
     }
 
-    public String createAccessToken(Long payload) {
-        return createToken(payload, accessTokenValidityInMilliseconds);
+    public String createAccessToken(Long payload, String role) {
+        return createToken(payload, role, accessTokenValidityInMilliseconds);
     }
 
-    public String createRefreshToken(Long payload) {
-        return createToken(payload, refreshTokenValidityInMilliseconds);
+    public String createRefreshToken(Long payload, String role) {
+        return createToken(payload, role, refreshTokenValidityInMilliseconds);
     }
 
-    private String createToken(Long payload, long validityInMilliseconds) {
-        Claims claims = Jwts.claims().setSubject(String.valueOf(payload));
+    private String createToken(Long payload, String role, long validityInMilliseconds) {
+        Claims claims = Jwts.claims();
+        claims.put("id", payload);
+        claims.put("role", role);
         ZonedDateTime now = ZonedDateTime.now();
         ZonedDateTime tokenValidity = now.plusSeconds(validityInMilliseconds);
 
@@ -48,12 +50,16 @@ public class JwtTokenProvider {
                 .compact();
     }
 
-    public Long getPayload(String token) {
-        return Long.valueOf(
-                getClaims(token)
-                        .getBody()
-                        .getSubject()
-        );
+    public Long getId(String token) {
+        return getClaims(token)
+                .getBody()
+                .get("id", Long.class);
+    }
+
+    public String getRole(String token) {
+        return getClaims(token)
+                .getBody()
+                .get("role", String.class);
     }
 
     public boolean isTokenValid(String token) {

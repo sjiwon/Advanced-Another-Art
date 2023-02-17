@@ -22,8 +22,9 @@ public class TokenReissueService {
         }
 
         // Access Token & Refresh Token 발급
-        String newAccessToken = jwtTokenProvider.createAccessToken(memberId);
-        String newRefreshToken = jwtTokenProvider.createRefreshToken(memberId);
+        String role = jwtTokenProvider.getRole(refreshToken);
+        String newAccessToken = jwtTokenProvider.createAccessToken(memberId, role);
+        String newRefreshToken = jwtTokenProvider.createRefreshToken(memberId, role);
 
         // RTR 정책에 의해 memberId에 해당하는 사용자가 보유하고 있는 Refresh Token 업데이트
         tokenPersistenceService.reissueRefreshTokenByRtrPolicy(memberId, newRefreshToken);

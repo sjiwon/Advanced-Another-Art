@@ -15,6 +15,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import static com.sjiwon.anotherart.common.utils.MemberUtils.ROLE_USER;
 import static com.sjiwon.anotherart.common.utils.TokenUtils.BEARER_TOKEN;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
@@ -81,7 +82,7 @@ class MemberPointApiControllerTest extends ControllerTest {
         void test2() throws Exception {
             // given
             Long memberId = 1L;
-            final String accessToken = jwtTokenProvider.createAccessToken(memberId);
+            final String accessToken = jwtTokenProvider.createAccessToken(memberId, ROLE_USER);
 
             final int chargeAmount = 15000;
             PointChargeRequest request = PointChargeRequestUtils.createRequest(chargeAmount);
@@ -167,7 +168,7 @@ class MemberPointApiControllerTest extends ControllerTest {
         void test2() throws Exception {
             // given
             Long memberId = 1L;
-            final String accessToken = jwtTokenProvider.createAccessToken(memberId);
+            final String accessToken = jwtTokenProvider.createAccessToken(memberId, ROLE_USER);
 
             final int refundAmount = 15000;
             PointRefundRequest request = PointRefundRequestUtils.createRequest(refundAmount);
@@ -217,8 +218,7 @@ class MemberPointApiControllerTest extends ControllerTest {
         void test3() throws Exception {
             // given
             Long memberId = 1L;
-            final String accessToken = jwtTokenProvider.createAccessToken(memberId);
-
+            final String accessToken = jwtTokenProvider.createAccessToken(memberId, ROLE_USER);
             final int refundAmount = 15000;
             PointRefundRequest request = PointRefundRequestUtils.createRequest(refundAmount);
             doNothing()

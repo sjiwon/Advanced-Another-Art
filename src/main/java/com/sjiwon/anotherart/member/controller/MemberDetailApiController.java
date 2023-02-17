@@ -1,6 +1,6 @@
 package com.sjiwon.anotherart.member.controller;
 
-import com.sjiwon.anotherart.global.annotation.ExtractPayload;
+import com.sjiwon.anotherart.global.annotation.ExtractPayloadId;
 import com.sjiwon.anotherart.global.dto.SimpleWrapper;
 import com.sjiwon.anotherart.member.controller.dto.request.AuthForResetPasswordRequest;
 import com.sjiwon.anotherart.member.controller.dto.request.ChangeNicknameRequest;
@@ -22,7 +22,7 @@ public class MemberDetailApiController {
 
     @PreAuthorize("hasRole('USER')")
     @PatchMapping("/nickname")
-    public ResponseEntity<Void> changeNickname(@ExtractPayload Long memberId, @Valid @RequestBody ChangeNicknameRequest request) {
+    public ResponseEntity<Void> changeNickname(@ExtractPayloadId Long memberId, @Valid @RequestBody ChangeNicknameRequest request) {
         memberService.changeNickname(memberId, request.getChangeNickname());
         return ResponseEntity.noContent().build();
     }

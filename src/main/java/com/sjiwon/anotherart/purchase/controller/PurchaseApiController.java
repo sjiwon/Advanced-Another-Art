@@ -1,6 +1,6 @@
 package com.sjiwon.anotherart.purchase.controller;
 
-import com.sjiwon.anotherart.global.annotation.ExtractPayload;
+import com.sjiwon.anotherart.global.annotation.ExtractPayloadId;
 import com.sjiwon.anotherart.purchase.service.PurchaseService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +18,7 @@ public class PurchaseApiController {
 
     @PreAuthorize("hasRole('USER')")
     @PostMapping
-    public ResponseEntity<Void> purchaseArt(@PathVariable Long artId, @ExtractPayload Long memberId) {
+    public ResponseEntity<Void> purchaseArt(@PathVariable Long artId, @ExtractPayloadId Long memberId) {
         purchaseService.purchaseArt(artId, memberId);
         return ResponseEntity.noContent().build();
     }

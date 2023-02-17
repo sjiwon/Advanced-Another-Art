@@ -11,6 +11,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import static com.sjiwon.anotherart.common.utils.MemberUtils.ROLE_USER;
 import static com.sjiwon.anotherart.common.utils.TokenUtils.BEARER_TOKEN;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
@@ -68,7 +69,7 @@ class TokenReissueApiControllerTest extends ControllerTest {
             ReflectionTestUtils.setField(jwtTokenProvider, "refreshTokenValidityInMilliseconds", 0L);
 
             Long memberId = 1L;
-            final String refreshToken = jwtTokenProvider.createRefreshToken(memberId);
+            final String refreshToken = jwtTokenProvider.createRefreshToken(memberId, ROLE_USER);
 
             // when
             MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
@@ -109,7 +110,7 @@ class TokenReissueApiControllerTest extends ControllerTest {
             ReflectionTestUtils.setField(jwtTokenProvider, "refreshTokenValidityInMilliseconds", 1209600L);
 
             Long memberId = 1L;
-            final String refreshToken = jwtTokenProvider.createRefreshToken(memberId);
+            final String refreshToken = jwtTokenProvider.createRefreshToken(memberId, ROLE_USER);
             given(tokenPersistenceService.isRefreshTokenExists(memberId, refreshToken)).willReturn(false);
 
             given(tokenReissueService.reissueTokens(memberId, refreshToken)).willThrow(AnotherArtException.type(AuthErrorCode.INVALID_TOKEN));
@@ -153,12 +154,12 @@ class TokenReissueApiControllerTest extends ControllerTest {
             ReflectionTestUtils.setField(jwtTokenProvider, "refreshTokenValidityInMilliseconds", 1209600L);
 
             Long memberId = 1L;
-            final String refreshToken = jwtTokenProvider.createRefreshToken(memberId);
+            final String refreshToken = jwtTokenProvider.createRefreshToken(memberId, ROLE_USER);
             given(tokenPersistenceService.isRefreshTokenExists(memberId, refreshToken)).willReturn(true);
 
             TokenResponse response = TokenResponse.builder()
-                    .accessToken(jwtTokenProvider.createAccessToken(memberId))
-                    .refreshToken(jwtTokenProvider.createRefreshToken(memberId))
+                    .accessToken(jwtTokenProvider.createAccessToken(memberId, ROLE_USER))
+                    .refreshToken(jwtTokenProvider.createRefreshToken(memberId, ROLE_USER))
                     .build();
             given(tokenReissueService.reissueTokens(memberId, refreshToken)).willReturn(response);
 

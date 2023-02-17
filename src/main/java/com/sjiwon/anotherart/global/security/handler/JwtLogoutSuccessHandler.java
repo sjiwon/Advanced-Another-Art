@@ -34,7 +34,7 @@ public class JwtLogoutSuccessHandler implements LogoutSuccessHandler {
         String refreshToken = AuthorizationExtractor.extractToken(request);
         validateRefreshToken(refreshToken);
 
-        Long memberId = jwtTokenProvider.getPayload(refreshToken);
+        Long memberId = jwtTokenProvider.getId(refreshToken);
         tokenPersistenceService.deleteRefreshTokenViaMemberId(memberId);
     }
 

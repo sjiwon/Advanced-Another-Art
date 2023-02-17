@@ -34,11 +34,14 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
         if (token != null) {
             if (jwtTokenProvider.isTokenValid(token)) {
-                Long memberId = jwtTokenProvider.getPayload(token);
+                Long memberId = jwtTokenProvider.getId(token);
+                String role = jwtTokenProvider.getRole(token);
+
                 Member member = memberRepository.findById(memberId)
                         .orElseThrow(() -> AnotherArtAccessDeniedException.type(AuthErrorCode.INVALID_TOKEN));
+
                 MemberPrincipal principal = new MemberPrincipal(new MemberAuthDto(member));
-                UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(principal, "", generateMemberRole());
+                UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(principal, "", generateMemberRole(role));
                 SecurityContextHolder.getContext().setAuthentication(authenticationToken);
             } else {
                 throw AnotherArtAccessDeniedException.type(AuthErrorCode.EXPIRED_OR_POLLUTED_TOKEN);
@@ -48,9 +51,9 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 
-    private Collection<GrantedAuthority> generateMemberRole() {
+    private Collection<GrantedAuthority> generateMemberRole(String role) {
         Collection<GrantedAuthority> authorities = new ArrayList<>();
-        authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
+        authorities.add(new SimpleGrantedAuthority(role));
         return authorities;
     }
 }

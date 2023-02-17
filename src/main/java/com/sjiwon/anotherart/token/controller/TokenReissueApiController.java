@@ -1,6 +1,6 @@
 package com.sjiwon.anotherart.token.controller;
 
-import com.sjiwon.anotherart.global.annotation.ExtractPayload;
+import com.sjiwon.anotherart.global.annotation.ExtractPayloadId;
 import com.sjiwon.anotherart.global.annotation.ExtractToken;
 import com.sjiwon.anotherart.global.security.TokenResponse;
 import com.sjiwon.anotherart.token.service.TokenReissueService;
@@ -19,7 +19,7 @@ public class TokenReissueApiController {
 
     @PreAuthorize("hasRole('USER')")
     @PostMapping
-    public ResponseEntity<TokenResponse> reissueTokens(@ExtractPayload Long memberId, @ExtractToken String refreshToken) {
+    public ResponseEntity<TokenResponse> reissueTokens(@ExtractPayloadId Long memberId, @ExtractToken String refreshToken) {
         TokenResponse tokenResponse = tokenReissueService.reissueTokens(memberId, refreshToken);
         return ResponseEntity.ok(tokenResponse);
     }

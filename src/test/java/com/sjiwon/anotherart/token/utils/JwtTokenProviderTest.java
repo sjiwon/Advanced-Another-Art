@@ -4,6 +4,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import static com.sjiwon.anotherart.common.utils.MemberUtils.ROLE_USER;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
@@ -27,12 +28,13 @@ class JwtTokenProviderTest {
             final Long memberId = 1L;
 
             // when
-            String accessToken = JWT_TOKEN_PROVIDER.createAccessToken(memberId);
+            String accessToken = JWT_TOKEN_PROVIDER.createAccessToken(memberId, ROLE_USER);
 
             // then
             assertAll(
                     () -> assertThat(accessToken).isNotNull(),
-                    () -> assertThat(JWT_TOKEN_PROVIDER.getPayload(accessToken)).isEqualTo(memberId),
+                    () -> assertThat(JWT_TOKEN_PROVIDER.getId(accessToken)).isEqualTo(memberId),
+                    () -> assertThat(JWT_TOKEN_PROVIDER.getRole(accessToken)).isEqualTo(ROLE_USER),
                     () -> assertThat(JWT_TOKEN_PROVIDER.isTokenValid(accessToken)).isTrue()
             );
         }
@@ -44,12 +46,13 @@ class JwtTokenProviderTest {
             final Long memberId = 1L;
 
             // when
-            String refreshToken = JWT_TOKEN_PROVIDER.createRefreshToken(memberId);
+            String refreshToken = JWT_TOKEN_PROVIDER.createRefreshToken(memberId, ROLE_USER);
 
             // then
             assertAll(
                     () -> assertThat(refreshToken).isNotNull(),
-                    () -> assertThat(JWT_TOKEN_PROVIDER.getPayload(refreshToken)).isEqualTo(memberId),
+                    () -> assertThat(JWT_TOKEN_PROVIDER.getId(refreshToken)).isEqualTo(memberId),
+                    () -> assertThat(JWT_TOKEN_PROVIDER.getRole(refreshToken)).isEqualTo(ROLE_USER),
                     () -> assertThat(JWT_TOKEN_PROVIDER.isTokenValid(refreshToken)).isTrue()
             );
         }
@@ -64,8 +67,8 @@ class JwtTokenProviderTest {
         final Long memberId = 1L;
 
         // when
-        String accessToken = JWT_TOKEN_PROVIDER.createAccessToken(memberId);
-        String refreshToken = JWT_TOKEN_PROVIDER.createRefreshToken(memberId);
+        String accessToken = JWT_TOKEN_PROVIDER.createAccessToken(memberId, ROLE_USER);
+        String refreshToken = JWT_TOKEN_PROVIDER.createRefreshToken(memberId, ROLE_USER);
 
         // then
         assertAll(
@@ -84,8 +87,8 @@ class JwtTokenProviderTest {
         final Long memberId = 1L;
 
         // when
-        String invalidAccessToken = JWT_TOKEN_PROVIDER.createAccessToken(memberId) + "fake";
-        String invalidRefreshToken = JWT_TOKEN_PROVIDER.createRefreshToken(memberId) + "fake";
+        String invalidAccessToken = JWT_TOKEN_PROVIDER.createAccessToken(memberId, ROLE_USER) + "fake";
+        String invalidRefreshToken = JWT_TOKEN_PROVIDER.createRefreshToken(memberId, ROLE_USER) + "fake";
 
         // then
         assertAll(

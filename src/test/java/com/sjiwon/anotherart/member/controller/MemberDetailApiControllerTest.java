@@ -19,6 +19,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import static com.sjiwon.anotherart.common.utils.MemberUtils.ROLE_USER;
 import static com.sjiwon.anotherart.common.utils.TokenUtils.BEARER_TOKEN;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
@@ -91,7 +92,7 @@ class MemberDetailApiControllerTest extends ControllerTest {
         void test2() throws Exception {
             // given
             Long memberId = 1L;
-            final String accessToken = jwtTokenProvider.createAccessToken(memberId);
+            final String accessToken = jwtTokenProvider.createAccessToken(memberId, ROLE_USER);
 
             final String changeNickname = member.getNickname();
             doThrow(AnotherArtException.type(MemberErrorCode.NICKNAME_SAME_AS_BEFORE))
@@ -142,7 +143,7 @@ class MemberDetailApiControllerTest extends ControllerTest {
         void test3() throws Exception {
             // given
             Long memberId = 1L;
-            final String accessToken = jwtTokenProvider.createAccessToken(memberId);
+            final String accessToken = jwtTokenProvider.createAccessToken(memberId, ROLE_USER);
 
             final String changeNickname = DUPLICATE_PREFIX + member.getNickname();
             doThrow(AnotherArtException.type(MemberErrorCode.DUPLICATE_NICKNAME))
@@ -193,7 +194,7 @@ class MemberDetailApiControllerTest extends ControllerTest {
         void test4() throws Exception {
             // given
             Long memberId = 1L;
-            final String accessToken = jwtTokenProvider.createAccessToken(memberId);
+            final String accessToken = jwtTokenProvider.createAccessToken(memberId, ROLE_USER);
 
             final String changeNickname = CHANGE_PREFIX + member.getNickname();
             doNothing()

@@ -2,7 +2,7 @@ package com.sjiwon.anotherart.art.controller;
 
 import com.sjiwon.anotherart.art.controller.dto.request.ArtRegisterRequest;
 import com.sjiwon.anotherart.art.service.ArtService;
-import com.sjiwon.anotherart.global.annotation.ExtractPayload;
+import com.sjiwon.anotherart.global.annotation.ExtractPayloadId;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -23,7 +23,7 @@ public class ArtApiController {
 
     @PreAuthorize("hasRole('USER')")
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<Void> registerArt(@ExtractPayload Long memberId, @Valid @ModelAttribute ArtRegisterRequest request) {
+    public ResponseEntity<Void> registerArt(@ExtractPayloadId Long memberId, @Valid @ModelAttribute ArtRegisterRequest request) {
         artService.registerArt(memberId, request.isAuctionType() ? request.toAuctionArtDto() : request.toGeneralArtDto());
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }

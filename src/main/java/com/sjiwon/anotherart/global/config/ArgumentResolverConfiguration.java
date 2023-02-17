@@ -1,6 +1,6 @@
 package com.sjiwon.anotherart.global.config;
 
-import com.sjiwon.anotherart.global.annotation.ExtractPayloadArgumentResolver;
+import com.sjiwon.anotherart.global.annotation.ExtractPayloadIdArgumentResolver;
 import com.sjiwon.anotherart.global.annotation.ExtractTokenArgumentResolver;
 import com.sjiwon.anotherart.token.utils.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +18,6 @@ public class ArgumentResolverConfiguration implements WebMvcConfigurer {
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
         resolvers.add(new ExtractTokenArgumentResolver());
-        resolvers.add(new ExtractPayloadArgumentResolver(jwtTokenProvider));
+        resolvers.add(new ExtractPayloadIdArgumentResolver(jwtTokenProvider));
     }
 }

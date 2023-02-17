@@ -22,6 +22,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import static com.sjiwon.anotherart.common.utils.ArtUtils.*;
+import static com.sjiwon.anotherart.common.utils.MemberUtils.ROLE_USER;
 import static com.sjiwon.anotherart.common.utils.TokenUtils.BEARER_TOKEN;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
@@ -109,7 +110,7 @@ class BidApiControllerTest extends ControllerTest {
             given(auctionFindService.findById(auctionId)).willReturn(auction);
 
             Long bidderId = 2L;
-            final String accessToken = jwtTokenProvider.createAccessToken(bidderId);
+            final String accessToken = jwtTokenProvider.createAccessToken(bidderId, ROLE_USER);
 
             final int bidAmount = art.getPrice() + 5_000;
             BidRequest request = BidRequestUtils.createRequest(bidAmount);
@@ -162,7 +163,7 @@ class BidApiControllerTest extends ControllerTest {
         void test3() throws Exception {
             // given
             Long ownerId = 1L;
-            final String accessToken = jwtTokenProvider.createAccessToken(ownerId);
+            final String accessToken = jwtTokenProvider.createAccessToken(ownerId, ROLE_USER);
 
             Long artId = 1L;
             Art art = createMockArt(HASHTAGS);
@@ -231,7 +232,7 @@ class BidApiControllerTest extends ControllerTest {
             given(auctionFindService.findById(auctionId)).willReturn(auction);
 
             Long bidderId = 2L;
-            final String accessToken = jwtTokenProvider.createAccessToken(bidderId);
+            final String accessToken = jwtTokenProvider.createAccessToken(bidderId, ROLE_USER);
 
             final int bidAmount = art.getPrice();
             BidRequest request = BidRequestUtils.createRequest(bidAmount);
@@ -292,7 +293,7 @@ class BidApiControllerTest extends ControllerTest {
             given(auctionFindService.findById(auctionId)).willReturn(auction);
 
             Long bidderId = 2L;
-            final String accessToken = jwtTokenProvider.createAccessToken(bidderId);
+            final String accessToken = jwtTokenProvider.createAccessToken(bidderId, ROLE_USER);
 
             final int bidAmount1 = art.getPrice() + 5_000;
             BidRequest request1 = BidRequestUtils.createRequest(bidAmount1);
@@ -362,7 +363,7 @@ class BidApiControllerTest extends ControllerTest {
             given(auctionFindService.findById(auctionId)).willReturn(auction);
 
             Long bidderId = 2L;
-            final String accessToken = jwtTokenProvider.createAccessToken(bidderId);
+            final String accessToken = jwtTokenProvider.createAccessToken(bidderId, ROLE_USER);
 
             final int bidAmount = art.getPrice() + 5_000;
             BidRequest request = BidRequestUtils.createRequest(bidAmount);
