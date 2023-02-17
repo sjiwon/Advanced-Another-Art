@@ -38,6 +38,16 @@ public class GeneralArtComplexSearchService {
         return assemblingPagingResult(result, pageRequest);
     }
 
+    public Page<GeneralArt> getGeneralArtListByHashtag(String hashtag, String sort, Pageable pageRequest) {
+        if (SearchCondition.SortType.isNotSupportedSortType(sort)) {
+            return PageableExecutionUtils.getPage(new ArrayList<>(), pageRequest, () -> 0L);
+        }
+
+        SearchCondition condition = new SearchCondition(GENERAL, convertSortType(sort), hashtag);
+        Page<BasicGeneralArt> result = artRepository.findGeneralArtListByHashtag(condition, pageRequest);
+        return assemblingPagingResult(result, pageRequest);
+    }
+
     private Page<GeneralArt> assemblingPagingResult(Page<BasicGeneralArt> pagingResult, Pageable pageRequest) {
         List<HashtagSummary> hashtagSummaries = artRepository.findHashtagSummaryList();
         List<FavoriteSummary> favoriteSummaries = artRepository.findFavoriteSummaryList();

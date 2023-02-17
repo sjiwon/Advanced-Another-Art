@@ -7,4 +7,5 @@ import org.springframework.data.domain.Pageable;
 
 public interface GeneralArtSpecificComplexQueryRepository {
     Page<BasicGeneralArt> findGeneralArtListByKeyword(SearchCondition condition, Pageable pageRequest);
+    Page<BasicGeneralArt> findGeneralArtListByHashtag(SearchCondition condition, Pageable pageRequest);
 }

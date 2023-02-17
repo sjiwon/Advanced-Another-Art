@@ -8,4 +8,5 @@ import org.springframework.data.domain.Pageable;
 public interface AuctionArtSpecificComplexQueryRepository {
     Page<BasicAuctionArt> findCurrentActiveAuctionArtList(SearchCondition condition, Pageable pageRequest);
     Page<BasicAuctionArt> findAuctionArtListByKeyword(SearchCondition condition, Pageable pageRequest);
+    Page<BasicAuctionArt> findAuctionArtListByHashtag(SearchCondition condition, Pageable pageRequest);
 }

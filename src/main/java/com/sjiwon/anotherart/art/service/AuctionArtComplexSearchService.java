@@ -50,6 +50,16 @@ public class AuctionArtComplexSearchService {
         return assemblingPagingResult(result, pageRequest);
     }
 
+    public Page<AuctionArt> getAuctionArtListByHashtag(String hashtag, String sort, Pageable pageRequest) {
+        if (SearchCondition.SortType.isNotSupportedSortType(sort)) {
+            return PageableExecutionUtils.getPage(new ArrayList<>(), pageRequest, () -> 0L);
+        }
+
+        SearchCondition condition = new SearchCondition(AUCTION, convertSortType(sort), hashtag);
+        Page<BasicAuctionArt> result = artRepository.findAuctionArtListByHashtag(condition, pageRequest);
+        return assemblingPagingResult(result, pageRequest);
+    }
+
     private Page<AuctionArt> assemblingPagingResult(Page<BasicAuctionArt> pagingResult, Pageable pageRequest) {
         List<HashtagSummary> hashtagSummaries = artRepository.findHashtagSummaryList();
         List<FavoriteSummary> favoriteSummaries = artRepository.findFavoriteSummaryList();

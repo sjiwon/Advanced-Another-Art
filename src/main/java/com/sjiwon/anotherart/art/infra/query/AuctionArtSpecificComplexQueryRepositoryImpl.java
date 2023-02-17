@@ -22,6 +22,7 @@ import java.util.List;
 
 import static com.sjiwon.anotherart.art.domain.ArtType.AUCTION;
 import static com.sjiwon.anotherart.art.domain.QArt.art;
+import static com.sjiwon.anotherart.art.domain.hashtag.QHashtag.hashtag;
 import static com.sjiwon.anotherart.art.utils.ArtQueryFetchingUtils.assembleAuctionArtProjections;
 import static com.sjiwon.anotherart.art.utils.ArtQueryFetchingUtils.orderBySearchCondition;
 import static com.sjiwon.anotherart.auction.domain.QAuction.auction;
@@ -88,6 +89,42 @@ public class AuctionArtSpecificComplexQueryRepositoryImpl implements AuctionArtS
                 .where(
                         artTypeEq(AUCTION),
                         keywordContains(condition.getGivenText())
+                )
+                .fetchOne();
+        return PageableExecutionUtils.getPage(result, pageRequest, () -> count);
+    }
+
+    @Override
+    public Page<BasicAuctionArt> findAuctionArtListByHashtag(SearchCondition condition, Pageable pageRequest) {
+        List<Long> artIdWithHashtag = query
+                .selectDistinct(art.id)
+                .from(art)
+                .innerJoin(hashtag).on(hashtag.art.id.eq(art.id))
+                .where(hashtag.name.eq(condition.getGivenText()))
+                .fetch();
+
+        JPAQuery<BasicAuctionArt> basicQuery = query
+                .select(assembleAuctionArtProjections())
+                .from(art)
+                .innerJoin(art.owner, owner)
+                .innerJoin(auction).on(auction.art.id.eq(art.id))
+                .leftJoin(auction.bidder, highestBidder)
+                .where(
+                        artTypeEq(AUCTION),
+                        art.id.in(artIdWithHashtag)
+                )
+                .orderBy(orderBySearchCondition(condition).toArray(OrderSpecifier[]::new))
+                .offset(pageRequest.getOffset())
+                .limit(pageRequest.getPageSize());
+
+        List<BasicAuctionArt> result = completeAuctionArtPagingQuery(basicQuery, condition);
+        Long count = query
+                .select(art.count())
+                .from(art)
+                .innerJoin(auction).on(auction.art.id.eq(art.id))
+                .where(
+                        artTypeEq(AUCTION),
+                        art.id.in(artIdWithHashtag)
                 )
                 .fetchOne();
         return PageableExecutionUtils.getPage(result, pageRequest, () -> count);
