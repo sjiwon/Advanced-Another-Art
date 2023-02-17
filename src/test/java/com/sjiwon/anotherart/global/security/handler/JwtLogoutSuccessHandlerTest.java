@@ -24,7 +24,7 @@ class JwtLogoutSuccessHandlerTest extends ControllerTest {
     private static final String BASE_URL = "/api/logout";
 
     @Test
-    @DisplayName("Authorization 헤더에 Refresh Token이 없으면 로그아웃에 실패한다")
+    @DisplayName("Authorization 헤더에 Access Token이 없으면 로그아웃에 실패한다")
     void test1() throws Exception {
         // given - when
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
@@ -55,17 +55,17 @@ class JwtLogoutSuccessHandlerTest extends ControllerTest {
     }
 
     @Test
-    @DisplayName("Authorization Header에 Refresh Token이 존재하면 로그아웃에 성공하고 DB에 존재하는 Refresh Token이 삭제된다")
+    @DisplayName("Authorization Header에 Access Token이 존재하면 로그아웃에 성공하고 Access Token으로부터 추출한 memberId에 해당하는 Refresh Token은 DB에서 삭제된다")
     void test2() throws Exception {
         // given
         Long memberId = 1L;
 
         // when
-        final String refreshToken = jwtTokenProvider.createRefreshToken(memberId, ROLE_USER);
+        final String accessToken = jwtTokenProvider.createAccessToken(memberId, ROLE_USER);
 
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .post(BASE_URL)
-                .header(AUTHORIZATION, BEARER_TOKEN + refreshToken);
+                .header(AUTHORIZATION, BEARER_TOKEN + accessToken);
 
         // then
         mockMvc.perform(requestBuilder)
@@ -77,7 +77,7 @@ class JwtLogoutSuccessHandlerTest extends ControllerTest {
                                 preprocessRequest(prettyPrint()),
                                 preprocessResponse(prettyPrint()),
                                 requestHeaders(
-                                        headerWithName(AUTHORIZATION).description("Refresh Token")
+                                        headerWithName(AUTHORIZATION).description("Access Token")
                                 )
                         )
                 );

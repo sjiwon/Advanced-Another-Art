@@ -13,6 +13,7 @@ import lombok.NoArgsConstructor;
 public class MemberAuthDto {
     private Long id;
     private String name;
+    private String nickname;
     private String loginId;
     @JsonIgnore
     private String loginPassword;
@@ -21,6 +22,7 @@ public class MemberAuthDto {
     public MemberAuthDto(Member member) {
         this.id = member.getId();
         this.name = member.getName();
+        this.nickname = member.getNickname();
         this.loginId = member.getLoginId();
         this.loginPassword = member.getPasswordValue();
         this.role = member.getRole().getAuthority();

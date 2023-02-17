@@ -31,10 +31,10 @@ public class JwtLogoutSuccessHandler implements LogoutSuccessHandler {
     }
 
     private void removeRefreshToken(HttpServletRequest request) {
-        String refreshToken = AuthorizationExtractor.extractToken(request);
-        validateRefreshToken(refreshToken);
+        String accessToken = AuthorizationExtractor.extractToken(request);
+        validateRefreshToken(accessToken);
 
-        Long memberId = jwtTokenProvider.getId(refreshToken);
+        Long memberId = jwtTokenProvider.getId(accessToken);
         tokenPersistenceService.deleteRefreshTokenViaMemberId(memberId);
     }
 

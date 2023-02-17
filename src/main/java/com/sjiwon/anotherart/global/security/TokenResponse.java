@@ -1,5 +1,6 @@
 package com.sjiwon.anotherart.global.security;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -8,13 +9,14 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class TokenResponse {
-    private String username;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private String nickname;
     private String accessToken;
     private String refreshToken;
 
     @Builder
-    public TokenResponse(String username, String accessToken, String refreshToken) {
-        this.username = username;
+    public TokenResponse(String nickname, String accessToken, String refreshToken) {
+        this.nickname = nickname;
         this.accessToken = accessToken;
         this.refreshToken = refreshToken;
     }
