@@ -43,9 +43,13 @@ class ArtSearchApiControllerComplexActiveAuctionArtTest extends ControllerTest {
     private static final String FAVORITE_COUNT_DESC = "rlike";
     private static final String BID_COUNT_ASC = "count";
     private static final String BID_COUNT_DESC = "rcount";
+    private static final List<String> COMMON_NAME_AND_DESCRIPTION = List.of(
+            "hello1", "world1", "hello2", "world2", "hello3", "world3",
+            "hello4", "world4", "hello5", "world5", "hello6", "world6"
+    );
 
     @Nested
-    @DisplayName("현재 경매중인 작품 조회 테스트 [GET /api/arts/main}]")
+    @DisplayName("현재 경매중인 작품 조회 테스트 [GET /api/arts/main]")
     class searchArt {
         private static final String BASE_URL = "/api/arts/main";
 
@@ -99,11 +103,11 @@ class ArtSearchApiControllerComplexActiveAuctionArtTest extends ControllerTest {
         }
 
         @Test
-        @DisplayName("등록 날짜 기준 오름차순 (date)")
+        @DisplayName("등록 날짜 기준 오름차순 [date]")
         void test2() throws Exception {
             // given
             final String sort = "date";
-            List<AuctionArt> auctionArtList = createAuctionArtList(TOTAL_ELEMENTS);
+            List<AuctionArt> auctionArtList = createAuctionArtList(TOTAL_ELEMENTS, COMMON_NAME_AND_DESCRIPTION);
             sortByDate(auctionArtList);
 
             List<AuctionArt> auctionArtList1 = IntStream.range(0, 8)
@@ -233,11 +237,11 @@ class ArtSearchApiControllerComplexActiveAuctionArtTest extends ControllerTest {
         }
 
         @Test
-        @DisplayName("등록 날짜 기준 내림차순 (rdate)")
+        @DisplayName("등록 날짜 기준 내림차순 [rdate]")
         void test3() throws Exception {
             // given
             final String sort = "rdate";
-            List<AuctionArt> auctionArtList = createAuctionArtList(TOTAL_ELEMENTS);
+            List<AuctionArt> auctionArtList = createAuctionArtList(TOTAL_ELEMENTS, COMMON_NAME_AND_DESCRIPTION);
             sortByReverseDate(auctionArtList);
 
             List<AuctionArt> auctionArtList1 = IntStream.range(0, 8)
@@ -367,11 +371,11 @@ class ArtSearchApiControllerComplexActiveAuctionArtTest extends ControllerTest {
         }
 
         @Test
-        @DisplayName("입찰 가격 기준 오름차순 (price)")
+        @DisplayName("입찰 가격 기준 오름차순 [price]")
         void test4() throws Exception {
             // given
             final String sort = "price";
-            List<AuctionArt> auctionArtList = createAuctionArtList(TOTAL_ELEMENTS);
+            List<AuctionArt> auctionArtList = createAuctionArtList(TOTAL_ELEMENTS, COMMON_NAME_AND_DESCRIPTION);
             sortByPrice(auctionArtList);
 
             List<AuctionArt> auctionArtList1 = IntStream.range(0, 8)
@@ -501,11 +505,11 @@ class ArtSearchApiControllerComplexActiveAuctionArtTest extends ControllerTest {
         }
 
         @Test
-        @DisplayName("입찰 가격 기준 내림차순 (rprice)")
+        @DisplayName("입찰 가격 기준 내림차순 [rprice]")
         void test5() throws Exception {
             // given
             final String sort = "rprice";
-            List<AuctionArt> auctionArtList = createAuctionArtList(TOTAL_ELEMENTS);
+            List<AuctionArt> auctionArtList = createAuctionArtList(TOTAL_ELEMENTS, COMMON_NAME_AND_DESCRIPTION);
             sortByReversePrice(auctionArtList);
 
             List<AuctionArt> auctionArtList1 = IntStream.range(0, 8)
@@ -635,11 +639,11 @@ class ArtSearchApiControllerComplexActiveAuctionArtTest extends ControllerTest {
         }
 
         @Test
-        @DisplayName("작품 좋아요 횟수 기준 오름차순 (like)")
+        @DisplayName("작품 좋아요 횟수 기준 오름차순 [like]")
         void test6() throws Exception {
             // given
             final String sort = "like";
-            List<AuctionArt> auctionArtList = createAuctionArtList(TOTAL_ELEMENTS);
+            List<AuctionArt> auctionArtList = createAuctionArtList(TOTAL_ELEMENTS, COMMON_NAME_AND_DESCRIPTION);
             sortByFavoriteCount(auctionArtList);
 
             List<AuctionArt> auctionArtList1 = IntStream.range(0, 8)
@@ -769,11 +773,11 @@ class ArtSearchApiControllerComplexActiveAuctionArtTest extends ControllerTest {
         }
 
         @Test
-        @DisplayName("작품 좋아요 횟수 기준 내림차순 (rlike)")
+        @DisplayName("작품 좋아요 횟수 기준 내림차순 [rlike]")
         void test7() throws Exception {
             // given
             final String sort = "rlike";
-            List<AuctionArt> auctionArtList = createAuctionArtList(TOTAL_ELEMENTS);
+            List<AuctionArt> auctionArtList = createAuctionArtList(TOTAL_ELEMENTS, COMMON_NAME_AND_DESCRIPTION);
             sortByReverseFavoriteCount(auctionArtList);
 
             List<AuctionArt> auctionArtList1 = IntStream.range(0, 8)
@@ -903,11 +907,11 @@ class ArtSearchApiControllerComplexActiveAuctionArtTest extends ControllerTest {
         }
 
         @Test
-        @DisplayName("입찰 횟수 기준 오름차순 (count)")
+        @DisplayName("입찰 횟수 기준 오름차순 [count]")
         void test8() throws Exception {
             // given
             final String sort = "count";
-            List<AuctionArt> auctionArtList = createAuctionArtList(TOTAL_ELEMENTS);
+            List<AuctionArt> auctionArtList = createAuctionArtList(TOTAL_ELEMENTS, COMMON_NAME_AND_DESCRIPTION);
             sortByBidCount(auctionArtList);
 
             List<AuctionArt> auctionArtList1 = IntStream.range(0, 8)
@@ -1037,11 +1041,11 @@ class ArtSearchApiControllerComplexActiveAuctionArtTest extends ControllerTest {
         }
 
         @Test
-        @DisplayName("입찰 횟수 기준 내림차순 (rcount)")
+        @DisplayName("입찰 횟수 기준 내림차순 [rcount]")
         void test9() throws Exception {
             // given
             final String sort = "rcount";
-            List<AuctionArt> auctionArtList = createAuctionArtList(TOTAL_ELEMENTS);
+            List<AuctionArt> auctionArtList = createAuctionArtList(TOTAL_ELEMENTS, COMMON_NAME_AND_DESCRIPTION);
             sortByReverseBidCount(auctionArtList);
 
             List<AuctionArt> auctionArtList1 = IntStream.range(0, 8)
