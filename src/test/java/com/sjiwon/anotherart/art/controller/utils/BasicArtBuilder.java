@@ -15,7 +15,8 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.LongStream;
 
-import static com.sjiwon.anotherart.common.utils.ArtUtils.*;
+import static com.sjiwon.anotherart.common.utils.ArtUtils.currentTime1DayAgo;
+import static com.sjiwon.anotherart.common.utils.ArtUtils.currentTime3DayLater;
 
 public class BasicArtBuilder {
     public static BasicGeneralArt createBasicGeneralArt(ArtFixture art) {
@@ -57,7 +58,7 @@ public class BasicArtBuilder {
                 .build();
     }
 
-    public static List<GeneralArt> createGeneralArtList(int totalElements, List<String> commonTextList) {
+    public static List<GeneralArt> createGeneralArtList(int totalElements, List<String> commonTextList, List<List<String>> commonHashtagList) {
         List<BasicGeneralArt> basicGeneralArts = new ArrayList<>();
         int price = 1_000;
         for (int i = 1; i <= totalElements; i++) {
@@ -84,7 +85,7 @@ public class BasicArtBuilder {
             generalArts.add(
                     GeneralArt.builder()
                             .art(basicGeneralArts.get(i - 1))
-                            .hashtags(HASHTAGS)
+                            .hashtags(commonHashtagList.get(i - 1))
                             .likeMarkingMembers(LongStream.rangeClosed(1, i).boxed().collect(Collectors.toList()))
                             .build()
             );
@@ -92,7 +93,7 @@ public class BasicArtBuilder {
         return generalArts;
     }
 
-    public static List<AuctionArt> createAuctionArtList(int totalElements, List<String> commonTextList) {
+    public static List<AuctionArt> createAuctionArtList(int totalElements, List<String> commonTextList, List<List<String>> commonHashtagList) {
         List<BasicAuctionArt> basicAuctionArts = new ArrayList<>();
         int bidPrice = 1_000;
         for (int i = 1; i <= totalElements; i++) {
@@ -124,7 +125,7 @@ public class BasicArtBuilder {
             auctionArts.add(
                     AuctionArt.builder()
                             .art(basicAuctionArts.get(i - 1))
-                            .hashtags(HASHTAGS)
+                            .hashtags(commonHashtagList.get(i - 1))
                             .likeMarkingMembers(LongStream.rangeClosed(1, i).boxed().collect(Collectors.toList()))
                             .bidCount(i)
                             .build()

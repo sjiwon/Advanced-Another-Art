@@ -11,6 +11,10 @@ public class ArtUtils {
     // 작품 해시태그
     public static final List<String> EMPTY_HASHTAGS = List.of();
     public static final List<String> HASHTAGS = List.of("A", "B", "C", "D", "E");
+    public static final List<List<String>> COMMON_DEFAULT_HASHTAGS = List.of(
+            HASHTAGS, HASHTAGS, HASHTAGS, HASHTAGS, HASHTAGS, HASHTAGS,
+            HASHTAGS, HASHTAGS, HASHTAGS, HASHTAGS, HASHTAGS, HASHTAGS
+    );
     public static final List<String> UPDATE_HASHTAGS = List.of("F", "G", "H", "I", "J");
     public static final List<String> OVERFLOW_HASHTAGS = List.of("A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K");
 

@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.stream.IntStream;
 
 import static com.sjiwon.anotherart.art.controller.utils.BasicArtBuilder.createAuctionArtList;
+import static com.sjiwon.anotherart.common.utils.ArtUtils.COMMON_DEFAULT_HASHTAGS;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
@@ -27,7 +28,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @DisplayName("Art [Controller Layer] -> ArtApiController 현재 경매중인 작품 조회 테스트")
-class ArtSearchApiControllerComplexActiveAuctionArtTest extends ControllerTest {
+class ArtSearchApiControllerWithActiveAuctionArtTest extends ControllerTest {
     // 총 작품 12건에 대한 Fetching
     private static final int TOTAL_ELEMENTS = 12;
     private static final int DEFAULT_PAGE_SIZE = 8;
@@ -107,7 +108,7 @@ class ArtSearchApiControllerComplexActiveAuctionArtTest extends ControllerTest {
         void test2() throws Exception {
             // given
             final String sort = "date";
-            List<AuctionArt> auctionArtList = createAuctionArtList(TOTAL_ELEMENTS, COMMON_NAME_AND_DESCRIPTION);
+            List<AuctionArt> auctionArtList = createAuctionArtList(TOTAL_ELEMENTS, COMMON_NAME_AND_DESCRIPTION, COMMON_DEFAULT_HASHTAGS);
             sortByDate(auctionArtList);
 
             List<AuctionArt> auctionArtList1 = IntStream.range(0, 8)
@@ -241,7 +242,7 @@ class ArtSearchApiControllerComplexActiveAuctionArtTest extends ControllerTest {
         void test3() throws Exception {
             // given
             final String sort = "rdate";
-            List<AuctionArt> auctionArtList = createAuctionArtList(TOTAL_ELEMENTS, COMMON_NAME_AND_DESCRIPTION);
+            List<AuctionArt> auctionArtList = createAuctionArtList(TOTAL_ELEMENTS, COMMON_NAME_AND_DESCRIPTION, COMMON_DEFAULT_HASHTAGS);
             sortByReverseDate(auctionArtList);
 
             List<AuctionArt> auctionArtList1 = IntStream.range(0, 8)
@@ -375,7 +376,7 @@ class ArtSearchApiControllerComplexActiveAuctionArtTest extends ControllerTest {
         void test4() throws Exception {
             // given
             final String sort = "price";
-            List<AuctionArt> auctionArtList = createAuctionArtList(TOTAL_ELEMENTS, COMMON_NAME_AND_DESCRIPTION);
+            List<AuctionArt> auctionArtList = createAuctionArtList(TOTAL_ELEMENTS, COMMON_NAME_AND_DESCRIPTION, COMMON_DEFAULT_HASHTAGS);
             sortByPrice(auctionArtList);
 
             List<AuctionArt> auctionArtList1 = IntStream.range(0, 8)
@@ -509,7 +510,7 @@ class ArtSearchApiControllerComplexActiveAuctionArtTest extends ControllerTest {
         void test5() throws Exception {
             // given
             final String sort = "rprice";
-            List<AuctionArt> auctionArtList = createAuctionArtList(TOTAL_ELEMENTS, COMMON_NAME_AND_DESCRIPTION);
+            List<AuctionArt> auctionArtList = createAuctionArtList(TOTAL_ELEMENTS, COMMON_NAME_AND_DESCRIPTION, COMMON_DEFAULT_HASHTAGS);
             sortByReversePrice(auctionArtList);
 
             List<AuctionArt> auctionArtList1 = IntStream.range(0, 8)
@@ -643,7 +644,7 @@ class ArtSearchApiControllerComplexActiveAuctionArtTest extends ControllerTest {
         void test6() throws Exception {
             // given
             final String sort = "like";
-            List<AuctionArt> auctionArtList = createAuctionArtList(TOTAL_ELEMENTS, COMMON_NAME_AND_DESCRIPTION);
+            List<AuctionArt> auctionArtList = createAuctionArtList(TOTAL_ELEMENTS, COMMON_NAME_AND_DESCRIPTION, COMMON_DEFAULT_HASHTAGS);
             sortByFavoriteCount(auctionArtList);
 
             List<AuctionArt> auctionArtList1 = IntStream.range(0, 8)
@@ -777,7 +778,7 @@ class ArtSearchApiControllerComplexActiveAuctionArtTest extends ControllerTest {
         void test7() throws Exception {
             // given
             final String sort = "rlike";
-            List<AuctionArt> auctionArtList = createAuctionArtList(TOTAL_ELEMENTS, COMMON_NAME_AND_DESCRIPTION);
+            List<AuctionArt> auctionArtList = createAuctionArtList(TOTAL_ELEMENTS, COMMON_NAME_AND_DESCRIPTION, COMMON_DEFAULT_HASHTAGS);
             sortByReverseFavoriteCount(auctionArtList);
 
             List<AuctionArt> auctionArtList1 = IntStream.range(0, 8)
@@ -911,7 +912,7 @@ class ArtSearchApiControllerComplexActiveAuctionArtTest extends ControllerTest {
         void test8() throws Exception {
             // given
             final String sort = "count";
-            List<AuctionArt> auctionArtList = createAuctionArtList(TOTAL_ELEMENTS, COMMON_NAME_AND_DESCRIPTION);
+            List<AuctionArt> auctionArtList = createAuctionArtList(TOTAL_ELEMENTS, COMMON_NAME_AND_DESCRIPTION, COMMON_DEFAULT_HASHTAGS);
             sortByBidCount(auctionArtList);
 
             List<AuctionArt> auctionArtList1 = IntStream.range(0, 8)
@@ -1045,7 +1046,7 @@ class ArtSearchApiControllerComplexActiveAuctionArtTest extends ControllerTest {
         void test9() throws Exception {
             // given
             final String sort = "rcount";
-            List<AuctionArt> auctionArtList = createAuctionArtList(TOTAL_ELEMENTS, COMMON_NAME_AND_DESCRIPTION);
+            List<AuctionArt> auctionArtList = createAuctionArtList(TOTAL_ELEMENTS, COMMON_NAME_AND_DESCRIPTION, COMMON_DEFAULT_HASHTAGS);
             sortByReverseBidCount(auctionArtList);
 
             List<AuctionArt> auctionArtList1 = IntStream.range(0, 8)

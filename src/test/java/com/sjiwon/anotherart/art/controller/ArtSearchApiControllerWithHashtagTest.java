@@ -28,45 +28,42 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @DisplayName("Art [Controller Layer] -> ArtApiController 키워드를 통한 작품 조회 테스트")
-class ArtSearchApiControllerComplexAuctionArtByKeywordTest extends ControllerTest {
+public class ArtSearchApiControllerWithHashtagTest extends ControllerTest {
     // 총 작품 12건에 대한 Fetching (hello - world 조건에 따라 각각 6건씩 Fetching)
     private static final int TOTAL_ELEMENTS = 12;
     private static final int DEFAULT_PAGE_SIZE = 8;
     private static final Pageable DEFAULT_PAGE_REQUEST = PageRequest.of(0, DEFAULT_PAGE_SIZE); // 6건
-    private static final String DATE_ASC = "date";
-    private static final String DATE_DESC = "rdate";
-    private static final String PRICE_ASC = "price";
-    private static final String PRICE_DESC = "rprice";
-    private static final String FAVORITE_COUNT_ASC = "like";
-    private static final String FAVORITE_COUNT_DESC = "rlike";
-    private static final String BID_COUNT_ASC = "count";
-    private static final String BID_COUNT_DESC = "rcount";
-    private static final String KEYWORD_HELLO = "hello";
-    private static final String KEYWORD_WORLD = "world";
     private static final String TYPE_GENERAL = "general";
     private static final String TYPE_AUCTION = "auction";
     private static final List<String> COMMON_NAME_AND_DESCRIPTION = List.of(
             "hello1", "world1", "hello2", "world2", "hello3", "world3",
             "hello4", "world4", "hello5", "world5", "hello6", "world6"
     );
+    private static final String HASHTAG_A = "A";
+    private static final List<String> HASHTAG_CONTAIN_A = List.of("A", "C", "D", "E", "F");
+    private static final List<String> HASHTAG_CONTAIN_B = List.of("B", "C", "D", "E", "F");
+    private static final List<List<String>> COMMON_HASHTAG = List.of(
+            HASHTAG_CONTAIN_A, HASHTAG_CONTAIN_B, HASHTAG_CONTAIN_A, HASHTAG_CONTAIN_B, HASHTAG_CONTAIN_A, HASHTAG_CONTAIN_B,
+            HASHTAG_CONTAIN_A, HASHTAG_CONTAIN_B, HASHTAG_CONTAIN_A, HASHTAG_CONTAIN_B, HASHTAG_CONTAIN_A, HASHTAG_CONTAIN_B
+    );
 
     @Nested
-    @DisplayName("키워드를 통한 작품 조회 테스트 [GET /api/arts/keyword]")
+    @DisplayName("해시태그를 통한 작품 조회 테스트 [GET /api/arts/hashtag]")
     class searchArt {
-        private static final String BASE_URL = "/api/arts/keyword";
+        private static final String BASE_URL = "/api/arts/hashtag";
 
         @Test
         @DisplayName("기본으로 제공되지 않는 정렬 기준은 빈 리스트가 반환된다")
         void test1() throws Exception {
             // given
             final String sort = "anonymous";
-            given(auctionArtComplexSearchService.getAuctionArtListByKeyword(KEYWORD_HELLO, sort, DEFAULT_PAGE_REQUEST))
+            given(auctionArtComplexSearchService.getAuctionArtListByHashtag(HASHTAG_A, sort, DEFAULT_PAGE_REQUEST))
                     .willReturn(PageableExecutionUtils.getPage(new ArrayList<>(), DEFAULT_PAGE_REQUEST, () -> 0L));
 
             // when - then
             MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                     .get(BASE_URL)
-                    .param("keyword", KEYWORD_HELLO)
+                    .param("hashtag", HASHTAG_A)
                     .param("type", TYPE_AUCTION)
                     .param("sort", sort)
                     .param("page", String.valueOf(1));
@@ -84,11 +81,11 @@ class ArtSearchApiControllerComplexAuctionArtByKeywordTest extends ControllerTes
                     .andExpect(jsonPath("$.pagination.next").value(false))
                     .andDo(
                             document(
-                                    "ArtSearchApi/KeywordSearch/Empty",
+                                    "ArtSearchApi/HashtagSearch/Empty",
                                     preprocessRequest(prettyPrint()),
                                     preprocessResponse(prettyPrint()),
                                     requestParameters(
-                                            parameterWithName("keyword").description("검색할 키워드 (작품명 / 작품 설명)"),
+                                            parameterWithName("hashtag").description("검색할 해시태그"),
                                             parameterWithName("type").description("작품 검색 타입 [general / auction]"),
                                             parameterWithName("sort").description("정렬 기준 [(r)date / (r)price / (r)like / (r)count]"),
                                             parameterWithName("page").description("현재 페이지 (1부터 시작)")
@@ -109,21 +106,21 @@ class ArtSearchApiControllerComplexAuctionArtByKeywordTest extends ControllerTes
         }
 
         @Test
-        @DisplayName("등록 날짜 기준 오름차순 [keyword=hello / type=auction / sort=date / page=1]")
+        @DisplayName("등록 날짜 기준 오름차순 [hashtag=A / type=auction / sort=date / page=1]")
         void test2() throws Exception {
             // given
             final String sort = "date";
-            List<AuctionArt> auctionArtList = createAuctionArtList(TOTAL_ELEMENTS, COMMON_NAME_AND_DESCRIPTION);
+            List<AuctionArt> auctionArtList = createAuctionArtList(TOTAL_ELEMENTS, COMMON_NAME_AND_DESCRIPTION, COMMON_HASHTAG);
             sortAuctionArtByDate(auctionArtList);
 
-            List<AuctionArt> auctionArtList1 = filteringAuctionArtWithKeyword(auctionArtList, KEYWORD_HELLO);
-            given(auctionArtComplexSearchService.getAuctionArtListByKeyword(KEYWORD_HELLO, sort, DEFAULT_PAGE_REQUEST))
-                    .willReturn(PageableExecutionUtils.getPage(auctionArtList1, DEFAULT_PAGE_REQUEST, () -> TOTAL_ELEMENTS));
+            List<AuctionArt> filteringAuctionArtWithHashtag = filteringAuctionArtWithHashtag(auctionArtList, HASHTAG_A);
+            given(auctionArtComplexSearchService.getAuctionArtListByHashtag(HASHTAG_A, sort, DEFAULT_PAGE_REQUEST))
+                    .willReturn(PageableExecutionUtils.getPage(filteringAuctionArtWithHashtag, DEFAULT_PAGE_REQUEST, () -> TOTAL_ELEMENTS));
 
             // when - then
             MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                     .get(BASE_URL)
-                    .param("keyword", KEYWORD_HELLO)
+                    .param("hashtag", HASHTAG_A)
                     .param("type", TYPE_AUCTION)
                     .param("sort", sort)
                     .param("page", String.valueOf(1));
@@ -131,7 +128,7 @@ class ArtSearchApiControllerComplexAuctionArtByKeywordTest extends ControllerTes
             mockMvc.perform(requestBuilder)
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.contentSize").exists())
-                    .andExpect(jsonPath("$.contentSize").value(auctionArtList1.size()))
+                    .andExpect(jsonPath("$.contentSize").value(filteringAuctionArtWithHashtag.size()))
                     .andExpect(jsonPath("$.artList").exists())
                     .andExpect(jsonPath("$.pagination").exists())
                     .andExpect(jsonPath("$.pagination.totalElements").value(6))
@@ -140,11 +137,11 @@ class ArtSearchApiControllerComplexAuctionArtByKeywordTest extends ControllerTes
                     .andExpect(jsonPath("$.pagination.next").value(false))
                     .andDo(
                             document(
-                                    "ArtSearchApi/KeywordSearch/Auction",
+                                    "ArtSearchApi/HashtagSearch/Auction",
                                     preprocessRequest(prettyPrint()),
                                     preprocessResponse(prettyPrint()),
                                     requestParameters(
-                                            parameterWithName("keyword").description("검색할 키워드 (작품명 / 작품 설명)"),
+                                            parameterWithName("hashtag").description("검색할 해시태그"),
                                             parameterWithName("type").description("작품 검색 타입 [general / auction]"),
                                             parameterWithName("sort").description("정렬 기준 [(r)date / (r)price / (r)like / (r)count]"),
                                             parameterWithName("page").description("현재 페이지 (1부터 시작)")
@@ -183,21 +180,21 @@ class ArtSearchApiControllerComplexAuctionArtByKeywordTest extends ControllerTes
         }
 
         @Test
-        @DisplayName("등록 날짜 기준 오름차순 [keyword=hello / type=general / sort=date / page=1]")
+        @DisplayName("등록 날짜 기준 오름차순 [hashtag=A / type=general / sort=date / page=1]")
         void test3() throws Exception {
             // given
             final String sort = "date";
-            List<GeneralArt> auctionArtList = createGeneralArtList(TOTAL_ELEMENTS, COMMON_NAME_AND_DESCRIPTION);
-            sortGeneralArtByDate(auctionArtList);
+            List<GeneralArt> generalArtList = createGeneralArtList(TOTAL_ELEMENTS, COMMON_NAME_AND_DESCRIPTION, COMMON_HASHTAG);
+            sortGeneralArtByDate(generalArtList);
 
-            List<GeneralArt> auctionArtList1 = filteringGeneralArtWithKeyword(auctionArtList, KEYWORD_HELLO);
-            given(generalArtComplexSearchService.getGeneralArtListByKeyword(KEYWORD_HELLO, sort, DEFAULT_PAGE_REQUEST))
-                    .willReturn(PageableExecutionUtils.getPage(auctionArtList1, DEFAULT_PAGE_REQUEST, () -> TOTAL_ELEMENTS));
+            List<GeneralArt> filteringGeneralArtWithHashtag = filteringGeneralArtWithHashtag(generalArtList, HASHTAG_A);
+            given(generalArtComplexSearchService.getGeneralArtListByHashtag(HASHTAG_A, sort, DEFAULT_PAGE_REQUEST))
+                    .willReturn(PageableExecutionUtils.getPage(filteringGeneralArtWithHashtag, DEFAULT_PAGE_REQUEST, () -> TOTAL_ELEMENTS));
 
             // when - then
             MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                     .get(BASE_URL)
-                    .param("keyword", KEYWORD_HELLO)
+                    .param("hashtag", HASHTAG_A)
                     .param("type", TYPE_GENERAL)
                     .param("sort", sort)
                     .param("page", String.valueOf(1));
@@ -205,7 +202,7 @@ class ArtSearchApiControllerComplexAuctionArtByKeywordTest extends ControllerTes
             mockMvc.perform(requestBuilder)
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.contentSize").exists())
-                    .andExpect(jsonPath("$.contentSize").value(auctionArtList1.size()))
+                    .andExpect(jsonPath("$.contentSize").value(filteringGeneralArtWithHashtag.size()))
                     .andExpect(jsonPath("$.artList").exists())
                     .andExpect(jsonPath("$.pagination").exists())
                     .andExpect(jsonPath("$.pagination.totalElements").value(6))
@@ -214,11 +211,11 @@ class ArtSearchApiControllerComplexAuctionArtByKeywordTest extends ControllerTes
                     .andExpect(jsonPath("$.pagination.next").value(false))
                     .andDo(
                             document(
-                                    "ArtSearchApi/KeywordSearch/General",
+                                    "ArtSearchApi/HashtagSearch/General",
                                     preprocessRequest(prettyPrint()),
                                     preprocessResponse(prettyPrint()),
                                     requestParameters(
-                                            parameterWithName("keyword").description("검색할 키워드 (작품명 / 작품 설명)"),
+                                            parameterWithName("hashtag").description("검색할 해시태그"),
                                             parameterWithName("type").description("작품 검색 타입 [general / auction]"),
                                             parameterWithName("sort").description("정렬 기준 [(r)date / (r)price / (r)like / (r)count]"),
                                             parameterWithName("page").description("현재 페이지 (1부터 시작)")
@@ -253,15 +250,15 @@ class ArtSearchApiControllerComplexAuctionArtByKeywordTest extends ControllerTes
         }
     }
 
-    private List<AuctionArt> filteringAuctionArtWithKeyword(List<AuctionArt> auctionArtList, String keyword) {
+    private List<AuctionArt> filteringAuctionArtWithHashtag(List<AuctionArt> auctionArtList, String hashtag) {
         return auctionArtList.stream()
-                .filter(auctionArt -> auctionArt.getArt().getArtName().contains(keyword) || auctionArt.getArt().getArtDescription().contains(keyword))
+                .filter(auctionArt -> auctionArt.getHashtags().contains(hashtag))
                 .toList();
     }
 
-    private List<GeneralArt> filteringGeneralArtWithKeyword(List<GeneralArt> auctionArtList, String keyword) {
+    private List<GeneralArt> filteringGeneralArtWithHashtag(List<GeneralArt> auctionArtList, String hashtag) {
         return auctionArtList.stream()
-                .filter(auctionArt -> auctionArt.getArt().getArtName().contains(keyword) || auctionArt.getArt().getArtDescription().contains(keyword))
+                .filter(auctionArt -> auctionArt.getHashtags().contains(hashtag))
                 .toList();
     }
 
