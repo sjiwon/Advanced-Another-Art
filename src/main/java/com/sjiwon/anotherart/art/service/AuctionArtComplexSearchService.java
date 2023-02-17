@@ -19,6 +19,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.sjiwon.anotherart.art.domain.ArtType.AUCTION;
+import static com.sjiwon.anotherart.art.utils.BidCountCalculator.extractAuctionBidCountByArtId;
+import static com.sjiwon.anotherart.art.utils.HashtagAssembler.extractHashtagListByArtId;
+import static com.sjiwon.anotherart.art.utils.LikeMarkingAssembler.extractLikeMarkingMemberListByArtId;
 import static com.sjiwon.anotherart.art.utils.SearchCondition.SortType.convertSortType;
 
 @Service
@@ -53,27 +56,5 @@ public class AuctionArtComplexSearchService {
                 )
                 .collect(Collectors.toList());
         return PageableExecutionUtils.getPage(result, pageRequest, pagingResult::getTotalElements);
-    }
-
-    private List<String> extractHashtagListByArtId(List<HashtagSummary> hashtagSummaries, Long artId) {
-        return hashtagSummaries.stream()
-                .filter(simpleHashtag -> simpleHashtag.getArtId().equals(artId))
-                .map(HashtagSummary::getName)
-                .collect(Collectors.toList());
-    }
-
-    // 각 작품에 대해서 좋아요 등록을 한 사용자 ID 리스트 추출
-    private List<Long> extractLikeMarkingMemberListByArtId(List<FavoriteSummary> favoriteSummaries, Long artId) {
-        return favoriteSummaries.stream()
-                .filter(simpleLikeArt -> simpleLikeArt.getArtId().equals(artId))
-                .map(FavoriteSummary::getMemberId)
-                .collect(Collectors.toList());
-    }
-
-    // 각 경매 작품에 대한 입찰 횟수를 추출
-    private int extractAuctionBidCountByArtId(List<AuctionRecordSummary> auctionRecordSummaries, Long artId) {
-        return (int) auctionRecordSummaries.stream()
-                .filter(simpleAuctionHistory -> simpleAuctionHistory.getArtId().equals(artId))
-                .count();
     }
 }
