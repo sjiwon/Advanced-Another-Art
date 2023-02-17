@@ -10,11 +10,21 @@ import javax.validation.constraints.NotNull;
 
 @Getter
 @AllArgsConstructor
-public class MainPageSearchRequest {
+public class KeywordSearchArtRequest {
+    @NotBlank(message = ArtRequestValidationMessage.KeywordArt.SEARCH_KEYWORD)
+    private String keyword;
+
+    @NotBlank(message = ArtRequestValidationMessage.KeywordArt.SEARCH_TYPE)
+    private String type;
+
     @NotBlank(message = ArtRequestValidationMessage.CommonPage.SEARCH_SORT)
     private String sort;
 
     @NotNull(message = ArtRequestValidationMessage.CommonPage.SEARCH_PAGE)
     @Min(message = ArtRequestValidationMessage.CommonPage.SEARCH_PAGE_MIN, value = 1)
     private Integer page;
+
+    public boolean isAuctionType() {
+        return this.type.equalsIgnoreCase("auction");
+    }
 }

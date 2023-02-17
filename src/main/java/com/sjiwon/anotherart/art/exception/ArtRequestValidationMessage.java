@@ -19,8 +19,14 @@ public class ArtRequestValidationMessage {
         public static final String CHANGE_DESCRIPTION = "변경할 작품 설명은 필수입니다.";
     }
 
-    public static class MainPageArt {
+    public static class CommonPage {
         public static final String SEARCH_SORT = "정렬 기준은 필수입니다.";
         public static final String SEARCH_PAGE = "현재 페이지 번호는 필수입니다.";
+        public static final String SEARCH_PAGE_MIN = "페이지는 1페이지부터 시작합니다.";
+    }
+
+    public static class KeywordArt {
+        public static final String SEARCH_KEYWORD = "검색 키워드는 필수입니다.";
+        public static final String SEARCH_TYPE = "작품 타입은 필수입니다.";
     }
 }
