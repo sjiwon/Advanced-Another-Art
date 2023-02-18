@@ -24,7 +24,6 @@ import static com.sjiwon.anotherart.art.domain.QArt.art;
 import static com.sjiwon.anotherart.art.domain.hashtag.QHashtag.hashtag;
 import static com.sjiwon.anotherart.art.utils.ArtQueryFetchingUtils.assembleGeneralArtProjections;
 import static com.sjiwon.anotherart.art.utils.ArtQueryFetchingUtils.orderBySearchCondition;
-import static com.sjiwon.anotherart.auction.domain.QAuction.auction;
 import static com.sjiwon.anotherart.favorite.domain.QFavorite.favorite;
 import static com.sjiwon.anotherart.purchase.domain.QPurchase.purchase;
 
@@ -55,7 +54,6 @@ public class GeneralArtSpecificComplexQueryRepositoryImpl implements GeneralArtS
         Long count = query
                 .select(art.count())
                 .from(art)
-                .innerJoin(auction).on(auction.art.id.eq(art.id))
                 .where(
                         artTypeEq(GENERAL),
                         keywordContains(condition.getGivenText())
@@ -91,7 +89,6 @@ public class GeneralArtSpecificComplexQueryRepositoryImpl implements GeneralArtS
         Long count = query
                 .select(art.count())
                 .from(art)
-                .innerJoin(auction).on(auction.art.id.eq(art.id))
                 .where(
                         artTypeEq(GENERAL),
                         art.id.in(artIdWithHashtag)
