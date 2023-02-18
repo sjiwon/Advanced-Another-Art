@@ -26,11 +26,11 @@ public class MemberDealEventListener {
         int dealAmount = event.getDealAmount();
         eventLogging(event.isAuctionDeal(), owner, buyer, dealAmount);
 
-        // 판매자 포인트 추가
+        // 판매자 포인트
         owner.increasePoint(dealAmount);
         pointDetailRepository.save(PointDetail.insertPointDetail(owner, PointType.SOLD, dealAmount));
 
-        // 구매자 포인트 차감
+        // 구매자 포인트
         buyer.decreasePoint(dealAmount);
         pointDetailRepository.save(PointDetail.insertPointDetail(buyer, PointType.PURCHASE, dealAmount));
     }
@@ -42,11 +42,11 @@ public class MemberDealEventListener {
         int dealAmount = event.getDealAmount();
         eventLogging(event.isAuctionDeal(), owner, buyer, dealAmount);
 
-        // 판매자 포인트 추가
+        // 판매자 포인트
         owner.increasePoint(dealAmount);
         pointDetailRepository.save(PointDetail.insertPointDetail(owner, PointType.SOLD, dealAmount));
 
-        // 구매자 포인트 차감
+        // 구매자 포인트
         pointDetailRepository.save(PointDetail.insertPointDetail(buyer, PointType.PURCHASE, dealAmount));
     }
 
