@@ -35,6 +35,7 @@ import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDoc
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Optional;
@@ -121,6 +122,9 @@ public abstract class ControllerTest {
         Member memberA = MemberFixture.A.toMember();
         Member memberB = MemberFixture.B.toMember();
         Member memberC = MemberFixture.C.toMember();
+        setIdByReflection(memberA, 1L);
+        setIdByReflection(memberA, 2L);
+        setIdByReflection(memberA, 3L);
 
         given(memberRepository.findById(1L)).willReturn(Optional.ofNullable(memberA));
         given(memberRepository.findById(2L)).willReturn(Optional.ofNullable(memberB));
@@ -137,5 +141,9 @@ public abstract class ControllerTest {
         given(memberFindService.findByNameAndEmail(memberA.getName(), memberA.getEmail())).willReturn(memberA);
         given(memberFindService.findByNameAndEmail(memberB.getName(), memberB.getEmail())).willReturn(memberB);
         given(memberFindService.findByNameAndEmail(memberC.getName(), memberC.getEmail())).willReturn(memberC);
+    }
+
+    private void setIdByReflection(Member member, Long id) {
+        ReflectionTestUtils.setField(member, "id", id);
     }
 }

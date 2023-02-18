@@ -10,12 +10,15 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class TokenResponse {
     @JsonInclude(JsonInclude.Include.NON_NULL)
+    private Long memberId;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private String nickname;
     private String accessToken;
     private String refreshToken;
 
     @Builder
-    public TokenResponse(String nickname, String accessToken, String refreshToken) {
+    public TokenResponse(Long memberId, String nickname, String accessToken, String refreshToken) {
+        this.memberId = memberId;
         this.nickname = nickname;
         this.accessToken = accessToken;
         this.refreshToken = refreshToken;

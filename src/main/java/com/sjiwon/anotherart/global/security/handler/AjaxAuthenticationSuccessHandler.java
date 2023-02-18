@@ -27,14 +27,20 @@ public class AjaxAuthenticationSuccessHandler implements AuthenticationSuccessHa
         String refreshToken = jwtTokenProvider.createRefreshToken(member.getId(), member.getRole());
 
         tokenPersistenceService.saveRefreshToken(member.getId(), refreshToken);
-        sendAccessTokenAndRefreshToken(response, member.getNickname(), accessToken, refreshToken);
+        sendAccessTokenAndRefreshToken(response, member, accessToken, refreshToken);
     }
 
     private MemberAuthDto getPrincipal(Authentication authentication) {
         return ((MemberPrincipal) authentication.getPrincipal()).getUser();
     }
 
-    private void sendAccessTokenAndRefreshToken(HttpServletResponse response, String nickname, String accessToken, String refreshToken) throws IOException {
-        objectMapper.writeValue(response.getWriter(), new TokenResponse(nickname, accessToken, refreshToken));
+    private void sendAccessTokenAndRefreshToken(HttpServletResponse response, MemberAuthDto member, String accessToken, String refreshToken) throws IOException {
+        TokenResponse tokenResponse = TokenResponse.builder()
+                .memberId(member.getId())
+                .nickname(member.getNickname())
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
+                .build();
+        objectMapper.writeValue(response.getWriter(), tokenResponse);
     }
 }
