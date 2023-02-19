@@ -32,14 +32,14 @@ public class JwtLogoutSuccessHandler implements LogoutSuccessHandler {
 
     private void removeRefreshToken(HttpServletRequest request) {
         String accessToken = AuthorizationExtractor.extractToken(request);
-        validateRefreshToken(accessToken);
+        validateAccessToken(accessToken);
 
         Long memberId = jwtTokenProvider.getId(accessToken);
         tokenPersistenceService.deleteRefreshTokenViaMemberId(memberId);
     }
 
-    private void validateRefreshToken(String refreshToken) {
-        if (refreshToken == null) {
+    private void validateAccessToken(String accesstoken) {
+        if (accesstoken == null) {
             throw AnotherArtAccessDeniedException.type(AuthErrorCode.INVALID_TOKEN);
         }
     }

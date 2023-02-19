@@ -142,10 +142,10 @@ public class SecurityConfiguration {
         http.sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
-        http.addFilterAt(ajaxAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
-        http.addFilterBefore(jwtAuthorizationFilter(), AjaxAuthenticationFilter.class);
-        http.addFilterBefore(tokenInvalidExceptionTranslationFilter(), JwtAuthorizationFilter.class);
         http.addFilterBefore(logoutExceptionTranslationFilter(), LogoutFilter.class);
+        http.addFilterBefore(jwtAuthorizationFilter(), LogoutExceptionTranslationFilter.class);
+        http.addFilterBefore(tokenInvalidExceptionTranslationFilter(), JwtAuthorizationFilter.class);
+        http.addFilterAt(ajaxAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
 
         http.logout()
                 .logoutUrl("/api/logout")
