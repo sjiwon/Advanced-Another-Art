@@ -40,7 +40,7 @@ export default {
     return {
       isAuctionSelected: true,
       isGeneralSelected: false,
-      fetchDataList: [],
+      fetchDataList: []
     }
   },
   setup() {
@@ -69,7 +69,7 @@ export default {
         this.isAuctionSelected = false
         this.isGeneralSelected = true
       }
-    },
+    }
   }
 }
 </script>

@@ -9,21 +9,21 @@
         <div class="row g-3">
           <div class="col-md-6 offset-md-3">
             <div class="form-floating">
-              <input type="text" class="form-control" placeholder="이름" :disabled="userAuthenticated === true" v-model="authenticatedData.name" autofocus>
+              <input type="text" class="form-control" placeholder="이름을 입력해주세요..." :disabled="userAuthenticated === true" v-model="authenticatedData.name" autofocus>
               <label for="name">이름</label>
             </div>
           </div>
 
           <div class="col-md-6 offset-md-3">
             <div class="form-floating">
-              <input type="text" class="form-control" placeholder="아이디" :disabled="userAuthenticated === true" v-model="authenticatedData.loginId">
+              <input type="text" class="form-control" placeholder="아이디를 입력해주세요..." :disabled="userAuthenticated === true" v-model="authenticatedData.loginId">
               <label for="loginId">아이디</label>
             </div>
           </div>
 
           <div class="col-md-6 offset-md-3">
             <div class="form-floating">
-              <input type="email" class="form-control" placeholder="이메일" :disabled="userAuthenticated === true" v-model="authenticatedData.email" @keyup="emailTracker()">
+              <input type="email" class="form-control" placeholder="이메일을 입력해주세요..." :disabled="userAuthenticated === true" v-model="authenticatedData.email" @keyup="emailTracker()">
               <label for="email">이메일</label>
             </div>
             <p v-show="emailCheck.isNotMeetCondition" :style="emailCheck.errorCss">{{ emailCheck.errorMessage }}</p>
@@ -42,14 +42,14 @@
         <div v-if="userAuthenticated === true" class="row g-3">
           <div class="col-md-6 offset-md-3">
             <div class="form-floating">
-              <input type="text" class="form-control" placeholder="아이디" v-model="changeRequestData.loginId" autofocus>
+              <input type="text" class="form-control" placeholder="아이디" v-model="changeRequestData.loginId" readonly autofocus>
               <label for="name">아이디</label>
             </div>
           </div>
 
           <div class="col-md-6 offset-md-3">
             <div class="form-floating">
-              <input type="password" class="form-control" placeholder="변경할 비밀번호" v-model="changeRequestData.changePassword" @keyup="passwordTracker()">
+              <input type="password" class="form-control" placeholder="변경할 비밀번호를 입력해주세요..." v-model="changeRequestData.changePassword" @keyup="passwordTracker()">
               <label for="password">변경할 비밀번호</label>
               <p v-show="passwordCheck.isNotMeetCondition" :style="passwordCheck.errorCss">{{ passwordCheck.errorMessage }}</p>
               <p v-show="passwordCheck.isMeetCondition" :style="passwordCheck.successCss">{{ passwordCheck.successMessage }}</p>
@@ -58,7 +58,7 @@
 
           <div class="col-md-6 offset-md-3">
             <div class="form-floating">
-              <input type="password" class="form-control" placeholder="비밀번호 확인" :disabled="passwordVerification.isDisabled" required v-model="passwordVerificationToken"
+              <input type="password" class="form-control" placeholder="비밀번호 확인란을 입력해주세요..." :disabled="passwordVerification.isDisabled" required v-model="passwordVerificationToken"
                      @keyup="passwordVerificationTracker()"/>
               <label for="passwordCheck">비밀번호 확인</label>
               <p v-show="passwordVerification.isNotMatchExactly" :style="passwordVerification.errorCss">{{ passwordVerification.errorMessage }}</p>
@@ -74,13 +74,11 @@
       </div>
     </div>
 
-    <div v-if="userAuthenticated === false" style="margin-bottom: 35px;"></div>
+    <div v-if="userAuthenticated === false" style="margin-bottom: 56px;"></div>
   </div>
 </template>
 
 <script>
-import axios from 'axios'
-
 export default {
   name: 'ChangePasswordView',
   components: {},
@@ -89,7 +87,7 @@ export default {
       authenticatedData: {
         name: '',
         loginId: '',
-        email: '',
+        email: ''
       },
       changeRequestData: {
         loginId: '',
@@ -174,7 +172,7 @@ export default {
   methods: {
     emailTracker() {
       const pattern = /^[a-zA-Z0-9+-\_.]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/
-      let currentEmail = this.authenticatedData.email
+      const currentEmail = this.authenticatedData.email
 
       if (currentEmail === '') {
         this.emailCheck.isNotMeetCondition = false
@@ -199,8 +197,8 @@ export default {
     },
     async userAuthenticationProcess() {
       if (this.validateInputState() === false) {
-        alert('입력이 완료되지 않았습니다\n다시 확인해주세요');
-        return false;
+        alert('입력이 완료되지 않았습니다\n다시 확인해주세요')
+        return false
       }
       if (this.validateEmail() === false) {
         alert('이메일 형식이 올바르지 않습니다\n다시 확인해주세요')
@@ -208,11 +206,14 @@ export default {
       }
 
       try {
-        await axios.post('/api/user/change/password/authentication', this.authenticatedData)
+        await this.axios.post('/api/member/reset-password/auth', this.authenticatedData)
+
+        this.userAuthenticated = true
+        this.changeRequestData.loginId = this.authenticatedData.loginId
+
         this.successFindButtonDisplay.display = 'none'
         this.emailCheck.isMeetCondition = false
         this.emailCheck.isNotMeetCondition = false
-        this.userAuthenticated = true
       } catch (err) {
         this.userAuthenticated = false
         alert(err.response.data.message)
@@ -220,7 +221,7 @@ export default {
     },
     passwordTracker() {
       const pattern = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}/
-      let currentPassword = this.changeRequestData.changePassword
+      const currentPassword = this.changeRequestData.changePassword
 
       if (currentPassword === '') {
         this.passwordCheck.isNotMeetCondition = false
@@ -239,8 +240,8 @@ export default {
       }
     },
     passwordVerificationTracker() {
-      let currentPassword = this.changeRequestData.changePassword
-      let currentVerificationPassword = this.passwordVerificationToken
+      const currentPassword = this.changeRequestData.changePassword
+      const currentVerificationPassword = this.passwordVerificationToken
 
       if (currentPassword === currentVerificationPassword) {
         this.passwordVerification.isNotMatchExactly = false
@@ -264,8 +265,8 @@ export default {
     },
     async changePasswordProcess() {
       if (this.validateSecondInputState() === false) {
-        alert('입력이 완료되지 않았습니다\n다시 확인해주세요');
-        return false;
+        alert('입력이 완료되지 않았습니다\n다시 확인해주세요')
+        return false
       }
       if (this.validatePassword() === false) {
         alert('비밀번호가 조건을 충족하지 않습니다\n다시 확인해주세요\n-> 영문, 숫자, 특수문자를 하나 이상 포함하고 8자 이상이여야 합니다')
@@ -277,7 +278,7 @@ export default {
       }
 
       try {
-        await axios.post('/api/user/change/password', this.changeRequestData)
+        await this.axios.post('/api/member/reset-password', this.changeRequestData)
         alert('비밀번호 변경이 완료되었습니다\n로그인 페이지로 이동합니다')
         this.$router.push('/login')
       } catch (err) {

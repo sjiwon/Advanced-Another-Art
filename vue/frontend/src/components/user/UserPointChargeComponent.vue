@@ -37,8 +37,8 @@
 </template>
 
 <script>
-import axios from 'axios';
-const { IMP } = window;
+import axios from 'axios'
+const { IMP } = window
 
 export default {
   name: 'UserPointChargeComponent',
@@ -114,26 +114,26 @@ export default {
       this.isAutoIncrease = false
     },
     requestPay() {
-      IMP.init("imp36060541");
+      IMP.init('imp36060541')
       IMP.request_pay(this.importRequestData, async (response) => {
-          if (response.success) {
-            try {
-              await axios.post('/api/user/point/charge', {
-                userId: this.$store.getters.getUserId,
-                dealAmount: this.importRequestData.amount
-              });
-              alert('결제가 완료되었습니다')
-              this.$router.push('/mypage/point/history')
-            } catch (err) {
-              alert(err.response.data.message)
-            }
-          } else {
-            let msg = `결제에 실패하였습니다\n- ${response.error_msg}`
-            alert(msg)
+        if (response.success) {
+          try {
+            await axios.post('/api/user/point/charge', {
+              userId: this.$store.getters['memberStore/getMemberId'],
+              dealAmount: this.importRequestData.amount
+            })
+            alert('결제가 완료되었습니다')
+            this.$router.push('/mypage/point/history')
+          } catch (err) {
+            alert(err.response.data.message)
           }
+        } else {
+          const msg = `결제에 실패하였습니다\n- ${response.error_msg}`
+          alert(msg)
         }
+      }
       )
-    },
+    }
   }
 }
 </script>

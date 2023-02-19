@@ -21,7 +21,7 @@ class TokenPersistenceServiceTest extends ServiceIntegrateTest {
         final String refreshToken = "refresh_token_hello_world";
 
         // when
-        tokenPersistenceService.saveRefreshToken(memberId, refreshToken);
+        tokenPersistenceService.saveOrUpdateRefreshToken(memberId, refreshToken);
 
         // then
         assertThat(refreshTokenRepository.existsByMemberIdAndRefreshToken(memberId, refreshToken)).isTrue();
@@ -33,7 +33,7 @@ class TokenPersistenceServiceTest extends ServiceIntegrateTest {
         // given
         final Long memberId = 1L;
         final String refreshToken = "refresh_token_hello_world";
-        tokenPersistenceService.saveRefreshToken(memberId, refreshToken);
+        tokenPersistenceService.saveOrUpdateRefreshToken(memberId, refreshToken);
 
         // when
         final String newRefreshToken = refreshToken + "_update";
@@ -52,7 +52,7 @@ class TokenPersistenceServiceTest extends ServiceIntegrateTest {
         // given
         final Long memberId = 1L;
         final String refreshToken = "refresh_token_hello_world";
-        tokenPersistenceService.saveRefreshToken(memberId, refreshToken);
+        tokenPersistenceService.saveOrUpdateRefreshToken(memberId, refreshToken);
 
         // when
         tokenPersistenceService.deleteRefreshTokenViaMemberId(memberId);
@@ -67,7 +67,7 @@ class TokenPersistenceServiceTest extends ServiceIntegrateTest {
         // given
         final Long memberId = 1L;
         final String refreshToken = "refresh_token_hello_world";
-        tokenPersistenceService.saveRefreshToken(memberId, refreshToken);
+        tokenPersistenceService.saveOrUpdateRefreshToken(memberId, refreshToken);
 
         // when
         final String fakeRefreshToken = "fake_refresh_token_hello_world";

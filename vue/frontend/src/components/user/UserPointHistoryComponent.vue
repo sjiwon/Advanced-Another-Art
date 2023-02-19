@@ -13,7 +13,7 @@
 </template>
 
 <script>
-import axios from 'axios';
+import axios from 'axios'
 import dayjs from 'dayjs'
 
 export default {
@@ -57,7 +57,7 @@ export default {
       } catch (err) {
         alert(err.response.data.message)
       }
-    },
+    }
   }
 }
 </script>

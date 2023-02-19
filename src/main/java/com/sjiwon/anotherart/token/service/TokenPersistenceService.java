@@ -13,8 +13,12 @@ public class TokenPersistenceService {
     private final RefreshTokenRepository refreshTokenRepository;
 
     @Transactional
-    public void saveRefreshToken(Long memberId, String refreshToken) {
-        refreshTokenRepository.save(RefreshToken.issueRefreshToken(memberId, refreshToken));
+    public void saveOrUpdateRefreshToken(Long memberId, String refreshToken) {
+        if (refreshTokenRepository.existsByMemberId(memberId)) {
+            refreshTokenRepository.reissueRefreshTokenByRtrPolicy(memberId, refreshToken);
+        } else {
+            refreshTokenRepository.save(RefreshToken.issueRefreshToken(memberId, refreshToken));
+        }
     }
 
     @Transactional

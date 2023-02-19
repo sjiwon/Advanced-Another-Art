@@ -27,7 +27,7 @@ const routes = [
     path: '/mypage',
     name: 'MyPageView',
     component: () => import(/* webpackChunkName: "userInfo", webpackPrefetch: true */ '@/views/user/MyPageView.vue'),
-    meta: { requiresAuth: true } ,
+    meta: { requiresAuth: true },
     children: [
       {
         path: '',
@@ -72,14 +72,14 @@ const router = createRouter({
 })
 
 router.beforeEach((to, from, next) => {
-  if (to.matched.some(record => record.meta.requiresAuth)) {
-    if (store.getters.isAuthenticated === false) {
+  if (to.matched.some(record => record.meta.requiresAuth)) { // 인증 필요
+    if (store.getters['memberStore/isAuthenticated'] === false) {
       alert('로그인이 필요합니다')
-      next('/login');
+      next('/login')
     } else {
       next()
     }
-  } else {
+  } else { // 인증 필요 X
     next()
   }
 })

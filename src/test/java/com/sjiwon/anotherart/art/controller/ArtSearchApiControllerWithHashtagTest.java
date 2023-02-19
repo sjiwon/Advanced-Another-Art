@@ -256,14 +256,14 @@ public class ArtSearchApiControllerWithHashtagTest extends ControllerTest {
                 .toList();
     }
 
-    private List<GeneralArt> filteringGeneralArtWithHashtag(List<GeneralArt> auctionArtList, String hashtag) {
-        return auctionArtList.stream()
-                .filter(auctionArt -> auctionArt.getHashtags().contains(hashtag))
+    private List<GeneralArt> filteringGeneralArtWithHashtag(List<GeneralArt> generalArtList, String hashtag) {
+        return generalArtList.stream()
+                .filter(generalArt -> generalArt.getHashtags().contains(hashtag))
                 .toList();
     }
 
-    private void sortAuctionArtByDate(List<AuctionArt> auctionArts) {
-        auctionArts.sort((o1, o2) -> {
+    private void sortAuctionArtByDate(List<AuctionArt> auctionArtList) {
+        auctionArtList.sort((o1, o2) -> {
             if (o1.getArt().getArtRegistrationDate().isBefore(o2.getArt().getArtRegistrationDate())) {
                 return -1;
             } else if (o1.getArt().getArtRegistrationDate().isAfter(o2.getArt().getArtRegistrationDate())) {
@@ -274,8 +274,8 @@ public class ArtSearchApiControllerWithHashtagTest extends ControllerTest {
         });
     }
 
-    private void sortGeneralArtByDate(List<GeneralArt> auctionArts) {
-        auctionArts.sort((o1, o2) -> {
+    private void sortGeneralArtByDate(List<GeneralArt> generalArtList) {
+        generalArtList.sort((o1, o2) -> {
             if (o1.getArt().getArtRegistrationDate().isAfter(o2.getArt().getArtRegistrationDate())) {
                 return -1;
             } else if (o1.getArt().getArtRegistrationDate().isBefore(o2.getArt().getArtRegistrationDate())) {

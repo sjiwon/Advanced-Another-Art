@@ -75,28 +75,28 @@ export default {
         {
           fontSize: '15px',
           fontWeight: '',
-          backgroundColor: '#E6FFFF',
+          backgroundColor: '#E6FFFF'
         },
         {
           fontSize: '15px',
           fontWeight: '',
-          backgroundColor: '#E6FFFF',
+          backgroundColor: '#E6FFFF'
         },
         {
           fontSize: '15px',
           fontWeight: '',
-          backgroundColor: '#E6FFFF',
+          backgroundColor: '#E6FFFF'
         },
         {
           fontSize: '15px',
           fontWeight: '',
-          backgroundColor: '#E6FFFF',
+          backgroundColor: '#E6FFFF'
         },
         {
           fontSize: '15px',
           fontWeight: '',
-          backgroundColor: '#E6FFFF',
-        },
+          backgroundColor: '#E6FFFF'
+        }
       ],
       rightViewCss: {
         borderRadius: '30px',
@@ -121,7 +121,7 @@ export default {
     mouseLeaveEvent(index) {
       this.menuButtonCss[index].fontSize = '15px'
       this.menuButtonCss[index].fontWeight = ''
-    },
+    }
   }
 }
 </script>

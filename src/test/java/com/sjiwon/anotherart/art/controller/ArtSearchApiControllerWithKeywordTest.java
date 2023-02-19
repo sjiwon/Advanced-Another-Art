@@ -251,14 +251,14 @@ class ArtSearchApiControllerWithKeywordTest extends ControllerTest {
                 .toList();
     }
 
-    private List<GeneralArt> filteringGeneralArtWithKeyword(List<GeneralArt> auctionArtList, String keyword) {
-        return auctionArtList.stream()
-                .filter(auctionArt -> auctionArt.getArt().getArtName().contains(keyword) || auctionArt.getArt().getArtDescription().contains(keyword))
+    private List<GeneralArt> filteringGeneralArtWithKeyword(List<GeneralArt> generalArtList, String keyword) {
+        return generalArtList.stream()
+                .filter(generalArt -> generalArt.getArt().getArtName().contains(keyword) || generalArt.getArt().getArtDescription().contains(keyword))
                 .toList();
     }
 
-    private void sortAuctionArtByDate(List<AuctionArt> auctionArts) {
-        auctionArts.sort((o1, o2) -> {
+    private void sortAuctionArtByDate(List<AuctionArt> auctionArtList) {
+        auctionArtList.sort((o1, o2) -> {
             if (o1.getArt().getArtRegistrationDate().isBefore(o2.getArt().getArtRegistrationDate())) {
                 return -1;
             } else if (o1.getArt().getArtRegistrationDate().isAfter(o2.getArt().getArtRegistrationDate())) {
@@ -269,8 +269,8 @@ class ArtSearchApiControllerWithKeywordTest extends ControllerTest {
         });
     }
 
-    private void sortGeneralArtByDate(List<GeneralArt> auctionArts) {
-        auctionArts.sort((o1, o2) -> {
+    private void sortGeneralArtByDate(List<GeneralArt> generalArtList) {
+        generalArtList.sort((o1, o2) -> {
             if (o1.getArt().getArtRegistrationDate().isAfter(o2.getArt().getArtRegistrationDate())) {
                 return -1;
             } else if (o1.getArt().getArtRegistrationDate().isBefore(o2.getArt().getArtRegistrationDate())) {

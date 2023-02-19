@@ -23,7 +23,7 @@
       <div class="container">
         <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-3">
           <div v-for="(art, index) in fetchDataList" :key="index">
-            <AuctionArtComponent :art="art" />
+            <AuctionArtComponent :auction-art="art" />
           </div>
         </div>
       </div>
@@ -45,7 +45,6 @@
 </template>
 
 <script>
-import axios from 'axios'
 import AuctionArtComponent from '@/components/art/AuctionArtComponent.vue'
 
 export default {
@@ -65,8 +64,8 @@ export default {
         priceASC: '입찰 가격 낮은순',
         bidCountDESC: '입찰 횟수 많은순',
         bidCountASC: '입찰 횟수 적은순',
-        likeDESC: '찜 횟수 많은순',
-        likeASC: '찜 횟수 적은순'
+        likeDESC: '좋아요 횟수 많은순',
+        likeASC: '좋아요 횟수 적은순'
       },
       fetchDataList: [],
       pagination: {},
@@ -84,26 +83,25 @@ export default {
   },
   methods: {
     getSortType() {
-      return this.$store.getters.getCurrentSearchSortType
+      return this.$store.getters['mainPageSearch/getSortType']
     },
     checkActive(currentPage, idx) {
       if (currentPage === idx) {
-        return 'active';
+        return 'active'
       } else {
-        return '';
+        return ''
       }
     },
     async fetchData() {
       try {
-        const response = await axios.get('/api/arts/main', {
-          params: this.$store.getters.getMainPagingSearch
-        })
+        const { sort, page } = this.$store.getters['mainPageSearch/getMainPageCriteria']
+        const response = await this.axios.get(`/api/arts/main?sort=${sort}&page=${page}`)
 
         this.fetchDataList = [...response.data.artList]
         this.pagination = response.data.pagination
         this.range = []
         for (let i = this.pagination.rangeStartNumber; i <= this.pagination.rangeEndNumber; i++) {
-          this.range.push(i);
+          this.range.push(i)
         }
       } catch (err) {
         alert(err.response.data.message)
@@ -111,53 +109,53 @@ export default {
     },
 
     applyNewFetchData() {
-      this.$store.commit('changePagingSortType', this.sortType.defaultType)
+      this.$store.commit('mainPageSearch/changeSortCriteria', this.sortType.defaultType)
       this.fetchData()
       this.$router.push({
         path: '/',
         query: {
-          sort: this.$store.getters.getMainPagingSort,
-          page: this.$store.getters.getMainPagingPage
+          sort: this.$store.getters['mainPageSearch/getSortInCriteria'],
+          page: this.$store.getters['mainPageSearch/getPageInCriteria']
         }
       })
     },
     changeToDateDESC() {
-      this.$store.commit('changeSortType', this.sortType.dateDESC)
+      this.$store.commit('mainPageSearch/changeSortType', this.sortType.dateDESC)
       this.sortType.defaultType = 'rdate'
       this.applyNewFetchData()
     },
     changeToDateASC() {
-      this.$store.commit('changeSortType', this.sortType.dateASC)
+      this.$store.commit('mainPageSearch/changeSortType', this.sortType.dateASC)
       this.sortType.defaultType = 'date'
       this.applyNewFetchData()
     },
     changeToPriceDESC() {
-      this.$store.commit('changeSortType', this.sortType.priceDESC)
+      this.$store.commit('mainPageSearch/changeSortType', this.sortType.priceDESC)
       this.sortType.defaultType = 'rprice'
       this.applyNewFetchData()
     },
     changeToPriceASC() {
-      this.$store.commit('changeSortType', this.sortType.priceASC)
+      this.$store.commit('mainPageSearch/changeSortType', this.sortType.priceASC)
       this.sortType.defaultType = 'price'
       this.applyNewFetchData()
     },
     changeToCountDESC() {
-      this.$store.commit('changeSortType', this.sortType.bidCountDESC)
+      this.$store.commit('mainPageSearch/changeSortType', this.sortType.bidCountDESC)
       this.sortType.defaultType = 'rcount'
       this.applyNewFetchData()
     },
     changeToCountASC() {
-      this.$store.commit('changeSortType', this.sortType.bidCountASC)
+      this.$store.commit('mainPageSearch/changeSortType', this.sortType.bidCountASC)
       this.sortType.defaultType = 'count'
       this.applyNewFetchData()
     },
     changeToLikeDESC() {
-      this.$store.commit('changeSortType', this.sortType.likeDESC)
+      this.$store.commit('mainPageSearch/changeSortType', this.sortType.likeDESC)
       this.sortType.defaultType = 'rlike'
       this.applyNewFetchData()
     },
     changeToLikeASC() {
-      this.$store.commit('changeSortType', this.sortType.likeASC)
+      this.$store.commit('mainPageSearch/changeSortType', this.sortType.likeASC)
       this.sortType.defaultType = 'like'
       this.applyNewFetchData()
     },
@@ -167,24 +165,24 @@ export default {
       this.$router.push({
         path: '/',
         query: {
-          sort: this.$store.getters.getMainPagingSort,
-          page: this.$store.getters.getMainPagingPage
+          sort: this.$store.getters['mainPageSearch/getSortInCriteria'],
+          page: this.$store.getters['mainPageSearch/getPageInCriteria']
         }
       })
-      window.scrollTo(0,0)
+      window.scrollTo(0, 0)
     },
     moveToPreviousPage() {
-      this.$store.commit('changePageToPrevious')
+      this.$store.commit('mainPageSearch/changePageToPrevious')
       this.applyPageMove()
     },
     moveToIndexPage(index) {
-      this.$store.commit('changePageToIndex', index)
+      this.$store.commit('mainPageSearch/changePageToIndex', index)
       this.applyPageMove()
     },
     moveToNextPage() {
-      this.$store.commit('changePageToNext')
+      this.$store.commit('mainPageSearch/changePageToNext')
       this.applyPageMove()
-    },
+    }
   }
 }
 </script>

@@ -67,13 +67,7 @@
     </div>
 
     <div class="row" :style="divCss">
-      <div class="col-12">
-        <p :style="textCss">생년월일 | <span :style="infoCss">{{ translateBirth(currentUser.birth) }}</span></p>
-      </div>
-    </div>
-
-    <div class="row" :style="divCss">
-      <p :style="textCss">전체 보유 포인트 | <span :style="infoCss">{{ currentUser.totalPoint }}포인트</span></p>
+      <p :style="textCss">총 보유 포인트 | <span :style="infoCss">{{ currentUser.totalPoint }}포인트</span></p>
       <p :style="textCss">사용 가능 포인트 | <span :style="infoCss">{{ currentUser.availablePoint }}포인트</span></p>
     </div>
 
@@ -84,9 +78,6 @@
 </template>
 
 <script>
-import axios from 'axios'
-import dayjs from 'dayjs'
-
 export default {
   name: 'UserInformationComponent',
   components: {},
@@ -101,7 +92,6 @@ export default {
         school: '',
         phoneNumber: '',
         address: '',
-        birth: '',
         availablePoint: '',
         totalPoint: ''
       },
@@ -109,7 +99,7 @@ export default {
         fontSize: '15px'
       },
       infoCss: {
-        fontSize: '20px',
+        fontSize: '20px'
       },
       divCss: {
         borderBottom: '1px solid #C6C6C6',
@@ -122,41 +112,31 @@ export default {
       changeNickname: ''
     }
   },
-  setup() {
-  },
   created() {
     this.fetchData()
-  },
-  mounted() {
-  },
-  unmounted() {
   },
   methods: {
     async fetchData() {
       try {
-        const response = await axios.get('/api/user/info')
+        const response = await this.axiosWithAccessToken.get('/api/member/info')
         this.currentUser = response.data
       } catch (err) {
         alert(err.response.data.message)
       }
     },
-    translateBirth(birth) {
-      return dayjs(birth).format('YYYY년 MM월 DD일')
-    },
     async changeNicknameProcess() {
       try {
-        let formData = new FormData()
-        formData.append('changeNickname', this.changeNickname)
+        const changeNickname = {
+          'changeNickname': this.changeNickname
+        }
 
-        await axios.patch('/api/user/nickname', formData, {
-          headers: { 'Content-Type': 'x-www-form-urlencoded' }
-        })
+        await this.axiosWithAccessToken.patch('/api/member/nickname', changeNickname)
         alert('닉네임 변경이 완료되었습니다')
         this.$router.go()
       } catch (err) {
         alert(err.response.data.message)
       }
-    },
+    }
   }
 }
 </script>

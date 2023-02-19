@@ -15,21 +15,7 @@ export default {
   components: {
     Header,
     Footer
-  },
-  data() {
-    return {
-      sampleData: ''
-    }
-  },
-  setup() {
-  },
-  created() {
-  },
-  mounted() {
-  },
-  unmounted() {
-  },
-  methods: {}
+  }
 }
 </script>
 
