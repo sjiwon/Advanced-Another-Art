@@ -50,7 +50,7 @@ public class MemberDealEventListener {
         pointDetailRepository.save(PointDetail.insertPointDetail(buyer, PointType.PURCHASE, dealAmount));
     }
 
-    private static void eventLogging(boolean isAuctionDeal, Member owner, Member buyer, int dealAmount) {
+    private void eventLogging(boolean isAuctionDeal, Member owner, Member buyer, int dealAmount) {
         log.info(
                 "{} -> 판매자 [id={}, name={}] / 구매자 [id={}, name={}] / 가격 [{}포인트]",
                 (isAuctionDeal) ? "경매 작품" : "일반 작품",
