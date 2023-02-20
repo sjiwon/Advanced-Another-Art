@@ -4,7 +4,9 @@ import com.sjiwon.anotherart.global.annotation.ExtractPayloadId;
 import com.sjiwon.anotherart.global.dto.SimpleWrapper;
 import com.sjiwon.anotherart.member.infra.query.dto.response.UserPointHistory;
 import com.sjiwon.anotherart.member.service.MemberProfileService;
+import com.sjiwon.anotherart.member.service.MemberProfileWithArtService;
 import com.sjiwon.anotherart.member.service.dto.response.UserProfile;
+import com.sjiwon.anotherart.member.service.dto.response.UserWinningAuction;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -20,6 +22,7 @@ import java.util.List;
 @RequestMapping("/api/members/{memberId}")
 public class MemberProfileApiController {
     private final MemberProfileService memberProfileService;
+    private final MemberProfileWithArtService memberProfileWithArtService;
 
     @PreAuthorize("hasRole('USER') AND @memberDoubleChecker.isTrustworthyMember(#memberId, #payloadId)")
     @GetMapping
@@ -31,5 +34,11 @@ public class MemberProfileApiController {
     @GetMapping("/points")
     public ResponseEntity<SimpleWrapper<List<UserPointHistory>>> getUserPointHistory(@PathVariable Long memberId, @ExtractPayloadId Long payloadId) {
         return ResponseEntity.ok(new SimpleWrapper<>(memberProfileService.getUserPointHistory(memberId)));
+    }
+
+    @PreAuthorize("hasRole('USER') AND @memberDoubleChecker.isTrustworthyMember(#memberId, #payloadId)")
+    @GetMapping("/winning-auctions")
+    public ResponseEntity<SimpleWrapper<List<UserWinningAuction>>> getWinningAuction(@PathVariable Long memberId, @ExtractPayloadId Long payloadId) {
+        return ResponseEntity.ok(new SimpleWrapper<>(memberProfileWithArtService.getWinningAuction(memberId)));
     }
 }

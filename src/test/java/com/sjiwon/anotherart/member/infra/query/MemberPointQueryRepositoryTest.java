@@ -14,7 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-@DisplayName("Point [Repository Layer] -> MemberPointQueryRepository 테스트")
+@DisplayName("Member [Repository Layer] -> MemberPointQueryRepository 테스트")
 class MemberPointQueryRepositoryTest extends RepositoryTest {
     @Autowired
     private MemberRepository memberRepository;
