@@ -4,6 +4,8 @@ import com.sjiwon.anotherart.common.ControllerTest;
 import com.sjiwon.anotherart.fixture.MemberFixture;
 import com.sjiwon.anotherart.global.security.exception.AuthErrorCode;
 import com.sjiwon.anotherart.member.domain.Member;
+import com.sjiwon.anotherart.member.domain.point.PointType;
+import com.sjiwon.anotherart.member.infra.query.dto.response.UserPointHistory;
 import com.sjiwon.anotherart.member.service.dto.response.UserProfile;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -11,6 +13,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
+
+import java.time.LocalDateTime;
+import java.util.List;
 
 import static com.sjiwon.anotherart.common.utils.MemberUtils.ROLE_USER;
 import static org.mockito.BDDMockito.given;
@@ -81,7 +86,6 @@ class MemberProfileApiControllerTest extends ControllerTest {
             // given
             Long memberId = 1L;
             Long payloadId = 2L;
-
             final String accessToken = jwtTokenProvider.createAccessToken(payloadId, ROLE_USER);
 
             // when
@@ -120,11 +124,12 @@ class MemberProfileApiControllerTest extends ControllerTest {
         }
 
         @Test
-        @DisplayName("x")
+        @DisplayName("사용자의 프로필 정보 조회에 성공한다")
         void test3() throws Exception {
             // given
             Long memberId = 1L;
             Long payloadId = 1L;
+            final String accessToken = jwtTokenProvider.createAccessToken(memberId, ROLE_USER);
 
             setMemberId();
             UserProfile response = UserProfile.builder()
@@ -132,8 +137,6 @@ class MemberProfileApiControllerTest extends ControllerTest {
                     .totalPoint(DEFAULT_TOTAL_POINT)
                     .build();
             given(memberProfileService.getUserProfile(memberId)).willReturn(response);
-
-            final String accessToken = jwtTokenProvider.createAccessToken(memberId, ROLE_USER);
 
             // when
             MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
@@ -177,6 +180,150 @@ class MemberProfileApiControllerTest extends ControllerTest {
                                             fieldWithPath("address.detailAddress").description("상세 주소"),
                                             fieldWithPath("availablePoint").description("사용 가능한 포인트"),
                                             fieldWithPath("totalPoint").description("전체 보유 포인트")
+                                    )
+                            )
+                    );
+        }
+    }
+
+    @Nested
+    @DisplayName("사용자 포인트 내역 조회 테스트 [GET /api/members/{memberId}/points]")
+    class userPointHistory {
+        private static final String BASE_URL = "/api/members/{memberId}/points";
+
+        @Test
+        @DisplayName("Authorization 헤더에 Access Token이 없음에 따라 예외가 발생한다")
+        void test1() throws Exception {
+            // given
+            Long memberId = 1L;
+            Long payloadId = 1L;
+
+            // when
+            MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
+                    .get(BASE_URL, memberId);
+
+            // then
+            final AuthErrorCode expectedError = AuthErrorCode.INVALID_TOKEN;
+            mockMvc.perform(requestBuilder)
+                    .andExpect(status().isForbidden())
+                    .andExpect(jsonPath("$.statusCode").exists())
+                    .andExpect(jsonPath("$.statusCode").value(expectedError.getStatus().value()))
+                    .andExpect(jsonPath("$.errorCode").exists())
+                    .andExpect(jsonPath("$.errorCode").value(expectedError.getErrorCode()))
+                    .andExpect(jsonPath("$.message").exists())
+                    .andExpect(jsonPath("$.message").value(expectedError.getMessage()))
+                    .andDo(
+                            document(
+                                    "MemberProfileApi/UserPointHistory/Failure/Case1",
+                                    preprocessRequest(prettyPrint()),
+                                    preprocessResponse(prettyPrint()),
+                                    pathParameters(
+                                            parameterWithName("memberId").description("사용자 ID(PK)")
+                                    ),
+                                    responseFields(
+                                            fieldWithPath("statusCode").description("HTTP 상태 코드"),
+                                            fieldWithPath("errorCode").description("커스텀 예외 코드"),
+                                            fieldWithPath("message").description("예외 메시지")
+                                    )
+                            )
+                    );
+        }
+
+        @Test
+        @DisplayName("Access Token Payload의 memberId와 PathVariable의 memberId가 일치하지 않음에 따라 예외가 발생한다")
+        void test2() throws Exception {
+            // given
+            Long memberId = 1L;
+            Long payloadId = 2L;
+            final String accessToken = jwtTokenProvider.createAccessToken(payloadId, ROLE_USER);
+
+            // when
+            MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
+                    .get(BASE_URL, memberId)
+                    .header(AUTHORIZATION, BEARER + accessToken);
+
+            // then
+            final AuthErrorCode expectedError = AuthErrorCode.INVALID_TOKEN;
+            mockMvc.perform(requestBuilder)
+                    .andExpect(status().isForbidden())
+                    .andExpect(jsonPath("$.statusCode").exists())
+                    .andExpect(jsonPath("$.statusCode").value(expectedError.getStatus().value()))
+                    .andExpect(jsonPath("$.errorCode").exists())
+                    .andExpect(jsonPath("$.errorCode").value(expectedError.getErrorCode()))
+                    .andExpect(jsonPath("$.message").exists())
+                    .andExpect(jsonPath("$.message").value(expectedError.getMessage()))
+                    .andDo(
+                            document(
+                                    "MemberProfileApi/UserPointHistory/Failure/Case2",
+                                    preprocessRequest(prettyPrint()),
+                                    preprocessResponse(prettyPrint()),
+                                    requestHeaders(
+                                            headerWithName(AUTHORIZATION).description("Access Token")
+                                    ),
+                                    pathParameters(
+                                            parameterWithName("memberId").description("사용자 ID(PK)")
+                                    ),
+                                    responseFields(
+                                            fieldWithPath("statusCode").description("HTTP 상태 코드"),
+                                            fieldWithPath("errorCode").description("커스텀 예외 코드"),
+                                            fieldWithPath("message").description("예외 메시지")
+                                    )
+                            )
+                    );
+        }
+
+        @Test
+        @DisplayName("사용자의 포인트 내역 조회에 성공한다")
+        void test3() throws Exception {
+            // given
+            Long memberId = 1L;
+            Long payloadId = 1L;
+            final String accessToken = jwtTokenProvider.createAccessToken(payloadId, ROLE_USER);
+
+            List<UserPointHistory> response = List.of(
+                    UserPointHistory.builder()
+                            .pointType(PointType.CHARGE)
+                            .dealAmount(100_000_000)
+                            .recordDate(LocalDateTime.now().minusDays(5))
+                            .build(),
+                    UserPointHistory.builder()
+                            .pointType(PointType.REFUND)
+                            .dealAmount(100_000_000)
+                            .recordDate(LocalDateTime.now().minusDays(3))
+                            .build(),
+                    UserPointHistory.builder()
+                            .pointType(PointType.CHARGE)
+                            .dealAmount(100_000_000)
+                            .recordDate(LocalDateTime.now().minusDays(1))
+                            .build()
+            );
+            given(memberProfileService.getUserPointHistory(memberId)).willReturn(response);
+
+            // when
+            MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
+                    .get(BASE_URL, memberId)
+                    .header(AUTHORIZATION, BEARER + accessToken);
+
+            // then
+            mockMvc.perform(requestBuilder)
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.result").exists())
+                    .andExpect(jsonPath("$.result.size()").value(response.size()))
+                    .andDo(
+                            document(
+                                    "MemberProfileApi/UserPointHistory/Success",
+                                    preprocessRequest(prettyPrint()),
+                                    preprocessResponse(prettyPrint()),
+                                    requestHeaders(
+                                            headerWithName(AUTHORIZATION).description("Access Token")
+                                    ),
+                                    pathParameters(
+                                            parameterWithName("memberId").description("사용자 ID(PK)")
+                                    ),
+                                    responseFields(
+                                            fieldWithPath("result[].pointType").description("포인트 거래 유형 [충전/환불/작품 구매/작품 판매]"),
+                                            fieldWithPath("result[].dealAmount").description("포인트 거래량"),
+                                            fieldWithPath("result[].recordDate").description("포인트 거래 날짜")
                                     )
                             )
                     );
