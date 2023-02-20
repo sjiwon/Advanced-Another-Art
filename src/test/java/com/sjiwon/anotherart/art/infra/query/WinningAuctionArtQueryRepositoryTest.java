@@ -88,7 +88,7 @@ class WinningAuctionArtQueryRepositoryTest extends RepositoryTest {
                 () -> assertThat(winningAuctionArtList2.get(0).getHighestBidderNickname()).isEqualTo(bidder.getNickname()),
                 () -> assertThat(winningAuctionArtList2.get(0).getOwnerId()).isEqualTo(owner.getId()),
                 () -> assertThat(winningAuctionArtList2.get(0).getOwnerNickname()).isEqualTo(owner.getNickname()),
-                () -> assertThat(winningAuctionArtList2.get(1).getArtId()).isEqualTo(auctionC.getId()),
+                () -> assertThat(winningAuctionArtList2.get(1).getArtId()).isEqualTo(auctionArtC.getId()),
                 () -> assertThat(winningAuctionArtList2.get(1).getHighestBidPrice()).isEqualTo(auctionC.getBidAmount()),
                 () -> assertThat(winningAuctionArtList2.get(1).getHighestBidderId()).isEqualTo(bidder.getId()),
                 () -> assertThat(winningAuctionArtList2.get(1).getHighestBidderNickname()).isEqualTo(bidder.getNickname()),

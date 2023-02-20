@@ -60,3 +60,31 @@ include::{snippets}/MemberProfileApi/UserPointHistory/Success/path-parameters.ad
 HTTP Response
 include::{snippets}/MemberProfileApi/UserPointHistory/Success/response-body.adoc[]
 include::{snippets}/MemberProfileApi/UserPointHistory/Success/response-fields.adoc[]
+
+== 낙찰된 경매 작품 조회
+=== 1. Authorization 헤더에 Access Token이 없음에 따라 예외가 발생한다
+HTTP Request
+include::{snippets}/MemberProfileApi/UserWinningAuction/Failure/Case1/http-request.adoc[]
+include::{snippets}/MemberProfileApi/UserWinningAuction/Failure/Case1/path-parameters.adoc[]
+
+HTTP Response
+include::{snippets}/MemberProfileApi/UserWinningAuction/Failure/Case1/response-body.adoc[]
+
+=== 2. Access Token Payload의 memberId와 PathVariable의 memberId가 일치하지 않음에 따라 예외가 발생한다
+HTTP Request
+include::{snippets}/MemberProfileApi/UserWinningAuction/Failure/Case2/http-request.adoc[]
+include::{snippets}/MemberProfileApi/UserWinningAuction/Failure/Case2/request-headers.adoc[]
+include::{snippets}/MemberProfileApi/UserWinningAuction/Failure/Case2/path-parameters.adoc[]
+
+HTTP Response
+include::{snippets}/MemberProfileApi/UserWinningAuction/Failure/Case2/response-body.adoc[]
+
+=== 3. 사용자의 낙찰된 경매 작품 조회에 성공한다
+HTTP Request
+include::{snippets}/MemberProfileApi/UserWinningAuction/Success/http-request.adoc[]
+include::{snippets}/MemberProfileApi/UserWinningAuction/Success/request-headers.adoc[]
+include::{snippets}/MemberProfileApi/UserWinningAuction/Success/path-parameters.adoc[]
+
+HTTP Response
+include::{snippets}/MemberProfileApi/UserWinningAuction/Success/response-body.adoc[]
+include::{snippets}/MemberProfileApi/UserWinningAuction/Success/response-fields.adoc[]

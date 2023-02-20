@@ -104,6 +104,9 @@ public abstract class ControllerTest {
     protected MemberProfileService memberProfileService;
 
     @MockBean
+    protected MemberProfileWithArtService memberProfileWithArtService;
+
+    @MockBean
     protected MemberValidator memberValidator;
 
     @Autowired

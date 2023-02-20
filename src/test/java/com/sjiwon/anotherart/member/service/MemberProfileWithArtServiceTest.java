@@ -73,7 +73,7 @@ class MemberProfileWithArtServiceTest extends ServiceIntegrateTest {
                 () -> assertThat(userWinningAuctionList2.get(0).getArt().getOwnerId()).isEqualTo(owner.getId()),
                 () -> assertThat(userWinningAuctionList2.get(0).getArt().getOwnerNickname()).isEqualTo(owner.getNickname()),
                 () -> assertThat(userWinningAuctionList2.get(0).getHashtags()).containsAll(HASHTAGS),
-                () -> assertThat(userWinningAuctionList2.get(1).getArt().getArtId()).isEqualTo(auctionC.getId()),
+                () -> assertThat(userWinningAuctionList2.get(1).getArt().getArtId()).isEqualTo(auctionArtC.getId()),
                 () -> assertThat(userWinningAuctionList2.get(1).getArt().getHighestBidPrice()).isEqualTo(auctionC.getBidAmount()),
                 () -> assertThat(userWinningAuctionList2.get(1).getArt().getHighestBidderId()).isEqualTo(bidder.getId()),
                 () -> assertThat(userWinningAuctionList2.get(1).getArt().getHighestBidderNickname()).isEqualTo(bidder.getNickname()),
