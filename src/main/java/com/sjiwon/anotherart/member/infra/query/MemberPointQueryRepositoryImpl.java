@@ -16,7 +16,7 @@ public class MemberPointQueryRepositoryImpl implements MemberPointQueryRepositor
     private final JPAQueryFactory query;
 
     @Override
-    public Integer getTotalPointsByMemberId(Long memberId) {
+    public Integer getTotalPointByMemberId(Long memberId) {
         List<PointDetail> details = query
                 .select(pointDetail)
                 .from(pointDetail)

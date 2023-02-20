@@ -62,7 +62,7 @@ class AuctionRecordQueryRepositoryTest extends RepositoryTest {
         assertAll(
                 () -> assertThat(actual2).isTrue(),
                 () -> assertThat(bidder.getAvailablePoint()).isEqualTo(INIT_AVAILABLE_POINT - BID_AMOUNT),
-                () -> assertThat(memberRepository.getTotalPointsByMemberId(bidder.getId())).isEqualTo(INIT_AVAILABLE_POINT)
+                () -> assertThat(memberRepository.getTotalPointByMemberId(bidder.getId())).isEqualTo(INIT_AVAILABLE_POINT)
         );
     }
 

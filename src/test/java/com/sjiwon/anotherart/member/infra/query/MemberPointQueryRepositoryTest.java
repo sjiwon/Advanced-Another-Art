@@ -29,7 +29,7 @@ class MemberPointQueryRepositoryTest extends RepositoryTest {
         Member member = createMember();
         assertAll(
                 () -> assertThat(member.getAvailablePoint()).isEqualTo(0),
-                () -> assertThat(memberRepository.getTotalPointsByMemberId(member.getId())).isEqualTo(0)
+                () -> assertThat(memberRepository.getTotalPointByMemberId(member.getId())).isEqualTo(0)
         );
 
         // 2. 포인트 충전 1회
@@ -37,7 +37,7 @@ class MemberPointQueryRepositoryTest extends RepositoryTest {
         doCharge(member, chargeAmount1);
         assertAll(
                 () -> assertThat(member.getAvailablePoint()).isEqualTo(chargeAmount1),
-                () -> assertThat(memberRepository.getTotalPointsByMemberId(member.getId())).isEqualTo(chargeAmount1)
+                () -> assertThat(memberRepository.getTotalPointByMemberId(member.getId())).isEqualTo(chargeAmount1)
         );
 
         // 3. 포인트 충전 2회
@@ -45,7 +45,7 @@ class MemberPointQueryRepositoryTest extends RepositoryTest {
         doCharge(member, chargeAmount2);
         assertAll(
                 () -> assertThat(member.getAvailablePoint()).isEqualTo(chargeAmount1 + chargeAmount2),
-                () -> assertThat(memberRepository.getTotalPointsByMemberId(member.getId())).isEqualTo(chargeAmount1 + chargeAmount2)
+                () -> assertThat(memberRepository.getTotalPointByMemberId(member.getId())).isEqualTo(chargeAmount1 + chargeAmount2)
         );
 
         // 4. 포인트 환불 1회
@@ -53,7 +53,7 @@ class MemberPointQueryRepositoryTest extends RepositoryTest {
         doRefund(member, refundAmount1);
         assertAll(
                 () -> assertThat(member.getAvailablePoint()).isEqualTo(chargeAmount1 + chargeAmount2 - refundAmount1),
-                () -> assertThat(memberRepository.getTotalPointsByMemberId(member.getId())).isEqualTo(chargeAmount1 + chargeAmount2 - refundAmount1)
+                () -> assertThat(memberRepository.getTotalPointByMemberId(member.getId())).isEqualTo(chargeAmount1 + chargeAmount2 - refundAmount1)
         );
 
         // 5. 포인트 환불 2회
@@ -61,7 +61,7 @@ class MemberPointQueryRepositoryTest extends RepositoryTest {
         doRefund(member, refundAmount2);
         assertAll(
                 () -> assertThat(member.getAvailablePoint()).isEqualTo(chargeAmount1 + chargeAmount2 - refundAmount1 - refundAmount2),
-                () -> assertThat(memberRepository.getTotalPointsByMemberId(member.getId())).isEqualTo(chargeAmount1 + chargeAmount2 - refundAmount1 - refundAmount2)
+                () -> assertThat(memberRepository.getTotalPointByMemberId(member.getId())).isEqualTo(chargeAmount1 + chargeAmount2 - refundAmount1 - refundAmount2)
         );
     }
 

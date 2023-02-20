@@ -116,7 +116,7 @@ class PurchaseServiceTest extends ServiceIntegrateTest {
                     () -> assertThat(ownerPointDetails.get(1).getAmount()).isEqualTo(generalArt.getPrice()),
                     // 판매자 포인트
                     () -> assertThat(owner.getAvailablePoint()).isEqualTo(ENOUGH_POINT + generalArt.getPrice()),
-                    () -> assertThat(memberRepository.getTotalPointsByMemberId(owner.getId())).isEqualTo(ENOUGH_POINT + generalArt.getPrice())
+                    () -> assertThat(memberRepository.getTotalPointByMemberId(owner.getId())).isEqualTo(ENOUGH_POINT + generalArt.getPrice())
             );
 
             List<PointDetail> buyerPointDetails = pointDetailRepository.findByMemberId(buyer.getId());
@@ -130,7 +130,7 @@ class PurchaseServiceTest extends ServiceIntegrateTest {
                     () -> assertThat(buyerPointDetails.get(1).getAmount()).isEqualTo(generalArt.getPrice()),
                     // 구매자 포인트
                     () -> assertThat(buyer.getAvailablePoint()).isEqualTo(ENOUGH_POINT - generalArt.getPrice()),
-                    () -> assertThat(memberRepository.getTotalPointsByMemberId(buyer.getId())).isEqualTo(ENOUGH_POINT - generalArt.getPrice())
+                    () -> assertThat(memberRepository.getTotalPointByMemberId(buyer.getId())).isEqualTo(ENOUGH_POINT - generalArt.getPrice())
             );
         }
     }
@@ -268,7 +268,7 @@ class PurchaseServiceTest extends ServiceIntegrateTest {
                     () -> assertThat(ownerPointDetails.get(1).getAmount()).isEqualTo(auction.getBidAmount()),
                     // 판매자 포인트
                     () -> assertThat(owner.getAvailablePoint()).isEqualTo(ENOUGH_POINT + auction.getBidAmount()),
-                    () -> assertThat(memberRepository.getTotalPointsByMemberId(owner.getId())).isEqualTo(ENOUGH_POINT + auction.getBidAmount())
+                    () -> assertThat(memberRepository.getTotalPointByMemberId(owner.getId())).isEqualTo(ENOUGH_POINT + auction.getBidAmount())
             );
 
             List<PointDetail> buyerPointDetails = pointDetailRepository.findByMemberId(bidder.getId());
@@ -282,7 +282,7 @@ class PurchaseServiceTest extends ServiceIntegrateTest {
                     () -> assertThat(buyerPointDetails.get(1).getAmount()).isEqualTo(auction.getBidAmount()),
                     // 구매자 포인트
                     () -> assertThat(bidder.getAvailablePoint()).isEqualTo(ENOUGH_POINT - auction.getBidAmount()),
-                    () -> assertThat(memberRepository.getTotalPointsByMemberId(bidder.getId())).isEqualTo(ENOUGH_POINT - auction.getBidAmount())
+                    () -> assertThat(memberRepository.getTotalPointByMemberId(bidder.getId())).isEqualTo(ENOUGH_POINT - auction.getBidAmount())
             );
         }
     }

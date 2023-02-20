@@ -45,7 +45,7 @@ class MemberPointServiceTest extends ServiceIntegrateTest {
                 () -> assertThat(pointDetails.get(0).getMember().getId()).isEqualTo(member.getId()),
                 // 최종 사용자 포인트 현황
                 () -> assertThat(member.getAvailablePoint()).isEqualTo(initAmount + chargeAmount),
-                () -> assertThat(memberRepository.getTotalPointsByMemberId(member.getId())).isEqualTo(initAmount + chargeAmount)
+                () -> assertThat(memberRepository.getTotalPointByMemberId(member.getId())).isEqualTo(initAmount + chargeAmount)
         );
     }
 
@@ -91,7 +91,7 @@ class MemberPointServiceTest extends ServiceIntegrateTest {
                     () -> assertThat(pointDetails.get(1).getMember().getId()).isEqualTo(member.getId()),
                     // 최종 사용자 포인트 현황
                     () -> assertThat(member.getAvailablePoint()).isEqualTo(INIT_AVAILABLE_POINT - refundAmount),
-                    () -> assertThat(memberRepository.getTotalPointsByMemberId(member.getId())).isEqualTo(INIT_AVAILABLE_POINT - refundAmount)
+                    () -> assertThat(memberRepository.getTotalPointByMemberId(member.getId())).isEqualTo(INIT_AVAILABLE_POINT - refundAmount)
             );
         }
     }

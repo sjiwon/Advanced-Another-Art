@@ -43,7 +43,7 @@ class PointDetailRepositoryTest extends RepositoryTest {
                 () -> assertThat(pointDetails1.size()).isEqualTo(0),
                 // 최종 사용자 포인트 현황
                 () -> assertThat(member.getAvailablePoint()).isEqualTo(0),
-                () -> assertThat(memberRepository.getTotalPointsByMemberId(member.getId())).isEqualTo(0)
+                () -> assertThat(memberRepository.getTotalPointByMemberId(member.getId())).isEqualTo(0)
         );
 
         // 2. 포인트 충전
@@ -58,7 +58,7 @@ class PointDetailRepositoryTest extends RepositoryTest {
                 () -> assertThat(pointDetails2.get(0).getMember().getId()).isEqualTo(member.getId()),
                 // 최종 사용자 포인트 현황
                 () -> assertThat(member.getAvailablePoint()).isEqualTo(CHARGE_AMOUNT),
-                () -> assertThat(memberRepository.getTotalPointsByMemberId(member.getId())).isEqualTo(CHARGE_AMOUNT)
+                () -> assertThat(memberRepository.getTotalPointByMemberId(member.getId())).isEqualTo(CHARGE_AMOUNT)
         );
 
         // 3. 작품 구매
@@ -76,7 +76,7 @@ class PointDetailRepositoryTest extends RepositoryTest {
                 () -> assertThat(pointDetails3.get(0).getMember().getId()).isEqualTo(owner.getId()),
                 // 최종 사용자 포인트 현황
                 () -> assertThat(owner.getAvailablePoint()).isEqualTo(art.getPrice()),
-                () -> assertThat(memberRepository.getTotalPointsByMemberId(owner.getId())).isEqualTo(art.getPrice())
+                () -> assertThat(memberRepository.getTotalPointByMemberId(owner.getId())).isEqualTo(art.getPrice())
         );
 
         // 구매자 포인트 내역
@@ -93,7 +93,7 @@ class PointDetailRepositoryTest extends RepositoryTest {
                 () -> assertThat(pointDetails4.get(1).getMember().getId()).isEqualTo(member.getId()),
                 // 최종 사용자 포인트 현황
                 () -> assertThat(member.getAvailablePoint()).isEqualTo(CHARGE_AMOUNT - art.getPrice()),
-                () -> assertThat(memberRepository.getTotalPointsByMemberId(member.getId())).isEqualTo(CHARGE_AMOUNT - art.getPrice())
+                () -> assertThat(memberRepository.getTotalPointByMemberId(member.getId())).isEqualTo(CHARGE_AMOUNT - art.getPrice())
         );
 
         // 4. 포인트 환불
@@ -116,7 +116,7 @@ class PointDetailRepositoryTest extends RepositoryTest {
                 () -> assertThat(pointDetails5.get(2).getMember().getId()).isEqualTo(member.getId()),
                 // 최종 사용자 포인트 현황
                 () -> assertThat(member.getAvailablePoint()).isEqualTo(CHARGE_AMOUNT - art.getPrice() - REFUND_AMOUNT),
-                () -> assertThat(memberRepository.getTotalPointsByMemberId(member.getId())).isEqualTo(CHARGE_AMOUNT - art.getPrice() - REFUND_AMOUNT)
+                () -> assertThat(memberRepository.getTotalPointByMemberId(member.getId())).isEqualTo(CHARGE_AMOUNT - art.getPrice() - REFUND_AMOUNT)
         );
     }
 
