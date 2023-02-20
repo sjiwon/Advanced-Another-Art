@@ -9,6 +9,7 @@ import com.sjiwon.anotherart.art.service.*;
 import com.sjiwon.anotherart.auction.controller.BidApiController;
 import com.sjiwon.anotherart.auction.service.AuctionFindService;
 import com.sjiwon.anotherart.auction.service.BidService;
+import com.sjiwon.anotherart.common.config.ExternalTestConfiguration;
 import com.sjiwon.anotherart.common.config.JwtTestConfiguration;
 import com.sjiwon.anotherart.favorite.controller.FavoriteApiController;
 import com.sjiwon.anotherart.favorite.service.FavoriteService;
@@ -17,12 +18,11 @@ import com.sjiwon.anotherart.global.security.SecurityConfiguration;
 import com.sjiwon.anotherart.member.controller.MemberApiController;
 import com.sjiwon.anotherart.member.controller.MemberDetailApiController;
 import com.sjiwon.anotherart.member.controller.MemberPointApiController;
+import com.sjiwon.anotherart.member.controller.MemberProfileApiController;
 import com.sjiwon.anotherart.member.domain.Member;
 import com.sjiwon.anotherart.member.domain.MemberRepository;
-import com.sjiwon.anotherart.member.service.MemberFindService;
-import com.sjiwon.anotherart.member.service.MemberPointService;
-import com.sjiwon.anotherart.member.service.MemberService;
-import com.sjiwon.anotherart.member.service.MemberValidator;
+import com.sjiwon.anotherart.member.service.*;
+import com.sjiwon.anotherart.member.utils.MemberDoubleChecker;
 import com.sjiwon.anotherart.purchase.controller.PurchaseApiController;
 import com.sjiwon.anotherart.purchase.service.PurchaseService;
 import com.sjiwon.anotherart.token.controller.TokenReissueApiController;
@@ -51,10 +51,11 @@ import static org.mockito.BDDMockito.given;
         MemberApiController.class,
         MemberDetailApiController.class,
         MemberPointApiController.class,
+        MemberProfileApiController.class,
         PurchaseApiController.class,
         TokenReissueApiController.class
 })
-@Import({JwtTestConfiguration.class, SecurityConfiguration.class})
+@Import({JwtTestConfiguration.class, SecurityConfiguration.class, ExternalTestConfiguration.class})
 @AutoConfigureRestDocs
 public abstract class ControllerTest {
     @Autowired
@@ -100,7 +101,13 @@ public abstract class ControllerTest {
     protected MemberPointService memberPointService;
 
     @MockBean
+    protected MemberProfileService memberProfileService;
+
+    @MockBean
     protected MemberValidator memberValidator;
+
+    @Autowired
+    protected MemberDoubleChecker memberDoubleChecker;
 
     @MockBean
     protected PurchaseService purchaseService;
@@ -123,8 +130,8 @@ public abstract class ControllerTest {
         Member memberB = MemberFixture.B.toMember();
         Member memberC = MemberFixture.C.toMember();
         setIdByReflection(memberA, 1L);
-        setIdByReflection(memberA, 2L);
-        setIdByReflection(memberA, 3L);
+        setIdByReflection(memberB, 2L);
+        setIdByReflection(memberC, 3L);
 
         given(memberRepository.findById(1L)).willReturn(Optional.ofNullable(memberA));
         given(memberRepository.findById(2L)).willReturn(Optional.ofNullable(memberB));
