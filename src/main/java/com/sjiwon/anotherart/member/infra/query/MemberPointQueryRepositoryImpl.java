@@ -3,6 +3,8 @@ package com.sjiwon.anotherart.member.infra.query;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.sjiwon.anotherart.member.domain.point.PointDetail;
+import com.sjiwon.anotherart.member.infra.query.dto.response.QUserPointHistory;
+import com.sjiwon.anotherart.member.infra.query.dto.response.UserPointHistory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,6 +34,15 @@ public class MemberPointQueryRepositoryImpl implements MemberPointQueryRepositor
             }
         }
         return totalPoints;
+    }
+
+    @Override
+    public List<UserPointHistory> findUserPointHistoryByMemberId(Long memberId) {
+        return query
+                .select(new QUserPointHistory(pointDetail.pointType, pointDetail.amount, pointDetail.recordDate))
+                .from(pointDetail)
+                .where(memberIdEq(memberId))
+                .fetch();
     }
 
     private BooleanExpression memberIdEq(Long memberId) {

@@ -2,10 +2,13 @@ package com.sjiwon.anotherart.member.service;
 
 import com.sjiwon.anotherart.member.domain.Member;
 import com.sjiwon.anotherart.member.domain.MemberRepository;
+import com.sjiwon.anotherart.member.infra.query.dto.response.UserPointHistory;
 import com.sjiwon.anotherart.member.service.dto.response.UserProfile;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @Transactional(readOnly = true)
@@ -22,5 +25,9 @@ public class MemberProfileService {
                 .member(member)
                 .totalPoint(totalPoint)
                 .build();
+    }
+
+    public List<UserPointHistory> getUserPointHistory(Long memberId) {
+        return memberRepository.findUserPointHistoryByMemberId(memberId);
     }
 }
