@@ -155,6 +155,47 @@ class MemberProfileWithArtServiceTest extends ServiceIntegrateTest {
         );
     }
 
+    @Test
+    @DisplayName("사용자가 구매한 경매 작품들을 조회한다")
+    void test4() {
+        // given
+        Member owner = createMemberA();
+        Member buyerB = createMemberB();
+        Member buyerC = createMemberC();
+
+        Art auctionArtA = createAuctionArtA(owner);
+        Auction auctionA = initAuction(auctionArtA);
+        processBid(auctionA, buyerB, auctionA.getBidAmount());
+        terminateAuction(auctionA);
+        processPurchase(buyerB, auctionArtA, auctionA.getBidAmount());
+
+        Art auctionArtC = createAuctionArtC(owner);
+        Auction auctionC = initAuction(auctionArtC);
+        processBid(auctionC, buyerC, auctionC.getBidAmount());
+        terminateAuction(auctionC);
+        processPurchase(buyerC, auctionArtC, auctionC.getBidAmount());
+
+        Art generalArt = createGeneralArt(owner);
+        processPurchase(buyerB, generalArt, generalArt.getPrice());
+
+        // when - then
+        List<UserTradedArt> purchaseAuctionArt1 = memberProfileWithArtService.getPurchaseAuctionArt(buyerB.getId());
+        assertAll(
+                () -> assertThat(purchaseAuctionArt1.size()).isEqualTo(1),
+                () -> assertThat(purchaseAuctionArt1.get(0).getArt().getArtId()).isEqualTo(auctionArtA.getId()),
+                () -> assertThat(purchaseAuctionArt1.get(0).getArt().getBuyerId()).isEqualTo(buyerB.getId()),
+                () -> assertThat(purchaseAuctionArt1.get(0).getArt().getPurchasePrice()).isEqualTo(auctionA.getBidAmount())
+        );
+
+        List<UserTradedArt> purchaseAuctionArt2 = memberProfileWithArtService.getPurchaseAuctionArt(buyerC.getId());
+        assertAll(
+                () -> assertThat(purchaseAuctionArt2.size()).isEqualTo(1),
+                () -> assertThat(purchaseAuctionArt2.get(0).getArt().getArtId()).isEqualTo(auctionArtC.getId()),
+                () -> assertThat(purchaseAuctionArt2.get(0).getArt().getBuyerId()).isEqualTo(buyerC.getId()),
+                () -> assertThat(purchaseAuctionArt2.get(0).getArt().getPurchasePrice()).isEqualTo(auctionC.getBidAmount())
+        );
+    }
+
     private void processBid(Auction auction, Member bidder, int bidAmount) {
         auction.applyNewBid(bidder, bidAmount);
         auctionRecordRepository.save(AuctionRecord.createAuctionRecord(auction, bidder, bidAmount));
@@ -182,6 +223,12 @@ class MemberProfileWithArtServiceTest extends ServiceIntegrateTest {
 
     private Member createMemberB() {
         Member member = memberRepository.save(MemberFixture.B.toMember());
+        pointDetailRepository.save(PointDetail.insertPointDetail(member, PointType.CHARGE, INIT_AVAILABLE_POINT));
+        return member;
+    }
+
+    private Member createMemberC() {
+        Member member = memberRepository.save(MemberFixture.C.toMember());
         pointDetailRepository.save(PointDetail.insertPointDetail(member, PointType.CHARGE, INIT_AVAILABLE_POINT));
         return member;
     }
