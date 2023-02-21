@@ -39,8 +39,8 @@ public class ArtQueryFetchingUtils {
         );
     }
 
-    public static ConstructorExpression<SimpleAuctionArt> assembleSimpleAuctionArtProjections() {
-        return new QSimpleAuctionArt(
+    public static ConstructorExpression<SimpleTradedArt> assembleSimpleTradedArtProjections() {
+        return new QSimpleTradedArt(
                 owner.id, owner.nickname, owner.school,
                 buyer.id, buyer.nickname, buyer.school,
                 art.id, art.name, art.description, purchase.purchasePrice, art.uploadImage.storageName

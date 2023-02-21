@@ -10,7 +10,7 @@ import com.sjiwon.anotherart.fixture.MemberFixture;
 import com.sjiwon.anotherart.member.domain.Member;
 import com.sjiwon.anotherart.member.domain.point.PointDetail;
 import com.sjiwon.anotherart.member.domain.point.PointType;
-import com.sjiwon.anotherart.member.service.dto.response.UserTradedAuctionArt;
+import com.sjiwon.anotherart.member.service.dto.response.UserTradedArt;
 import com.sjiwon.anotherart.member.service.dto.response.UserWinningAuction;
 import com.sjiwon.anotherart.purchase.domain.Purchase;
 import lombok.RequiredArgsConstructor;
@@ -107,7 +107,7 @@ class MemberProfileWithArtServiceTest extends ServiceIntegrateTest {
         processPurchase(buyer, auctionArtC, auctionC.getBidAmount());
 
         // when - then
-        List<UserTradedAuctionArt> soldAuctionArtList = memberProfileWithArtService.getSoldAuctionArt(owner.getId());
+        List<UserTradedArt> soldAuctionArtList = memberProfileWithArtService.getSoldAuctionArt(owner.getId());
         assertAll(
                 () -> assertThat(soldAuctionArtList.size()).isEqualTo(2),
                 () -> assertThat(soldAuctionArtList.get(0).getArt().getArtId()).isEqualTo(auctionArtA.getId()),

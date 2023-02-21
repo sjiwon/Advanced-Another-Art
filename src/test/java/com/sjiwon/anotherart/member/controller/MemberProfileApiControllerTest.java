@@ -11,7 +11,7 @@ import com.sjiwon.anotherart.member.domain.Member;
 import com.sjiwon.anotherart.member.domain.point.PointType;
 import com.sjiwon.anotherart.member.infra.query.dto.response.UserPointHistory;
 import com.sjiwon.anotherart.member.service.dto.response.UserProfile;
-import com.sjiwon.anotherart.member.service.dto.response.UserTradedAuctionArt;
+import com.sjiwon.anotherart.member.service.dto.response.UserTradedArt;
 import com.sjiwon.anotherart.member.service.dto.response.UserWinningAuction;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -581,13 +581,13 @@ class MemberProfileApiControllerTest extends ControllerTest {
             Long payloadId = 1L;
             final String accessToken = jwtTokenProvider.createAccessToken(payloadId, ROLE_USER);
 
-            List<UserTradedAuctionArt> response = List.of(
-                    UserTradedAuctionArt.builder()
-                            .art(SimpleArtBuilder.createSimpleAuctionArt(ArtFixture.A))
+            List<UserTradedArt> response = List.of(
+                    UserTradedArt.builder()
+                            .art(SimpleArtBuilder.createSimpleTradedArt(ArtFixture.A))
                             .hashtags(ArtUtils.HASHTAGS)
                             .build(),
-                    UserTradedAuctionArt.builder()
-                            .art(SimpleArtBuilder.createSimpleAuctionArt(ArtFixture.C))
+                    UserTradedArt.builder()
+                            .art(SimpleArtBuilder.createSimpleTradedArt(ArtFixture.C))
                             .hashtags(ArtUtils.UPDATE_HASHTAGS)
                             .build()
             );

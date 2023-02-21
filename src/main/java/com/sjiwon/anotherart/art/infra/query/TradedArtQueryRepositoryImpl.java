@@ -3,7 +3,7 @@ package com.sjiwon.anotherart.art.infra.query;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.sjiwon.anotherart.art.domain.ArtType;
-import com.sjiwon.anotherart.art.infra.query.dto.SimpleAuctionArt;
+import com.sjiwon.anotherart.art.infra.query.dto.SimpleTradedArt;
 import com.sjiwon.anotherart.member.domain.QMember;
 import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,7 +12,7 @@ import java.util.List;
 
 import static com.sjiwon.anotherart.art.domain.ArtType.AUCTION;
 import static com.sjiwon.anotherart.art.domain.QArt.art;
-import static com.sjiwon.anotherart.art.utils.ArtQueryFetchingUtils.assembleSimpleAuctionArtProjections;
+import static com.sjiwon.anotherart.art.utils.ArtQueryFetchingUtils.assembleSimpleTradedArtProjections;
 import static com.sjiwon.anotherart.purchase.domain.QPurchase.purchase;
 
 @Transactional(readOnly = true)
@@ -23,9 +23,9 @@ public class TradedArtQueryRepositoryImpl implements TradedArtQueryRepository {
     private static final QMember buyer = new QMember("buyer");
 
     @Override
-    public List<SimpleAuctionArt> findSoldAuctionArtListByMemberId(Long memberId) {
+    public List<SimpleTradedArt> findSoldAuctionArtListByMemberId(Long memberId) {
         return query
-                .select(assembleSimpleAuctionArtProjections())
+                .select(assembleSimpleTradedArtProjections())
                 .from(art)
                 .innerJoin(art.owner, owner)
                 .innerJoin(purchase).on(purchase.art.id.eq(art.id))

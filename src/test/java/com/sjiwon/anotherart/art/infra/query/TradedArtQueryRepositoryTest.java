@@ -2,7 +2,7 @@ package com.sjiwon.anotherart.art.infra.query;
 
 import com.sjiwon.anotherart.art.domain.Art;
 import com.sjiwon.anotherart.art.domain.ArtRepository;
-import com.sjiwon.anotherart.art.infra.query.dto.SimpleAuctionArt;
+import com.sjiwon.anotherart.art.infra.query.dto.SimpleTradedArt;
 import com.sjiwon.anotherart.auction.domain.Auction;
 import com.sjiwon.anotherart.auction.domain.AuctionRepository;
 import com.sjiwon.anotherart.auction.domain.Period;
@@ -76,15 +76,15 @@ class TradedArtQueryRepositoryTest extends RepositoryTest {
         processPurchase(buyer, auctionArtC, auctionC.getBidAmount());
 
         // when - then
-        List<SimpleAuctionArt> simpleAuctionArtList = artRepository.findSoldAuctionArtListByMemberId(owner.getId());
+        List<SimpleTradedArt> simpleTradedArtList = artRepository.findSoldAuctionArtListByMemberId(owner.getId());
         assertAll(
-                () -> assertThat(simpleAuctionArtList.size()).isEqualTo(2),
-                () -> assertThat(simpleAuctionArtList.get(0).getArtId()).isEqualTo(auctionArtA.getId()),
-                () -> assertThat(simpleAuctionArtList.get(0).getBuyerId()).isEqualTo(buyer.getId()),
-                () -> assertThat(simpleAuctionArtList.get(0).getPurchasePrice()).isEqualTo(auctionA.getBidAmount()),
-                () -> assertThat(simpleAuctionArtList.get(1).getArtId()).isEqualTo(auctionArtC.getId()),
-                () -> assertThat(simpleAuctionArtList.get(1).getBuyerId()).isEqualTo(buyer.getId()),
-                () -> assertThat(simpleAuctionArtList.get(1).getPurchasePrice()).isEqualTo(auctionC.getBidAmount())
+                () -> assertThat(simpleTradedArtList.size()).isEqualTo(2),
+                () -> assertThat(simpleTradedArtList.get(0).getArtId()).isEqualTo(auctionArtA.getId()),
+                () -> assertThat(simpleTradedArtList.get(0).getBuyerId()).isEqualTo(buyer.getId()),
+                () -> assertThat(simpleTradedArtList.get(0).getPurchasePrice()).isEqualTo(auctionA.getBidAmount()),
+                () -> assertThat(simpleTradedArtList.get(1).getArtId()).isEqualTo(auctionArtC.getId()),
+                () -> assertThat(simpleTradedArtList.get(1).getBuyerId()).isEqualTo(buyer.getId()),
+                () -> assertThat(simpleTradedArtList.get(1).getPurchasePrice()).isEqualTo(auctionC.getBidAmount())
         );
     }
 

@@ -1,9 +1,9 @@
 package com.sjiwon.anotherart.art.infra.query;
 
-import com.sjiwon.anotherart.art.infra.query.dto.SimpleAuctionArt;
+import com.sjiwon.anotherart.art.infra.query.dto.SimpleTradedArt;
 
 import java.util.List;
 
 public interface TradedArtQueryRepository {
-    List<SimpleAuctionArt> findSoldAuctionArtListByMemberId(Long memberId);
+    List<SimpleTradedArt> findSoldAuctionArtListByMemberId(Long memberId);
 }

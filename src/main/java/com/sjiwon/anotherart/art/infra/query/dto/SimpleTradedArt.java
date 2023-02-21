@@ -5,7 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 
 @Getter
-public class SimpleAuctionArt {
+public class SimpleTradedArt {
     // 판매자 정보
     private final Long ownerId;
     private final String ownerNickname;
@@ -25,7 +25,7 @@ public class SimpleAuctionArt {
 
     @Builder
     @QueryProjection
-    public SimpleAuctionArt(
+    public SimpleTradedArt(
             Long ownerId, String ownerNickname, String ownerSchool,
             Long buyerId, String buyerNickname, String buyerSchool,
             Long artId, String artName, String artDescription, int purchasePrice, String artStorageName) {

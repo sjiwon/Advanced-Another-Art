@@ -1,14 +1,14 @@
 package com.sjiwon.anotherart.common.utils;
 
-import com.sjiwon.anotherart.art.infra.query.dto.SimpleAuctionArt;
+import com.sjiwon.anotherart.art.infra.query.dto.SimpleTradedArt;
 import com.sjiwon.anotherart.fixture.ArtFixture;
 import com.sjiwon.anotherart.fixture.MemberFixture;
 
 import java.util.UUID;
 
 public class SimpleArtBuilder {
-    public static SimpleAuctionArt createSimpleAuctionArt(ArtFixture art) {
-        return SimpleAuctionArt.builder()
+    public static SimpleTradedArt createSimpleTradedArt(ArtFixture art) {
+        return SimpleTradedArt.builder()
                 .ownerId(1L)
                 .ownerNickname(MemberFixture.A.getNickname())
                 .ownerSchool("경기대학교")

@@ -1,6 +1,6 @@
 package com.sjiwon.anotherart.member.service.dto.response;
 
-import com.sjiwon.anotherart.art.infra.query.dto.SimpleAuctionArt;
+import com.sjiwon.anotherart.art.infra.query.dto.SimpleTradedArt;
 import lombok.*;
 
 import java.util.List;
@@ -9,7 +9,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class UserTradedAuctionArt {
-    private SimpleAuctionArt art;
+public class UserTradedArt {
+    private SimpleTradedArt art;
     private List<String> hashtags;
 }
