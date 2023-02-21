@@ -162,6 +162,42 @@ class TradedArtQueryRepositoryTest extends RepositoryTest {
         );
     }
 
+    @Test
+    @DisplayName("사용자가 구매한 일반 작품을 조회한다")
+    void test4() {
+        // given
+        Member owner = createMemberA();
+        Member buyerB = createMemberB();
+        Member buyerC = createMemberC();
+
+        Art auctionArtA = createAuctionArtA(owner);
+        Auction auctionA = initAuction(auctionArtA);
+        processBid(auctionA, buyerB, auctionA.getBidAmount());
+        terminateAuction(auctionA);
+        processPurchase(buyerB, auctionArtA, auctionA.getBidAmount());
+
+        Art auctionArtC = createAuctionArtC(owner);
+        Auction auctionC = initAuction(auctionArtC);
+        processBid(auctionC, buyerC, auctionC.getBidAmount());
+        terminateAuction(auctionC);
+        processPurchase(buyerC, auctionArtC, auctionC.getBidAmount());
+
+        Art generalArt = createGeneralArt(owner);
+        processPurchase(buyerB, generalArt, generalArt.getPrice());
+
+        // when - then
+        List<SimpleTradedArt> simpleTradedArtList1 = artRepository.findPurchaseGeneralArtListByMemberId(buyerB.getId());
+        assertAll(
+                () -> assertThat(simpleTradedArtList1.size()).isEqualTo(1),
+                () -> assertThat(simpleTradedArtList1.get(0).getArtId()).isEqualTo(generalArt.getId()),
+                () -> assertThat(simpleTradedArtList1.get(0).getBuyerId()).isEqualTo(buyerB.getId()),
+                () -> assertThat(simpleTradedArtList1.get(0).getPurchasePrice()).isEqualTo(generalArt.getPrice())
+        );
+
+        List<SimpleTradedArt> simpleTradedArtList2 = artRepository.findPurchaseGeneralArtListByMemberId(buyerC.getId());
+        assertThat(simpleTradedArtList2.size()).isEqualTo(0);
+    }
+
     private void processBid(Auction auction, Member bidder, int bidAmount) {
         auction.applyNewBid(bidder, bidAmount);
         auctionRecordRepository.save(AuctionRecord.createAuctionRecord(auction, bidder, bidAmount));

@@ -68,6 +68,21 @@ public class TradedArtQueryRepositoryImpl implements TradedArtQueryRepository {
                 .fetch();
     }
 
+    @Override
+    public List<SimpleTradedArt> findPurchaseGeneralArtListByMemberId(Long memberId) {
+        return query
+                .select(assembleSimpleTradedArtProjections())
+                .from(art)
+                .innerJoin(art.owner, owner)
+                .innerJoin(purchase).on(purchase.art.id.eq(art.id))
+                .innerJoin(purchase.buyer, buyer)
+                .where(
+                        artTypeEq(GENERAL),
+                        buyerIdEq(memberId)
+                )
+                .fetch();
+    }
+
     private BooleanExpression artTypeEq(ArtType saleType) {
         return (saleType != null) ? art.artType.eq(saleType) : null;
     }

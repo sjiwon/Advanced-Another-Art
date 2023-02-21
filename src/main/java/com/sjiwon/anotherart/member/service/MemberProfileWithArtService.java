@@ -49,6 +49,11 @@ public class MemberProfileWithArtService {
         return assemblingResult(purchaseAuctionArtList);
     }
 
+    public List<UserTradedArt> getPurchaseGeneralArt(Long memberId) {
+        List<SimpleTradedArt> purchaseGeneralArtList = artRepository.findPurchaseGeneralArtListByMemberId(memberId);
+        return assemblingResult(purchaseGeneralArtList);
+    }
+
     private List<UserTradedArt> assemblingResult(List<SimpleTradedArt> result) {
         List<HashtagSummary> hashtagSummaryList = artRepository.findHashtagSummaryList();
 

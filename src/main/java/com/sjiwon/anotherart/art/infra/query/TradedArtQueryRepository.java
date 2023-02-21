@@ -8,4 +8,5 @@ public interface TradedArtQueryRepository {
     List<SimpleTradedArt> findSoldAuctionArtListByMemberId(Long memberId);
     List<SimpleTradedArt> findSoldGeneralArtListByMemberId(Long memberId);
     List<SimpleTradedArt> findPurchaseAuctionArtListByMemberId(Long memberId);
+    List<SimpleTradedArt> findPurchaseGeneralArtListByMemberId(Long memberId);
 }
