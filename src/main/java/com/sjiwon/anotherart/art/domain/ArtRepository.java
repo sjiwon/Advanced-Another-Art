@@ -10,7 +10,8 @@ import java.util.List;
 
 public interface ArtRepository extends JpaRepository<Art, Long>,
         ArtSpecificSimpleQueryRepository, ArtSummaryQueryRepository,
-        AuctionArtSpecificComplexQueryRepository, GeneralArtSpecificComplexQueryRepository, WinningAuctionArtQueryRepository {
+        AuctionArtSpecificComplexQueryRepository, GeneralArtSpecificComplexQueryRepository,
+        WinningAuctionArtQueryRepository, TradedArtQueryRepository {
     // @Query
     @Query("SELECT a" +
             " FROM Art a" +

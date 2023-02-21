@@ -3,11 +3,9 @@ package com.sjiwon.anotherart.art.utils;
 import com.querydsl.core.types.ConstructorExpression;
 import com.querydsl.core.types.OrderSpecifier;
 import com.sjiwon.anotherart.art.domain.ArtType;
-import com.sjiwon.anotherart.art.infra.query.dto.BasicAuctionArt;
-import com.sjiwon.anotherart.art.infra.query.dto.BasicGeneralArt;
-import com.sjiwon.anotherart.art.infra.query.dto.QBasicAuctionArt;
-import com.sjiwon.anotherart.art.infra.query.dto.QBasicGeneralArt;
+import com.sjiwon.anotherart.art.infra.query.dto.*;
 import com.sjiwon.anotherart.member.domain.QMember;
+import com.sjiwon.anotherart.purchase.domain.QPurchase;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -22,6 +20,7 @@ public class ArtQueryFetchingUtils {
     private static final QMember owner = new QMember("owner");
     private static final QMember buyer = new QMember("buyer");
     private static final QMember highestBidder = new QMember("highestBidder");
+    private static final QPurchase purchase = new QPurchase("purchase");
 
     public static ConstructorExpression<BasicGeneralArt> assembleGeneralArtProjections() {
         return new QBasicGeneralArt(
@@ -37,6 +36,14 @@ public class ArtQueryFetchingUtils {
                 highestBidder.id, highestBidder.nickname, highestBidder.school,
                 art.id, art.name, art.description, art.price, art.registrationDate, art.uploadImage.storageName,
                 owner.id, owner.nickname, owner.school
+        );
+    }
+
+    public static ConstructorExpression<SimpleAuctionArt> assembleSimpleAuctionArtProjections() {
+        return new QSimpleAuctionArt(
+                owner.id, owner.nickname, owner.school,
+                buyer.id, buyer.nickname, buyer.school,
+                art.id, art.name, art.description, purchase.purchasePrice, art.uploadImage.storageName
         );
     }
 

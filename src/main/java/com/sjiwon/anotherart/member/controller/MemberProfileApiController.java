@@ -6,6 +6,7 @@ import com.sjiwon.anotherart.member.infra.query.dto.response.UserPointHistory;
 import com.sjiwon.anotherart.member.service.MemberProfileService;
 import com.sjiwon.anotherart.member.service.MemberProfileWithArtService;
 import com.sjiwon.anotherart.member.service.dto.response.UserProfile;
+import com.sjiwon.anotherart.member.service.dto.response.UserTradedAuctionArt;
 import com.sjiwon.anotherart.member.service.dto.response.UserWinningAuction;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -40,5 +41,11 @@ public class MemberProfileApiController {
     @GetMapping("/winning-auctions")
     public ResponseEntity<SimpleWrapper<List<UserWinningAuction>>> getWinningAuction(@PathVariable Long memberId, @ExtractPayloadId Long payloadId) {
         return ResponseEntity.ok(new SimpleWrapper<>(memberProfileWithArtService.getWinningAuction(memberId)));
+    }
+
+    @PreAuthorize("hasRole('USER') AND @memberDoubleChecker.isTrustworthyMember(#memberId, #payloadId)")
+    @GetMapping("/auctions/sold")
+    public ResponseEntity<SimpleWrapper<List<UserTradedAuctionArt>>> getSoldAuctionArt(@PathVariable Long memberId, @ExtractPayloadId Long payloadId) {
+        return ResponseEntity.ok(new SimpleWrapper<>(memberProfileWithArtService.getSoldAuctionArt(memberId)));
     }
 }
