@@ -88,3 +88,59 @@ include::{snippets}/MemberProfileApi/UserWinningAuction/Success/path-parameters.
 HTTP Response
 include::{snippets}/MemberProfileApi/UserWinningAuction/Success/response-body.adoc[]
 include::{snippets}/MemberProfileApi/UserWinningAuction/Success/response-fields.adoc[]
+
+== 판매한 경매 작품 조회
+=== 1. Authorization 헤더에 Access Token이 없음에 따라 예외가 발생한다
+HTTP Request
+include::{snippets}/MemberProfileApi/UserSoldAuctionArt/Failure/Case1/http-request.adoc[]
+include::{snippets}/MemberProfileApi/UserSoldAuctionArt/Failure/Case1/path-parameters.adoc[]
+
+HTTP Response
+include::{snippets}/MemberProfileApi/UserSoldAuctionArt/Failure/Case1/response-body.adoc[]
+
+=== 2. Access Token Payload의 memberId와 PathVariable의 memberId가 일치하지 않음에 따라 예외가 발생한다
+HTTP Request
+include::{snippets}/MemberProfileApi/UserSoldAuctionArt/Failure/Case2/http-request.adoc[]
+include::{snippets}/MemberProfileApi/UserSoldAuctionArt/Failure/Case2/request-headers.adoc[]
+include::{snippets}/MemberProfileApi/UserSoldAuctionArt/Failure/Case2/path-parameters.adoc[]
+
+HTTP Response
+include::{snippets}/MemberProfileApi/UserSoldAuctionArt/Failure/Case2/response-body.adoc[]
+
+=== 3. 사용자가 판매한 경매 작품 조회에 성공한다
+HTTP Request
+include::{snippets}/MemberProfileApi/UserSoldAuctionArt/Success/http-request.adoc[]
+include::{snippets}/MemberProfileApi/UserSoldAuctionArt/Success/request-headers.adoc[]
+include::{snippets}/MemberProfileApi/UserSoldAuctionArt/Success/path-parameters.adoc[]
+
+HTTP Response
+include::{snippets}/MemberProfileApi/UserSoldAuctionArt/Success/response-body.adoc[]
+include::{snippets}/MemberProfileApi/UserSoldAuctionArt/Success/response-fields.adoc[]
+
+== 판매한 일반 작품 조회
+=== 1. Authorization 헤더에 Access Token이 없음에 따라 예외가 발생한다
+HTTP Request
+include::{snippets}/MemberProfileApi/UserSoldGeneralArt/Failure/Case1/http-request.adoc[]
+include::{snippets}/MemberProfileApi/UserSoldGeneralArt/Failure/Case1/path-parameters.adoc[]
+
+HTTP Response
+include::{snippets}/MemberProfileApi/UserSoldGeneralArt/Failure/Case1/response-body.adoc[]
+
+=== 2. Access Token Payload의 memberId와 PathVariable의 memberId가 일치하지 않음에 따라 예외가 발생한다
+HTTP Request
+include::{snippets}/MemberProfileApi/UserSoldGeneralArt/Failure/Case2/http-request.adoc[]
+include::{snippets}/MemberProfileApi/UserSoldGeneralArt/Failure/Case2/request-headers.adoc[]
+include::{snippets}/MemberProfileApi/UserSoldGeneralArt/Failure/Case2/path-parameters.adoc[]
+
+HTTP Response
+include::{snippets}/MemberProfileApi/UserSoldGeneralArt/Failure/Case2/response-body.adoc[]
+
+=== 3. 사용자가 판매한 일반 작품 조회에 성공한다
+HTTP Request
+include::{snippets}/MemberProfileApi/UserSoldGeneralArt/Success/http-request.adoc[]
+include::{snippets}/MemberProfileApi/UserSoldGeneralArt/Success/request-headers.adoc[]
+include::{snippets}/MemberProfileApi/UserSoldGeneralArt/Success/path-parameters.adoc[]
+
+HTTP Response
+include::{snippets}/MemberProfileApi/UserSoldGeneralArt/Success/response-body.adoc[]
+include::{snippets}/MemberProfileApi/UserSoldGeneralArt/Success/response-fields.adoc[]
