@@ -48,4 +48,10 @@ public class MemberProfileApiController {
     public ResponseEntity<SimpleWrapper<List<UserTradedArt>>> getSoldAuctionArt(@PathVariable Long memberId, @ExtractPayloadId Long payloadId) {
         return ResponseEntity.ok(new SimpleWrapper<>(memberProfileWithArtService.getSoldAuctionArt(memberId)));
     }
+
+    @PreAuthorize("hasRole('USER') AND @memberDoubleChecker.isTrustworthyMember(#memberId, #payloadId)")
+    @GetMapping("/generals/sold")
+    public ResponseEntity<SimpleWrapper<List<UserTradedArt>>> getSoldGeneralArt(@PathVariable Long memberId, @ExtractPayloadId Long payloadId) {
+        return ResponseEntity.ok(new SimpleWrapper<>(memberProfileWithArtService.getSoldGeneralArt(memberId)));
+    }
 }

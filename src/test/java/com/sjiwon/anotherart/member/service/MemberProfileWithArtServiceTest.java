@@ -96,15 +96,16 @@ class MemberProfileWithArtServiceTest extends ServiceIntegrateTest {
         Auction auctionA = initAuction(auctionArtA);
         processBid(auctionA, buyer, auctionA.getBidAmount());
         terminateAuction(auctionA);
+        processPurchase(buyer, auctionArtA, auctionA.getBidAmount());
 
         Art auctionArtC = createAuctionArtC(owner);
         Auction auctionC = initAuction(auctionArtC);
         processBid(auctionC, buyer, auctionC.getBidAmount());
         terminateAuction(auctionC);
-
-        // 구매 진행
-        processPurchase(buyer, auctionArtA, auctionA.getBidAmount());
         processPurchase(buyer, auctionArtC, auctionC.getBidAmount());
+
+        Art generalArt = createGeneralArt(owner);
+        processPurchase(buyer, generalArt, generalArt.getPrice());
 
         // when - then
         List<UserTradedArt> soldAuctionArtList = memberProfileWithArtService.getSoldAuctionArt(owner.getId());
@@ -118,6 +119,39 @@ class MemberProfileWithArtServiceTest extends ServiceIntegrateTest {
                 () -> assertThat(soldAuctionArtList.get(1).getArt().getBuyerId()).isEqualTo(buyer.getId()),
                 () -> assertThat(soldAuctionArtList.get(1).getArt().getPurchasePrice()).isEqualTo(auctionC.getBidAmount()),
                 () -> assertThat(soldAuctionArtList.get(1).getHashtags()).containsAll(HASHTAGS)
+        );
+    }
+
+    @Test
+    @DisplayName("사용자가 판매한 일반 작품들을 조회한다")
+    void test3() {
+        // given
+        Member owner = createMemberA();
+        Member buyer = createMemberB();
+
+        Art auctionArtA = createAuctionArtA(owner);
+        Auction auctionA = initAuction(auctionArtA);
+        processBid(auctionA, buyer, auctionA.getBidAmount());
+        terminateAuction(auctionA);
+        processPurchase(buyer, auctionArtA, auctionA.getBidAmount());
+
+        Art auctionArtC = createAuctionArtC(owner);
+        Auction auctionC = initAuction(auctionArtC);
+        processBid(auctionC, buyer, auctionC.getBidAmount());
+        terminateAuction(auctionC);
+        processPurchase(buyer, auctionArtC, auctionC.getBidAmount());
+
+        Art generalArt = createGeneralArt(owner);
+        processPurchase(buyer, generalArt, generalArt.getPrice());
+
+        // when - then
+        List<UserTradedArt> soldAuctionArtList = memberProfileWithArtService.getSoldGeneralArt(owner.getId());
+        assertAll(
+                () -> assertThat(soldAuctionArtList.size()).isEqualTo(1),
+                () -> assertThat(soldAuctionArtList.get(0).getArt().getArtId()).isEqualTo(generalArt.getId()),
+                () -> assertThat(soldAuctionArtList.get(0).getArt().getBuyerId()).isEqualTo(buyer.getId()),
+                () -> assertThat(soldAuctionArtList.get(0).getArt().getPurchasePrice()).isEqualTo(generalArt.getPrice()),
+                () -> assertThat(soldAuctionArtList.get(0).getHashtags()).containsAll(HASHTAGS)
         );
     }
 
@@ -158,6 +192,10 @@ class MemberProfileWithArtServiceTest extends ServiceIntegrateTest {
 
     private Art createAuctionArtC(Member owner) {
         return artRepository.save(ArtFixture.C.toArt(owner, HASHTAGS));
+    }
+
+    private Art createGeneralArt(Member owner) {
+        return artRepository.save(ArtFixture.B.toArt(owner, HASHTAGS));
     }
 
     private Auction initAuction(Art art) {

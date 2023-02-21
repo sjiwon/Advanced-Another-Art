@@ -36,13 +36,22 @@ public class MemberProfileWithArtService {
 
     public List<UserTradedArt> getSoldAuctionArt(Long memberId) {
         List<SimpleTradedArt> soldAuctionArtList = artRepository.findSoldAuctionArtListByMemberId(memberId);
+        return assemblingResult(soldAuctionArtList);
+    }
+
+    public List<UserTradedArt> getSoldGeneralArt(Long memberId) {
+        List<SimpleTradedArt> soldGeneralArtList = artRepository.findSoldGeneralArtListByMemberId(memberId);
+        return assemblingResult(soldGeneralArtList);
+    }
+
+    private List<UserTradedArt> assemblingResult(List<SimpleTradedArt> result) {
         List<HashtagSummary> hashtagSummaryList = artRepository.findHashtagSummaryList();
 
-        return soldAuctionArtList.stream()
-                .map(simpleAuctionArt ->
+        return result.stream()
+                .map(simpleTradedArt ->
                         UserTradedArt.builder()
-                                .art(simpleAuctionArt)
-                                .hashtags(extractHashtagListByArtId(hashtagSummaryList, simpleAuctionArt.getArtId()))
+                                .art(simpleTradedArt)
+                                .hashtags(extractHashtagListByArtId(hashtagSummaryList, simpleTradedArt.getArtId()))
                                 .build()
                 )
                 .toList();

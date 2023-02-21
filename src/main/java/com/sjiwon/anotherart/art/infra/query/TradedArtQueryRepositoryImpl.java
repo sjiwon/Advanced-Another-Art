@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 import static com.sjiwon.anotherart.art.domain.ArtType.AUCTION;
+import static com.sjiwon.anotherart.art.domain.ArtType.GENERAL;
 import static com.sjiwon.anotherart.art.domain.QArt.art;
 import static com.sjiwon.anotherart.art.utils.ArtQueryFetchingUtils.assembleSimpleTradedArtProjections;
 import static com.sjiwon.anotherart.purchase.domain.QPurchase.purchase;
@@ -32,6 +33,21 @@ public class TradedArtQueryRepositoryImpl implements TradedArtQueryRepository {
                 .innerJoin(purchase.buyer, buyer)
                 .where(
                         artTypeEq(AUCTION),
+                        ownerIdEq(memberId)
+                )
+                .fetch();
+    }
+
+    @Override
+    public List<SimpleTradedArt> findSoldGeneralArtListByMemberId(Long memberId) {
+        return query
+                .select(assembleSimpleTradedArtProjections())
+                .from(art)
+                .innerJoin(art.owner, owner)
+                .innerJoin(purchase).on(purchase.art.id.eq(art.id))
+                .innerJoin(purchase.buyer, buyer)
+                .where(
+                        artTypeEq(GENERAL),
                         ownerIdEq(memberId)
                 )
                 .fetch();
