@@ -628,7 +628,7 @@ class MemberProfileApiControllerTest extends ControllerTest {
                                             fieldWithPath("result[].art.artId").description("경매 작품 ID(PK)"),
                                             fieldWithPath("result[].art.artName").description("경매 작품명"),
                                             fieldWithPath("result[].art.artDescription").description("경매 작품 설명"),
-                                            fieldWithPath("result[].art.purchasePrice").description("경매 작품 초기 가격"),
+                                            fieldWithPath("result[].art.purchasePrice").description("경매 작품 낙찰 가격"),
                                             fieldWithPath("result[].art.artStorageName").description("경매 작품 서버 저장명(UUID)"),
                                             fieldWithPath("result[].hashtags").description("작품의 해시태그 리스트")
                                     )
@@ -780,6 +780,156 @@ class MemberProfileApiControllerTest extends ControllerTest {
                                             fieldWithPath("result[].art.artDescription").description("일반 작품 설명"),
                                             fieldWithPath("result[].art.purchasePrice").description("일반 작품 가격"),
                                             fieldWithPath("result[].art.artStorageName").description("일반 작품 서버 저장명(UUID)"),
+                                            fieldWithPath("result[].hashtags").description("작품의 해시태그 리스트")
+                                    )
+                            )
+                    );
+        }
+    }
+
+    @Nested
+    @DisplayName("사용자가 구매한 경매 작품 조회 테스트 [GET /api/members/{memberId}/auctions/purchase]")
+    class userPurchaseAuctionArt {
+        private static final String BASE_URL = "/api/members/{memberId}/auctions/purchase";
+
+        @Test
+        @DisplayName("Authorization 헤더에 Access Token이 없음에 따라 예외가 발생한다")
+        void test1() throws Exception {
+            // given
+            Long memberId = 1L;
+            Long payloadId = 1L;
+
+            // when
+            MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
+                    .get(BASE_URL, memberId);
+
+            // then
+            final AuthErrorCode expectedError = AuthErrorCode.INVALID_TOKEN;
+            mockMvc.perform(requestBuilder)
+                    .andExpect(status().isForbidden())
+                    .andExpect(jsonPath("$.statusCode").exists())
+                    .andExpect(jsonPath("$.statusCode").value(expectedError.getStatus().value()))
+                    .andExpect(jsonPath("$.errorCode").exists())
+                    .andExpect(jsonPath("$.errorCode").value(expectedError.getErrorCode()))
+                    .andExpect(jsonPath("$.message").exists())
+                    .andExpect(jsonPath("$.message").value(expectedError.getMessage()))
+                    .andDo(
+                            document(
+                                    "MemberProfileApi/UserPurchaseAuctionArt/Failure/Case1",
+                                    preprocessRequest(prettyPrint()),
+                                    preprocessResponse(prettyPrint()),
+                                    pathParameters(
+                                            parameterWithName("memberId").description("사용자 ID(PK)")
+                                    ),
+                                    responseFields(
+                                            fieldWithPath("statusCode").description("HTTP 상태 코드"),
+                                            fieldWithPath("errorCode").description("커스텀 예외 코드"),
+                                            fieldWithPath("message").description("예외 메시지")
+                                    )
+                            )
+                    );
+        }
+
+        @Test
+        @DisplayName("Access Token Payload의 memberId와 PathVariable의 memberId가 일치하지 않음에 따라 예외가 발생한다")
+        void test2() throws Exception {
+            // given
+            Long memberId = 1L;
+            Long payloadId = 2L;
+            final String accessToken = jwtTokenProvider.createAccessToken(payloadId, ROLE_USER);
+
+            // when
+            MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
+                    .get(BASE_URL, memberId)
+                    .header(AUTHORIZATION, BEARER_TOKEN + accessToken);
+
+            // then
+            final AuthErrorCode expectedError = AuthErrorCode.INVALID_TOKEN;
+            mockMvc.perform(requestBuilder)
+                    .andExpect(status().isForbidden())
+                    .andExpect(jsonPath("$.statusCode").exists())
+                    .andExpect(jsonPath("$.statusCode").value(expectedError.getStatus().value()))
+                    .andExpect(jsonPath("$.errorCode").exists())
+                    .andExpect(jsonPath("$.errorCode").value(expectedError.getErrorCode()))
+                    .andExpect(jsonPath("$.message").exists())
+                    .andExpect(jsonPath("$.message").value(expectedError.getMessage()))
+                    .andDo(
+                            document(
+                                    "MemberProfileApi/UserPurchaseAuctionArt/Failure/Case2",
+                                    preprocessRequest(prettyPrint()),
+                                    preprocessResponse(prettyPrint()),
+                                    requestHeaders(
+                                            headerWithName(AUTHORIZATION).description("Access Token")
+                                    ),
+                                    pathParameters(
+                                            parameterWithName("memberId").description("사용자 ID(PK)")
+                                    ),
+                                    responseFields(
+                                            fieldWithPath("statusCode").description("HTTP 상태 코드"),
+                                            fieldWithPath("errorCode").description("커스텀 예외 코드"),
+                                            fieldWithPath("message").description("예외 메시지")
+                                    )
+                            )
+                    );
+        }
+
+        @Test
+        @DisplayName("사용자가 구매한 경매 작품 조회에 성공한다")
+        void test3() throws Exception {
+            // given
+            Long memberId = 1L;
+            Long payloadId = 1L;
+            final String accessToken = jwtTokenProvider.createAccessToken(payloadId, ROLE_USER);
+
+            List<UserTradedArt> response = List.of(
+                    UserTradedArt.builder()
+                            .art(SimpleArtBuilder.createSimpleTradedArt(ArtFixture.A))
+                            .hashtags(ArtUtils.HASHTAGS)
+                            .build(),
+                    UserTradedArt.builder()
+                            .art(SimpleArtBuilder.createSimpleTradedArt(ArtFixture.B))
+                            .hashtags(ArtUtils.HASHTAGS)
+                            .build(),
+                    UserTradedArt.builder()
+                            .art(SimpleArtBuilder.createSimpleTradedArt(ArtFixture.C))
+                            .hashtags(ArtUtils.UPDATE_HASHTAGS)
+                            .build()
+            );
+            given(memberProfileWithArtService.getPurchaseAuctionArt(memberId)).willReturn(response);
+
+            // when
+            MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
+                    .get(BASE_URL, memberId)
+                    .header(AUTHORIZATION, BEARER_TOKEN + accessToken);
+
+            // then
+            mockMvc.perform(requestBuilder)
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.result").exists())
+                    .andExpect(jsonPath("$.result.size()").value(response.size()))
+                    .andDo(
+                            document(
+                                    "MemberProfileApi/UserPurchaseAuctionArt/Success",
+                                    preprocessRequest(prettyPrint()),
+                                    preprocessResponse(prettyPrint()),
+                                    requestHeaders(
+                                            headerWithName(AUTHORIZATION).description("Access Token")
+                                    ),
+                                    pathParameters(
+                                            parameterWithName("memberId").description("사용자 ID(PK)")
+                                    ),
+                                    responseFields(
+                                            fieldWithPath("result[].art.ownerId").description("작품 주인 ID(PK)"),
+                                            fieldWithPath("result[].art.ownerNickname").description("작품 주인 닉네임"),
+                                            fieldWithPath("result[].art.ownerSchool").description("작품 주인 재학중인 학교"),
+                                            fieldWithPath("result[].art.buyerId").description("작품 구매자 ID(PK)"),
+                                            fieldWithPath("result[].art.buyerNickname").description("작품 구매자 닉네임"),
+                                            fieldWithPath("result[].art.buyerSchool").description("작품 구매자 재학중인 학교"),
+                                            fieldWithPath("result[].art.artId").description("경매 작품 ID(PK)"),
+                                            fieldWithPath("result[].art.artName").description("경매 작품명"),
+                                            fieldWithPath("result[].art.artDescription").description("경매 작품 설명"),
+                                            fieldWithPath("result[].art.purchasePrice").description("경매 작품 낙찰 가격"),
+                                            fieldWithPath("result[].art.artStorageName").description("경매 작품 서버 저장명(UUID)"),
                                             fieldWithPath("result[].hashtags").description("작품의 해시태그 리스트")
                                     )
                             )
