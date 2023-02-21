@@ -2,10 +2,7 @@ package com.sjiwon.anotherart.member.controller;
 
 import com.sjiwon.anotherart.global.annotation.ExtractPayloadId;
 import com.sjiwon.anotherart.global.dto.SimpleWrapper;
-import com.sjiwon.anotherart.member.controller.dto.request.AuthForResetPasswordRequest;
-import com.sjiwon.anotherart.member.controller.dto.request.ChangeNicknameRequest;
-import com.sjiwon.anotherart.member.controller.dto.request.FindIdRequest;
-import com.sjiwon.anotherart.member.controller.dto.request.ResetPasswordRequest;
+import com.sjiwon.anotherart.member.controller.dto.request.*;
 import com.sjiwon.anotherart.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +21,13 @@ public class MemberDetailApiController {
     @PatchMapping("/nickname")
     public ResponseEntity<Void> changeNickname(@ExtractPayloadId Long memberId, @Valid @RequestBody ChangeNicknameRequest request) {
         memberService.changeNickname(memberId, request.getChangeNickname());
+        return ResponseEntity.noContent().build();
+    }
+
+    @PreAuthorize("hasRole('USER')")
+    @PatchMapping("/password")
+    public ResponseEntity<Void> changePassword(@ExtractPayloadId Long memberId, @Valid @RequestBody ChangePasswordRequest request) {
+        memberService.changePassword(memberId, request.getChangePassword());
         return ResponseEntity.noContent().build();
     }
 

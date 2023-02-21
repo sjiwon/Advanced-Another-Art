@@ -7,9 +7,11 @@ import com.sjiwon.anotherart.global.exception.AnotherArtException;
 import com.sjiwon.anotherart.global.security.exception.AuthErrorCode;
 import com.sjiwon.anotherart.member.controller.dto.request.AuthForResetPasswordRequest;
 import com.sjiwon.anotherart.member.controller.dto.request.ChangeNicknameRequest;
+import com.sjiwon.anotherart.member.controller.dto.request.ChangePasswordRequest;
 import com.sjiwon.anotherart.member.controller.dto.request.ResetPasswordRequest;
 import com.sjiwon.anotherart.member.controller.utils.AuthForResetPasswordRequestUtils;
 import com.sjiwon.anotherart.member.controller.utils.ChangeNicknameRequestUtils;
+import com.sjiwon.anotherart.member.controller.utils.ChangePasswordRequestUtils;
 import com.sjiwon.anotherart.member.controller.utils.ResetPasswordRequestUtils;
 import com.sjiwon.anotherart.member.domain.Member;
 import com.sjiwon.anotherart.member.exception.MemberErrorCode;
@@ -39,8 +41,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @DisplayName("Member [Controller Layer] -> MemberDetailApiController 테스트")
 class MemberDetailApiControllerTest extends ControllerTest {
     private static final Member member = MemberFixture.A.toMember();
-    private static final String CHANGE_PREFIX = "change_";
-    private static final String DUPLICATE_PREFIX = "duplicate_";
+    private static final String CHANGE_PREFIX = "change";
+    private static final String DUPLICATE_PREFIX = "duplicate";
 
     @Nested
     @DisplayName("사용자 닉네임 수정 테스트 [PATCH /api/member/nickname]")
@@ -88,7 +90,7 @@ class MemberDetailApiControllerTest extends ControllerTest {
         }
 
         @Test
-        @DisplayName("이전에 사용하던 닉네임에 대해서 수정 요청을 보내면 예외가 발생한다")
+        @DisplayName("이전에 사용하던 닉네임으로 수정 요청을 보내면 예외가 발생한다")
         void test2() throws Exception {
             // given
             Long memberId = 1L;
@@ -224,6 +226,143 @@ class MemberDetailApiControllerTest extends ControllerTest {
                                     ),
                                     requestFields(
                                             fieldWithPath("changeNickname").description("변경할 닉네임")
+                                    )
+                            )
+                    );
+        }
+    }
+
+    @Nested
+    @DisplayName("사용자 비밀번호 수정 테스트 [PATCH /api/member/password]")
+    class changePassword {
+        private static final String BASE_URL = "/api/member/password";
+
+        @Test
+        @DisplayName("Authorization 헤더에 Access Token이 없음에 따라 예외가 발생한다")
+        void test1() throws Exception {
+            // given
+            final String changePassword = CHANGE_PREFIX + MemberFixture.A.getPassword();
+            ChangePasswordRequest request = ChangePasswordRequestUtils.createRequest(changePassword);
+
+            // when
+            MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                    .patch(BASE_URL)
+                    .contentType(APPLICATION_JSON)
+                    .content(ObjectMapperUtils.objectToJson(request));
+
+            // then
+            final AuthErrorCode expectedError = AuthErrorCode.INVALID_TOKEN;
+            mockMvc.perform(requestBuilder)
+                    .andExpect(status().isForbidden())
+                    .andExpect(jsonPath("$.statusCode").exists())
+                    .andExpect(jsonPath("$.statusCode").value(expectedError.getStatus().value()))
+                    .andExpect(jsonPath("$.errorCode").exists())
+                    .andExpect(jsonPath("$.errorCode").value(expectedError.getErrorCode()))
+                    .andExpect(jsonPath("$.message").exists())
+                    .andExpect(jsonPath("$.message").value(expectedError.getMessage()))
+                    .andDo(
+                            document(
+                                    "MemberApi/ChangePassword/Failure/Case1",
+                                    preprocessRequest(prettyPrint()),
+                                    preprocessResponse(prettyPrint()),
+                                    requestFields(
+                                            fieldWithPath("changePassword").description("변경할 비밀번호")
+                                    ),
+                                    responseFields(
+                                            fieldWithPath("statusCode").description("HTTP 상태 코드"),
+                                            fieldWithPath("errorCode").description("커스텀 예외 코드"),
+                                            fieldWithPath("message").description("예외 메시지")
+                                    )
+                            )
+                    );
+        }
+
+        @Test
+        @DisplayName("이전에 사용하던 비밀번호로 수정 요청을 보내면 예외가 발생한다")
+        void test2() throws Exception {
+            // given
+            Long memberId = 1L;
+            final String accessToken = jwtTokenProvider.createAccessToken(memberId, ROLE_USER);
+
+            final String changePassword = MemberFixture.A.getPassword();
+            doThrow(AnotherArtException.type(MemberErrorCode.PASSWORD_SAME_AS_BEFORE))
+                    .when(memberService)
+                    .changePassword(memberId, changePassword);
+
+            ChangePasswordRequest request = ChangePasswordRequestUtils.createRequest(changePassword);
+
+            // when
+            MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                    .patch(BASE_URL)
+                    .contentType(APPLICATION_JSON)
+                    .header(AUTHORIZATION, BEARER_TOKEN + accessToken)
+                    .content(ObjectMapperUtils.objectToJson(request));
+
+            // then
+            final MemberErrorCode expectedError = MemberErrorCode.PASSWORD_SAME_AS_BEFORE;
+            mockMvc.perform(requestBuilder)
+                    .andExpect(status().isConflict())
+                    .andExpect(jsonPath("$.statusCode").exists())
+                    .andExpect(jsonPath("$.statusCode").value(expectedError.getStatus().value()))
+                    .andExpect(jsonPath("$.errorCode").exists())
+                    .andExpect(jsonPath("$.errorCode").value(expectedError.getErrorCode()))
+                    .andExpect(jsonPath("$.message").exists())
+                    .andExpect(jsonPath("$.message").value(expectedError.getMessage()))
+                    .andDo(
+                            document(
+                                    "MemberApi/ChangePassword/Failure/Case2",
+                                    preprocessRequest(prettyPrint()),
+                                    preprocessResponse(prettyPrint()),
+                                    requestHeaders(
+                                            headerWithName(AUTHORIZATION).description("Access Token")
+                                    ),
+                                    requestFields(
+                                            fieldWithPath("changePassword").description("변경할 비밀번호")
+                                    ),
+                                    responseFields(
+                                            fieldWithPath("statusCode").description("HTTP 상태 코드"),
+                                            fieldWithPath("errorCode").description("커스텀 예외 코드"),
+                                            fieldWithPath("message").description("예외 메시지")
+                                    )
+                            )
+                    );
+        }
+
+        @Test
+        @DisplayName("비밀번호 수정에 성공한다")
+        void test3() throws Exception {
+            // given
+            Long memberId = 1L;
+            final String accessToken = jwtTokenProvider.createAccessToken(memberId, ROLE_USER);
+
+            final String changePassword = CHANGE_PREFIX + MemberFixture.A.getPassword();
+            doNothing()
+                    .when(memberService)
+                    .changePassword(memberId, changePassword);
+
+            ChangePasswordRequest request = ChangePasswordRequestUtils.createRequest(changePassword);
+
+            // when
+            MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                    .patch(BASE_URL)
+                    .contentType(APPLICATION_JSON)
+                    .header(AUTHORIZATION, BEARER_TOKEN + accessToken)
+                    .content(ObjectMapperUtils.objectToJson(request));
+
+            // then
+            mockMvc.perform(requestBuilder)
+                    .andExpect(status().isNoContent())
+                    .andExpect(jsonPath("$").doesNotExist())
+                    .andDo(
+                            document(
+                                    "MemberApi/ChangePassword/Success",
+                                    preprocessRequest(prettyPrint()),
+                                    preprocessResponse(prettyPrint()),
+                                    requestHeaders(
+                                            headerWithName(AUTHORIZATION).description("Access Token")
+                                    ),
+                                    requestFields(
+                                            fieldWithPath("changePassword").description("변경할 비밀번호")
                                     )
                             )
                     );

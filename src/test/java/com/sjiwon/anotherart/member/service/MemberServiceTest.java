@@ -168,6 +168,37 @@ class MemberServiceTest extends ServiceIntegrateTest {
         }
     }
 
+    @Nested
+    @DisplayName("비밀번호 수정")
+    class changePassword {
+        @Test
+        @DisplayName("이전과 동일한 비밀번호로 수정할 수 없다")
+        void test1() {
+            // given
+            Member member = createMemberA();
+
+            // when - then
+            assertThatThrownBy(() -> memberService.changePassword(member.getId(), MemberFixture.A.getPassword()))
+                    .isInstanceOf(AnotherArtException.class)
+                    .hasMessage(MemberErrorCode.PASSWORD_SAME_AS_BEFORE.getMessage());
+        }
+
+        @Test
+        @DisplayName("비밀번호 수정에 성공한다")
+        void test2() {
+            // given
+            Member member = createMemberA();
+            final String changePassword = MemberFixture.A.getPassword() + "change";
+
+            // when
+            memberService.changePassword(member.getId(), changePassword);
+
+            // then
+            PasswordEncoder encoder = PasswordEncoderUtils.getEncoder();
+            assertThat(encoder.matches(changePassword, member.getPasswordValue())).isTrue();
+        }
+    }
+
     @Test
     @DisplayName("이름, 이메일에 해당되는 사용자의 로그인 아이디를 찾는다")
     void test1() {

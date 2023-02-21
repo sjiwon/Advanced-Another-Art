@@ -14,7 +14,7 @@ include::{snippets}/MemberApi/ChangeNickname/Failure/Case1/request-fields.adoc[]
 HTTP Response
 include::{snippets}/MemberApi/ChangeNickname/Failure/Case1/response-body.adoc[]
 
-=== 2. 이전에 사용하던 닉네임에 대해서 수정 요청을 보내면 예외가 발생한다
+=== 2. 이전에 사용하던 닉네임으로 수정 요청을 보내면 예외가 발생한다
 HTTP Request
 include::{snippets}/MemberApi/ChangeNickname/Failure/Case2/http-request.adoc[]
 include::{snippets}/MemberApi/ChangeNickname/Failure/Case2/request-headers.adoc[]
@@ -40,6 +40,33 @@ include::{snippets}/MemberApi/ChangeNickname/Success/request-fields.adoc[]
 
 HTTP Response
 include::{snippets}/MemberApi/ChangeNickname/Success/http-response.adoc[]
+
+== 비밀번호 수정
+=== 1. Authorization 헤더에 Access Token이 없음에 따라 예외가 발생한다
+HTTP Request
+include::{snippets}/MemberApi/ChangePassword/Failure/Case1/http-request.adoc[]
+include::{snippets}/MemberApi/ChangePassword/Failure/Case1/request-fields.adoc[]
+
+HTTP Response
+include::{snippets}/MemberApi/ChangePassword/Failure/Case1/response-body.adoc[]
+
+=== 2. 이전에 사용하던 비밀번호로 수정 요청을 보내면 예외가 발생한다
+HTTP Request
+include::{snippets}/MemberApi/ChangePassword/Failure/Case2/http-request.adoc[]
+include::{snippets}/MemberApi/ChangePassword/Failure/Case2/request-headers.adoc[]
+include::{snippets}/MemberApi/ChangePassword/Failure/Case2/request-fields.adoc[]
+
+HTTP Response
+include::{snippets}/MemberApi/ChangePassword/Failure/Case2/response-body.adoc[]
+
+=== 3. 비밀번호 수정에 성공한다
+HTTP Request
+include::{snippets}/MemberApi/ChangePassword/Success/http-request.adoc[]
+include::{snippets}/MemberApi/ChangePassword/Success/request-headers.adoc[]
+include::{snippets}/MemberApi/ChangePassword/Success/request-fields.adoc[]
+
+HTTP Response
+include::{snippets}/MemberApi/ChangePassword/Success/http-response.adoc[]
 
 == 로그인 아이디 조회
 === 1. 요청으로 보낸 [이름, 이메일] 데이터중 이름에 대한 사용자 정보가 없는 경우 예외가 발생한다

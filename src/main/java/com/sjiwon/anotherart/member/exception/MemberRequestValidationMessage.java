@@ -23,6 +23,10 @@ public class MemberRequestValidationMessage {
         public static final String CHANGE_NAME = "변경할 닉네임은 필수입니다";
     }
 
+    public static class ChangePassword {
+        public static final String CHANGE_PASSWORD = "변경할 비밀번호는 필수입니다";
+    }
+
     public static class FindId {
         public static final String NAME = "이름은 필수입니다.";
         public static final String EMAIL = "이메일은 필수입니다.";

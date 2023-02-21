@@ -44,6 +44,12 @@ public class MemberService {
         member.changeNickname(changeNickname);
     }
 
+    @Transactional
+    public void changePassword(Long memberId, String changePassword) {
+        Member member = memberFindService.findById(memberId);
+        member.changePassword(changePassword, passwordEncoder);
+    }
+
     private void validateNicknameSameAsBefore(Member member, String changeNickname) {
         if (member.isSameNickname(changeNickname)) {
             throw AnotherArtException.type(MemberErrorCode.NICKNAME_SAME_AS_BEFORE);
