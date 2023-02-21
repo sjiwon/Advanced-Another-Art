@@ -51,7 +51,7 @@ VALUES
     ('무라카미 다카시', '무라카미 다카시', 'user49', '{bcrypt}$2a$10$vy3/2JiOzY7hDDxIgmB4k.FgmbRdvFHLpoub6voMEtv01De2z7Oqy', '성균관대학교', '01055559999', 'user49@gmail.com', 13561, '서울특별시 강남구 테헤란로 131', 'Toss', 99930000, 'USER'),
     ('왕희지', '왕희지', 'user50', '{bcrypt}$2a$10$iG3.nDvIfqCSuXEg8jw/UOjhSYnG1lUe7cS80X/2OavKVnbxZFO.i', '성균관대학교', '01066660000', 'user50@gmail.com', 13561, '서울특별시 강남구 테헤란로 131', 'Toss', 100123000, 'USER');
 
-INSERT INTO art(member_id, name, description, price, art_type, art_status, registration_date, upload_name, storage_name)
+INSERT INTO art(owner_id, name, description, price, art_type, art_status, registration_date, upload_name, storage_name)
 VALUES
     (1, 'art1', 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo', 10000, 'AUCTION', 'SOLD_OUT', '2022-07-10 09:34:12', 'art1.png', '73eff5de6b.png'),
     (1, 'art2', 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo', 20000, 'AUCTION', 'SOLD_OUT', '2022-07-10 11:21:30', 'art2.png', '48d1960376.png'),

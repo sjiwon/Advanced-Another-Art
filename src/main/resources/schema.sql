@@ -38,7 +38,7 @@ CREATE TABLE point_detail (
 
 CREATE TABLE art (
     id BIGINT AUTO_INCREMENT,
-    member_id BIGINT NOT NULL COMMENT '작품 소유자 ID (FK)',
+    owner_id BIGINT NOT NULL COMMENT '작품 소유자 ID (FK)',
     name VARCHAR(100) NOT NULL UNIQUE COMMENT '작품명',
     description TEXT NOT NULL COMMENT '작품 설명',
     art_type VARCHAR(10) NOT NULL COMMENT '작품 타입 -> 일반/경매',
@@ -108,7 +108,7 @@ CREATE TABLE token (
 
 ALTER TABLE art
 ADD CONSTRAINT art_ibfk1_member_id
-FOREIGN KEY (member_id)
+FOREIGN KEY (owner_id)
 REFERENCES member(id);
 
 ALTER TABLE art_hashtag

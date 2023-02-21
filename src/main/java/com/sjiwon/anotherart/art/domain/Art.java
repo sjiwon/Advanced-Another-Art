@@ -55,7 +55,7 @@ public class Art {
     private LocalDateTime registrationDate;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "member_id", referencedColumnName = "id", nullable = false, updatable = false)
+    @JoinColumn(name = "owner_id", referencedColumnName = "id", nullable = false, updatable = false)
     private Member owner;
 
     @OneToMany(mappedBy = "art", cascade = {CascadeType.PERSIST})
