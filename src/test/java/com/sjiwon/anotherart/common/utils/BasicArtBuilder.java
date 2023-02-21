@@ -1,4 +1,4 @@
-package com.sjiwon.anotherart.art.controller.utils;
+package com.sjiwon.anotherart.common.utils;
 
 import com.sjiwon.anotherart.art.domain.ArtStatus;
 import com.sjiwon.anotherart.art.infra.query.dto.BasicAuctionArt;

@@ -15,9 +15,9 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.sjiwon.anotherart.art.controller.utils.BasicArtBuilder.createAuctionArtList;
-import static com.sjiwon.anotherart.art.controller.utils.BasicArtBuilder.createGeneralArtList;
 import static com.sjiwon.anotherart.common.utils.ArtUtils.COMMON_DEFAULT_HASHTAGS;
+import static com.sjiwon.anotherart.common.utils.BasicArtBuilder.createAuctionArtList;
+import static com.sjiwon.anotherart.common.utils.BasicArtBuilder.createGeneralArtList;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;

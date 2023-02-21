@@ -1,12 +1,12 @@
 package com.sjiwon.anotherart.art.controller;
 
-import com.sjiwon.anotherart.art.controller.utils.BasicArtBuilder;
 import com.sjiwon.anotherart.art.exception.ArtErrorCode;
 import com.sjiwon.anotherart.art.infra.query.dto.BasicAuctionArt;
 import com.sjiwon.anotherart.art.infra.query.dto.BasicGeneralArt;
 import com.sjiwon.anotherart.art.service.dto.response.AuctionArt;
 import com.sjiwon.anotherart.art.service.dto.response.GeneralArt;
 import com.sjiwon.anotherart.common.ControllerTest;
+import com.sjiwon.anotherart.common.utils.BasicArtBuilder;
 import com.sjiwon.anotherart.fixture.ArtFixture;
 import com.sjiwon.anotherart.global.exception.AnotherArtException;
 import org.junit.jupiter.api.DisplayName;

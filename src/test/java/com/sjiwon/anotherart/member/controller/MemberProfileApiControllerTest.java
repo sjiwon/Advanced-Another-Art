@@ -1,8 +1,9 @@
 package com.sjiwon.anotherart.member.controller;
 
-import com.sjiwon.anotherart.art.controller.utils.BasicArtBuilder;
 import com.sjiwon.anotherart.common.ControllerTest;
 import com.sjiwon.anotherart.common.utils.ArtUtils;
+import com.sjiwon.anotherart.common.utils.BasicArtBuilder;
+import com.sjiwon.anotherart.common.utils.SimpleArtBuilder;
 import com.sjiwon.anotherart.fixture.ArtFixture;
 import com.sjiwon.anotherart.fixture.MemberFixture;
 import com.sjiwon.anotherart.global.security.exception.AuthErrorCode;
@@ -10,6 +11,7 @@ import com.sjiwon.anotherart.member.domain.Member;
 import com.sjiwon.anotherart.member.domain.point.PointType;
 import com.sjiwon.anotherart.member.infra.query.dto.response.UserPointHistory;
 import com.sjiwon.anotherart.member.service.dto.response.UserProfile;
+import com.sjiwon.anotherart.member.service.dto.response.UserTradedAuctionArt;
 import com.sjiwon.anotherart.member.service.dto.response.UserWinningAuction;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -22,6 +24,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import static com.sjiwon.anotherart.common.utils.MemberUtils.ROLE_USER;
+import static com.sjiwon.anotherart.common.utils.TokenUtils.BEARER_TOKEN;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
@@ -37,7 +40,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @DisplayName("Member [Controller Layer] -> MemberProfileApiController 테스트")
 class MemberProfileApiControllerTest extends ControllerTest {
-    private static final String BEARER = "Bearer ";
     private static final Member DEFAULT_MEMBER = MemberFixture.A.toMember();
     private static final int DEFAULT_TOTAL_POINT = 100_000_000;
 
@@ -95,7 +97,7 @@ class MemberProfileApiControllerTest extends ControllerTest {
             // when
             MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
                     .get(BASE_URL, memberId)
-                    .header(AUTHORIZATION, BEARER + accessToken);
+                    .header(AUTHORIZATION, BEARER_TOKEN + accessToken);
 
             // then
             final AuthErrorCode expectedError = AuthErrorCode.INVALID_TOKEN;
@@ -145,7 +147,7 @@ class MemberProfileApiControllerTest extends ControllerTest {
             // when
             MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
                     .get(BASE_URL, memberId)
-                    .header(AUTHORIZATION, BEARER + accessToken);
+                    .header(AUTHORIZATION, BEARER_TOKEN + accessToken);
 
             // then
             mockMvc.perform(requestBuilder)
@@ -244,7 +246,7 @@ class MemberProfileApiControllerTest extends ControllerTest {
             // when
             MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
                     .get(BASE_URL, memberId)
-                    .header(AUTHORIZATION, BEARER + accessToken);
+                    .header(AUTHORIZATION, BEARER_TOKEN + accessToken);
 
             // then
             final AuthErrorCode expectedError = AuthErrorCode.INVALID_TOKEN;
@@ -306,7 +308,7 @@ class MemberProfileApiControllerTest extends ControllerTest {
             // when
             MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
                     .get(BASE_URL, memberId)
-                    .header(AUTHORIZATION, BEARER + accessToken);
+                    .header(AUTHORIZATION, BEARER_TOKEN + accessToken);
 
             // then
             mockMvc.perform(requestBuilder)
@@ -388,7 +390,7 @@ class MemberProfileApiControllerTest extends ControllerTest {
             // when
             MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
                     .get(BASE_URL, memberId)
-                    .header(AUTHORIZATION, BEARER + accessToken);
+                    .header(AUTHORIZATION, BEARER_TOKEN + accessToken);
 
             // then
             final AuthErrorCode expectedError = AuthErrorCode.INVALID_TOKEN;
@@ -443,7 +445,7 @@ class MemberProfileApiControllerTest extends ControllerTest {
             // when
             MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
                     .get(BASE_URL, memberId)
-                    .header(AUTHORIZATION, BEARER + accessToken);
+                    .header(AUTHORIZATION, BEARER_TOKEN + accessToken);
 
             // then
             mockMvc.perform(requestBuilder)
@@ -478,6 +480,152 @@ class MemberProfileApiControllerTest extends ControllerTest {
                                             fieldWithPath("result[].art.ownerId").description("작품 주인 ID(PK)"),
                                             fieldWithPath("result[].art.ownerNickname").description("작품 주인 닉네임"),
                                             fieldWithPath("result[].art.ownerSchool").description("작품 주인 재학중인 학교"),
+                                            fieldWithPath("result[].hashtags").description("작품의 해시태그 리스트")
+                                    )
+                            )
+                    );
+        }
+    }
+
+    @Nested
+    @DisplayName("사용자의 낙찰된 경매 작품 조회 테스트 [GET /api/members/{memberId}/auctions/sold]")
+    class userSoldAuctionArt {
+        private static final String BASE_URL = "/api/members/{memberId}/auctions/sold";
+
+        @Test
+        @DisplayName("Authorization 헤더에 Access Token이 없음에 따라 예외가 발생한다")
+        void test1() throws Exception {
+            // given
+            Long memberId = 1L;
+            Long payloadId = 1L;
+
+            // when
+            MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
+                    .get(BASE_URL, memberId);
+
+            // then
+            final AuthErrorCode expectedError = AuthErrorCode.INVALID_TOKEN;
+            mockMvc.perform(requestBuilder)
+                    .andExpect(status().isForbidden())
+                    .andExpect(jsonPath("$.statusCode").exists())
+                    .andExpect(jsonPath("$.statusCode").value(expectedError.getStatus().value()))
+                    .andExpect(jsonPath("$.errorCode").exists())
+                    .andExpect(jsonPath("$.errorCode").value(expectedError.getErrorCode()))
+                    .andExpect(jsonPath("$.message").exists())
+                    .andExpect(jsonPath("$.message").value(expectedError.getMessage()))
+                    .andDo(
+                            document(
+                                    "MemberProfileApi/UserSoldAuctionArt/Failure/Case1",
+                                    preprocessRequest(prettyPrint()),
+                                    preprocessResponse(prettyPrint()),
+                                    pathParameters(
+                                            parameterWithName("memberId").description("사용자 ID(PK)")
+                                    ),
+                                    responseFields(
+                                            fieldWithPath("statusCode").description("HTTP 상태 코드"),
+                                            fieldWithPath("errorCode").description("커스텀 예외 코드"),
+                                            fieldWithPath("message").description("예외 메시지")
+                                    )
+                            )
+                    );
+        }
+
+        @Test
+        @DisplayName("Access Token Payload의 memberId와 PathVariable의 memberId가 일치하지 않음에 따라 예외가 발생한다")
+        void test2() throws Exception {
+            // given
+            Long memberId = 1L;
+            Long payloadId = 2L;
+            final String accessToken = jwtTokenProvider.createAccessToken(payloadId, ROLE_USER);
+
+            // when
+            MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
+                    .get(BASE_URL, memberId)
+                    .header(AUTHORIZATION, BEARER_TOKEN + accessToken);
+
+            // then
+            final AuthErrorCode expectedError = AuthErrorCode.INVALID_TOKEN;
+            mockMvc.perform(requestBuilder)
+                    .andExpect(status().isForbidden())
+                    .andExpect(jsonPath("$.statusCode").exists())
+                    .andExpect(jsonPath("$.statusCode").value(expectedError.getStatus().value()))
+                    .andExpect(jsonPath("$.errorCode").exists())
+                    .andExpect(jsonPath("$.errorCode").value(expectedError.getErrorCode()))
+                    .andExpect(jsonPath("$.message").exists())
+                    .andExpect(jsonPath("$.message").value(expectedError.getMessage()))
+                    .andDo(
+                            document(
+                                    "MemberProfileApi/UserSoldAuctionArt/Failure/Case2",
+                                    preprocessRequest(prettyPrint()),
+                                    preprocessResponse(prettyPrint()),
+                                    requestHeaders(
+                                            headerWithName(AUTHORIZATION).description("Access Token")
+                                    ),
+                                    pathParameters(
+                                            parameterWithName("memberId").description("사용자 ID(PK)")
+                                    ),
+                                    responseFields(
+                                            fieldWithPath("statusCode").description("HTTP 상태 코드"),
+                                            fieldWithPath("errorCode").description("커스텀 예외 코드"),
+                                            fieldWithPath("message").description("예외 메시지")
+                                    )
+                            )
+                    );
+        }
+
+        @Test
+        @DisplayName("사용자의 낙찰된 경매 작품 조회에 성공한다")
+        void test3() throws Exception {
+            // given
+            Long memberId = 1L;
+            Long payloadId = 1L;
+            final String accessToken = jwtTokenProvider.createAccessToken(payloadId, ROLE_USER);
+
+            List<UserTradedAuctionArt> response = List.of(
+                    UserTradedAuctionArt.builder()
+                            .art(SimpleArtBuilder.createSimpleAuctionArt(ArtFixture.A))
+                            .hashtags(ArtUtils.HASHTAGS)
+                            .build(),
+                    UserTradedAuctionArt.builder()
+                            .art(SimpleArtBuilder.createSimpleAuctionArt(ArtFixture.C))
+                            .hashtags(ArtUtils.UPDATE_HASHTAGS)
+                            .build()
+            );
+            given(memberProfileWithArtService.getSoldAuctionArt(memberId)).willReturn(response);
+
+            // when
+            MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
+                    .get(BASE_URL, memberId)
+                    .header(AUTHORIZATION, BEARER_TOKEN + accessToken);
+
+            // then
+            mockMvc.perform(requestBuilder)
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.result").exists())
+                    .andExpect(jsonPath("$.result.size()").value(response.size()))
+                    .andDo(
+                            document(
+                                    "MemberProfileApi/UserSoldAuctionArt/Success",
+                                    preprocessRequest(prettyPrint()),
+                                    preprocessResponse(prettyPrint()),
+                                    requestHeaders(
+                                            headerWithName(AUTHORIZATION).description("Access Token")
+                                    ),
+                                    pathParameters(
+                                            parameterWithName("memberId").description("사용자 ID(PK)")
+                                    ),
+                                    responseFields(
+                                            fieldWithPath("result[].art.ownerId").description("작품 주인 ID(PK)"),
+                                            fieldWithPath("result[].art.ownerNickname").description("작품 주인 닉네임"),
+                                            fieldWithPath("result[].art.ownerSchool").description("작품 주인 재학중인 학교"),
+                                            fieldWithPath("result[].art.buyerId").description("작품 구매자 ID(PK)"),
+                                            fieldWithPath("result[].art.buyerNickname").description("작품 구매자 닉네임"),
+                                            fieldWithPath("result[].art.buyerSchool").description("작품 구매자 재학중인 학교"),
+                                            fieldWithPath("result[].art.artId").description("경매 작품 ID(PK)"),
+                                            fieldWithPath("result[].art.artName").description("경매 작품명"),
+                                            fieldWithPath("result[].art.artDescription").description("경매 작품 설명"),
+                                            fieldWithPath("result[].art.purchasePrice").description("경매 작품 초기 가격"),
+                                            fieldWithPath("result[].art.artStorageName").description("경매 작품 서버 저장명(UUID)"),
                                             fieldWithPath("result[].hashtags").description("작품의 해시태그 리스트")
                                     )
                             )
