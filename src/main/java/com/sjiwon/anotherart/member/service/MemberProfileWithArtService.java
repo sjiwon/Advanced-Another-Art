@@ -12,6 +12,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+import static com.sjiwon.anotherart.art.domain.ArtType.AUCTION;
+import static com.sjiwon.anotherart.art.domain.ArtType.GENERAL;
 import static com.sjiwon.anotherart.art.utils.HashtagAssembler.extractHashtagListByArtId;
 
 @Service
@@ -35,22 +37,22 @@ public class MemberProfileWithArtService {
     }
 
     public List<UserTradedArt> getSoldAuctionArt(Long memberId) {
-        List<SimpleTradedArt> soldAuctionArtList = artRepository.findSoldAuctionArtListByMemberId(memberId);
+        List<SimpleTradedArt> soldAuctionArtList = artRepository.findSoldArtListByMemberIdAndType(memberId, AUCTION);
         return assemblingResult(soldAuctionArtList);
     }
 
     public List<UserTradedArt> getSoldGeneralArt(Long memberId) {
-        List<SimpleTradedArt> soldGeneralArtList = artRepository.findSoldGeneralArtListByMemberId(memberId);
+        List<SimpleTradedArt> soldGeneralArtList = artRepository.findSoldArtListByMemberIdAndType(memberId, GENERAL);
         return assemblingResult(soldGeneralArtList);
     }
 
     public List<UserTradedArt> getPurchaseAuctionArt(Long memberId) {
-        List<SimpleTradedArt> purchaseAuctionArtList = artRepository.findPurchaseAuctionArtListByMemberId(memberId);
+        List<SimpleTradedArt> purchaseAuctionArtList = artRepository.findPurchaseArtListByMemberIdAndType(memberId, AUCTION);
         return assemblingResult(purchaseAuctionArtList);
     }
 
     public List<UserTradedArt> getPurchaseGeneralArt(Long memberId) {
-        List<SimpleTradedArt> purchaseGeneralArtList = artRepository.findPurchaseGeneralArtListByMemberId(memberId);
+        List<SimpleTradedArt> purchaseGeneralArtList = artRepository.findPurchaseArtListByMemberIdAndType(memberId, GENERAL);
         return assemblingResult(purchaseGeneralArtList);
     }
 

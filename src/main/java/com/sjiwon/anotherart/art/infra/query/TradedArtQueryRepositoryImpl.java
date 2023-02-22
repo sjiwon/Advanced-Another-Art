@@ -10,8 +10,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static com.sjiwon.anotherart.art.domain.ArtType.AUCTION;
-import static com.sjiwon.anotherart.art.domain.ArtType.GENERAL;
 import static com.sjiwon.anotherart.art.domain.QArt.art;
 import static com.sjiwon.anotherart.art.utils.ArtQueryFetchingUtils.assembleSimpleTradedArtProjections;
 import static com.sjiwon.anotherart.purchase.domain.QPurchase.purchase;
@@ -24,7 +22,7 @@ public class TradedArtQueryRepositoryImpl implements TradedArtQueryRepository {
     private static final QMember buyer = new QMember("buyer");
 
     @Override
-    public List<SimpleTradedArt> findSoldAuctionArtListByMemberId(Long memberId) {
+    public List<SimpleTradedArt> findSoldArtListByMemberIdAndType(Long ownerId, ArtType type) {
         return query
                 .select(assembleSimpleTradedArtProjections())
                 .from(art)
@@ -32,14 +30,14 @@ public class TradedArtQueryRepositoryImpl implements TradedArtQueryRepository {
                 .innerJoin(purchase).on(purchase.art.id.eq(art.id))
                 .innerJoin(purchase.buyer, buyer)
                 .where(
-                        artTypeEq(AUCTION),
-                        ownerIdEq(memberId)
+                        artTypeEq(type),
+                        ownerIdEq(ownerId)
                 )
                 .fetch();
     }
 
     @Override
-    public List<SimpleTradedArt> findSoldGeneralArtListByMemberId(Long memberId) {
+    public List<SimpleTradedArt> findPurchaseArtListByMemberIdAndType(Long buyerId, ArtType type) {
         return query
                 .select(assembleSimpleTradedArtProjections())
                 .from(art)
@@ -47,38 +45,8 @@ public class TradedArtQueryRepositoryImpl implements TradedArtQueryRepository {
                 .innerJoin(purchase).on(purchase.art.id.eq(art.id))
                 .innerJoin(purchase.buyer, buyer)
                 .where(
-                        artTypeEq(GENERAL),
-                        ownerIdEq(memberId)
-                )
-                .fetch();
-    }
-
-    @Override
-    public List<SimpleTradedArt> findPurchaseAuctionArtListByMemberId(Long memberId) {
-        return query
-                .select(assembleSimpleTradedArtProjections())
-                .from(art)
-                .innerJoin(art.owner, owner)
-                .innerJoin(purchase).on(purchase.art.id.eq(art.id))
-                .innerJoin(purchase.buyer, buyer)
-                .where(
-                        artTypeEq(AUCTION),
-                        buyerIdEq(memberId)
-                )
-                .fetch();
-    }
-
-    @Override
-    public List<SimpleTradedArt> findPurchaseGeneralArtListByMemberId(Long memberId) {
-        return query
-                .select(assembleSimpleTradedArtProjections())
-                .from(art)
-                .innerJoin(art.owner, owner)
-                .innerJoin(purchase).on(purchase.art.id.eq(art.id))
-                .innerJoin(purchase.buyer, buyer)
-                .where(
-                        artTypeEq(GENERAL),
-                        buyerIdEq(memberId)
+                        artTypeEq(type),
+                        buyerIdEq(buyerId)
                 )
                 .fetch();
     }

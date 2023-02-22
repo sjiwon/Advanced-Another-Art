@@ -26,6 +26,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.List;
 
+import static com.sjiwon.anotherart.art.domain.ArtType.AUCTION;
+import static com.sjiwon.anotherart.art.domain.ArtType.GENERAL;
 import static com.sjiwon.anotherart.common.utils.ArtUtils.*;
 import static com.sjiwon.anotherart.common.utils.MemberUtils.INIT_AVAILABLE_POINT;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -77,7 +79,7 @@ class TradedArtQueryRepositoryTest extends RepositoryTest {
         processPurchase(buyer, generalArt, generalArt.getPrice());
 
         // when - then
-        List<SimpleTradedArt> simpleTradedArtList = artRepository.findSoldAuctionArtListByMemberId(owner.getId());
+        List<SimpleTradedArt> simpleTradedArtList = artRepository.findSoldArtListByMemberIdAndType(owner.getId(), AUCTION);
         assertAll(
                 () -> assertThat(simpleTradedArtList.size()).isEqualTo(2),
                 () -> assertThat(simpleTradedArtList.get(0).getArtId()).isEqualTo(auctionArtA.getId()),
@@ -112,7 +114,7 @@ class TradedArtQueryRepositoryTest extends RepositoryTest {
         processPurchase(buyer, generalArt, generalArt.getPrice());
 
         // when - then
-        List<SimpleTradedArt> simpleTradedArtList = artRepository.findSoldGeneralArtListByMemberId(owner.getId());
+        List<SimpleTradedArt> simpleTradedArtList = artRepository.findSoldArtListByMemberIdAndType(owner.getId(), GENERAL);
         assertAll(
                 () -> assertThat(simpleTradedArtList.size()).isEqualTo(1),
                 () -> assertThat(simpleTradedArtList.get(0).getArtId()).isEqualTo(generalArt.getId()),
@@ -145,7 +147,7 @@ class TradedArtQueryRepositoryTest extends RepositoryTest {
         processPurchase(buyerB, generalArt, generalArt.getPrice());
 
         // when - then
-        List<SimpleTradedArt> simpleTradedArtList1 = artRepository.findPurchaseAuctionArtListByMemberId(buyerB.getId());
+        List<SimpleTradedArt> simpleTradedArtList1 = artRepository.findPurchaseArtListByMemberIdAndType(buyerB.getId(), AUCTION);
         assertAll(
                 () -> assertThat(simpleTradedArtList1.size()).isEqualTo(1),
                 () -> assertThat(simpleTradedArtList1.get(0).getArtId()).isEqualTo(auctionArtA.getId()),
@@ -153,7 +155,7 @@ class TradedArtQueryRepositoryTest extends RepositoryTest {
                 () -> assertThat(simpleTradedArtList1.get(0).getPurchasePrice()).isEqualTo(auctionA.getBidAmount())
         );
 
-        List<SimpleTradedArt> simpleTradedArtList2 = artRepository.findPurchaseAuctionArtListByMemberId(buyerC.getId());
+        List<SimpleTradedArt> simpleTradedArtList2 = artRepository.findPurchaseArtListByMemberIdAndType(buyerC.getId(), AUCTION);
         assertAll(
                 () -> assertThat(simpleTradedArtList2.size()).isEqualTo(1),
                 () -> assertThat(simpleTradedArtList2.get(0).getArtId()).isEqualTo(auctionArtC.getId()),
@@ -186,7 +188,7 @@ class TradedArtQueryRepositoryTest extends RepositoryTest {
         processPurchase(buyerB, generalArt, generalArt.getPrice());
 
         // when - then
-        List<SimpleTradedArt> simpleTradedArtList1 = artRepository.findPurchaseGeneralArtListByMemberId(buyerB.getId());
+        List<SimpleTradedArt> simpleTradedArtList1 = artRepository.findPurchaseArtListByMemberIdAndType(buyerB.getId(), GENERAL);
         assertAll(
                 () -> assertThat(simpleTradedArtList1.size()).isEqualTo(1),
                 () -> assertThat(simpleTradedArtList1.get(0).getArtId()).isEqualTo(generalArt.getId()),
@@ -194,7 +196,7 @@ class TradedArtQueryRepositoryTest extends RepositoryTest {
                 () -> assertThat(simpleTradedArtList1.get(0).getPurchasePrice()).isEqualTo(generalArt.getPrice())
         );
 
-        List<SimpleTradedArt> simpleTradedArtList2 = artRepository.findPurchaseGeneralArtListByMemberId(buyerC.getId());
+        List<SimpleTradedArt> simpleTradedArtList2 = artRepository.findPurchaseArtListByMemberIdAndType(buyerC.getId(), GENERAL);
         assertThat(simpleTradedArtList2.size()).isEqualTo(0);
     }
 
