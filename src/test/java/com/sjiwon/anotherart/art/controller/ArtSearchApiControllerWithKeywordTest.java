@@ -154,6 +154,7 @@ class ArtSearchApiControllerWithKeywordTest extends ControllerTest {
                                             fieldWithPath("artList[].art.artName").description("경매 작품명"),
                                             fieldWithPath("artList[].art.artDescription").description("경매 작품 설명"),
                                             fieldWithPath("artList[].art.artPrice").description("경매 작품 초기 가격"),
+                                            fieldWithPath("artList[].art.artStatus").description("경매 작품 상태 (판매 중 / 판매 완료)"),
                                             fieldWithPath("artList[].art.artRegistrationDate").description("경매 작품 등록 날짜"),
                                             fieldWithPath("artList[].art.artStorageName").description("경매 작품 서버 저장명(UUID)"),
                                             fieldWithPath("artList[].art.ownerId").description("작품 주인 ID(PK)"),

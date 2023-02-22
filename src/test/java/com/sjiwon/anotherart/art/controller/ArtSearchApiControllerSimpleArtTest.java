@@ -146,6 +146,7 @@ class ArtSearchApiControllerSimpleArtTest extends ControllerTest {
                                             fieldWithPath("result.art.artName").description("경매 작품명"),
                                             fieldWithPath("result.art.artDescription").description("경매 작품 설명"),
                                             fieldWithPath("result.art.artPrice").description("경매 작품 초기 가격"),
+                                            fieldWithPath("result.art.artStatus").description("경매 작품 상태 (판매 중 / 판매 완료)"),
                                             fieldWithPath("result.art.artRegistrationDate").description("경매 작품 등록 날짜"),
                                             fieldWithPath("result.art.artStorageName").description("경매 작품 서버 저장명(UUID)"),
                                             fieldWithPath("result.art.ownerId").description("작품 주인 ID(PK)"),

@@ -50,6 +50,7 @@ public class BasicArtBuilder {
                 .artName(art.getName())
                 .artDescription(art.getDescription())
                 .artPrice(art.getPrice())
+                .artStatus(ArtStatus.FOR_SALE)
                 .artRegistrationDate(LocalDateTime.now().minusDays(1))
                 .artStorageName(generateStorageName())
                 .ownerId(1L)
@@ -62,21 +63,23 @@ public class BasicArtBuilder {
         List<BasicGeneralArt> basicGeneralArts = new ArrayList<>();
         int price = 1_000;
         for (int i = 1; i <= totalElements; i++) {
-            basicGeneralArts.add(BasicGeneralArt.builder()
-                    .artId(1L)
-                    .artName(commonTextList.get(i - 1))
-                    .artDescription(commonTextList.get(i - 1))
-                    .artPrice(price)
-                    .artStatus(ArtStatus.SOLD_OUT)
-                    .artRegistrationDate(currentTime1DayAgo)
-                    .artStorageName(generateStorageName())
-                    .ownerId(1L)
-                    .ownerNickname(MemberFixture.A.getNickname())
-                    .ownerSchool("경기대학교")
-                    .buyerId(2L)
-                    .buyerNickname(MemberFixture.B.getNickname())
-                    .buyerSchool("서울대학교")
-                    .build());
+            basicGeneralArts.add(
+                    BasicGeneralArt.builder()
+                            .artId(1L)
+                            .artName(commonTextList.get(i - 1))
+                            .artDescription(commonTextList.get(i - 1))
+                            .artPrice(price)
+                            .artStatus(ArtStatus.SOLD_OUT)
+                            .artRegistrationDate(currentTime1DayAgo)
+                            .artStorageName(generateStorageName())
+                            .ownerId(1L)
+                            .ownerNickname(MemberFixture.A.getNickname())
+                            .ownerSchool("경기대학교")
+                            .buyerId(2L)
+                            .buyerNickname(MemberFixture.B.getNickname())
+                            .buyerSchool("서울대학교")
+                            .build()
+            );
             price += 1_000;
         }
 
@@ -110,6 +113,7 @@ public class BasicArtBuilder {
                             .artName(commonTextList.get(i - 1))
                             .artDescription(commonTextList.get(i - 1))
                             .artPrice(1_000)
+                            .artStatus(ArtStatus.FOR_SALE)
                             .artRegistrationDate(LocalDateTime.now().minusDays(30 - i))
                             .artStorageName(generateStorageName())
                             .ownerId(1L)

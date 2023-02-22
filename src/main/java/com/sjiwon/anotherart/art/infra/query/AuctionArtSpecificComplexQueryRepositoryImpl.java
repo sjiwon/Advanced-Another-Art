@@ -148,7 +148,7 @@ public class AuctionArtSpecificComplexQueryRepositoryImpl implements AuctionArtS
         return Expressions.list(
                 auction.id, auction.bidAmount, auction.period.startDate, auction.period.endDate,
                 highestBidder.id, highestBidder.nickname, highestBidder.school,
-                art.id, art.name, art.description, art.price, art.registrationDate, art.uploadImage.storageName,
+                art.id, art.name, art.description, art.price, art.artStatus, art.registrationDate, art.uploadImage.storageName,
                 owner.id, owner.nickname, owner.school
         );
     }

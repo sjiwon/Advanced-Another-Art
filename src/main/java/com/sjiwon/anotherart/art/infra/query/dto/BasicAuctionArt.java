@@ -1,6 +1,7 @@
 package com.sjiwon.anotherart.art.infra.query.dto;
 
 import com.querydsl.core.annotations.QueryProjection;
+import com.sjiwon.anotherart.art.domain.ArtStatus;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -24,6 +25,7 @@ public class BasicAuctionArt {
     private final String artName;
     private final String artDescription;
     private final int artPrice;
+    private final ArtStatus artStatus;
     private final LocalDateTime artRegistrationDate;
     private final String artStorageName;
 
@@ -37,7 +39,7 @@ public class BasicAuctionArt {
     public BasicAuctionArt(
             Long auctionId, Integer highestBidPrice, LocalDateTime auctionStartDate, LocalDateTime auctionEndDate,
             Long highestBidderId, String highestBidderNickname, String highestBidderSchool,
-            Long artId, String artName, String artDescription, int artPrice, LocalDateTime artRegistrationDate, String artStorageName,
+            Long artId, String artName, String artDescription, int artPrice, ArtStatus artStatus, LocalDateTime artRegistrationDate, String artStorageName,
             Long ownerId, String ownerNickname, String ownerSchool
     ) {
         this.auctionId = auctionId;
@@ -51,6 +53,7 @@ public class BasicAuctionArt {
         this.artName = artName;
         this.artDescription = artDescription;
         this.artPrice = artPrice;
+        this.artStatus = artStatus;
         this.artRegistrationDate = artRegistrationDate;
         this.artStorageName = artStorageName;
         this.ownerId = ownerId;
