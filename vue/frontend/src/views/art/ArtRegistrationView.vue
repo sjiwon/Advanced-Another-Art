@@ -279,7 +279,7 @@ export default {
       }
       if (this.registerData.artType === 'auction') {
         if (this.validateAuctionInputDate() === false) {
-          alert('경매 작품은 시작날짜/종료날짜가 필수입니다')
+          alert('경매 작품은 시작날짜 & 종료날짜가 필수입니다')
           return false
         } else if (this.validateDate() === false) {
           alert('시작 날짜와 종료 날짜를 정확하게 선택해주세요')
@@ -318,6 +318,7 @@ export default {
         alert('작품 등록이 완료되었습니다')
         this.$router.push('/')
       } catch (err) {
+        console.log(err)
         alert(err.response.data.message)
       }
     }

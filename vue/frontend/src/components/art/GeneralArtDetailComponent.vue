@@ -39,12 +39,10 @@
           <div class="card_area">
             <div class="row g-3">
               <div v-if="isAlreadySoldOut === true">
-                <hr>
-                <h4 style="color: blueviolet">
-                  구매자 <font-awesome-icon icon="fa-solid fa-user-secret" /> -
-                  {{ generalArt.art.buyerNickname }}
+                <span style="color: blueviolet; font-size: 20px;">
+                  구매자 <font-awesome-icon icon="fa-solid fa-user-secret" /> | {{ generalArt.art.buyerNickname }}
                   <span style="font-size: 13px;">{{ generalArt.art.buyerSchool }}</span>
-                </h4>
+                </span>
               </div>
               <div v-if="isAlreadySoldOut === false">
                 <span v-if="Object.values(generalArt.likeMarkingMembers).includes(currentAuthenticatedUserId) === false">

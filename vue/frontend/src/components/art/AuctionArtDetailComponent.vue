@@ -52,11 +52,16 @@
               <h4 style="color: blue">
                 <font-awesome-icon icon="fa-solid fa-hand-holding-dollar"/> {{ auctionArt.art.highestBidPrice }}원 낙찰 완료
               </h4>
-              <span style="color: black; font-size: 20px;">낙찰자 | {{ auctionArt.art.highestBidderNickname }} ({{ auctionArt.art.highestBidderSchool }})</span>
+              <span v-if="isForSale" style="color: black; font-size: 20px;">
+                낙찰자 | {{ auctionArt.art.highestBidderNickname }} ({{ auctionArt.art.highestBidderSchool }})
+              </span>
+              <span v-if="isForSale === false" style="color: black; font-size: 20px;">
+                구매자 <font-awesome-icon icon="fa-solid fa-user-secret" /> | {{ auctionArt.art.highestBidderNickname }} ({{ auctionArt.art.highestBidderSchool }})
+              </span>
             </div>
           </div>
 
-          <div class="card_area">
+          <div v-if="isAuthenticated" class="card_area">
             <div class="row g-3">
               <div v-if="isOwnWork === true">
                 <b-button @click="deleteAuctionArt()" variant="danger">
@@ -65,7 +70,7 @@
                 </b-button>
               </div>
               <div v-else>
-                <span v-if="isCurrentlyActiveAuction === true">
+                <span v-if="isCurrentlyActiveAuction">
                   <span v-if="Object.values(auctionArt.likeMarkingMembers).includes(currentAuthenticatedUserId) === false">
                     <b-button @click="likeMarking()" variant="outline-danger">
                       <font-awesome-icon icon="fa-solid fa-heart" style="margin-right: 5px;"/> 찜 등록
@@ -76,17 +81,20 @@
                       <font-awesome-icon icon="fa-solid fa-heart" style="margin-right: 5px;"/> 찜 취소
                     </b-button>
                   </span>
-                  <b-button variant="outline-primary" :disabled="currentAuthenticatedUserId === auctionArt.art.highestBidderId" v-b-modal.bidModal>
+                  <b-button v-if="isForSale" variant="outline-primary" :disabled="currentAuthenticatedUserId === auctionArt.art.highestBidderId" v-b-modal.bidModal>
                     <font-awesome-icon icon="fa-solid fa-gavel" style="margin-right: 5px;"/> 작품 입찰하기
                   </b-button>
                 </span>
                 <span v-else>
-                  <b-button @click="auctionArtPurchase()" variant="success" :disabled="currentAuthenticatedUserId !== auctionArt.art.highestBidderId">
+                  <b-button v-if="isForSale && currentAuthenticatedUserId === auctionArt.art.highestBidderId" @click="auctionArtPurchase()" variant="success">
                     <font-awesome-icon icon="fa-solid fa-money-check-dollar" style="margin-right: 5px;"/> 작품 구매하기
                   </b-button>
                 </span>
               </div>
             </div>
+          </div>
+          <div v-else>
+            <p style="color: red;">입찰을 원하신다면 로그인을 진행해주세요</p>
           </div>
 
           <!-- 경매 작품 입찰 모달창 -->
@@ -199,12 +207,15 @@ export default {
       }
     },
     async auctionArtPurchase() {
-      try {
-        await this.axiosWithAccessToken.post(`/api/art/${this.auctionArt.art.artId}/purchase`)
-        alert('구매가 완료되었습니다')
-        this.$router.push('/')
-      } catch (err) {
-        alert(err.response.data.message)
+      const check = confirm('구매를 확정시겠습니까?')
+      if(check) {
+        try {
+          await this.axiosWithAccessToken.post(`/api/art/${this.auctionArt.art.artId}/purchase`);
+          alert('구매가 완료되었습니다')
+          this.$router.push('/')
+        } catch (err) {
+          alert(err.response.data.message)
+        }
       }
     },
     bidTracker() {
@@ -223,7 +234,13 @@ export default {
     },
     isCurrentlyActiveAuction() {
       return new Date(new Date().getTime() - new Date().getTimezoneOffset() * 60000).toISOString() < this.auctionArt.art.auctionEndDate
-    }
+    },
+    isAuthenticated() {
+      return this.$store.getters['memberStore/isAuthenticated'] === true
+    },
+    isForSale() {
+      return this.auctionArt.art.artStatus === 'FOR_SALE'
+    },
   }
 }
 </script>

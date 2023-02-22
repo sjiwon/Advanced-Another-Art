@@ -25,7 +25,7 @@
 
           <div class="col-md-6 offset-md-3">
             <b-button @click="findIdProcess()" :style="successFindButtonDisplay" variant="outline-info" class="form-control p-3 mt-1">아이디 찾기</b-button>
-            <p v-if="successFindButtonDisplay.display === 'none'" style="color: red;">아이디는 <span style="font-weight: bold">{{ this.findIdResult }}</span>입니다</p>
+            <p v-if="successFindButtonDisplay.display === 'none'" style="color: blue;">아이디는 <span style="font-weight: bold">{{ this.findIdResult }}</span>입니다</p>
             <b-button v-if="successFindButtonDisplay.display === 'none'" variant="outline-info" class="form-control p-3 mt-1" @click="$router.push('/login')">로그인 바로가기</b-button>
           </div>
         </div>
@@ -118,7 +118,7 @@ export default {
       try {
         const { name, email } = this.requestData
         const response = await this.axios.get(`/api/member/id?name=${name}&email=${email}`)
-        this.findIdResult = response.data
+        this.findIdResult = response.data.result
 
         this.successFindButtonDisplay.display = 'none'
         this.emailCheck.isMeetCondition = false

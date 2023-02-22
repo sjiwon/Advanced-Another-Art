@@ -3,29 +3,30 @@
     <div class="card border-black-50">
       <div>
         <a>
-          <img :src="require(`@/../../../src/main/resources/static/images/arts/${art.purchaseAuctionArt.artStorageName}`)"
-               alt="" style="width: 100%; height: 200px; margin-bottom: 10px;">
+          <img :src="require(`@/../../../src/main/resources/static/images/arts/${auctionArt.art.artStorageName}`)"
+               @click="goToDetailPage(auctionArt.art.artId, auctionArt.art.artName)"
+               alt="" style="width: 100%; height: 200px; margin-bottom: 10px; cursor: pointer;">
         </a>
       </div>
       <div class="card-header">
-        <h3>{{ art.purchaseAuctionArt.artName }}</h3>
-        <h6>{{ art.purchaseAuctionArt.artDescription }}</h6>
+        <h3>{{ auctionArt.art.artName }}</h3>
+        <h6>{{ auctionArt.art.artDescription }}</h6>
       </div>
       <div class="card-body">
         <p>
           <b>판매자</b><br>
           <span>
-            {{ art.purchaseAuctionArt.artOwnerNickname }}
-            <small style="font-size: 12px;">({{ art.purchaseAuctionArt.artOwnerSchool }})</small>
+            {{ auctionArt.art.ownerNickname }}
+            <small style="font-size: 12px;">({{ auctionArt.art.ownerSchool }})</small>
           </span>
         </p>
         <p>
-          <b>낙찰 가격</b><br>
-          <small>{{ art.purchaseAuctionArt.purchasePrice }}원</small>
+          <b>구매 가격</b><br>
+          <small>{{ auctionArt.art.purchasePrice }}원</small>
         </p>
       </div>
       <div class="card-footer">
-        <span class="product_tag" v-for="(tag, index) in art.hashtagList" :key="index">#{{ tag }}</span>
+        <span class="product_tag" v-for="(tag, index) in auctionArt.hashtags" :key="index">#{{ tag }}</span>
       </div>
     </div>
   </div>
@@ -35,23 +36,22 @@
 export default {
   name: 'SimpleAuctionArtComponent',
   props: {
-    art: Object
+    auctionArt: Object
   },
-  components: {},
-  data() {
-    return {
-      sampleData: ''
+  methods: {
+    goToDetailPage(artId, artName) {
+      this.$store.commit('detailSearch/applyCurrentSelectedArt', {
+        artId: artId,
+        artType: 'auction'
+      })
+      this.$router.push({
+        path: '/art',
+        query: {
+          name: artName
+        }
+      })
     }
-  },
-  setup() {
-  },
-  created() {
-  },
-  mounted() {
-  },
-  unmounted() {
-  },
-  methods: {}
+  }
 }
 </script>
 

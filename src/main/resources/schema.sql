@@ -72,7 +72,7 @@ CREATE TABLE auction (
     art_id BIGINT NOT NULL COMMENT '경매 작품 ID (FK)',
     start_date DATETIME NOT NULL COMMENT '경매 시작 날짜',
     end_date DATETIME NOT NULL COMMENT '경매 종료 날짜',
-    bidder_id BIGINT NOT NULL COMMENT '최고 입찰자 ID (FK) (초기값 = 작품 소유자)',
+    bidder_id BIGINT COMMENT '최고 입찰자 ID (FK) (초기값 = 작품 소유자)',
     bid_amount INT NOT NULL COMMENT '최고 입찰가 (초기값 = 작품 가격)',
 
     PRIMARY KEY (id)

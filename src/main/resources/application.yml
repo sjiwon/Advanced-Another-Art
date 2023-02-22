@@ -9,12 +9,10 @@ spring:
     import:
       - security/application-local-datasource.yml
       - security/application-jwt.yml
+      - security/application-file.yml
 
   web:
     resources:
       static-locations:
         - file:src/main/resources/static/
         - classpath:/static/
-
-file:
-  dir: src/main/resources/static/images/arts/

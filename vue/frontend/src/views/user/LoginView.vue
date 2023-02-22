@@ -41,7 +41,7 @@
 <script>
 export default {
   name: 'LoginView',
-  components: {},
+
   data() {
     return {
       css: {
@@ -58,6 +58,7 @@ export default {
       }
     }
   },
+
   methods: {
     validateLoginRequest() {
       const { loginId, loginPassword } = this.loginData
@@ -77,7 +78,7 @@ export default {
       } catch (err) {
         console.log(err)
         this.$store.commit('memberStore/reset')
-        alert(error.response.data.message)
+        alert(err.response.data.message)
       }
     }
   }

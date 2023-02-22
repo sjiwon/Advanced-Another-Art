@@ -25,10 +25,10 @@
           <div class="col-md-6 offset-md-3">
             <div class="row">
               <div class="col-md-8 mb-2">
-                <input type="text" class="form-control p-3" placeholder="전화번호" required min="10" max="11" v-model="checkInputData.phoneNumber" @keyup="currentPhoneNumberApiState()"/>
+                <input type="text" class="form-control p-3" placeholder="전화번호" required min="10" max="11" v-model="checkInputData.phone" @keyup="currentPhoneNumberApiState()"/>
               </div>
               <div class="col-md-4">
-                <b-button variant="outline-info" class="form-control p-3 mt-1" :disabled="duplicateApiCheck.phoneNumberDisabled" @click="phoneNumberDuplicateCheck()">중복 체크</b-button>
+                <b-button variant="outline-info" class="form-control p-3 mt-1" :disabled="duplicateApiCheck.phoneDisabled" @click="phoneDuplicateCheck()">중복 체크</b-button>
               </div>
             </div>
           </div>
@@ -170,7 +170,7 @@ export default {
       checkInputData: {
         name: '',
         nickname: '',
-        phoneNumber: '',
+        phone: '',
         loginId: '',
         password: '',
         school: '',
@@ -188,8 +188,8 @@ export default {
       duplicateApiCheck: {
         nicknameCheck: false,
         nickNameDisabled: false,
-        phoneNumberCheck: false,
-        phoneNumberDisabled: false,
+        phoneCheck: false,
+        phoneDisabled: false,
         loginIdCheck: false,
         loginIdDisabled: false,
         emailCheck: false,
@@ -212,7 +212,7 @@ export default {
         },
         isNotMeetCondition: false,
         isMeetCondition: false,
-        errorMessage: '영문, 숫자, 특수문자를 하나 이상 포함하고 8자 이상이여야 합니다',
+        errorMessage: '영문, 숫자, 특수문자를 하나 이상 포함하고 8자 이상 25자 이하여야 합니다',
         successMessage: '사용 가능한 비밀번호입니다'
       },
       passwordVerification: {
@@ -280,21 +280,21 @@ export default {
       }
     },
     currentPhoneNumberApiState() {
-      this.duplicateApiCheck.phoneNumberDisabled = false
-      this.duplicateApiCheck.phoneNumberCheck = false
+      this.duplicateApiCheck.phoneDisabled = false
+      this.duplicateApiCheck.phoneCheck = false
     },
-    async phoneNumberDuplicateCheck() {
-      const phoneNumber = this.checkInputData.phoneNumber
-      if (phoneNumber === '') {
+    async phoneDuplicateCheck() {
+      const phone = this.checkInputData.phone
+      if (phone === '') {
         alert('전화번호를 입력해주세요')
         return false
       }
 
       try {
-        await this.axios.get(`/api/member/duplicate?resource=phone&value=${phoneNumber}`)
+        await this.axios.get(`/api/member/duplicate?resource=phone&value=${phone}`)
         alert('사용 가능한 전화번호입니다')
-        this.duplicateApiCheck.phoneNumberDisabled = true
-        this.duplicateApiCheck.phoneNumberCheck = true
+        this.duplicateApiCheck.phoneDisabled = true
+        this.duplicateApiCheck.phoneCheck = true
       } catch (err) {
         alert(err.response.data.message)
       }
@@ -391,7 +391,7 @@ export default {
       const key = 'ac28e0697af24886fdf4a130fe263b13'
 
       try {
-        const response = await this.axios.get(`//www.career.go.kr/cnet/openapi/getOpenApi?apiKey=${key}&svcType=api&svcCode=SCHOOL&contentType=json&gubun=univ_list&searchSchulNm=${searchKeyword}`)
+        const response = await this.externalAxios.get(`http://www.career.go.kr/cnet/openapi/getOpenApi?apiKey=${key}&svcType=api&svcCode=SCHOOL&contentType=json&gubun=univ_list&searchSchulNm=${searchKeyword}`)
         const schoolList = response.data.dataSearch.content
         this.aboutSchool.univSearchResult = []
         for (let i = 0; i < schoolList.length; i++) {
@@ -468,11 +468,11 @@ export default {
     },
     validateApiResultState() {
       const nicknameCheck = this.duplicateApiCheck.nicknameCheck
-      const phoneNumberCheck = this.duplicateApiCheck.phoneNumberCheck
+      const phoneCheck = this.duplicateApiCheck.phoneCheck
       const loginIdCheck = this.duplicateApiCheck.loginIdCheck
       const emailCheck = this.duplicateApiCheck.emailCheck
 
-      return !(nicknameCheck === false || phoneNumberCheck === false || loginIdCheck === false || emailCheck === false)
+      return !(nicknameCheck === false || phoneCheck === false || loginIdCheck === false || emailCheck === false)
     },
     async signUpProcess() {
       if (this.validateInputState() === false) {
@@ -480,7 +480,7 @@ export default {
         return false
       }
       if (this.validatePassword() === false) {
-        alert('비밀번호가 조건을 충족하지 않습니다\n다시 확인해주세요\n-> 영문, 숫자, 특수문자를 하나 이상 포함하고 8자 이상 25자 이하여야 합니다')
+        alert('비밀번호가 조건을 충족하지 않습니다\n다시 확인해주세요\n(영문, 숫자, 특수문자를 하나 이상 포함하고 8자 이상 25자 이하여야 합니다)')
         return false
       }
       if (this.validatePasswordVerification() === false) {
@@ -503,17 +503,13 @@ export default {
           loginId: this.checkInputData.loginId,
           password: this.checkInputData.password,
           email: this.checkInputData.email,
-          school: this.checkInputData.schoo,
-          phoneNumber: this.checkInputData.phoneNumber,
+          school: this.checkInputData.school,
+          phone: this.checkInputData.phone,
           postcode: this.checkInputData.postcode,
           defaultAddress: this.checkInputData.defaultAddress,
           detailAddress: this.checkInputData.detailAddress + ' ' + this.checkInputData.extraAddress
         }
-        await this.axios.post('/api/member', signUpData, {
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
-          }
-        })
+        await this.axios.post('/api/member', signUpData)
         alert('회원가입이 완료되었습니다')
         this.$router.push('/')
       } catch (err) {

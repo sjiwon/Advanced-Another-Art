@@ -35,12 +35,17 @@ const routes = [
         component: () => import(/* webpackChunkName: "userInfo", webpackPrefetch: true */ '@/components/user/UserInformationComponent.vue')
       },
       {
+        path: 'winning-auction',
+        name: 'UserWinningAuctionComponent',
+        component: () => import(/* webpackChunkName: "userInfo", webpackPrefetch: true */ '@/components/user/UserWinningAuctionComponent.vue')
+      },
+      {
         path: 'art/purchase',
         name: 'UserPurchaseHistoryComponent',
         component: () => import(/* webpackChunkName: "userInfo", webpackPrefetch: true */ '@/components/user/UserPurchaseHistoryComponent.vue')
       },
       {
-        path: 'art/sale',
+        path: 'art/sold',
         name: 'UserSaleHistoryComponent',
         component: () => import(/* webpackChunkName: "userInfo", webpackPrefetch: true */ '@/components/user/UserSaleHistoryComponent.vue')
       },
@@ -62,7 +67,7 @@ const routes = [
     component: () => import(/* webpackChunkName: "artRegistration", webpackPrefetch: true */ '@/views/art/ArtRegistrationView.vue'),
     meta: { requiresAuth: true }
   },
-  { path: '/art', name: 'ArtDetailView', component: () => import('@/views/art/ArtDetailView.vue'), meta: { requiresAuth: true } },
+  { path: '/art', name: 'ArtDetailView', component: () => import('@/views/art/ArtDetailView.vue'), meta: { requiresAuth: false } },
   { path: '/:catchAll(.*)', redirect: '/', meta: { requiresAuth: false } }
 ]
 

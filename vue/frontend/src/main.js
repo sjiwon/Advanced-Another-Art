@@ -15,6 +15,7 @@ import { fas } from '@fortawesome/free-solid-svg-icons'
 import { far, faTrashAlt } from '@fortawesome/free-regular-svg-icons'
 import { fab } from '@fortawesome/free-brands-svg-icons'
 
+import externalAxios from 'axios'
 import { axios, axiosWithAccessToken, axiosWithRefreshToken } from '@/apis/axios'
 
 library.add(faTrashAlt)
@@ -22,6 +23,7 @@ library.add(fas, far, fab)
 
 const app = createApp(App)
 app.config.globalProperties.window = window
+app.config.globalProperties.externalAxios = externalAxios
 app.config.globalProperties.axios = axios
 app.config.globalProperties.axiosWithAccessToken = axiosWithAccessToken
 app.config.globalProperties.axiosWithRefreshToken = axiosWithRefreshToken

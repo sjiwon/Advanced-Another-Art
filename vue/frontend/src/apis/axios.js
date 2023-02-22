@@ -31,7 +31,6 @@ axiosWithAccessToken.interceptors.request.use(
     const accessToken = accessTokenProvider.get()
 
     if (config.headers && accessToken) {
-      console.log('With AccessToken')
       config.headers.Authorization = `Bearer ${accessToken}`
     }
 
@@ -47,7 +46,6 @@ axiosWithRefreshToken.interceptors.request.use(
     const refreshToken = refreshTokenProvider.get()
 
     if (config.headers && refreshToken) {
-      console.log('With RefreshToken')
       config.headers.Authorization = `Bearer ${refreshToken}`
     }
 
@@ -61,31 +59,28 @@ axiosWithRefreshToken.interceptors.request.use(
 // Response Interceptor
 axiosWithAccessToken.interceptors.response.use(
   response => {
-    console.log(`response -> ${response}`)
     return response
   },
   error => {
     const originalConfig = error.config
 
     if (error.response.data.errorCode === 'AUTH_005') { // 유효하지 않은 토큰
-      console.log('유효하지 않은 토큰...')
-
       axiosWithRefreshToken // 토큰 재발급
         .post('/api/token/reissue')
         .then(response => {
-          console.log('토큰 재발급 성공')
           accessTokenProvider.set(response.data.accessToken)
           refreshTokenProvider.set(response.data.refreshToken)
           return axiosWithAccessToken.request(originalConfig)
         })
         .catch(() => {
-          console.log('토큰 재발급 실패')
           alert('권한이 없습니다.\n로그인 페이지로 이동합니다.')
           window.location.href = '/login'
         })
     } else if (error.response.data.errorCode === 'AUTH_003') {
       alert('권한이 없습니다.\n로그인 페이지로 이동합니다.')
       window.location.href = '/login'
+    } else {
+      return Promise.reject(error)
     }
   }
 )

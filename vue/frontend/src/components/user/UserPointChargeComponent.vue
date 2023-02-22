@@ -37,17 +37,17 @@
 </template>
 
 <script>
-import axios from 'axios'
 const { IMP } = window
 
 export default {
   name: 'UserPointChargeComponent',
+
   components: {},
   data() {
     return {
       pointBoxCss: {
-        border: '3px solid #A091B7',
-        backgroundColor: '#FFE8FF',
+        border: '3px solid #C7D3ED',
+        backgroundColor: '#EBF7FF',
         borderRadius: '20px'
       },
       currentUser: {
@@ -81,26 +81,24 @@ export default {
       }
     }
   },
-  setup() {
-  },
+
   created() {
     this.fetchData()
   },
-  mounted() {
-  },
-  unmounted() {
-  },
+
   methods: {
     async fetchData() {
       try {
-        const response = await axios.get('/api/user/info')
+        const memberId = this.$store.getters['memberStore/getMemberId']
+        const response = await this.axiosWithAccessToken.get(`/api/members/${memberId}`)
         this.currentUser = response.data
+
         this.resultPoint = this.currentUser.totalPoint
         this.importRequestData.buyer_name = this.currentUser.name
-        this.importRequestData.buyer_tel = this.currentUser.phoneNumber
+        this.importRequestData.buyer_tel = this.currentUser.phone
         this.importRequestData.buyer_email = this.currentUser.email
         this.importRequestData.buyer_addr = this.currentUser.address.defaultAddress + ' ' + this.currentUser.address.detailAddress
-        this.importRequestData.buyer_postcode = this.currentUser.address.postCode
+        this.importRequestData.buyer_postcode = this.currentUser.address.postcode
       } catch (err) {
         alert(err.response.data.message)
       }
@@ -118,17 +116,17 @@ export default {
       IMP.request_pay(this.importRequestData, async (response) => {
         if (response.success) {
           try {
-            await axios.post('/api/user/point/charge', {
-              userId: this.$store.getters['memberStore/getMemberId'],
-              dealAmount: this.importRequestData.amount
-            })
-            alert('결제가 완료되었습니다')
+            const chargeRequest = {
+              chargeAmount: this.importRequestData.amount
+            }
+            await this.axiosWithAccessToken.post('/api/member/point/charge', chargeRequest)
+            alert('충전이 완료되었습니다')
             this.$router.push('/mypage/point/history')
           } catch (err) {
             alert(err.response.data.message)
           }
         } else {
-          const msg = `결제에 실패하였습니다\n- ${response.error_msg}`
+          const msg = `충전에 실패하였습니다\n- ${response.error_msg}`
           alert(msg)
         }
       }

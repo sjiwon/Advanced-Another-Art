@@ -13,11 +13,11 @@
     <div class="album py-5">
       <div class="container">
         <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
-          <div v-if="isAuctionSelected === true && isGeneralSelected === false" v-for="(art, index) in fetchDataList.purchaseAuctionArts" :key="index">
-            <SimplePurchaseAuctionArtComponent :art="art"/>
+          <div v-if="isAuctionSelected === true && isGeneralSelected === false" v-for="(art, index) in auctionArtFechDataList" :key="index">
+            <SimplePurchaseAuctionArtComponent :auction-art="art"/>
           </div>
-          <div v-if="isAuctionSelected === false && isGeneralSelected === true" v-for="(art, index) in fetchDataList.purchaseGeneralArts" :key="index">
-            <SimplePurchaseGeneralArtComponent :art="art"/>
+          <div v-if="isAuctionSelected === false && isGeneralSelected === true" v-for="(art, index) in generalArtFechDataList" :key="index">
+            <SimplePurchaseGeneralArtComponent :general-art="art"/>
           </div>
         </div>
       </div>
@@ -26,7 +26,6 @@
 </template>
 
 <script>
-import axios from 'axios'
 import SimplePurchaseAuctionArtComponent from '@/components/art/SimplePurchaseAuctionArtComponent.vue'
 import SimplePurchaseGeneralArtComponent from '@/components/art/SimplePurchaseGeneralArtComponent.vue'
 
@@ -40,23 +39,23 @@ export default {
     return {
       isAuctionSelected: true,
       isGeneralSelected: false,
-      fetchDataList: []
+      auctionArtFechDataList: [],
+      generalArtFechDataList: []
     }
   },
-  setup() {
-  },
+
   created() {
     this.fetchData()
   },
-  mounted() {
-  },
-  unmounted() {
-  },
+
   methods: {
     async fetchData() {
       try {
-        const response = await axios.get('/api/user/art/purchase')
-        this.fetchDataList = response.data
+        const memberId = this.$store.getters['memberStore/getMemberId']
+        const auctionResponse = await this.axiosWithAccessToken.get(`/api/members/${memberId}/auctions/purchase`)
+        const generalResponse = await this.axiosWithAccessToken.get(`/api/members/${memberId}/generals/purchase`)
+        this.auctionArtFechDataList = auctionResponse.data.result
+        this.generalArtFechDataList = generalResponse.data.result
       } catch (err) {
         alert(err.response.data.message)
       }

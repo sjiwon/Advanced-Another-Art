@@ -134,7 +134,7 @@ export default {
         },
         isNotMeetCondition: false,
         isMeetCondition: false,
-        errorMessage: '영문, 숫자, 특수문자를 하나 이상 포함하고 8자 이상이여야 합니다',
+        errorMessage: '영문, 숫자, 특수문자를 하나 이상 포함하고 8자 이상 25자 이하여야 합니다',
         successMessage: '사용 가능한 비밀번호입니다'
       },
       passwordVerificationToken: '',
@@ -220,7 +220,7 @@ export default {
       }
     },
     passwordTracker() {
-      const pattern = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}/
+      const pattern = /^(?=.*[a-zA-Z])(?=.*[!@#$%^&*+=-])(?=.*[0-9]).{8,25}$/
       const currentPassword = this.changeRequestData.changePassword
 
       if (currentPassword === '') {
@@ -269,7 +269,7 @@ export default {
         return false
       }
       if (this.validatePassword() === false) {
-        alert('비밀번호가 조건을 충족하지 않습니다\n다시 확인해주세요\n-> 영문, 숫자, 특수문자를 하나 이상 포함하고 8자 이상이여야 합니다')
+        alert('비밀번호가 조건을 충족하지 않습니다\n다시 확인해주세요\n(영문, 숫자, 특수문자를 하나 이상 포함하고 8자 이상 25자 이하여야 합니다)')
         return false
       }
       if (this.validatePasswordVerification() === false) {

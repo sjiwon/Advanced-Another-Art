@@ -49,9 +49,11 @@ import AuctionArtComponent from '@/components/art/AuctionArtComponent.vue'
 
 export default {
   name: 'MainView',
+
   components: {
     AuctionArtComponent
   },
+
   data() {
     return {
       sortType: {
@@ -72,15 +74,11 @@ export default {
       range: []
     }
   },
-  setup() {
-  },
+
   created() {
     this.fetchData()
   },
-  mounted() {
-  },
-  unmounted() {
-  },
+
   methods: {
     getSortType() {
       return this.$store.getters['mainPageSearch/getSortType']
