@@ -19,7 +19,7 @@ public class RefreshToken {
     @Column(name = "member_id", nullable = false, updatable = false, unique = true)
     private Long memberId;
 
-    @Column(name = "refresh_token", nullable = false, updatable = false, unique = true)
+    @Column(name = "refresh_token", nullable = false, unique = true)
     private String refreshToken;
 
     @Builder
