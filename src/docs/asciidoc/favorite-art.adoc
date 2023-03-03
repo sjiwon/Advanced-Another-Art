@@ -1,0 +1,79 @@
+= 작품 좋아요 등록/취소 관련 API
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 2
+
+== 작품 좋아요 등록
+=== 1. Authorization 헤더에 Access Token이 없음에 따라 예외가 발생한다
+HTTP Request
+include::{snippets}/FavoriteApi/LikeMarking/Failure/Case1/http-request.adoc[]
+include::{snippets}/FavoriteApi/LikeMarking/Failure/Case1/path-parameters.adoc[]
+
+HTTP Response
+include::{snippets}/FavoriteApi/LikeMarking/Failure/Case1/response-body.adoc[]
+
+=== 2. 작품 소유자는 본인의 작품을 좋아요 등록할 수 없고 그에 따라서 예외가 발생한다
+HTTP Request
+include::{snippets}/FavoriteApi/LikeMarking/Failure/Case2/http-request.adoc[]
+include::{snippets}/FavoriteApi/LikeMarking/Failure/Case2/request-headers.adoc[]
+include::{snippets}/FavoriteApi/LikeMarking/Failure/Case2/path-parameters.adoc[]
+
+HTTP Response
+include::{snippets}/FavoriteApi/LikeMarking/Failure/Case2/response-body.adoc[]
+
+=== 3. 이미 좋아요 등록을 한 후 또 다시 좋아요 등록 요청을 하게 되면 예외가 발생한다
+HTTP Request
+include::{snippets}/FavoriteApi/LikeMarking/Failure/Case3/http-request.adoc[]
+include::{snippets}/FavoriteApi/LikeMarking/Failure/Case3/request-headers.adoc[]
+include::{snippets}/FavoriteApi/LikeMarking/Failure/Case3/path-parameters.adoc[]
+
+HTTP Response
+include::{snippets}/FavoriteApi/LikeMarking/Failure/Case3/response-body.adoc[]
+
+=== 4. 작품에 대한 좋아요 등록을 성공한다
+HTTP Request
+include::{snippets}/FavoriteApi/LikeMarking/Success/http-request.adoc[]
+include::{snippets}/FavoriteApi/LikeMarking/Success/request-headers.adoc[]
+include::{snippets}/FavoriteApi/LikeMarking/Success/path-parameters.adoc[]
+
+HTTP Response
+include::{snippets}/FavoriteApi/LikeMarking/Success/http-response.adoc[]
+
+== 작품 좋아요 취소
+=== 1. Authorization 헤더에 Access Token이 없음에 따라 예외가 발생한다
+HTTP Request
+include::{snippets}/FavoriteApi/LikeMarkingCancel/Failure/Case1/http-request.adoc[]
+include::{snippets}/FavoriteApi/LikeMarkingCancel/Failure/Case1/path-parameters.adoc[]
+
+HTTP Response
+include::{snippets}/FavoriteApi/LikeMarkingCancel/Failure/Case1/response-body.adoc[]
+
+=== 2. 작품 소유자는 본인의 작품에 대해서 좋아요 취소 요청을 할 수 없고 그에 따라서 예외가 발생한다
+HTTP Request
+include::{snippets}/FavoriteApi/LikeMarkingCancel/Failure/Case2/http-request.adoc[]
+include::{snippets}/FavoriteApi/LikeMarkingCancel/Failure/Case2/request-headers.adoc[]
+include::{snippets}/FavoriteApi/LikeMarkingCancel/Failure/Case2/path-parameters.adoc[]
+
+HTTP Response
+include::{snippets}/FavoriteApi/LikeMarkingCancel/Failure/Case2/response-body.adoc[]
+
+=== 3. 좋아요 등록을 한 적이 없거나 이미 취소한 작품에 대해서 좋아요 취소 요청을 하게 되면 예외가 발생한다
+HTTP Request
+include::{snippets}/FavoriteApi/LikeMarkingCancel/Failure/Case3/http-request.adoc[]
+include::{snippets}/FavoriteApi/LikeMarkingCancel/Failure/Case3/request-headers.adoc[]
+include::{snippets}/FavoriteApi/LikeMarkingCancel/Failure/Case3/path-parameters.adoc[]
+
+HTTP Response
+include::{snippets}/FavoriteApi/LikeMarkingCancel/Failure/Case3/response-body.adoc[]
+
+
+=== 4. 작품에 대한 좋아요 취소를 성공한다
+HTTP Request
+include::{snippets}/FavoriteApi/LikeMarkingCancel/Success/http-request.adoc[]
+include::{snippets}/FavoriteApi/LikeMarkingCancel/Success/request-headers.adoc[]
+include::{snippets}/FavoriteApi/LikeMarkingCancel/Success/path-parameters.adoc[]
+
+HTTP Response
+include::{snippets}/FavoriteApi/LikeMarkingCancel/Success/http-response.adoc[]

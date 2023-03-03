@@ -3,6 +3,9 @@ build/
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
 !**/src/test/**/build/
+.env
+.env.local
+.env.*.local=
 
 ### STS ###
 .apt_generated
@@ -19,6 +22,7 @@ bin/
 ### IntelliJ IDEA ###
 **/src/main/generated/
 **/src/main/resources/security/
+**/src/test/resources/images/storage/
 .idea
 *.iws
 *.iml

@@ -3,29 +3,30 @@
     <div class="card border-black-50">
       <div>
         <a>
-          <img :src="require(`@/../../../src/main/resources/static/images/arts/${art.saleGeneralArt.artStorageName}`)"
-               alt="" style="width: 100%; height: 200px; margin-bottom: 10px;">
+          <img :src="require(`@/../../../src/main/resources/static/images/arts/${generalArt.art.artStorageName}`)"
+               @click="goToDetailPage(generalArt.art.artId, generalArt.art.artName)"
+               alt="" style="width: 100%; height: 200px; margin-bottom: 10px; cursor: pointer;">
         </a>
       </div>
       <div class="card-header">
-        <h3>{{ art.saleGeneralArt.artName }}</h3>
-        <h6>{{ art.saleGeneralArt.artDescription }}</h6>
+        <h3>{{ generalArt.art.artName }}</h3>
+        <h6>{{ generalArt.art.artDescription }}</h6>
       </div>
       <div class="card-body">
         <p>
           <b>구매자</b><br>
           <span>
-            {{ art.saleGeneralArt.purchaseUserNickname }}
-            <small style="font-size: 12px;">({{ art.saleGeneralArt.purchaseUserSchool }})</small>
+            {{ generalArt.art.buyerNickname }}
+            <small style="font-size: 12px;">({{ generalArt.art.buyerSchool }})</small>
           </span>
         </p>
         <p>
-          <b>구매 가격</b><br>
-          <small>{{ art.saleGeneralArt.purchasePrice }}원</small>
+          <b>판매 가격</b><br>
+          <small>{{ generalArt.art.purchasePrice }}원</small>
         </p>
       </div>
       <div class="card-footer">
-        <span class="product_tag" v-for="(tag, index) in art.hashtagList" :key="index">#{{ tag }}</span>
+        <span class="product_tag" v-for="(tag, index) in generalArt.hashtags" :key="index">#{{ tag }}</span>
       </div>
     </div>
   </div>
@@ -35,23 +36,22 @@
 export default {
   name: 'SimpleSaleGeneralArtComponent',
   props: {
-    art: Object
+    generalArt: Object
   },
-  components: {},
-  data() {
-    return {
-      sampleData: ''
+  methods: {
+    goToDetailPage(artId, artName) {
+      this.$store.commit('detailSearch/applyCurrentSelectedArt', {
+        artId: artId,
+        artType: 'general'
+      })
+      this.$router.push({
+        path: '/art',
+        query: {
+          name: artName
+        }
+      })
     }
-  },
-  setup() {
-  },
-  created() {
-  },
-  mounted() {
-  },
-  unmounted() {
-  },
-  methods: {}
+  }
 }
 </script>
 

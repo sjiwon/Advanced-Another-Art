@@ -23,16 +23,12 @@
           </div>
 
           <div class="col-md-6 offset-md-3">
-            <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')" class="form-control p-3" placeholder="생년월일" required v-model="checkInputData.birth"/>
-          </div>
-
-          <div class="col-md-6 offset-md-3">
             <div class="row">
               <div class="col-md-8 mb-2">
-                <input type="text" class="form-control p-3" placeholder="전화번호" required min="10" max="11" v-model="checkInputData.phoneNumber" @keyup="currentPhoneNumberApiState()"/>
+                <input type="text" class="form-control p-3" placeholder="전화번호" required min="10" max="11" v-model="checkInputData.phone" @keyup="currentPhoneNumberApiState()"/>
               </div>
               <div class="col-md-4">
-                <b-button variant="outline-info" class="form-control p-3 mt-1" :disabled="duplicateApiCheck.phoneNumberDisabled" @click="phoneNumberDuplicateCheck()">중복 체크</b-button>
+                <b-button variant="outline-info" class="form-control p-3 mt-1" :disabled="duplicateApiCheck.phoneDisabled" @click="phoneDuplicateCheck()">중복 체크</b-button>
               </div>
             </div>
           </div>
@@ -55,7 +51,7 @@
           </div>
 
           <div class="col-md-6 offset-md-3">
-            <input type="password" class="form-control p-3" placeholder="비밀번호" required v-model="checkInputData.loginPassword" @keyup="passwordTracker()"/>
+            <input type="password" class="form-control p-3" placeholder="비밀번호" required v-model="checkInputData.password" @keyup="passwordTracker()"/>
             <p v-show="passwordCheck.isNotMeetCondition" :style="passwordCheck.errorCss">{{ passwordCheck.errorMessage }}</p>
             <p v-show="passwordCheck.isMeetCondition" :style="passwordCheck.successCss">{{ passwordCheck.successMessage }}</p>
           </div>
@@ -156,8 +152,6 @@
 </template>
 
 <script>
-import axios from 'axios'
-
 export default {
   name: 'SignUpView',
   components: {},
@@ -176,31 +170,30 @@ export default {
       checkInputData: {
         name: '',
         nickname: '',
-        birth: '',
-        phoneNumber: '',
+        phone: '',
         loginId: '',
-        loginPassword: '',
+        password: '',
         school: '',
         email: '',
         postcode: '',
         defaultAddress: '',
         detailAddress: '',
-        extraAddress: '',
+        extraAddress: ''
       },
       aboutSchool: {
         univSearchKeyword: '',
-        univSearchResult: [],
+        univSearchResult: []
       },
       currentSelectSchool: '',
       duplicateApiCheck: {
         nicknameCheck: false,
         nickNameDisabled: false,
-        phoneNumberCheck: false,
-        phoneNumberDisabled: false,
+        phoneCheck: false,
+        phoneDisabled: false,
         loginIdCheck: false,
         loginIdDisabled: false,
         emailCheck: false,
-        emailDisabled: false,
+        emailDisabled: false
       },
       passwordCheck: {
         errorCss: {
@@ -219,7 +212,7 @@ export default {
         },
         isNotMeetCondition: false,
         isMeetCondition: false,
-        errorMessage: '영문, 숫자, 특수문자를 하나 이상 포함하고 8자 이상이여야 합니다',
+        errorMessage: '영문, 숫자, 특수문자를 하나 이상 포함하고 8자 이상 25자 이하여야 합니다',
         successMessage: '사용 가능한 비밀번호입니다'
       },
       passwordVerification: {
@@ -262,16 +255,8 @@ export default {
         isMeetCondition: false,
         errorMessage: '이메일 형식에 맞춰서 입력해주세요',
         successMessage: '사용 가능한 이메일입니다'
-      },
+      }
     }
-  },
-  setup() {
-  },
-  created() {
-  },
-  mounted() {
-  },
-  unmounted() {
   },
   methods: {
     currentNicknameApiState() {
@@ -286,12 +271,7 @@ export default {
       }
 
       try {
-        const axiosData = {
-          resource: 'nickname',
-          input: nickname
-        }
-
-        await axios.post('/api/user/duplicate-check', axiosData)
+        await this.axios.get(`/api/member/duplicate?resource=nickname&value=${nickname}`)
         alert('사용 가능한 닉네임입니다')
         this.duplicateApiCheck.nickNameDisabled = true
         this.duplicateApiCheck.nicknameCheck = true
@@ -300,26 +280,21 @@ export default {
       }
     },
     currentPhoneNumberApiState() {
-      this.duplicateApiCheck.phoneNumberDisabled = false
-      this.duplicateApiCheck.phoneNumberCheck = false
+      this.duplicateApiCheck.phoneDisabled = false
+      this.duplicateApiCheck.phoneCheck = false
     },
-    async phoneNumberDuplicateCheck() {
-      const phoneNumber = this.checkInputData.phoneNumber
-      if (phoneNumber === '') {
+    async phoneDuplicateCheck() {
+      const phone = this.checkInputData.phone
+      if (phone === '') {
         alert('전화번호를 입력해주세요')
         return false
       }
 
       try {
-        const axiosData = {
-          resource: 'phoneNumber',
-          input: phoneNumber
-        }
-
-        await axios.post('/api/user/duplicate-check', axiosData)
+        await this.axios.get(`/api/member/duplicate?resource=phone&value=${phone}`)
         alert('사용 가능한 전화번호입니다')
-        this.duplicateApiCheck.phoneNumberDisabled = true
-        this.duplicateApiCheck.phoneNumberCheck = true
+        this.duplicateApiCheck.phoneDisabled = true
+        this.duplicateApiCheck.phoneCheck = true
       } catch (err) {
         alert(err.response.data.message)
       }
@@ -336,12 +311,7 @@ export default {
       }
 
       try {
-        const axiosData = {
-          resource: 'loginId',
-          input: loginId
-        }
-
-        await axios.post('/api/user/duplicate-check', axiosData)
+        await this.axios.get(`/api/member/duplicate?resource=loginId&value=${loginId}`)
         alert('사용 가능한 아이디입니다')
         this.duplicateApiCheck.loginIdDisabled = true
         this.duplicateApiCheck.loginIdCheck = true
@@ -357,12 +327,7 @@ export default {
       }
 
       try {
-        const axiosData = {
-          resource: 'email',
-          input: email
-        }
-
-        await axios.post('/api/user/duplicate-check', axiosData)
+        await this.axios.get(`/api/member/duplicate?resource=email&value=${email}`)
         alert('사용 가능한 이메일입니다')
         this.duplicateApiCheck.emailDisabled = true
         this.duplicateApiCheck.emailCheck = true
@@ -371,8 +336,8 @@ export default {
       }
     },
     passwordTracker() {
-      const pattern = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}/
-      let currentPassword = this.checkInputData.loginPassword
+      const pattern = /^(?=.*[a-zA-Z])(?=.*[!@#$%^&*+=-])(?=.*[0-9]).{8,25}$/
+      const currentPassword = this.checkInputData.password
 
       if (currentPassword === '') {
         this.passwordCheck.isNotMeetCondition = false
@@ -391,8 +356,8 @@ export default {
       }
     },
     passwordVerificationTracker() {
-      let currentPassword = this.checkInputData.loginPassword
-      let currentVerificationPassword = this.passwordVerificationToken
+      const currentPassword = this.checkInputData.password
+      const currentVerificationPassword = this.passwordVerificationToken
 
       if (currentPassword === currentVerificationPassword) {
         this.passwordVerification.isNotMatchExactly = false
@@ -407,7 +372,7 @@ export default {
       this.duplicateApiCheck.emailCheck = false
 
       const pattern = /^[a-zA-Z0-9+-\_.]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/
-      let currentEmail = this.checkInputData.email
+      const currentEmail = this.checkInputData.email
 
       if (currentEmail === '') {
         this.emailCheck.isNotMeetCondition = false
@@ -426,14 +391,12 @@ export default {
       const key = 'ac28e0697af24886fdf4a130fe263b13'
 
       try {
-        const response = await axios.get(`//www.career.go.kr/cnet/openapi/getOpenApi?apiKey=${key}&svcType=api&svcCode=SCHOOL&contentType=json&gubun=univ_list&searchSchulNm=${searchKeyword}`)
+        const response = await this.externalAxios.get(`http://www.career.go.kr/cnet/openapi/getOpenApi?apiKey=${key}&svcType=api&svcCode=SCHOOL&contentType=json&gubun=univ_list&searchSchulNm=${searchKeyword}`)
         const schoolList = response.data.dataSearch.content
         this.aboutSchool.univSearchResult = []
         for (let i = 0; i < schoolList.length; i++) {
           this.aboutSchool.univSearchResult.push(schoolList[i])
         }
-
-        console.log(JSON.stringify(schoolList, null, 2))
       } catch (err) {
         alert(err.response.data.message)
       }
@@ -445,42 +408,42 @@ export default {
     searchAddress() {
       new window.daum.Postcode({
         oncomplete: (data) => {
-          if (this.extraAddress !== "") {
-            this.checkInputData.extraAddress = "";
+          if (this.extraAddress !== '') {
+            this.checkInputData.extraAddress = ''
           }
-          if (data.userSelectedType === "R") {
+          if (data.userSelectedType === 'R') {
             // 사용자가 도로명 주소를 선택했을 경우
-            this.checkInputData.defaultAddress = data.roadAddress;
+            this.checkInputData.defaultAddress = data.roadAddress
           } else {
             // 사용자가 지번 주소를 선택했을 경우(J)
-            this.checkInputData.defaultAddress = data.jibunAddress;
+            this.checkInputData.defaultAddress = data.jibunAddress
           }
 
           // 사용자가 선택한 주소가 도로명 타입일때 참고항목을 조합한다.
-          if (data.userSelectedType === "R") {
+          if (data.userSelectedType === 'R') {
             // 법정동명이 있을 경우 추가한다. (법정리는 제외)
             // 법정동의 경우 마지막 문자가 "동/로/가"로 끝난다.
-            if (data.bname !== "" && /[동|로|가]$/g.test(data.bname)) {
-              this.checkInputData.extraAddress += data.bname;
+            if (data.bname !== '' && /[동|로|가]$/g.test(data.bname)) {
+              this.checkInputData.extraAddress += data.bname
             }
             // 건물명이 있고, 공동주택일 경우 추가한다.
-            if (data.buildingName !== "" && data.apartment === "Y") {
+            if (data.buildingName !== '' && data.apartment === 'Y') {
               this.checkInputData.extraAddress +=
-                this.checkInputData.extraAddress !== ""
+                this.checkInputData.extraAddress !== ''
                   ? `, ${data.buildingName}`
-                  : data.buildingName;
+                  : data.buildingName
             }
             // 표시할 참고항목이 있을 경우, 괄호까지 추가한 최종 문자열을 만든다.
-            if (this.checkInputData.extraAddress !== "") {
-              this.checkInputData.extraAddress = `(${this.checkInputData.extraAddress})`;
+            if (this.checkInputData.extraAddress !== '') {
+              this.checkInputData.extraAddress = `(${this.checkInputData.extraAddress})`
             }
           } else {
-            this.checkInputData.extraAddress = "";
+            this.checkInputData.extraAddress = ''
           }
           // 우편번호를 입력한다.
-          this.checkInputData.postcode = data.zonecode;
-        },
-      }).open();
+          this.checkInputData.postcode = data.zonecode
+        }
+      }).open()
     },
     validatePassword() {
       return this.passwordCheck.isMeetCondition
@@ -496,30 +459,28 @@ export default {
       const keys = Object.keys(inputData)
       for (let i = 0; i < keys.length; i++) {
         const key = keys[i]
-        if (key !== 'detailAddress' && key !== 'extraAddress') {
-          const value = inputData[key];
-          if (value === '') {
-            return false
-          }
+        const value = inputData[key]
+        if (value === '') {
+          return false
         }
       }
       return true
     },
     validateApiResultState() {
       const nicknameCheck = this.duplicateApiCheck.nicknameCheck
-      const phoneNumberCheck = this.duplicateApiCheck.phoneNumberCheck
+      const phoneCheck = this.duplicateApiCheck.phoneCheck
       const loginIdCheck = this.duplicateApiCheck.loginIdCheck
       const emailCheck = this.duplicateApiCheck.emailCheck
 
-      return !(nicknameCheck === false || phoneNumberCheck === false || loginIdCheck === false || emailCheck === false);
+      return !(nicknameCheck === false || phoneCheck === false || loginIdCheck === false || emailCheck === false)
     },
     async signUpProcess() {
       if (this.validateInputState() === false) {
-        alert('입력이 완료되지 않았습니다\n다시 확인해주세요');
-        return false;
+        alert('입력이 완료되지 않았습니다\n다시 확인해주세요')
+        return false
       }
       if (this.validatePassword() === false) {
-        alert('비밀번호가 조건을 충족하지 않습니다\n다시 확인해주세요\n-> 영문, 숫자, 특수문자를 하나 이상 포함하고 8자 이상이여야 합니다')
+        alert('비밀번호가 조건을 충족하지 않습니다\n다시 확인해주세요\n(영문, 숫자, 특수문자를 하나 이상 포함하고 8자 이상 25자 이하여야 합니다)')
         return false
       }
       if (this.validatePasswordVerification() === false) {
@@ -540,16 +501,15 @@ export default {
           name: this.checkInputData.name,
           nickname: this.checkInputData.nickname,
           loginId: this.checkInputData.loginId,
-          loginPassword: this.checkInputData.loginPassword,
+          password: this.checkInputData.password,
           email: this.checkInputData.email,
-          school: this.checkInputData.schoo,
-          phoneNumber: this.checkInputData.phoneNumber,
+          school: this.checkInputData.school,
+          phone: this.checkInputData.phone,
           postcode: this.checkInputData.postcode,
           defaultAddress: this.checkInputData.defaultAddress,
-          detailAddress: this.checkInputData.detailAddress + ' ' + this.checkInputData.extraAddress,
-          birth: this.checkInputData.birth
+          detailAddress: this.checkInputData.detailAddress + ' ' + this.checkInputData.extraAddress
         }
-        await axios.post('/api/user', signUpData)
+        await this.axios.post('/api/member', signUpData)
         alert('회원가입이 완료되었습니다')
         this.$router.push('/')
       } catch (err) {

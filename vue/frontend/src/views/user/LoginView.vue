@@ -32,18 +32,16 @@
           <b-button @click="$router.push('/find-id')">아이디 찾기</b-button>
           <b-button @click="$router.push('/change-password')">비밀번호 재설정</b-button>
           <b-button @click="$router.push('/signup')">회원가입</b-button>
-        </div>
+        </div><br>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import axios from 'axios'
-
 export default {
   name: 'LoginView',
-  components: {},
+
   data() {
     return {
       css: {
@@ -60,15 +58,12 @@ export default {
       }
     }
   },
-  setup() {
-  },
-  created() {
-  },
-  mounted() {
-  },
-  unmounted() {
-  },
+
   methods: {
+    validateLoginRequest() {
+      const { loginId, loginPassword } = this.loginData
+      return (loginId !== '') && (loginPassword !== '')
+    },
     async login() {
       if (this.validateLoginRequest() === false) {
         alert('아이디나 비밀번호를 다시 확인해주세요')
@@ -76,19 +71,15 @@ export default {
       }
 
       try {
-        const response = await axios.post('/api/login', this.loginData)
-        const payload = response.data;
+        const response = await this.axios.post('/api/login', this.loginData)
+        this.$store.commit('memberStore/loginSuccess', response.data)
         alert('로그인에 성공하였습니다')
-        this.$store.commit('loginSuccess', payload)
         this.$router.push('/')
       } catch (err) {
+        console.log(err)
+        this.$store.commit('memberStore/reset')
         alert(err.response.data.message)
-        this.$store.commit('loginFail')
       }
-    },
-    validateLoginRequest() {
-      const { loginId, loginPassword } = this.loginData
-      return (loginId !== '') && (loginPassword !== '')
     }
   }
 }

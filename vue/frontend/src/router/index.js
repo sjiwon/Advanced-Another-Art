@@ -27,7 +27,7 @@ const routes = [
     path: '/mypage',
     name: 'MyPageView',
     component: () => import(/* webpackChunkName: "userInfo", webpackPrefetch: true */ '@/views/user/MyPageView.vue'),
-    meta: { requiresAuth: true } ,
+    meta: { requiresAuth: true },
     children: [
       {
         path: '',
@@ -35,12 +35,17 @@ const routes = [
         component: () => import(/* webpackChunkName: "userInfo", webpackPrefetch: true */ '@/components/user/UserInformationComponent.vue')
       },
       {
+        path: 'winning-auction',
+        name: 'UserWinningAuctionComponent',
+        component: () => import(/* webpackChunkName: "userInfo", webpackPrefetch: true */ '@/components/user/UserWinningAuctionComponent.vue')
+      },
+      {
         path: 'art/purchase',
         name: 'UserPurchaseHistoryComponent',
         component: () => import(/* webpackChunkName: "userInfo", webpackPrefetch: true */ '@/components/user/UserPurchaseHistoryComponent.vue')
       },
       {
-        path: 'art/sale',
+        path: 'art/sold',
         name: 'UserSaleHistoryComponent',
         component: () => import(/* webpackChunkName: "userInfo", webpackPrefetch: true */ '@/components/user/UserSaleHistoryComponent.vue')
       },
@@ -62,7 +67,7 @@ const routes = [
     component: () => import(/* webpackChunkName: "artRegistration", webpackPrefetch: true */ '@/views/art/ArtRegistrationView.vue'),
     meta: { requiresAuth: true }
   },
-  { path: '/art', name: 'ArtDetailView', component: () => import('@/views/art/ArtDetailView.vue'), meta: { requiresAuth: true } },
+  { path: '/art', name: 'ArtDetailView', component: () => import('@/views/art/ArtDetailView.vue'), meta: { requiresAuth: false } },
   { path: '/:catchAll(.*)', redirect: '/', meta: { requiresAuth: false } }
 ]
 
@@ -72,14 +77,14 @@ const router = createRouter({
 })
 
 router.beforeEach((to, from, next) => {
-  if (to.matched.some(record => record.meta.requiresAuth)) {
-    if (store.getters.isAuthenticated === false) {
+  if (to.matched.some(record => record.meta.requiresAuth)) { // 인증 필요
+    if (store.getters['memberStore/isAuthenticated'] === false) {
       alert('로그인이 필요합니다')
-      next('/login');
+      next('/login')
     } else {
       next()
     }
-  } else {
+  } else { // 인증 필요 X
     next()
   }
 })

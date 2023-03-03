@@ -3,7 +3,7 @@
     <div class="row p-5">
       <div class="col-md-12 justify-content-center row mx-auto">
         <div class="col-md-2 position-static p-3 text-center" :style="leftMenuCss">
-          <h2>마이 페이지</h2>
+          <h3>마이 페이지</h3>
           <div>
             <b-button
               :style="menuButtonCss[0]"
@@ -16,36 +16,45 @@
           <div>
             <b-button
               :style="menuButtonCss[1]"
-              @click="$router.push('/mypage/art/purchase')"
+              @click="$router.push('/mypage/winning-auction')"
               @mouseenter="mouseOverEvent(1)"
               @mouseleave="mouseLeaveEvent(1)">
-              작품 구매 내역
+              경매 작품 낙찰 내역
             </b-button>
           </div>
           <div>
             <b-button
               :style="menuButtonCss[2]"
-              @click="$router.push('/mypage/art/sale')"
+              @click="$router.push('/mypage/art/purchase')"
               @mouseenter="mouseOverEvent(2)"
               @mouseleave="mouseLeaveEvent(2)">
-              작품 판매 내역
+              작품 구매 내역
             </b-button>
           </div>
           <div>
             <b-button
               :style="menuButtonCss[3]"
-              @click="$router.push('/mypage/point/charge')"
+              @click="$router.push('/mypage/art/sold')"
               @mouseenter="mouseOverEvent(3)"
               @mouseleave="mouseLeaveEvent(3)">
-              포인트 충전
+              작품 판매 내역
             </b-button>
           </div>
           <div>
             <b-button
               :style="menuButtonCss[4]"
-              @click="$router.push('/mypage/point/history')"
+              @click="$router.push('/mypage/point/charge')"
               @mouseenter="mouseOverEvent(4)"
               @mouseleave="mouseLeaveEvent(4)">
+              포인트 충전
+            </b-button>
+          </div>
+          <div>
+            <b-button
+              :style="menuButtonCss[5]"
+              @click="$router.push('/mypage/point/history')"
+              @mouseenter="mouseOverEvent(5)"
+              @mouseleave="mouseLeaveEvent(5)">
               포인트 히스토리
             </b-button>
           </div>
@@ -53,7 +62,7 @@
         <div class="col-md-9 position-static p-3">
           <router-view></router-view>
         </div>
-        <div style="margin-bottom: 72px;"></div>
+        <div style="margin-bottom: 52px;"></div>
       </div>
     </div>
   </div>
@@ -62,41 +71,46 @@
 <script>
 export default {
   name: 'MyPageView',
-  components: {},
+
   data() {
     return {
       leftMenuCss: {
         borderRadius: '30px',
         marginRight: '15px',
         backgroundColor: '#E6FFFF',
-        height: '300px'
+        height: '320px'
       },
       menuButtonCss: [
         {
-          fontSize: '15px',
+          fontSize: '13px',
           fontWeight: '',
-          backgroundColor: '#E6FFFF',
+          backgroundColor: '#E6FFFF'
         },
         {
-          fontSize: '15px',
+          fontSize: '13px',
           fontWeight: '',
-          backgroundColor: '#E6FFFF',
+          backgroundColor: '#E6FFFF'
         },
         {
-          fontSize: '15px',
+          fontSize: '13px',
           fontWeight: '',
-          backgroundColor: '#E6FFFF',
+          backgroundColor: '#E6FFFF'
         },
         {
-          fontSize: '15px',
+          fontSize: '13px',
           fontWeight: '',
-          backgroundColor: '#E6FFFF',
+          backgroundColor: '#E6FFFF'
         },
         {
-          fontSize: '15px',
+          fontSize: '13px',
           fontWeight: '',
-          backgroundColor: '#E6FFFF',
+          backgroundColor: '#E6FFFF'
         },
+        {
+          fontSize: '13px',
+          fontWeight: '',
+          backgroundColor: '#E6FFFF'
+        }
       ],
       rightViewCss: {
         borderRadius: '30px',
@@ -105,23 +119,16 @@ export default {
       }
     }
   },
-  setup() {
-  },
-  created() {
-  },
-  mounted() {
-  },
-  unmounted() {
-  },
+
   methods: {
     mouseOverEvent(index) {
-      this.menuButtonCss[index].fontSize = '17px'
+      this.menuButtonCss[index].fontSize = '16px'
       this.menuButtonCss[index].fontWeight = 'bold'
     },
     mouseLeaveEvent(index) {
-      this.menuButtonCss[index].fontSize = '15px'
+      this.menuButtonCss[index].fontSize = '13px'
       this.menuButtonCss[index].fontWeight = ''
-    },
+    }
   }
 }
 </script>

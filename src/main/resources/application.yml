@@ -1,0 +1,18 @@
+server:
+  port: 7777
+  servlet:
+    session:
+      tracking-modes: cookie
+
+spring:
+  config:
+    import:
+      - security/application-local-datasource.yml
+      - security/application-jwt.yml
+      - security/application-file.yml
+
+  web:
+    resources:
+      static-locations:
+        - file:src/main/resources/static/
+        - classpath:/static/

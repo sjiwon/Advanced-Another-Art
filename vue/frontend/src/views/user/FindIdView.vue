@@ -25,22 +25,20 @@
 
           <div class="col-md-6 offset-md-3">
             <b-button @click="findIdProcess()" :style="successFindButtonDisplay" variant="outline-info" class="form-control p-3 mt-1">아이디 찾기</b-button>
-            <p v-if="successFindButtonDisplay.display === 'none'" style="color: red;">아이디는 <span style="font-weight: bold">{{ this.findIdResult }}</span>입니다</p>
+            <p v-if="successFindButtonDisplay.display === 'none'" style="color: blue;">아이디는 <span style="font-weight: bold">{{ this.findIdResult }}</span>입니다</p>
             <b-button v-if="successFindButtonDisplay.display === 'none'" variant="outline-info" class="form-control p-3 mt-1" @click="$router.push('/login')">로그인 바로가기</b-button>
           </div>
         </div>
       </div>
     </div>
 
-    <div v-if="successFindButtonDisplay.display !== 'none' && emailCheck.isNotMeetCondition === false && emailCheck.isMeetCondition === false" style="margin-bottom: 110px"></div>
-    <div v-if="successFindButtonDisplay.display !== 'none' && (emailCheck.isNotMeetCondition === false || emailCheck.isMeetCondition === false)" style="margin-bottom: 68px"></div>
-    <div v-if="successFindButtonDisplay.display === 'none'" style="margin-bottom: 68px;"></div>
+    <div v-if="successFindButtonDisplay.display !== 'none' && emailCheck.isNotMeetCondition === false && emailCheck.isMeetCondition === false" style="margin-bottom: 130px"></div>
+    <div v-if="successFindButtonDisplay.display !== 'none' && (emailCheck.isNotMeetCondition === false || emailCheck.isMeetCondition === false)" style="margin-bottom: 89px"></div>
+    <div v-if="successFindButtonDisplay.display === 'none'" style="margin-bottom: 89px;"></div>
   </div>
 </template>
 
 <script>
-import axios from 'axios'
-
 export default {
   name: 'FindIdView',
   components: {},
@@ -48,7 +46,7 @@ export default {
     return {
       requestData: {
         name: '',
-        email: '',
+        email: ''
       },
       emailCheck: {
         errorCss: {
@@ -76,18 +74,10 @@ export default {
       }
     }
   },
-  setup() {
-  },
-  created() {
-  },
-  mounted() {
-  },
-  unmounted() {
-  },
   methods: {
     emailTracker() {
       const pattern = /^[a-zA-Z0-9+-\_.]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/
-      let currentEmail = this.requestData.email
+      const currentEmail = this.requestData.email
 
       if (currentEmail === '') {
         this.emailCheck.isNotMeetCondition = false
@@ -116,8 +106,8 @@ export default {
     },
     async findIdProcess() {
       if (this.validateInputState() === false) {
-        alert('입력이 완료되지 않았습니다\n다시 확인해주세요');
-        return false;
+        alert('입력이 완료되지 않았습니다\n다시 확인해주세요')
+        return false
       }
       if (this.validateEmail() === false) {
         alert('이메일 형식이 올바르지 않습니다\n다시 확인해주세요')
@@ -126,8 +116,10 @@ export default {
 
       this.findIdResult = ''
       try {
-        const response = await axios.post('/api/user/find/id', this.requestData)
-        this.findIdResult = response.data
+        const { name, email } = this.requestData
+        const response = await this.axios.get(`/api/member/id?name=${name}&email=${email}`)
+        this.findIdResult = response.data.result
+
         this.successFindButtonDisplay.display = 'none'
         this.emailCheck.isMeetCondition = false
         this.emailCheck.isNotMeetCondition = false

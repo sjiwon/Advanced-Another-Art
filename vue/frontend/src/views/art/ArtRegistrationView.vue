@@ -15,11 +15,11 @@
             <div class="mb-6">
               <h4><label for="artworkType" class="form-label">판매 유형</label></h4>
               <div class="btn-group" style="border: none;" role="group">
-                <b-button :class="{ selectedBackgroundColor: isAuctionSelected, notSelectedBackground: isGeneralSelected }" @click="changeSaleType('auction')">
+                <b-button :class="{ selectedBackgroundColor: isAuctionSelected, notSelectedBackground: isGeneralSelected }" @click="changeArtType('auction')">
                   <font-awesome-icon icon="fa-solid fa-gavel" style="height: 20px; margin-top: 10px;"/>
                   <h5>경매 작품</h5>
                 </b-button>
-                <b-button :class="{ selectedBackgroundColor: isGeneralSelected, notSelectedBackground: isAuctionSelected }" @click="changeSaleType('general')">
+                <b-button :class="{ selectedBackgroundColor: isGeneralSelected, notSelectedBackground: isAuctionSelected }" @click="changeArtType('general')">
                   <font-awesome-icon icon="fa-solid fa-won-sign" style="height: 20px; margin-top: 10px;"/>
                   <h5>일반 작품</h5>
                 </b-button>
@@ -66,7 +66,7 @@
                   <font-awesome-icon icon="fa-solid fa-sack-dollar" style="height: 30px; margin-left: 10px;"/>
                 </h4>
                 <div class="col-md-12">
-                  <input type="number" class="form-control form-control-lg p-3" v-model="registerData.initPrice" required/>
+                  <input type="number" class="form-control form-control-lg p-3" v-model="registerData.price" required/>
                 </div>
               </div>
 
@@ -95,7 +95,7 @@
                   <font-awesome-icon icon="fa-solid fa-sack-dollar" style="height: 30px; margin-left: 10px;"/>
                 </h4>
                 <div class="col-md-12">
-                  <input type="number" class="form-control form-control-lg p-3" min="1000" v-model="registerData.initPrice" required/>
+                  <input type="number" class="form-control form-control-lg p-3" min="1000" v-model="registerData.price" required/>
                 </div>
               </div>
             </div>
@@ -147,23 +147,20 @@
 </template>
 
 <script>
-import axios from 'axios'
-
 export default {
   name: 'ArtRegistrationView',
   components: {},
   data() {
     return {
-      saleType: 'auction',
+      artType: 'auction',
       isAuctionSelected: true,
       isGeneralSelected: false,
       previewImg: '',
       registerData: {
-        saleType: 'auction',
-        userId: this.$store.getters.getUserId,
+        artType: 'auction',
         name: '',
         description: '',
-        initPrice: '',
+        price: '',
         file: '',
         hashtagList: [],
         startDate: '',
@@ -172,7 +169,7 @@ export default {
       duplicateApiCheck: {
         nameCheck: false,
         nameDisabled: false
-      },
+      }
     }
   },
   setup() {
@@ -184,22 +181,21 @@ export default {
   unmounted() {
   },
   methods: {
-    changeSaleType(saleType) {
-      this.saleType = saleType
-      this.registerData.saleType = saleType
-      if (saleType === 'auction') {
+    changeArtType(artType) {
+      this.artType = artType
+      this.registerData.artType = artType
+      if (artType === 'auction') {
         this.isAuctionSelected = true
         this.isGeneralSelected = false
-      } else if (saleType === 'general') {
+      } else if (artType === 'general') {
         this.isAuctionSelected = false
         this.isGeneralSelected = true
       }
       this.registerData = {
-        saleType: saleType,
-        userId: this.$store.getters.getUserId,
+        artType: artType,
         name: '',
         description: '',
-        initPrice: '',
+        price: '',
         file: '',
         hashtagList: [],
         startDate: '',
@@ -207,8 +203,8 @@ export default {
       }
     },
     upload() {
-      let file = document.getElementById("imageFile");
-      this.previewImg = URL.createObjectURL(file.files[0]);
+      const file = document.getElementById('imageFile')
+      this.previewImg = URL.createObjectURL(file.files[0])
     },
 
     currentNameApiState() {
@@ -218,18 +214,13 @@ export default {
     async nameDuplicateCheck() {
       const name = this.registerData.name
       if (name === '') {
-        alert('작품명을 입력해주세요')
-        return false;
+        alert('작품명을 입력해주세요.')
+        return false
       }
 
       try {
-        let formData = new FormData();
-        formData.append('name', name)
-
-        await axios.post('/api/art/duplicate-check', formData, {
-          headers: { 'Content-Type': 'x-www-form-urlencoded' }
-        })
-        alert('사용 가능한 작품명입니다')
+        await this.axiosWithAccessToken.get(`/api/art/duplicate?name=${name}`)
+        alert('사용 가능한 작품명입니다.')
         this.duplicateApiCheck.nameCheck = true
         this.duplicateApiCheck.nameDisabled = true
       } catch (err) {
@@ -244,13 +235,13 @@ export default {
       return this.registerData.description !== ''
     },
     validateAuctionInputDate() {
-      return !(this.registerData.startDate === '' || this.registerData.endDate === '');
+      return !(this.registerData.startDate === '' || this.registerData.endDate === '')
     },
     validateInputPrice() {
-      return this.registerData.initPrice !== ''
+      return this.registerData.price !== ''
     },
     validateInputPriceMinimum() {
-      return this.registerData.initPrice >= 1000
+      return this.registerData.price >= 1000
     },
     validateDate() {
       return this.registerData.startDate < this.registerData.endDate
@@ -259,8 +250,8 @@ export default {
       return new Date(new Date().getTime() - new Date().getTimezoneOffset() * 60000).toISOString() <= this.registerData.endDate
     },
     validateFileUpload() {
-      let file = document.getElementById("imageFile");
-      return file.files[0] !== undefined;
+      const file = document.getElementById('imageFile')
+      return file.files[0] !== undefined
     },
     validateApiResultState() {
       return this.duplicateApiCheck.nameCheck === true
@@ -275,7 +266,7 @@ export default {
         return false
       }
       if (this.validateInputPrice() === false) {
-        if (this.registerData.saleType === 'auction') {
+        if (this.registerData.artType === 'auction') {
           alert('경매 시작 가격을 입력해주세요')
           return false
         } else {
@@ -286,9 +277,9 @@ export default {
         alert('작품은 최소 1000원 이상이여야 합니다')
         return false
       }
-      if (this.registerData.saleType === 'auction') {
+      if (this.registerData.artType === 'auction') {
         if (this.validateAuctionInputDate() === false) {
-          alert('경매 작품은 시작날짜/종료날짜가 필수입니다')
+          alert('경매 작품은 시작날짜 & 종료날짜가 필수입니다')
           return false
         } else if (this.validateDate() === false) {
           alert('시작 날짜와 종료 날짜를 정확하게 선택해주세요')
@@ -308,24 +299,26 @@ export default {
       }
 
       try {
-        let formData = new FormData()
-        let file = document.getElementById("imageFile");
+        const formData = new FormData()
+        const file = document.getElementById('imageFile')
         formData.append('file', file.files[0])
-        formData.append('saleType', this.registerData.saleType)
-        formData.append('userId', this.registerData.userId)
+        formData.append('artType', this.registerData.artType)
         formData.append('name', this.registerData.name)
         formData.append('description', this.registerData.description)
-        formData.append('initPrice', this.registerData.initPrice)
+        formData.append('price', this.registerData.price)
         formData.append('hashtagList', this.registerData.hashtagList)
         formData.append('startDate', this.registerData.startDate)
         formData.append('endDate', this.registerData.endDate)
 
-        await axios.post('/api/art', formData, {
-          headers: {'Content-Type': 'multipart/form-data'}
+        await this.axiosWithAccessToken.post('/api/art', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
         })
         alert('작품 등록이 완료되었습니다')
         this.$router.push('/')
       } catch (err) {
+        console.log(err)
         alert(err.response.data.message)
       }
     }

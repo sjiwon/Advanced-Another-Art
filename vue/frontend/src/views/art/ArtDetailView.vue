@@ -1,12 +1,11 @@
 <template>
   <div>
-    <AuctionArtDetailComponent v-if="artSaleType === 'auction'" :art="art"/>
-    <GeneralArtDetailComponent v-if="artSaleType === 'general'" :art="art"/>
+    <AuctionArtDetailComponent v-if="artType === 'auction'" :auction-art="art"/>
+    <GeneralArtDetailComponent v-if="artType === 'general'" :general-art="art"/>
   </div>
 </template>
 
 <script>
-import axios from 'axios'
 import AuctionArtDetailComponent from '@/components/art/AuctionArtDetailComponent.vue'
 import GeneralArtDetailComponent from '@/components/art/GeneralArtDetailComponent.vue'
 
@@ -18,25 +17,19 @@ export default {
   },
   data() {
     return {
-      artId: this.$store.getters.getCurrentSelectedArtId,
-      artSaleType: this.$store.getters.getCurrentSelectedArtSaleType,
+      artId: this.$store.getters['detailSearch/getCurrentSelectedArtId'],
+      artType: this.$store.getters['detailSearch/getCurrentSelectedArtType'],
       art: {}
     }
-  },
-  setup() {
   },
   created() {
     this.fetchData()
   },
-  mounted() {
-  },
-  unmounted() {
-  },
   methods: {
     async fetchData() {
       try {
-        const response = await axios.get(`/api/arts/${this.artId}`)
-        this.art = response.data.art
+        const response = await this.axios.get(`/api/arts/${this.artId}`)
+        this.art = response.data.result
       } catch (err) {
         alert(err.response.data.message)
       }
