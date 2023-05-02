@@ -1,0 +1,32 @@
+= 작품 단건 조회 API
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 2
+
+== 일반 작품
+HTTP Request
+include::{snippets}/ArtSearchApi/SingleArt/Success/General/http-request.adoc[]
+include::{snippets}/ArtSearchApi/SingleArt/Success/General/path-parameters.adoc[]
+
+HTTP Response
+include::{snippets}/ArtSearchApi/SingleArt/Success/General/response-body.adoc[]
+include::{snippets}/ArtSearchApi/SingleArt/Success/General/response-fields.adoc[]
+
+== 경매 작품
+HTTP Request
+include::{snippets}/ArtSearchApi/SingleArt/Success/Auction/http-request.adoc[]
+include::{snippets}/ArtSearchApi/SingleArt/Success/Auction/path-parameters.adoc[]
+
+HTTP Response
+include::{snippets}/ArtSearchApi/SingleArt/Success/Auction/response-body.adoc[]
+include::{snippets}/ArtSearchApi/SingleArt/Success/Auction/response-fields.adoc[]
+
+== 존재하지 않을 경우
+HTTP Request
+include::{snippets}/ArtSearchApi/SingleArt/Failure/http-request.adoc[]
+include::{snippets}/ArtSearchApi/SingleArt/Failure/path-parameters.adoc[]
+
+HTTP Response
+include::{snippets}/ArtSearchApi/SingleArt/Failure/response-body.adoc[]

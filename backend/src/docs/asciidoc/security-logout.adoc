@@ -1,0 +1,22 @@
+= Spring Security Logout Flow
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 2
+
+== 로그아웃
+=== 1. Authorization 헤더에 Access Token이 없으면 로그아웃에 실패한다
+HTTP Request
+include::{snippets}/Security/Logout/Failure/http-request.adoc[]
+
+HTTP Response
+include::{snippets}/Security/Logout/Failure/response-body.adoc[]
+
+=== 2. Authorization Header에 Access Token이 존재하면 로그아웃에 성공하고 Access Token으로부터 추출한 memberId에 해당하는 Refresh Token은 DB에서 삭제된다
+HTTP Request
+include::{snippets}/Security/Logout/Success/http-request.adoc[]
+include::{snippets}/Security/Logout/Success/request-headers.adoc[]
+
+HTTP Response
+include::{snippets}/Security/Logout/Success/http-response.adoc[]

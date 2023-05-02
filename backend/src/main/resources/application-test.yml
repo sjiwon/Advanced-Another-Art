@@ -1,0 +1,28 @@
+spring:
+  config:
+    import:
+      - application-logging.yml
+
+  datasource:
+    url: jdbc:h2:mem:test;MODE=MYSQL;
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
+
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
+        default_batch_fetch_size: 50
+
+jwt:
+  secret-key: adsfasjdflksajdlkfjasldjflkasdjflasjdlfjasldfjlkasdfasdasd
+  access-token-validity: 1234
+  refresh-token-validity: 1234
+
+file:
+  dir: src/test/resources/images/storage/
