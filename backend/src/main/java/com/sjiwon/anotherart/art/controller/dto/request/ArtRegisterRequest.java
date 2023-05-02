@@ -7,7 +7,6 @@ import com.sjiwon.anotherart.global.annotation.validation.ValidAuctionArtStartDa
 import com.sjiwon.anotherart.global.annotation.validation.ValidHashtagCount;
 import com.sjiwon.anotherart.global.annotation.validation.ValidImageContentType;
 import lombok.Builder;
-import lombok.Getter;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -18,45 +17,35 @@ import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
 
-@Getter
-public class ArtRegisterRequest {
-    @NotBlank(message = "작품 타입(경매/일반)은 필수입니다.")
-    private final String artType;
+public record ArtRegisterRequest(
+        @NotBlank(message = "작품 타입(경매/일반)은 필수입니다.")
+        String artType,
 
-    @NotBlank(message = "작품명은 필수입니다.")
-    private final String name;
+        @NotBlank(message = "작품명은 필수입니다.")
+        String name,
 
-    @NotBlank(message = "작품 설명은 필수입니다.")
-    private final String description;
+        @NotBlank(message = "작품 설명은 필수입니다.")
+        String description,
 
-    @NotNull(message = "작품 가격은 필수입니다.")
-    @Min(message = "작품 가격은 최소 1000원 이상이여야 합니다.", value = 1000)
-    private final Integer price;
+        @NotNull(message = "작품 가격은 필수입니다.")
+        @Min(message = "작품 가격은 최소 1000원 이상이여야 합니다.", value = 1000)
+        Integer price,
 
-    @ValidImageContentType
-    private final MultipartFile file;
+        @ValidImageContentType
+        MultipartFile file,
 
-    @ValidHashtagCount
-    private final List<String> hashtagList;
+        @ValidHashtagCount
+        List<String> hashtagList,
 
-    @ValidAuctionArtStartDate
-    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
-    private final LocalDateTime startDate;
+        @ValidAuctionArtStartDate
+        @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
+        LocalDateTime startDate,
 
-    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
-    private final LocalDateTime endDate;
-
+        @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
+        LocalDateTime endDate
+) {
     @Builder
-    public ArtRegisterRequest(String artType, String name, String description, Integer price, MultipartFile file, List<String> hashtagList, LocalDateTime startDate, LocalDateTime endDate) {
-        this.artType = artType;
-        this.name = name;
-        this.description = description;
-        this.price = price;
-        this.file = file;
-        this.hashtagList = hashtagList;
-        this.startDate = startDate;
-        this.endDate = endDate;
-    }
+    public ArtRegisterRequest {}
 
     public ArtRegisterRequestDto toGeneralArtDto() {
         return ArtRegisterRequestDto.builder()

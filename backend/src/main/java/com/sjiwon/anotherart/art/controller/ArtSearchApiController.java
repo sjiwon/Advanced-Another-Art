@@ -36,20 +36,20 @@ public class ArtSearchApiController {
 
     @GetMapping("/main")
     public PagingArtResponse<List<AuctionArt>> getCurrentActiceAuctionArtList(@Valid @ModelAttribute MainPageSearchRequest request) {
-        Pageable pageRequest = getDefaultPageRequest(request.getPage());
-        Page<AuctionArt> result = auctionArtComplexSearchService.getCurrentActiveAuctionArtList(request.getSort(), pageRequest);
+        Pageable pageRequest = getDefaultPageRequest(request.page());
+        Page<AuctionArt> result = auctionArtComplexSearchService.getCurrentActiveAuctionArtList(request.sort(), pageRequest);
 
-        return assemblingResult(result, request.getPage());
+        return assemblingResult(result, request.page());
     }
 
     @GetMapping("/keyword")
     public <T extends AbstractArt> PagingArtResponse<List<T>> getArtListByKeyword(@Valid @ModelAttribute KeywordSearchArtRequest request) {
-        Pageable pageRequest = getDefaultPageRequest(request.getPage());
+        Pageable pageRequest = getDefaultPageRequest(request.page());
         Page<T> result = request.isAuctionType()
-                ? (Page<T>) auctionArtComplexSearchService.getAuctionArtListByKeyword(request.getKeyword(), request.getSort(), pageRequest)
-                : (Page<T>) generalArtComplexSearchService.getGeneralArtListByKeyword(request.getKeyword(), request.getSort(), pageRequest);
+                ? (Page<T>) auctionArtComplexSearchService.getAuctionArtListByKeyword(request.keyword(), request.sort(), pageRequest)
+                : (Page<T>) generalArtComplexSearchService.getGeneralArtListByKeyword(request.keyword(), request.sort(), pageRequest);
 
-        return assemblingResult(result, request.getPage());
+        return assemblingResult(result, request.page());
     }
 
     @GetMapping("/hashtag")

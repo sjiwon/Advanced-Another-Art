@@ -19,7 +19,7 @@ public class BidApiController {
     @PreAuthorize("hasRole('USER')")
     @PostMapping
     public ResponseEntity<Void> bid(@PathVariable Long auctionId, @ExtractPayloadId Long memberId, @Valid @RequestBody BidRequest request) {
-        bidService.bid(auctionId, memberId, request.getBidAmount());
+        bidService.bid(auctionId, memberId, request.bidAmount());
         return ResponseEntity.noContent().build();
     }
 }

@@ -24,14 +24,14 @@ public class MemberPointApiController {
     @PreAuthorize("hasRole('USER')")
     @PostMapping("/charge")
     public ResponseEntity<Void> chargePoint(@ExtractPayloadId Long memberId, @Valid @RequestBody PointChargeRequest request) {
-        memberPointService.chargePoint(memberId, request.getChargeAmount());
+        memberPointService.chargePoint(memberId, request.chargeAmount());
         return ResponseEntity.noContent().build();
     }
 
     @PreAuthorize("hasRole('USER')")
     @PostMapping("/refund")
     public ResponseEntity<Void> refundPoint(@ExtractPayloadId Long memberId, @Valid @RequestBody PointRefundRequest request) {
-        memberPointService.refundPoint(memberId, request.getRefundAmount());
+        memberPointService.refundPoint(memberId, request.refundAmount());
         return ResponseEntity.noContent().build();
     }
 }

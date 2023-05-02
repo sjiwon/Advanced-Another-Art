@@ -20,14 +20,14 @@ public class MemberDetailApiController {
     @PreAuthorize("hasRole('USER')")
     @PatchMapping("/nickname")
     public ResponseEntity<Void> changeNickname(@ExtractPayloadId Long memberId, @Valid @RequestBody ChangeNicknameRequest request) {
-        memberService.changeNickname(memberId, request.getChangeNickname());
+        memberService.changeNickname(memberId, request.changeNickname());
         return ResponseEntity.noContent().build();
     }
 
     @PreAuthorize("hasRole('USER')")
     @PatchMapping("/password")
     public ResponseEntity<Void> changePassword(@ExtractPayloadId Long memberId, @Valid @RequestBody ChangePasswordRequest request) {
-        memberService.changePassword(memberId, request.getChangePassword());
+        memberService.changePassword(memberId, request.changePassword());
         return ResponseEntity.noContent().build();
     }
 
@@ -45,7 +45,7 @@ public class MemberDetailApiController {
 
     @PostMapping("/reset-password")
     public ResponseEntity<Void> resetPassword(@Valid @RequestBody ResetPasswordRequest request) {
-        memberService.resetPassword(request.getLoginId(), request.getChangePassword());
+        memberService.resetPassword(request.loginId(), request.changePassword());
         return ResponseEntity.noContent().build();
     }
 }
