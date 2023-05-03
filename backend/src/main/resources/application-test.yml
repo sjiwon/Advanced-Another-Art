@@ -23,3 +23,13 @@ jwt:
   secret-key: adsfasjdflksajdlkfjasldjflkasdjflasjdlfjasldfjlkasdfasdasd
   access-token-validity: 1234
   refresh-token-validity: 1234
+
+cloud:
+  ncp:
+    region: kr-standard
+    end-point: kr.object.ncloudstorage.com
+    credentials:
+      access-key: access-key
+      secret-key: secret-key
+    storage:
+      bucket: bucket-name
