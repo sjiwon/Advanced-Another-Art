@@ -2,11 +2,14 @@ package com.sjiwon.anotherart.common;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sjiwon.anotherart.favorite.controller.FavoriteApiController;
+import com.sjiwon.anotherart.favorite.service.FavoriteService;
 import com.sjiwon.anotherart.fixture.MemberFixture;
 import com.sjiwon.anotherart.global.security.SecurityConfiguration;
 import com.sjiwon.anotherart.member.domain.Member;
 import com.sjiwon.anotherart.member.domain.MemberRepository;
 import com.sjiwon.anotherart.member.exception.MemberErrorCode;
+import com.sjiwon.anotherart.token.controller.TokenReissueApiController;
 import com.sjiwon.anotherart.token.service.TokenManager;
 import com.sjiwon.anotherart.token.service.TokenReissueService;
 import com.sjiwon.anotherart.token.utils.JwtTokenProvider;
@@ -46,7 +49,13 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.response
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.log;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 
-@WebMvcTest
+@WebMvcTest({
+        // Favorite
+        FavoriteApiController.class,
+
+        // Token
+        TokenReissueApiController.class
+})
 @ExtendWith(RestDocumentationExtension.class)
 @Import(SecurityConfiguration.class)
 @AutoConfigureRestDocs
@@ -71,6 +80,10 @@ public abstract class ControllerTest {
     @MockBean
     private TokenManager tokenManager;
 
+    // favorite
+    @MockBean
+    protected FavoriteService favoriteService;
+
     // token
     @MockBean
     protected TokenReissueService tokenReissueService;
@@ -81,8 +94,10 @@ public abstract class ControllerTest {
                 .apply(MockMvcRestDocumentation.documentationConfiguration(provider))
                 .alwaysDo(print())
                 .alwaysDo(log())
-                .addFilter(new CharacterEncodingFilter("UTF-8", true))
-                .addFilters(springSecurityFilterChain)
+                .addFilters(
+                        new CharacterEncodingFilter("UTF-8", true),
+                        springSecurityFilterChain
+                )
                 .build();
 
         createMember(MEMBER_A, 1L);

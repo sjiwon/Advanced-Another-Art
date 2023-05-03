@@ -1,5 +1,7 @@
 package com.sjiwon.anotherart.common;
 
+import com.sjiwon.anotherart.art.domain.ArtRepository;
+import com.sjiwon.anotherart.favorite.domain.FavoriteRepository;
 import com.sjiwon.anotherart.member.domain.MemberRepository;
 import com.sjiwon.anotherart.token.domain.TokenRepository;
 import com.sjiwon.anotherart.token.utils.JwtTokenProvider;
@@ -22,6 +24,12 @@ public class ServiceTest {
 
     @Autowired
     protected TokenRepository tokenRepository;
+
+    @Autowired
+    protected ArtRepository artRepository;
+
+    @Autowired
+    protected FavoriteRepository favoriteRepository;
 
     @AfterEach
     void clearDatabase() {
