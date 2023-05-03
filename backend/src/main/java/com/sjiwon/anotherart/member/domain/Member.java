@@ -1,5 +1,6 @@
 package com.sjiwon.anotherart.member.domain;
 
+import com.sjiwon.anotherart.global.BaseEntity;
 import com.sjiwon.anotherart.member.domain.point.PointRecord;
 import com.sjiwon.anotherart.member.domain.point.PointType;
 import lombok.AccessLevel;
@@ -17,7 +18,7 @@ import static com.sjiwon.anotherart.member.domain.Role.USER;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Table(name = "member")
-public class Member {
+public class Member extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
