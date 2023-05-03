@@ -19,6 +19,7 @@ bin/
 ### IntelliJ IDEA ###
 **/src/main/generated/
 **/src/main/resources/security/
+/src/docs/asciidoc/*.html
 /src/main/resources/static/docs
 .idea
 *.iws

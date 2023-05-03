@@ -1,7 +1,7 @@
 package com.sjiwon.anotherart.token.utils;
 
 import com.sjiwon.anotherart.global.exception.AnotherArtException;
-import com.sjiwon.anotherart.token.exception.TokenErrorCode;
+import com.sjiwon.anotherart.global.security.exception.AuthErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.MethodParameter;
 import org.springframework.web.bind.support.WebDataBinderFactory;
@@ -29,6 +29,6 @@ public class ExtractPayloadArgumentResolver implements HandlerMethodArgumentReso
 
     private String extractToken(HttpServletRequest request) {
         return AuthorizationExtractor.extractToken(request)
-                .orElseThrow(() -> AnotherArtException.type(TokenErrorCode.AUTH_INVALID_TOKEN));
+                .orElseThrow(() -> AnotherArtException.type(AuthErrorCode.INVALID_PERMISSION));
     }
 }

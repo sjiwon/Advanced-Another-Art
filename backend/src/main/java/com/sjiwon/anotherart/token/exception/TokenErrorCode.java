@@ -8,7 +8,7 @@ import org.springframework.http.HttpStatus;
 @Getter
 @RequiredArgsConstructor
 public enum TokenErrorCode implements ErrorCode {
-    AUTH_INVALID_TOKEN(HttpStatus.UNAUTHORIZED, "AUTH_005", "유효하지 않은 토큰입니다."),
+    AUTH_INVALID_TOKEN(HttpStatus.FORBIDDEN, "AUTH_005", "유효하지 않은 토큰입니다."),
     ;
 
     private final HttpStatus status;
