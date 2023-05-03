@@ -1,9 +1,0 @@
-spring:
-  config:
-    import:
-      - security/application-external.yml
-      - security/application-local-datasource.yml
-      - application-logging.yml
-
-server:
-  port: 7777
