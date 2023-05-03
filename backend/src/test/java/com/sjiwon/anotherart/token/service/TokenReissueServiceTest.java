@@ -28,7 +28,7 @@ class TokenReissueServiceTest extends ServiceTest {
     @BeforeEach
     void setUp() {
         member = memberRepository.save(MEMBER_A.toMember());
-        refreshToken = jwtTokenProvider.createRefreshToken(member.getId(), member.getRole().getAuthority());
+        refreshToken = jwtTokenProvider.createRefreshToken(member.getId());
     }
 
     @Nested

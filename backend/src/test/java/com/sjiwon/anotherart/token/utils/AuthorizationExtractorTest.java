@@ -56,10 +56,9 @@ class AuthorizationExtractorTest {
         given(request.getHeader(AUTHORIZATION)).willReturn(String.join(" ", BEARER_TOKEN, ACCESS_TOKEN));
 
         // when
-        Optional<String> token = AuthorizationExtractor.extractToken(request);
+        String token = AuthorizationExtractor.extractToken(request).orElseThrow();
 
         // then
-        assertThat(token).isPresent();
-        assertThat(token.get()).isEqualTo(ACCESS_TOKEN);
+        assertThat(token).isEqualTo(ACCESS_TOKEN);
     }
 }

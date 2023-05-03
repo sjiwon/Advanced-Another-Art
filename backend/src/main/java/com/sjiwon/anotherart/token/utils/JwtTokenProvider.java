@@ -27,19 +27,18 @@ public class JwtTokenProvider {
         this.refreshTokenValidityInMilliseconds = refreshTokenValidityInMilliseconds;
     }
 
-    public String createAccessToken(Long memberId, String role) {
-        return createToken(memberId, role, accessTokenValidityInMilliseconds);
+    public String createAccessToken(Long memberId) {
+        return createToken(memberId, accessTokenValidityInMilliseconds);
     }
 
-    public String createRefreshToken(Long memberId, String role) {
-        return createToken(memberId, role, refreshTokenValidityInMilliseconds);
+    public String createRefreshToken(Long memberId) {
+        return createToken(memberId, refreshTokenValidityInMilliseconds);
     }
 
-    private String createToken(Long memberId, String role, long validityInMilliseconds) {
+    private String createToken(Long memberId, long validityInMilliseconds) {
         // Payload
         Claims claims = Jwts.claims();
         claims.put("id", memberId);
-        claims.put("role", role);
 
         // Expires At
         ZonedDateTime now = ZonedDateTime.now();
@@ -57,12 +56,6 @@ public class JwtTokenProvider {
         return getClaims(token)
                 .getBody()
                 .get("id", Long.class);
-    }
-
-    public String getRole(String token) {
-        return getClaims(token)
-                .getBody()
-                .get("role", String.class);
     }
 
     public boolean isTokenValid(String token) {

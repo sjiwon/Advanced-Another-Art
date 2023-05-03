@@ -26,8 +26,8 @@ public class TokenReissueService {
 
         // Access Token & Refresh Token 발급
         Member member = memberFindService.findById(memberId);
-        String newAccessToken = jwtTokenProvider.createAccessToken(member.getId(), member.getRole().getAuthority());
-        String newRefreshToken = jwtTokenProvider.createRefreshToken(member.getId(), member.getRole().getAuthority());
+        String newAccessToken = jwtTokenProvider.createAccessToken(member.getId());
+        String newRefreshToken = jwtTokenProvider.createRefreshToken(member.getId());
 
         // RTR Policy
         tokenManager.reissueRefreshTokenByRtrPolicy(memberId, newRefreshToken);

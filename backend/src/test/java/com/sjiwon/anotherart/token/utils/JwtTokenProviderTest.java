@@ -12,14 +12,13 @@ class JwtTokenProviderTest {
     private static final JwtTokenProvider INVALID_PROVIDER = new JwtTokenProvider(SECRET_KEY, 0L, 0L);
     private static final JwtTokenProvider VALID_PROVIDER = new JwtTokenProvider(SECRET_KEY, 7200L, 7200L);
     private static final Long MEMBER_ID = 1L;
-    private static final String MEMBER_ROLE = "ROLE_USER";
 
     @Test
     @DisplayName("AccessToken과 RefreshToken을 발급한다")
     void issueAccessTokenAndRefreshToken() {
         // when
-        String accessToken = VALID_PROVIDER.createAccessToken(MEMBER_ID, MEMBER_ROLE);
-        String refreshToken = VALID_PROVIDER.createRefreshToken(MEMBER_ID, MEMBER_ROLE);
+        String accessToken = VALID_PROVIDER.createAccessToken(MEMBER_ID);
+        String refreshToken = VALID_PROVIDER.createRefreshToken(MEMBER_ID);
 
         // then
         assertAll(
@@ -32,21 +31,18 @@ class JwtTokenProviderTest {
     @DisplayName("Token의 Payload를 추출한다")
     void extractTokenPayload() {
         // when
-        String accessToken = VALID_PROVIDER.createAccessToken(MEMBER_ID, MEMBER_ROLE);
+        String accessToken = VALID_PROVIDER.createAccessToken(MEMBER_ID);
 
         // then
-        assertAll(
-                () -> assertThat(VALID_PROVIDER.getId(accessToken)).isEqualTo(MEMBER_ID),
-                () -> assertThat(VALID_PROVIDER.getRole(accessToken)).isEqualTo(MEMBER_ROLE)
-        );
+        assertThat(VALID_PROVIDER.getId(accessToken)).isEqualTo(MEMBER_ID);
     }
 
     @Test
     @DisplayName("Token 만료에 대한 유효성을 검증한다")
     void validateTokenExpire() {
         // given
-        String validToken = VALID_PROVIDER.createAccessToken(MEMBER_ID, MEMBER_ROLE);
-        String invalidToken = INVALID_PROVIDER.createAccessToken(MEMBER_ID, MEMBER_ROLE);
+        String validToken = VALID_PROVIDER.createAccessToken(MEMBER_ID);
+        String invalidToken = INVALID_PROVIDER.createAccessToken(MEMBER_ID);
 
         // when
         boolean actual1 = VALID_PROVIDER.isTokenValid(validToken);
@@ -63,7 +59,7 @@ class JwtTokenProviderTest {
     @DisplayName("Token 조작에 대한 유효성을 검증한다")
     void validateTokenManipulation() {
         // given
-        String forgedToken = VALID_PROVIDER.createAccessToken(MEMBER_ID, MEMBER_ROLE) + "hacked";
+        String forgedToken = VALID_PROVIDER.createAccessToken(MEMBER_ID) + "hacked";
 
         // when
         boolean actual = VALID_PROVIDER.isTokenValid(forgedToken);

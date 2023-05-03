@@ -9,12 +9,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @AllArgsConstructor
 public class ErrorResponse {
-    private int statusCode;
+    private int status;
     private String errorCode;
     private String message;
 
     private ErrorResponse(ErrorCode code) {
-        this.statusCode = code.getStatus().value();
+        this.status = code.getStatus().value();
         this.errorCode = code.getErrorCode();
         this.message = code.getMessage();
     }

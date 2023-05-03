@@ -12,12 +12,12 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 import javax.servlet.http.HttpServletRequest;
 
 @RequiredArgsConstructor
-public class ExtractPayloadIdArgumentResolver implements HandlerMethodArgumentResolver {
+public class ExtractPayloadArgumentResolver implements HandlerMethodArgumentResolver {
     private final JwtTokenProvider jwtTokenProvider;
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
-        return parameter.hasParameterAnnotation(ExtractPayloadId.class);
+        return parameter.hasParameterAnnotation(ExtractPayload.class);
     }
 
     @Override

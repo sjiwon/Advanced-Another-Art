@@ -1,0 +1,56 @@
+= Spring Security 인증 및 로그아웃 Flow
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 2
+
+== 인증
+=== 1. 로그인 요청 시 아이디/비밀번호 값을 비워서 보냄에 따라 예외가 발생한다
+HTTP Request
+include::{snippets}/Security/Authentication/Failure/Case1/http-request.adoc[]
+include::{snippets}/Security/Authentication/Failure/Case1/request-fields.adoc[]
+
+HTTP Response
+include::{snippets}/Security/Authentication/Failure/Case1/response-body.adoc[]
+
+=== 2. 로그인 아이디에 해당하는 사용자 정보가 DB에 없음에 따라 예외가 발생한다
+HTTP Request
+include::{snippets}/Security/Authentication/Failure/Case2/http-request.adoc[]
+include::{snippets}/Security/Authentication/Failure/Case2/request-fields.adoc[]
+
+HTTP Response
+include::{snippets}/Security/Authentication/Failure/Case2/response-body.adoc[]
+
+=== 3. 비밀번호가 사용자 정보와 일치하지 않음에 따라 예외가 발생한다
+HTTP Request
+include::{snippets}/Security/Authentication/Failure/Case3/http-request.adoc[]
+include::{snippets}/Security/Authentication/Failure/Case3/request-fields.adoc[]
+
+HTTP Response
+include::{snippets}/Security/Authentication/Failure/Case3/response-body.adoc[]
+
+=== 4. 로그인을 성공하면 Access Token & Refresh Token이 발급된다
+HTTP Request
+include::{snippets}/Security/Authentication/Success/http-request.adoc[]
+include::{snippets}/Security/Authentication/Success/request-fields.adoc[]
+
+HTTP Response
+include::{snippets}/Security/Authentication/Success/response-body.adoc[]
+include::{snippets}/Security/Authentication/Success/response-fields.adoc[]
+
+== 로그아웃
+=== 1. Authorization 헤더에 Access Token이 없으면 로그아웃에 실패한다
+HTTP Request
+include::{snippets}/Security/Logout/Failure/http-request.adoc[]
+
+HTTP Response
+include::{snippets}/Security/Logout/Failure/response-body.adoc[]
+
+=== 2. Authorization Header에 Access Token이 존재하면 로그아웃에 성공하고 PayloadID에 해당하는 Refresh Token은 DB에서 삭제된다
+HTTP Request
+include::{snippets}/Security/Logout/Success/http-request.adoc[]
+include::{snippets}/Security/Logout/Success/request-headers.adoc[]
+
+HTTP Response
+include::{snippets}/Security/Logout/Success/http-response.adoc[]

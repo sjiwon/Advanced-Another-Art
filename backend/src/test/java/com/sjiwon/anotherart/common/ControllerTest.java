@@ -2,11 +2,21 @@ package com.sjiwon.anotherart.common;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sjiwon.anotherart.fixture.MemberFixture;
+import com.sjiwon.anotherart.global.security.SecurityConfiguration;
+import com.sjiwon.anotherart.member.domain.Member;
+import com.sjiwon.anotherart.member.domain.MemberRepository;
+import com.sjiwon.anotherart.member.exception.MemberErrorCode;
+import com.sjiwon.anotherart.token.service.TokenManager;
+import com.sjiwon.anotherart.token.service.TokenReissueService;
+import com.sjiwon.anotherart.token.utils.JwtTokenProvider;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation;
@@ -14,12 +24,19 @@ import org.springframework.restdocs.operation.preprocess.OperationRequestPreproc
 import org.springframework.restdocs.operation.preprocess.OperationResponsePreprocessor;
 import org.springframework.restdocs.snippet.Attributes;
 import org.springframework.restdocs.snippet.Snippet;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.FilterChainProxy;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.CharacterEncodingFilter;
 
+import java.util.Optional;
+
+import static com.sjiwon.anotherart.fixture.MemberFixture.*;
+import static org.mockito.ArgumentMatchers.argThat;
+import static org.mockito.BDDMockito.given;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
@@ -31,11 +48,15 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 
 @WebMvcTest
 @ExtendWith(RestDocumentationExtension.class)
+@Import(SecurityConfiguration.class)
 @AutoConfigureRestDocs
 public abstract class ControllerTest {
     // common & external
     @Autowired
     protected MockMvc mockMvc;
+
+    @MockBean
+    protected JwtTokenProvider jwtTokenProvider;
 
     // common & internal
     @Autowired
@@ -43,6 +64,16 @@ public abstract class ControllerTest {
 
     @Autowired
     private FilterChainProxy springSecurityFilterChain;
+
+    @MockBean
+    private MemberRepository memberRepository;
+
+    @MockBean
+    private TokenManager tokenManager;
+
+    // token
+    @MockBean
+    protected TokenReissueService tokenReissueService;
 
     @BeforeEach
     void setUp(WebApplicationContext context, RestDocumentationContextProvider provider) {
@@ -53,6 +84,25 @@ public abstract class ControllerTest {
                 .addFilter(new CharacterEncodingFilter("UTF-8", true))
                 .addFilters(springSecurityFilterChain)
                 .build();
+
+        createMember(MEMBER_A, 1L);
+        createMember(MEMBER_B, 2L);
+        createMember(MEMBER_C, 3L);
+
+        given(memberRepository.findById(
+                argThat(arg -> !(arg.equals(1L) || arg.equals(2L) || arg.equals(3L)))
+        )).willThrow(new UsernameNotFoundException(MemberErrorCode.MEMBER_NOT_FOUND.getMessage()));
+        given(memberRepository.findByLoginId(
+                argThat(arg -> !(arg.equals(MEMBER_A.getLoginId()) || arg.equals(MEMBER_B.getLoginId()) || arg.equals(MEMBER_C.getLoginId())))
+        )).willThrow(new UsernameNotFoundException(MemberErrorCode.MEMBER_NOT_FOUND.getMessage()));
+    }
+
+    private void createMember(MemberFixture fixture, Long memberId) {
+        Member member = fixture.toMember();
+        ReflectionTestUtils.setField(member, "id", memberId);
+
+        given(memberRepository.findById(memberId)).willReturn(Optional.of(member));
+        given(memberRepository.findByLoginId(member.getLoginId())).willReturn(Optional.of(member));
     }
 
     protected OperationRequestPreprocessor getDocumentRequest() {

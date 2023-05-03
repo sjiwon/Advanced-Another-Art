@@ -17,12 +17,11 @@ class TokenManagerTest extends ServiceTest {
     private TokenManager tokenManager;
 
     private static final Long MEMBER_ID = 1L;
-    private static final String MEMBER_ROLE = "ROLE_USER";
     private String refreshToken;
 
     @BeforeEach
     void setUp() {
-        refreshToken = jwtTokenProvider.createRefreshToken(MEMBER_ID, MEMBER_ROLE);
+        refreshToken = jwtTokenProvider.createRefreshToken(MEMBER_ID);
     }
 
     @Nested

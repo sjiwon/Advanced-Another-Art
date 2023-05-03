@@ -8,11 +8,11 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public enum MemberFixture {
-    MEMBER_A("사용자A", "사용자A", "user1", "abcABC123!@#",
+    MEMBER_A("사용자A", "사용자A", "user", "abcABC123!@#",
             "sjiwon4491@gmail.com", 12345, "기본 주소", "상세 주소"),
-    MEMBER_B("사용자B", "사용자B", "user2", "abcABC123!@#",
+    MEMBER_B("사용자B", "사용자B", "admin", "abcABC123!@#",
             "sjiwon4491@naver.com", 12345, "기본 주소", "상세 주소"),
-    MEMBER_C("사용자C", "사용자C", "user3", "abcABC123!@#",
+    MEMBER_C("사용자C", "사용자C", "manager", "abcABC123!@#",
             "sjiwon@kyonggi.ac.kr", 12345, "기본 주소", "상세 주소"),
     ;
 
