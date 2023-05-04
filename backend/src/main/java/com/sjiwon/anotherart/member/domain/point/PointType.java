@@ -6,15 +6,15 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public enum PointType {
-    CHARGE("충전") {
+    CHARGE("포인트 충전") {
         @Override
         public boolean isIncreaseType() {
             return true;
         }
     },
-    REFUND("환불"),
-    PURCHASE("구매"),
-    SOLD("판매") {
+    REFUND("포인트 환불"),
+    PURCHASE("작품 구매"),
+    SOLD("작품 판매") {
         @Override
         public boolean isIncreaseType() {
             return true;

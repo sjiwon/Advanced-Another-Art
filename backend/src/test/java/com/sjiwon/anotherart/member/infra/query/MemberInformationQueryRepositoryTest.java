@@ -1,10 +1,9 @@
-package com.sjiwon.anotherart.member.service;
+package com.sjiwon.anotherart.member.infra.query;
 
-import com.sjiwon.anotherart.common.ServiceTest;
+import com.sjiwon.anotherart.common.RepositoryTest;
 import com.sjiwon.anotherart.member.domain.Member;
+import com.sjiwon.anotherart.member.domain.MemberRepository;
 import com.sjiwon.anotherart.member.infra.query.dto.response.MemberPointRecord;
-import com.sjiwon.anotherart.member.service.dto.response.MemberInformation;
-import com.sjiwon.anotherart.member.service.dto.response.PointRecordAssembler;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,10 +16,9 @@ import static com.sjiwon.anotherart.member.domain.point.PointType.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-@DisplayName("Member [Service Layer] -> MemberPointService 테스트")
-class MemberInformationServiceTest extends ServiceTest {
+class MemberInformationQueryRepositoryTest extends RepositoryTest {
     @Autowired
-    private MemberInformationService memberInformationService;
+    private MemberRepository memberRepository;
 
     private Member member;
 
@@ -30,31 +28,8 @@ class MemberInformationServiceTest extends ServiceTest {
     }
 
     @Test
-    @DisplayName("사용자의 기본 정보를 조회한다")
-    void getInformation() {
-        // when
-        MemberInformation information = memberInformationService.getInformation(member.getId());
-
-        // then
-        assertAll(
-                () -> assertThat(information.id()).isEqualTo(member.getId()),
-                () -> assertThat(information.name()).isEqualTo(member.getName()),
-                () -> assertThat(information.nickname()).isEqualTo(member.getNicknameValue()),
-                () -> assertThat(information.loginId()).isEqualTo(member.getLoginId()),
-                () -> assertThat(information.school()).isEqualTo(member.getSchool()),
-                () -> assertThat(information.phone()).isEqualTo(member.getPhone()),
-                () -> assertThat(information.email()).isEqualTo(member.getEmailValue()),
-                () -> assertThat(information.address().getPostcode()).isEqualTo(member.getAddress().getPostcode()),
-                () -> assertThat(information.address().getDefaultAddress()).isEqualTo(member.getAddress().getDefaultAddress()),
-                () -> assertThat(information.address().getDetailAddress()).isEqualTo(member.getAddress().getDetailAddress()),
-                () -> assertThat(information.totalPoint()).isEqualTo(member.getTotalPoint()),
-                () -> assertThat(information.availablePoint()).isEqualTo(member.getAvailablePoint())
-        );
-    }
-
-    @Test
     @DisplayName("사용자의 포인트 활용 내역을 조회한다")
-    void getPointRecords() {
+    void findPointRecordByMemberId() {
         // given
         member.addPointRecords(CHARGE, 100_000);
         member.addPointRecords(CHARGE, 200_000);
@@ -65,8 +40,7 @@ class MemberInformationServiceTest extends ServiceTest {
         member.addPointRecords(CHARGE, 500_000);
 
         // when
-        PointRecordAssembler pointRecords = memberInformationService.getPointRecords(member.getId());
-        List<MemberPointRecord> result = pointRecords.result();
+        List<MemberPointRecord> result = memberRepository.findPointRecordByMemberId(member.getId());
 
         // then
         assertAll(
