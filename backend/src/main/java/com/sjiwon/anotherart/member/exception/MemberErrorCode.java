@@ -16,7 +16,7 @@ public enum MemberErrorCode implements ErrorCode {
     INVALID_POST_CODE(HttpStatus.BAD_REQUEST, "MEMBER_006", "우편번호는 5자리여야 합니다."),
     INVALID_ADDRESS(HttpStatus.BAD_REQUEST, "MEMBER_007", "주소는 비어있지 않아야 합니다."),
     POINT_CANNOT_BE_NEGATIVE(HttpStatus.BAD_REQUEST, "MEMBER_008", "포인트는 음수가 될 수 없습니다."),
-    POINT_IS_NOT_ENOUGH(HttpStatus.BAD_REQUEST, "MEMBER_009", "포인트가 부족합니다."),
+    POINT_IS_NOT_ENOUGH(HttpStatus.CONFLICT, "MEMBER_009", "포인트가 부족합니다."),
     MEMBER_NOT_FOUND(HttpStatus.NOT_FOUND, "MEMBER_010", "사용자 정보가 존재하지 않습니다."),
     INVALID_PASSWORD(HttpStatus.UNAUTHORIZED, "MEMBER_011", "비밀번호가 일치하지 않습니다."),
     DUPLICATE_NICKNAME(HttpStatus.CONFLICT, "MEMBER_012", "이미 사용중인 닉네임입니다."),
