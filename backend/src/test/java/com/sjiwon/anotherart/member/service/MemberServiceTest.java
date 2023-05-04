@@ -4,6 +4,7 @@ import com.sjiwon.anotherart.common.ServiceTest;
 import com.sjiwon.anotherart.global.exception.AnotherArtException;
 import com.sjiwon.anotherart.member.domain.*;
 import com.sjiwon.anotherart.member.exception.MemberErrorCode;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -13,6 +14,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import static com.sjiwon.anotherart.fixture.MemberFixture.MEMBER_A;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 @DisplayName("Member [Service Layer] -> MemberService 테스트")
 class MemberServiceTest extends ServiceTest {
@@ -99,7 +101,7 @@ class MemberServiceTest extends ServiceTest {
         }
 
         @Test
-        @DisplayName("모든 중복 검사를 통과한다면 회원가입에 성공한다")
+        @DisplayName("회원가입에 성공한다")
         void success() {
             // given
             final Member member = MEMBER_A.toMember();
@@ -110,6 +112,73 @@ class MemberServiceTest extends ServiceTest {
             // then
             Member findMember = memberRepository.findById(savedMemberId).orElseThrow();
             assertThat(findMember).isEqualTo(member);
+        }
+    }
+
+    @Nested
+    @DisplayName("중복 체크")
+    class duplicateCheck {
+        private Member member;
+
+        @BeforeEach
+        void setUp() {
+            member = memberRepository.save(MEMBER_A.toMember());
+        }
+
+        @Test
+        @DisplayName("닉네임 중복 체크를 진행한다")
+        void checkNickname() {
+            // given
+            final String same = member.getNicknameValue();
+            final String diff = "fake";
+
+            // when - then
+            assertThatThrownBy(() -> memberService.duplicateCheck("nickname", same))
+                    .isInstanceOf(AnotherArtException.class)
+                    .hasMessage(MemberErrorCode.DUPLICATE_NICKNAME.getMessage());
+            assertDoesNotThrow(() -> memberService.duplicateCheck("nickname", diff));
+        }
+
+        @Test
+        @DisplayName("로그인 아이디 중복 체크를 진행한다")
+        void checkLoginId() {
+            // given
+            final String same = member.getLoginId();
+            final String diff = "fake";
+
+            // when - then
+            assertThatThrownBy(() -> memberService.duplicateCheck("loginId", same))
+                    .isInstanceOf(AnotherArtException.class)
+                    .hasMessage(MemberErrorCode.DUPLICATE_LOGIN_ID.getMessage());
+            assertDoesNotThrow(() -> memberService.duplicateCheck("loginId", diff));
+        }
+
+        @Test
+        @DisplayName("전화번호 중복 체크를 진행한다")
+        void checkPhone() {
+            // given
+            final String same = member.getPhone();
+            final String diff = "fake";
+
+            // when - then
+            assertThatThrownBy(() -> memberService.duplicateCheck("phone", same))
+                    .isInstanceOf(AnotherArtException.class)
+                    .hasMessage(MemberErrorCode.DUPLICATE_PHONE.getMessage());
+            assertDoesNotThrow(() -> memberService.duplicateCheck("phone", diff));
+        }
+
+        @Test
+        @DisplayName("이메일 중복 체크를 진행한다")
+        void checkEmail() {
+            // given
+            final String same = member.getEmailValue();
+            final String diff = "fake@gmail.com";
+
+            // when - then
+            assertThatThrownBy(() -> memberService.duplicateCheck("email", same))
+                    .isInstanceOf(AnotherArtException.class)
+                    .hasMessage(MemberErrorCode.DUPLICATE_EMAIL.getMessage());
+            assertDoesNotThrow(() -> memberService.duplicateCheck("email", diff));
         }
     }
 
