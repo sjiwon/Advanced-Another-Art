@@ -8,11 +8,13 @@ import com.sjiwon.anotherart.favorite.service.FavoriteService;
 import com.sjiwon.anotherart.fixture.MemberFixture;
 import com.sjiwon.anotherart.global.security.SecurityConfiguration;
 import com.sjiwon.anotherart.member.controller.MemberApiController;
+import com.sjiwon.anotherart.member.controller.MemberInformationApiController;
 import com.sjiwon.anotherart.member.controller.MemberModifyApiController;
 import com.sjiwon.anotherart.member.controller.MemberPointApiController;
 import com.sjiwon.anotherart.member.domain.Member;
 import com.sjiwon.anotherart.member.domain.MemberRepository;
 import com.sjiwon.anotherart.member.exception.MemberErrorCode;
+import com.sjiwon.anotherart.member.service.MemberInformationService;
 import com.sjiwon.anotherart.member.service.MemberPointService;
 import com.sjiwon.anotherart.member.service.MemberService;
 import com.sjiwon.anotherart.token.controller.TokenReissueApiController;
@@ -59,6 +61,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 @WebMvcTest({
         // member
         MemberApiController.class, MemberModifyApiController.class, MemberPointApiController.class,
+        MemberInformationApiController.class,
 
         // Favorite
         FavoriteApiController.class,
@@ -96,6 +99,9 @@ public abstract class ControllerTest {
 
     @MockBean
     protected MemberPointService memberPointService;
+
+    @MockBean
+    protected MemberInformationService memberInformationService;
 
     // favorite
     @MockBean

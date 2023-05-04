@@ -43,6 +43,6 @@ public enum MemberFixture {
         String second = String.valueOf((int) (Math.random() * 9000 + 1000));
         String third = String.valueOf((int) (Math.random() * 9000 + 1000));
 
-        return String.join(first, second, third);
+        return first + second + third;
     }
 }
