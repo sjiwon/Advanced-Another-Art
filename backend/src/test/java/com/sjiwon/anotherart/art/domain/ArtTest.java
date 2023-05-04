@@ -1,5 +1,6 @@
 package com.sjiwon.anotherart.art.domain;
 
+import com.sjiwon.anotherart.fixture.MemberFixture;
 import com.sjiwon.anotherart.member.domain.Member;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -26,10 +27,15 @@ class ArtTest {
 
     @BeforeEach
     void setUp() {
-        owner = MEMBER_A.toMember();
-        member = MEMBER_B.toMember();
-        ReflectionTestUtils.setField(owner, "id", 1L);
-        ReflectionTestUtils.setField(member, "id", 2L);
+        owner = createMember(MEMBER_A, 1L);
+        member = createMember(MEMBER_B, 2L);
+    }
+
+    private Member createMember(MemberFixture fixture, Long id) {
+        Member member = fixture.toMember();
+        ReflectionTestUtils.setField(member, "id", id);
+
+        return member;
     }
 
     @Test
@@ -125,8 +131,8 @@ class ArtTest {
         Art art = AUCTION_A.toArt(owner);
 
         // when
-        boolean actual1 = art.isArtOwner(owner.getId());
-        boolean actual2 = art.isArtOwner(member.getId());
+        boolean actual1 = art.isArtOwner(owner);
+        boolean actual2 = art.isArtOwner(member);
 
         // then
         assertAll(

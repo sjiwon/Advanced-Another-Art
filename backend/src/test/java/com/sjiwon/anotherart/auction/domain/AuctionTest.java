@@ -12,8 +12,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import static com.sjiwon.anotherart.fixture.ArtFixture.AUCTION_A;
-import static com.sjiwon.anotherart.fixture.ArtFixture.GENERAL_A;
+import static com.sjiwon.anotherart.fixture.ArtFixture.*;
 import static com.sjiwon.anotherart.fixture.MemberFixture.*;
 import static com.sjiwon.anotherart.fixture.PeriodFixture.*;
 import static com.sjiwon.anotherart.member.domain.point.PointType.CHARGE;
@@ -200,5 +199,47 @@ class AuctionTest {
                     () -> assertThat(memberB.getAvailablePoint()).isEqualTo(MEMBER_INIT_POINT - newBidPrice)
             );
         }
+    }
+
+    @Test
+    @DisplayName("최고 입찰자인지 판별한다")
+    void isHighestBidder() {
+        // given
+        Art art = AUCTION_A.toArt(owner);
+        Auction auction = Auction.createAuction(art, OPEN_NOW.toPeriod());
+        auction.applyNewBid(memberA, art.getPrice());
+
+        // when
+        boolean actual1 = auction.isHighestBidder(owner);
+        boolean actual2 = auction.isHighestBidder(memberA);
+        boolean actual3 = auction.isHighestBidder(memberB);
+
+        // then
+        assertAll(
+                () -> assertThat(actual1).isFalse(),
+                () -> assertThat(actual2).isTrue(),
+                () -> assertThat(actual3).isFalse()
+        );
+    }
+
+    @Test
+    @DisplayName("경매가 종료되었는지 확인한다")
+    void isAuctionFinished() {
+        // given
+        Art artA = AUCTION_A.toArt(owner);
+        Art artB = AUCTION_B.toArt(owner);
+
+        Auction auctionA = Auction.createAuction(artA, CLOSED_WEEK_1_AGO.toPeriod());
+        Auction auctionB = Auction.createAuction(artB, OPEN_NOW.toPeriod());
+
+        // when
+        boolean actual1 = auctionA.isAuctionFinished();
+        boolean actual2 = auctionB.isAuctionFinished();
+
+        // then
+        assertAll(
+                () -> assertThat(actual1).isTrue(),
+                () -> assertThat(actual2).isFalse()
+        );
     }
 }

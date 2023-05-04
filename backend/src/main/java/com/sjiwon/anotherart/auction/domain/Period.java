@@ -39,4 +39,8 @@ public class Period {
     public boolean isDateWithInRange(LocalDateTime time) {
         return time.isAfter(startDate) && time.isBefore(endDate);
     }
+
+    public boolean isAuctionFinished(LocalDateTime time) {
+        return endDate.isBefore(time);
+    }
 }

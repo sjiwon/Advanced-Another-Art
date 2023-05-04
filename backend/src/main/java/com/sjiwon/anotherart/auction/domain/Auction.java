@@ -51,13 +51,13 @@ public class Auction extends BaseEntity {
     }
 
     public void applyNewBid(Member bidder, int bidPrice) {
-        validateBidIsStillOpen();
+        validateAuctionIsOpen();
         validateArtOwner(bidder);
 
         this.bidders.applyNewBid(this, bidder, bidPrice);
     }
 
-    private void validateBidIsStillOpen() {
+    private void validateAuctionIsOpen() {
         final LocalDateTime now = LocalDateTime.now();
 
         if (!period.isDateWithInRange(now)) {
@@ -66,9 +66,17 @@ public class Auction extends BaseEntity {
     }
 
     private void validateArtOwner(Member bidder) {
-        if (art.isArtOwner(bidder.getId())) {
+        if (art.isArtOwner(bidder)) {
             throw AnotherArtException.type(AuctionErrorCode.ART_OWNER_CANNOT_BID);
         }
+    }
+
+    public boolean isAuctionFinished() {
+        return period.isAuctionFinished(LocalDateTime.now());
+    }
+
+    public boolean isHighestBidder(Member other) {
+        return getHighestBidder().isSameMember(other);
     }
 
     // Add Getter

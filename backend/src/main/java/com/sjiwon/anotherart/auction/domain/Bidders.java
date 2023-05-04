@@ -38,13 +38,13 @@ public class Bidders {
     public void applyNewBid(Auction auction, Member bidder, int bidPrice) {
         validateCurrentBidderIsHighestBidder(bidder);
         validateNewBidHigherThanCurrentHighestBid(bidPrice);
-        applyHighestBidAndupdateAvailablePointsForBidders(bidder, bidPrice);
+        applyHighestBidAndUpdateAvailablePointsForBidders(bidder, bidPrice);
 
         auctionRecords.add(AuctionRecord.createAuctionRecord(auction, bidder, bidPrice));
     }
 
     private void validateCurrentBidderIsHighestBidder(Member bidder) {
-        if (isBidderExists() && highestBidder.isSameMember(bidder.getId())) {
+        if (isBidderExists() && highestBidder.isSameMember(bidder)) {
             throw AnotherArtException.type(AuctionErrorCode.HIGHEST_BIDDER_CANNOT_BID_AGAIN);
         }
     }
@@ -65,7 +65,7 @@ public class Bidders {
         return highestBidder != null;
     }
 
-    private void applyHighestBidAndupdateAvailablePointsForBidders(Member bidder, int bidPrice) {
+    private void applyHighestBidAndUpdateAvailablePointsForBidders(Member bidder, int bidPrice) {
         if (isBidderExists()) {
             highestBidder.increaseAvailablePoint(highestBidPrice);
         }

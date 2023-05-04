@@ -7,6 +7,8 @@ import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
 
+import static com.sjiwon.anotherart.fixture.PeriodFixture.CLOSED_WEEK_1_AGO;
+import static com.sjiwon.anotherart.fixture.PeriodFixture.OPEN_NOW;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -48,6 +50,24 @@ class PeriodTest {
         // when
         boolean actual1 = period.isDateWithInRange(LocalDateTime.now().plusDays(4));
         boolean actual2 = period.isDateWithInRange(LocalDateTime.now().plusDays(8));
+
+        // then
+        assertAll(
+                () -> assertThat(actual1).isTrue(),
+                () -> assertThat(actual2).isFalse()
+        );
+    }
+
+    @Test
+    @DisplayName("경매가 종료되었는지 확인한다")
+    void isAuctionFinished() {
+        // given
+        final Period periodA = CLOSED_WEEK_1_AGO.toPeriod();
+        final Period periodB = OPEN_NOW.toPeriod();
+
+        // when
+        boolean actual1 = periodA.isAuctionFinished(LocalDateTime.now());
+        boolean actual2 = periodB.isAuctionFinished(LocalDateTime.now());
 
         // then
         assertAll(

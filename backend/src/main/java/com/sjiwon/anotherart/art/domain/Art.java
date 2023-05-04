@@ -97,8 +97,8 @@ public class Art extends BaseEntity {
         return this.type == AUCTION;
     }
 
-    public boolean isArtOwner(Long compareId) {
-        return owner.isSameMember(compareId);
+    public boolean isArtOwner(Member other) {
+        return owner.isSameMember(other);
     }
 
     // Add Getter

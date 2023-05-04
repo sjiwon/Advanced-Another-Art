@@ -1,6 +1,7 @@
 package com.sjiwon.anotherart.member.domain;
 
 import com.sjiwon.anotherart.common.utils.PasswordEncoderUtils;
+import com.sjiwon.anotherart.fixture.MemberFixture;
 import com.sjiwon.anotherart.global.exception.AnotherArtException;
 import com.sjiwon.anotherart.member.domain.point.PointRecord;
 import com.sjiwon.anotherart.member.exception.MemberErrorCode;
@@ -12,6 +13,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import static com.sjiwon.anotherart.fixture.MemberFixture.MEMBER_A;
+import static com.sjiwon.anotherart.fixture.MemberFixture.MEMBER_B;
 import static com.sjiwon.anotherart.member.domain.Role.USER;
 import static com.sjiwon.anotherart.member.domain.point.PointType.*;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -126,19 +128,27 @@ class MemberTest {
     @DisplayName("동일 사용자 검증")
     class validSameMember {
         private Member member;
+        private Member other;
 
         @BeforeEach
         void setUp() {
-            member = MEMBER_A.toMember();
-            ReflectionTestUtils.setField(member, "id", 1L);
+            member = createMember(MEMBER_A, 1L);
+            other = createMember(MEMBER_B, 2L);
+        }
+
+        private Member createMember(MemberFixture fixture, Long id) {
+            Member member = fixture.toMember();
+            ReflectionTestUtils.setField(member, "id", id);
+
+            return member;
         }
 
         @Test
         @DisplayName("ID(PK)를 통해서 동일 사용자인지 검증한다")
         void isSameMember() {
             // when
-            boolean actual1 = member.isSameMember(1L);
-            boolean actual2 = member.isSameMember(2L);
+            boolean actual1 = member.isSameMember(member);
+            boolean actual2 = member.isSameMember(other);
 
             // then
             assertAll(

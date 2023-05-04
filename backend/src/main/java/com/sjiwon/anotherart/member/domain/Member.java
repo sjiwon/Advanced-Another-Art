@@ -97,8 +97,8 @@ public class Member extends BaseEntity {
         this.address = this.address.update(postcode, defaultAddress, detailAddress);
     }
 
-    public boolean isSameMember(Long compareId) {
-        return Objects.equals(this.id, compareId);
+    public boolean isSameMember(Member other) {
+        return Objects.equals(this.id, other.getId());
     }
 
     // Add Getter
