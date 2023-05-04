@@ -21,6 +21,12 @@ public class MemberValidator {
         }
     }
 
+    public void validateNicknameForModify(Long memberId, Nickname nickname) {
+        if (memberRepository.existsByIdNotAndNickname(memberId, nickname)) {
+            throw AnotherArtException.type(MemberErrorCode.DUPLICATE_NICKNAME);
+        }
+    }
+
     public void validateLoginId(String loginId) {
         if (memberRepository.existsByLoginId(loginId)) {
             throw AnotherArtException.type(MemberErrorCode.DUPLICATE_LOGIN_ID);

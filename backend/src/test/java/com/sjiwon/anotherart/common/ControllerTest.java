@@ -2,11 +2,13 @@ package com.sjiwon.anotherart.common;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sjiwon.anotherart.common.config.SecurityValiatorConfiguration;
 import com.sjiwon.anotherart.favorite.controller.FavoriteApiController;
 import com.sjiwon.anotherart.favorite.service.FavoriteService;
 import com.sjiwon.anotherart.fixture.MemberFixture;
 import com.sjiwon.anotherart.global.security.SecurityConfiguration;
 import com.sjiwon.anotherart.member.controller.MemberApiController;
+import com.sjiwon.anotherart.member.controller.MemberModifyApiController;
 import com.sjiwon.anotherart.member.domain.Member;
 import com.sjiwon.anotherart.member.domain.MemberRepository;
 import com.sjiwon.anotherart.member.exception.MemberErrorCode;
@@ -54,7 +56,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 
 @WebMvcTest({
         // member
-        MemberApiController.class,
+        MemberApiController.class, MemberModifyApiController.class,
 
         // Favorite
         FavoriteApiController.class,
@@ -63,7 +65,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
         TokenReissueApiController.class
 })
 @ExtendWith(RestDocumentationExtension.class)
-@Import(SecurityConfiguration.class)
+@Import({SecurityConfiguration.class, SecurityValiatorConfiguration.class})
 @AutoConfigureRestDocs
 public abstract class ControllerTest {
     // common & external

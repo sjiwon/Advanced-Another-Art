@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.Optional;
 
 import static com.sjiwon.anotherart.fixture.MemberFixture.MEMBER_A;
+import static com.sjiwon.anotherart.fixture.MemberFixture.MEMBER_B;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
@@ -53,6 +54,23 @@ class MemberRepositoryTest extends RepositoryTest {
         assertAll(
                 () -> assertThat(actual1).isTrue(),
                 () -> assertThat(actual2).isFalse()
+        );
+    }
+
+    @Test
+    @DisplayName("해당 닉네임을 타인이 사용하고 있는지 확인한다")
+    void existsByIdNotAndNickname() {
+        // given
+        Member compare = memberRepository.save(MEMBER_B.toMember());
+
+        // when
+        boolean actual1 = memberRepository.existsByIdNotAndNickname(member.getId(), member.getNickname());
+        boolean actual2 = memberRepository.existsByIdNotAndNickname(member.getId(), compare.getNickname());
+
+        // then
+        assertAll(
+                () -> assertThat(actual1).isFalse(),
+                () -> assertThat(actual2).isTrue()
         );
     }
 

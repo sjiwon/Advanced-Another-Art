@@ -12,8 +12,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import static com.sjiwon.anotherart.fixture.MemberFixture.MEMBER_A;
+import static com.sjiwon.anotherart.fixture.MemberFixture.MEMBER_B;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 @DisplayName("Member [Service Layer] -> MemberService 테스트")
@@ -180,6 +182,77 @@ class MemberServiceTest extends ServiceTest {
                     .hasMessage(MemberErrorCode.DUPLICATE_EMAIL.getMessage());
             assertDoesNotThrow(() -> memberService.duplicateCheck("email", diff));
         }
+    }
+
+    @Nested
+    @DisplayName("닉네임 변경")
+    class changeNickname {
+        private Member member;
+
+        @BeforeEach
+        void setUp() {
+            member = memberRepository.save(MEMBER_A.toMember());
+        }
+
+        @Test
+        @DisplayName("타인이 사용하고 있는 닉네임으로 변경하려고 하면 예외가 발생한다")
+        void throwExceptionByDuplicateNickname() {
+            // given
+            Member compare = memberRepository.save(MEMBER_B.toMember());
+
+            // when - then
+            assertThatThrownBy(() -> memberService.changeNickname(member.getId(), compare.getNicknameValue()))
+                    .isInstanceOf(AnotherArtException.class)
+                    .hasMessage(MemberErrorCode.DUPLICATE_NICKNAME.getMessage());
+        }
+
+        @Test
+        @DisplayName("이전과 동일한 닉네임으로 변경하려고 하면 예외가 발생한다")
+        void throwExceptionByNicknameSameAsBefore() {
+            assertThatThrownBy(() -> memberService.changeNickname(member.getId(), member.getNicknameValue()))
+                    .isInstanceOf(AnotherArtException.class)
+                    .hasMessage(MemberErrorCode.NICKNAME_SAME_AS_BEFORE.getMessage());
+        }
+
+        @Test
+        @DisplayName("닉네임 변경에 성공한다")
+        void success() {
+            // given
+            final String update = member.getNicknameValue() + "update";
+
+            // when
+            memberService.changeNickname(member.getId(), update);
+
+            // then
+            Member findMember = memberRepository.findById(member.getId()).orElseThrow();
+            assertThat(findMember.getNicknameValue()).isEqualTo(update);
+        }
+    }
+
+    @Test
+    @DisplayName("주소 변경에 성공한다")
+    void changeAddress() {
+        // given
+        Member member = memberRepository.save(MEMBER_A.toMember());
+
+        // when
+        final int postcode = 99999;
+        final String defaultAddress = "Hello World";
+        final String detailAddress = "Spring Data JPA";
+        memberService.changeAddress(member.getId(), postcode, defaultAddress, detailAddress);
+
+        // then
+        Member findMember = memberRepository.findById(member.getId()).orElseThrow();
+        Address updateAddress = findMember.getAddress();
+
+        assertAll(
+                () -> assertThat(updateAddress.getPostcode()).isNotEqualTo(MEMBER_A.getPostcode()),
+                () -> assertThat(updateAddress.getPostcode()).isEqualTo(postcode),
+                () -> assertThat(updateAddress.getDefaultAddress()).isNotEqualTo(MEMBER_A.getDefaultAddress()),
+                () -> assertThat(updateAddress.getDefaultAddress()).isEqualTo(defaultAddress),
+                () -> assertThat(updateAddress.getDetailAddress()).isNotEqualTo(MEMBER_A.getDetailAddress()),
+                () -> assertThat(updateAddress.getDetailAddress()).isEqualTo(detailAddress)
+        );
     }
 
     private Member createDuplicateMember(String nickname, String loginId, String phone, String email) {

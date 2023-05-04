@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import static com.sjiwon.anotherart.fixture.MemberFixture.MEMBER_A;
+import static com.sjiwon.anotherart.fixture.MemberFixture.MEMBER_B;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
@@ -37,6 +38,17 @@ class MemberValidatorTest extends ServiceTest {
                 .isInstanceOf(AnotherArtException.class)
                 .hasMessage(MemberErrorCode.DUPLICATE_NICKNAME.getMessage());
         assertDoesNotThrow(() -> memberValidator.validateNickname(diff));
+    }
+
+    @Test
+    @DisplayName("닉네임 중복에 대한 검증을 진행한다 [타인이 사용하고 있는지 여부]")
+    void checkUniqueNicknameIfOtherUses() {
+        Member compare = memberRepository.save(MEMBER_B.toMember());
+
+        assertThatThrownBy(() -> memberValidator.validateNicknameForModify(member.getId(), compare.getNickname()))
+                .isInstanceOf(AnotherArtException.class)
+                .hasMessage(MemberErrorCode.DUPLICATE_NICKNAME.getMessage());
+        assertDoesNotThrow(() -> memberValidator.validateNicknameForModify(member.getId(), member.getNickname()));
     }
 
     @Test

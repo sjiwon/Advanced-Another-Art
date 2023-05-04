@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class MemberService {
     private final MemberValidator memberValidator;
     private final MemberRepository memberRepository;
+    private final MemberFindService memberFindService;
 
     @Transactional
     public Long signUp(Member member) {
@@ -35,5 +36,19 @@ public class MemberService {
             case "phone" -> memberValidator.validatePhone(value);
             default -> memberValidator.validateEmail(Email.from(value));
         }
+    }
+
+    @Transactional
+    public void changeNickname(Long memberId, String value) {
+        memberValidator.validateNicknameForModify(memberId, Nickname.from(value));
+
+        Member member = memberFindService.findById(memberId);
+        member.changeNickname(value);
+    }
+
+    @Transactional
+    public void changeAddress(Long memberId, Integer postcode, String defaultAddress, String detailAddress) {
+        Member member = memberFindService.findById(memberId);
+        member.changeAddress(postcode, defaultAddress, detailAddress);
     }
 }
