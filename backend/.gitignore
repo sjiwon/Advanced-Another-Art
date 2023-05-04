@@ -19,8 +19,6 @@ bin/
 ### IntelliJ IDEA ###
 **/src/main/generated/
 **/src/main/resources/security/
-/src/docs/asciidoc/*.html
-/src/main/resources/static/docs
 .idea
 *.iws
 *.iml
@@ -28,6 +26,10 @@ bin/
 out/
 !**/src/main/**/out/
 !**/src/test/**/out/
+
+### RestDocs index.html ###
+src/docs/asciidoc/*.html
+src/main/resources/static/docs
 
 ### NetBeans ###
 /nbproject/private/

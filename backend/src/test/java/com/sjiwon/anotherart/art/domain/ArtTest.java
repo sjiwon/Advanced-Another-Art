@@ -4,6 +4,7 @@ import com.sjiwon.anotherart.member.domain.Member;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.Set;
 
@@ -14,16 +15,21 @@ import static com.sjiwon.anotherart.art.domain.ArtType.GENERAL;
 import static com.sjiwon.anotherart.fixture.ArtFixture.AUCTION_A;
 import static com.sjiwon.anotherart.fixture.ArtFixture.GENERAL_A;
 import static com.sjiwon.anotherart.fixture.MemberFixture.MEMBER_A;
+import static com.sjiwon.anotherart.fixture.MemberFixture.MEMBER_B;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 @DisplayName("Art 도메인 테스트")
 class ArtTest {
     private Member owner;
+    private Member member;
 
     @BeforeEach
     void setUp() {
         owner = MEMBER_A.toMember();
+        member = MEMBER_B.toMember();
+        ReflectionTestUtils.setField(owner, "id", 1L);
+        ReflectionTestUtils.setField(member, "id", 2L);
     }
 
     @Test
@@ -104,6 +110,23 @@ class ArtTest {
         // when
         boolean actual1 = auctionArt.isAuctionType();
         boolean actual2 = generalArt.isAuctionType();
+
+        // then
+        assertAll(
+                () -> assertThat(actual1).isTrue(),
+                () -> assertThat(actual2).isFalse()
+        );
+    }
+
+    @Test
+    @DisplayName("작품 소유자인지 확인한다")
+    void isArtOwner() {
+        // given
+        Art art = AUCTION_A.toArt(owner);
+
+        // when
+        boolean actual1 = art.isArtOwner(owner.getId());
+        boolean actual2 = art.isArtOwner(member.getId());
 
         // then
         assertAll(
