@@ -19,6 +19,10 @@ public enum MemberErrorCode implements ErrorCode {
     POINT_IS_NOT_ENOUGH(HttpStatus.BAD_REQUEST, "MEMBER_009", "포인트가 부족합니다."),
     MEMBER_NOT_FOUND(HttpStatus.NOT_FOUND, "MEMBER_010", "사용자 정보가 존재하지 않습니다."),
     INVALID_PASSWORD(HttpStatus.UNAUTHORIZED, "MEMBER_011", "비밀번호가 일치하지 않습니다."),
+    DUPLICATE_NICKNAME(HttpStatus.CONFLICT, "MEMBER_012", "이미 사용중인 닉네임입니다."),
+    DUPLICATE_LOGIN_ID(HttpStatus.CONFLICT, "MEMBER_013", "이미 사용중인 아이디입니다."),
+    DUPLICATE_PHONE(HttpStatus.CONFLICT, "MEMBER_014", "이미 사용중인 전화번호입니다."),
+    DUPLICATE_EMAIL(HttpStatus.CONFLICT, "MEMBER_015", "이미 사용중인 이메일입니다."),
     ;
 
     private final HttpStatus status;

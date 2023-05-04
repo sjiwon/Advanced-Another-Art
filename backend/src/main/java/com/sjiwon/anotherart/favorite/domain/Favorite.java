@@ -1,7 +1,6 @@
 package com.sjiwon.anotherart.favorite.domain;
 
 import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -22,7 +21,6 @@ public class Favorite {
     @Column(name = "member_id", nullable = false, updatable = false)
     private Long memberId;
 
-    @Builder
     private Favorite(Long artId, Long memberId) {
         this.artId = artId;
         this.memberId = memberId;

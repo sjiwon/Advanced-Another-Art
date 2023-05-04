@@ -6,9 +6,11 @@ import com.sjiwon.anotherart.favorite.controller.FavoriteApiController;
 import com.sjiwon.anotherart.favorite.service.FavoriteService;
 import com.sjiwon.anotherart.fixture.MemberFixture;
 import com.sjiwon.anotherart.global.security.SecurityConfiguration;
+import com.sjiwon.anotherart.member.controller.MemberApiController;
 import com.sjiwon.anotherart.member.domain.Member;
 import com.sjiwon.anotherart.member.domain.MemberRepository;
 import com.sjiwon.anotherart.member.exception.MemberErrorCode;
+import com.sjiwon.anotherart.member.service.MemberService;
 import com.sjiwon.anotherart.token.controller.TokenReissueApiController;
 import com.sjiwon.anotherart.token.service.TokenManager;
 import com.sjiwon.anotherart.token.service.TokenReissueService;
@@ -40,6 +42,7 @@ import java.util.Optional;
 import static com.sjiwon.anotherart.fixture.MemberFixture.*;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doThrow;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
@@ -50,6 +53,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 
 @WebMvcTest({
+        // member
+        MemberApiController.class,
+
         // Favorite
         FavoriteApiController.class,
 
@@ -80,6 +86,10 @@ public abstract class ControllerTest {
     @MockBean
     private TokenManager tokenManager;
 
+    // member
+    @MockBean
+    protected MemberService memberService;
+
     // favorite
     @MockBean
     protected FavoriteService favoriteService;
@@ -104,12 +114,18 @@ public abstract class ControllerTest {
         createMember(MEMBER_B, 2L);
         createMember(MEMBER_C, 3L);
 
-        given(memberRepository.findById(
-                argThat(arg -> !(arg.equals(1L) || arg.equals(2L) || arg.equals(3L)))
-        )).willThrow(new UsernameNotFoundException(MemberErrorCode.MEMBER_NOT_FOUND.getMessage()));
-        given(memberRepository.findByLoginId(
-                argThat(arg -> !(arg.equals(MEMBER_A.getLoginId()) || arg.equals(MEMBER_B.getLoginId()) || arg.equals(MEMBER_C.getLoginId())))
-        )).willThrow(new UsernameNotFoundException(MemberErrorCode.MEMBER_NOT_FOUND.getMessage()));
+        doThrow(new UsernameNotFoundException(MemberErrorCode.MEMBER_NOT_FOUND.getMessage()))
+                .when(memberRepository)
+                .findById(argThat(arg -> !(arg.equals(1L) || arg.equals(2L) || arg.equals(3L))));
+        doThrow(new UsernameNotFoundException(MemberErrorCode.MEMBER_NOT_FOUND.getMessage()))
+                .when(memberRepository)
+                .findByLoginId(
+                        argThat(arg ->
+                                !arg.equals(MEMBER_A.getLoginId())
+                                        && !arg.equals(MEMBER_B.getLoginId())
+                                        && !arg.equals(MEMBER_C.getLoginId())
+                        )
+                );
     }
 
     private void createMember(MemberFixture fixture, Long memberId) {
