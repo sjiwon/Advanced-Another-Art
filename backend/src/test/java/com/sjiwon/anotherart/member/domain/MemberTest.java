@@ -216,7 +216,7 @@ class MemberTest {
             member.addPointRecords(CHARGE, 100_000);
 
             // when
-            member.becomeTopBidder(30_000);
+            member.decreaseAvailablePoint(30_000);
 
             // then
             assertAll(
@@ -233,7 +233,7 @@ class MemberTest {
             member.addPointRecords(CHARGE, 100_000);
 
             // when
-            member.withdrawFromAuctionAsTopBidder(30_000);
+            member.increaseAvailablePoint(30_000);
 
             // then
             assertAll(

@@ -77,11 +77,11 @@ public class Member extends BaseEntity {
         this.point.addPointRecords(this, type, amount);
     }
 
-    public void becomeTopBidder(int point) {
+    public void decreaseAvailablePoint(int point) {
         this.point = this.point.decreaseAvailablePoint(point);
     }
 
-    public void withdrawFromAuctionAsTopBidder(int point) {
+    public void increaseAvailablePoint(int point) {
         this.point = this.point.increaseAvailablePoint(point);
     }
 

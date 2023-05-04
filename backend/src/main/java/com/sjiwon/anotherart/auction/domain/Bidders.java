@@ -67,9 +67,9 @@ public class Bidders {
 
     private void applyHighestBidAndupdateAvailablePointsForBidders(Member bidder, int bidPrice) {
         if (isBidderExists()) {
-            highestBidder.withdrawFromAuctionAsTopBidder(highestBidPrice);
+            highestBidder.increaseAvailablePoint(highestBidPrice);
         }
-        bidder.becomeTopBidder(bidPrice);
+        bidder.decreaseAvailablePoint(bidPrice);
 
         highestBidder = bidder;
         highestBidPrice = bidPrice;
