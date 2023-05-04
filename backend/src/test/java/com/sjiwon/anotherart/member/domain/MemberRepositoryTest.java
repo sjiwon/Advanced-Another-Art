@@ -37,4 +37,76 @@ class MemberRepositoryTest extends RepositoryTest {
                 () -> assertThat(actualMember).isEqualTo(member)
         );
     }
+
+    @Test
+    @DisplayName("닉네임에 해당하는 사용자가 존재하는지 확인한다")
+    void existsByNickname() {
+        // given
+        final Nickname same = member.getNickname();
+        final Nickname diff = Nickname.from("diff" + member.getNicknameValue());
+
+        // when
+        boolean actual1 = memberRepository.existsByNickname(same);
+        boolean actual2 = memberRepository.existsByNickname(diff);
+
+        // then
+        assertAll(
+                () -> assertThat(actual1).isTrue(),
+                () -> assertThat(actual2).isFalse()
+        );
+    }
+
+    @Test
+    @DisplayName("로그인 아이디에 해당하는 사용자가 존재하는지 확인한다")
+    void existsByLoginId() {
+        // given
+        final String same = member.getLoginId();
+        final String diff = member.getLoginId() + "fake";
+
+        // when
+        boolean actual1 = memberRepository.existsByLoginId(same);
+        boolean actual2 = memberRepository.existsByLoginId(diff);
+
+        // then
+        assertAll(
+                () -> assertThat(actual1).isTrue(),
+                () -> assertThat(actual2).isFalse()
+        );
+    }
+
+    @Test
+    @DisplayName("전화번호에 해당하는 사용자가 존재하는지 확인한다")
+    void existsByPhone() {
+        // given
+        final String same = member.getPhone();
+        final String diff = member.getPhone().replaceAll("0", "9");
+
+        // when
+        boolean actual1 = memberRepository.existsByPhone(same);
+        boolean actual2 = memberRepository.existsByPhone(diff);
+
+        // then
+        assertAll(
+                () -> assertThat(actual1).isTrue(),
+                () -> assertThat(actual2).isFalse()
+        );
+    }
+
+    @Test
+    @DisplayName("이메일에 해당하는 사용자가 존재하는지 확인한다")
+    void existsByEmail() {
+        // given
+        final Email same = member.getEmail();
+        final Email diff = Email.from("diff" + member.getEmailValue());
+
+        // when
+        boolean actual1 = memberRepository.existsByEmail(same);
+        boolean actual2 = memberRepository.existsByEmail(diff);
+
+        // then
+        assertAll(
+                () -> assertThat(actual1).isTrue(),
+                () -> assertThat(actual2).isFalse()
+        );
+    }
 }
