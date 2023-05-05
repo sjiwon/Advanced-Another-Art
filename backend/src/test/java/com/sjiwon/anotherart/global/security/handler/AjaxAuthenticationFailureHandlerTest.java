@@ -1,6 +1,6 @@
 package com.sjiwon.anotherart.global.security.handler;
 
-import com.sjiwon.anotherart.common.ControllerTest;
+import com.sjiwon.anotherart.common.SecurityTest;
 import com.sjiwon.anotherart.global.security.LoginRequest;
 import com.sjiwon.anotherart.global.security.exception.AuthErrorCode;
 import com.sjiwon.anotherart.member.exception.MemberErrorCode;
@@ -17,7 +17,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @DisplayName("Security [Handler] -> AjaxAuthenticationFailureHandler 테스트")
-class AjaxAuthenticationFailureHandlerTest extends ControllerTest {
+class AjaxAuthenticationFailureHandlerTest extends SecurityTest {
     private static final String BASE_URL = "/api/login";
 
     @Test

@@ -1,6 +1,6 @@
 package com.sjiwon.anotherart.global.security.handler;
 
-import com.sjiwon.anotherart.common.ControllerTest;
+import com.sjiwon.anotherart.common.SecurityTest;
 import com.sjiwon.anotherart.global.security.LoginRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,7 +19,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @DisplayName("Security [Handler] -> AjaxAuthenticationSuccessHandler 테스트")
-class AjaxAuthenticationSuccessHandlerTest extends ControllerTest {
+class AjaxAuthenticationSuccessHandlerTest extends SecurityTest {
     private static final String BASE_URL = "/api/login";
 
     @Test

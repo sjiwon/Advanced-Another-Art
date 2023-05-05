@@ -4,23 +4,16 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sjiwon.anotherart.auction.controller.BidApiController;
 import com.sjiwon.anotherart.auction.service.BidService;
-import com.sjiwon.anotherart.common.config.SecurityValiatorConfiguration;
 import com.sjiwon.anotherart.favorite.controller.FavoriteApiController;
 import com.sjiwon.anotherart.favorite.service.FavoriteService;
-import com.sjiwon.anotherart.fixture.MemberFixture;
-import com.sjiwon.anotherart.global.security.SecurityConfiguration;
 import com.sjiwon.anotherart.member.controller.MemberApiController;
 import com.sjiwon.anotherart.member.controller.MemberInformationApiController;
 import com.sjiwon.anotherart.member.controller.MemberModifyApiController;
 import com.sjiwon.anotherart.member.controller.MemberPointApiController;
-import com.sjiwon.anotherart.member.domain.Member;
-import com.sjiwon.anotherart.member.domain.MemberRepository;
-import com.sjiwon.anotherart.member.exception.MemberErrorCode;
 import com.sjiwon.anotherart.member.service.MemberInformationService;
 import com.sjiwon.anotherart.member.service.MemberPointService;
 import com.sjiwon.anotherart.member.service.MemberService;
 import com.sjiwon.anotherart.token.controller.TokenReissueApiController;
-import com.sjiwon.anotherart.token.service.TokenManager;
 import com.sjiwon.anotherart.token.service.TokenReissueService;
 import com.sjiwon.anotherart.token.utils.JwtTokenProvider;
 import org.junit.jupiter.api.BeforeEach;
@@ -29,7 +22,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Import;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation;
@@ -37,20 +29,11 @@ import org.springframework.restdocs.operation.preprocess.OperationRequestPreproc
 import org.springframework.restdocs.operation.preprocess.OperationResponsePreprocessor;
 import org.springframework.restdocs.snippet.Attributes;
 import org.springframework.restdocs.snippet.Snippet;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.web.FilterChainProxy;
-import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.CharacterEncodingFilter;
 
-import java.util.Optional;
-
-import static com.sjiwon.anotherart.fixture.MemberFixture.*;
-import static org.mockito.ArgumentMatchers.argThat;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.doThrow;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
@@ -75,28 +58,17 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
         TokenReissueApiController.class
 })
 @ExtendWith(RestDocumentationExtension.class)
-@Import({SecurityConfiguration.class, SecurityValiatorConfiguration.class})
 @AutoConfigureRestDocs
 public abstract class ControllerTest {
-    // common & external
+    // common
     @Autowired
     protected MockMvc mockMvc;
 
     @MockBean
     protected JwtTokenProvider jwtTokenProvider;
 
-    // common & internal
     @Autowired
     private ObjectMapper objectMapper;
-
-    @Autowired
-    private FilterChainProxy springSecurityFilterChain;
-
-    @MockBean
-    private MemberRepository memberRepository;
-
-    @MockBean
-    private TokenManager tokenManager;
 
     // auction
     @MockBean
@@ -126,36 +98,8 @@ public abstract class ControllerTest {
                 .apply(MockMvcRestDocumentation.documentationConfiguration(provider))
                 .alwaysDo(print())
                 .alwaysDo(log())
-                .addFilters(
-                        new CharacterEncodingFilter("UTF-8", true),
-                        springSecurityFilterChain
-                )
+                .addFilter(new CharacterEncodingFilter("UTF-8", true))
                 .build();
-
-        createMember(MEMBER_A, 1L);
-        createMember(MEMBER_B, 2L);
-        createMember(MEMBER_C, 3L);
-
-        doThrow(new UsernameNotFoundException(MemberErrorCode.MEMBER_NOT_FOUND.getMessage()))
-                .when(memberRepository)
-                .findById(argThat(arg -> !(arg.equals(1L) || arg.equals(2L) || arg.equals(3L))));
-        doThrow(new UsernameNotFoundException(MemberErrorCode.MEMBER_NOT_FOUND.getMessage()))
-                .when(memberRepository)
-                .findByLoginId(
-                        argThat(arg ->
-                                !arg.equals(MEMBER_A.getLoginId())
-                                        && !arg.equals(MEMBER_B.getLoginId())
-                                        && !arg.equals(MEMBER_C.getLoginId())
-                        )
-                );
-    }
-
-    private void createMember(MemberFixture fixture, Long memberId) {
-        Member member = fixture.toMember();
-        ReflectionTestUtils.setField(member, "id", memberId);
-
-        given(memberRepository.findById(memberId)).willReturn(Optional.of(member));
-        given(memberRepository.findByLoginId(member.getLoginId())).willReturn(Optional.of(member));
     }
 
     protected OperationRequestPreprocessor getDocumentRequest() {

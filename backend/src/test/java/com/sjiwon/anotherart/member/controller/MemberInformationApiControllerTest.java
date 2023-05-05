@@ -5,7 +5,6 @@ import com.sjiwon.anotherart.art.infra.query.dto.response.BasicArt;
 import com.sjiwon.anotherart.art.infra.query.dto.response.BasicAuction;
 import com.sjiwon.anotherart.common.ControllerTest;
 import com.sjiwon.anotherart.fixture.MemberFixture;
-import com.sjiwon.anotherart.global.security.exception.AuthErrorCode;
 import com.sjiwon.anotherart.member.domain.Member;
 import com.sjiwon.anotherart.member.domain.point.PointType;
 import com.sjiwon.anotherart.member.infra.query.dto.response.BasicMember;
@@ -19,6 +18,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
@@ -32,7 +32,6 @@ import static com.sjiwon.anotherart.common.utils.TokenUtils.BEARER_TOKEN;
 import static com.sjiwon.anotherart.fixture.ArtFixture.*;
 import static com.sjiwon.anotherart.fixture.MemberFixture.MEMBER_A;
 import static com.sjiwon.anotherart.member.domain.point.PointType.*;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
@@ -40,95 +39,21 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWit
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @DisplayName("Member [Controller Layer] -> MemberInformationApiController 테스트")
 class MemberInformationApiControllerTest extends ControllerTest {
     @Nested
-    @DisplayName("사용자 기본 정보 조회 API [GET /api/members/{memberId}]")
+    @DisplayName("사용자 기본 정보 조회 API [GET /api/members/{memberId}] - AccessToken 필수")
     class getInformation {
         private static final String BASE_URL = "/api/members/{memberId}";
         private static final Long MEMBER_ID = 1L;
-        private static final Long ANONYMOUS_ID = 2L;
 
         @Test
-        @DisplayName("Authorization Header에 AccessToken이 없으면 기본 정보 조회에 실패한다")
-        void withoutAccessToken() throws Exception {
-            // when
-            MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
-                    .get(BASE_URL, MEMBER_ID);
-
-            // then
-            final AuthErrorCode expectedError = AuthErrorCode.INVALID_PERMISSION;
-            mockMvc.perform(requestBuilder)
-                    .andExpectAll(
-                            status().isForbidden(),
-                            jsonPath("$.status").exists(),
-                            jsonPath("$.status").value(expectedError.getStatus().value()),
-                            jsonPath("$.errorCode").exists(),
-                            jsonPath("$.errorCode").value(expectedError.getErrorCode()),
-                            jsonPath("$.message").exists(),
-                            jsonPath("$.message").value(expectedError.getMessage())
-                    )
-                    .andDo(
-                            document(
-                                    "MemberApi/Information/Basic/Failure/Case1",
-                                    getDocumentRequest(),
-                                    getDocumentResponse(),
-                                    pathParameters(
-                                            parameterWithName("memberId").description("조회할 사용자 ID(PK)")
-                                    ),
-                                    getExceptionResponseFiels()
-                            )
-                    );
-        }
-
-        @Test
-        @DisplayName("Token Payload가 Endpoint의 memberId와 일치하지 않음에 따라 기본 정보 조회에 실패한다")
-        void throwExceptionByInvalidPermission() throws Exception {
-            // given
-            given(jwtTokenProvider.isTokenValid(anyString())).willReturn(true);
-            given(jwtTokenProvider.getId(anyString())).willReturn(ANONYMOUS_ID);
-
-            // when
-            MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
-                    .get(BASE_URL, MEMBER_ID)
-                    .header(AUTHORIZATION, String.join(" ", BEARER_TOKEN, ACCESS_TOKEN));
-
-            // then
-            final AuthErrorCode expectedError = AuthErrorCode.INVALID_PERMISSION;
-            mockMvc.perform(requestBuilder)
-                    .andExpectAll(
-                            status().isForbidden(),
-                            jsonPath("$.status").exists(),
-                            jsonPath("$.status").value(expectedError.getStatus().value()),
-                            jsonPath("$.errorCode").exists(),
-                            jsonPath("$.errorCode").value(expectedError.getErrorCode()),
-                            jsonPath("$.message").exists(),
-                            jsonPath("$.message").value(expectedError.getMessage())
-                    )
-                    .andDo(
-                            document(
-                                    "MemberApi/Information/Basic/Failure/Case2",
-                                    getDocumentRequest(),
-                                    getDocumentResponse(),
-                                    getHeaderWithAccessToken(),
-                                    pathParameters(
-                                            parameterWithName("memberId").description("조회할 사용자 ID(PK)")
-                                    ),
-                                    getExceptionResponseFiels()
-                            )
-                    );
-        }
-
-        @Test
+        @WithMockUser
         @DisplayName("사용자 기본 정보를 조회한다")
         void success() throws Exception {
             // given
-            given(jwtTokenProvider.isTokenValid(anyString())).willReturn(true);
-            given(jwtTokenProvider.getId(anyString())).willReturn(MEMBER_ID);
-
             MemberInformation response = generateMemberInformationResponse();
             given(memberInformationService.getInformation(MEMBER_ID)).willReturn(response);
 
@@ -142,7 +67,7 @@ class MemberInformationApiControllerTest extends ControllerTest {
                     .andExpect(status().isOk())
                     .andDo(
                             document(
-                                    "MemberApi/Information/Basic/Success",
+                                    "MemberApi/Information/Basic",
                                     getDocumentRequest(),
                                     getDocumentResponse(),
                                     getHeaderWithAccessToken(),
@@ -169,89 +94,16 @@ class MemberInformationApiControllerTest extends ControllerTest {
     }
 
     @Nested
-    @DisplayName("사용자의 포인트 활용 내역 조회 API [GET /api/members/{memberId}/points]")
+    @DisplayName("사용자의 포인트 활용 내역 조회 API [GET /api/members/{memberId}/points] - AccessToken 필수")
     class getPointRecords {
         private static final String BASE_URL = "/api/members/{memberId}/points";
         private static final Long MEMBER_ID = 1L;
-        private static final Long ANONYMOUS_ID = 2L;
 
         @Test
-        @DisplayName("Authorization Header에 AccessToken이 없으면 포인트 활용 내역 조회에 실패한다")
-        void withoutAccessToken() throws Exception {
-            // when
-            MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
-                    .get(BASE_URL, MEMBER_ID);
-
-            // then
-            final AuthErrorCode expectedError = AuthErrorCode.INVALID_PERMISSION;
-            mockMvc.perform(requestBuilder)
-                    .andExpectAll(
-                            status().isForbidden(),
-                            jsonPath("$.status").exists(),
-                            jsonPath("$.status").value(expectedError.getStatus().value()),
-                            jsonPath("$.errorCode").exists(),
-                            jsonPath("$.errorCode").value(expectedError.getErrorCode()),
-                            jsonPath("$.message").exists(),
-                            jsonPath("$.message").value(expectedError.getMessage())
-                    )
-                    .andDo(
-                            document(
-                                    "MemberApi/Information/PointRecord/Failure/Case1",
-                                    getDocumentRequest(),
-                                    getDocumentResponse(),
-                                    pathParameters(
-                                            parameterWithName("memberId").description("조회할 사용자 ID(PK)")
-                                    ),
-                                    getExceptionResponseFiels()
-                            )
-                    );
-        }
-
-        @Test
-        @DisplayName("Token Payload가 Endpoint의 memberId와 일치하지 않음에 따라 포인트 활용 내역 조회에 실패한다")
-        void throwExceptionByInvalidPermission() throws Exception {
-            // given
-            given(jwtTokenProvider.isTokenValid(anyString())).willReturn(true);
-            given(jwtTokenProvider.getId(anyString())).willReturn(ANONYMOUS_ID);
-
-            // when
-            MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
-                    .get(BASE_URL, MEMBER_ID)
-                    .header(AUTHORIZATION, String.join(" ", BEARER_TOKEN, ACCESS_TOKEN));
-
-            // then
-            final AuthErrorCode expectedError = AuthErrorCode.INVALID_PERMISSION;
-            mockMvc.perform(requestBuilder)
-                    .andExpectAll(
-                            status().isForbidden(),
-                            jsonPath("$.status").exists(),
-                            jsonPath("$.status").value(expectedError.getStatus().value()),
-                            jsonPath("$.errorCode").exists(),
-                            jsonPath("$.errorCode").value(expectedError.getErrorCode()),
-                            jsonPath("$.message").exists(),
-                            jsonPath("$.message").value(expectedError.getMessage())
-                    )
-                    .andDo(
-                            document(
-                                    "MemberApi/Information/PointRecord/Failure/Case2",
-                                    getDocumentRequest(),
-                                    getDocumentResponse(),
-                                    getHeaderWithAccessToken(),
-                                    pathParameters(
-                                            parameterWithName("memberId").description("조회할 사용자 ID(PK)")
-                                    ),
-                                    getExceptionResponseFiels()
-                            )
-                    );
-        }
-
-        @Test
+        @WithMockUser
         @DisplayName("포인트 활용 내역을 조회한다")
         void success() throws Exception {
             // given
-            given(jwtTokenProvider.isTokenValid(anyString())).willReturn(true);
-            given(jwtTokenProvider.getId(anyString())).willReturn(MEMBER_ID);
-
             PointRecordAssembler response = generatePointRecords();
             given(memberInformationService.getPointRecords(MEMBER_ID)).willReturn(response);
 
@@ -265,7 +117,7 @@ class MemberInformationApiControllerTest extends ControllerTest {
                     .andExpect(status().isOk())
                     .andDo(
                             document(
-                                    "MemberApi/Information/PointRecord/Success",
+                                    "MemberApi/Information/PointRecord",
                                     getDocumentRequest(),
                                     getDocumentResponse(),
                                     getHeaderWithAccessToken(),
@@ -283,89 +135,16 @@ class MemberInformationApiControllerTest extends ControllerTest {
     }
 
     @Nested
-    @DisplayName("사용자의 낙찰된 경매 작품 조회 API [GET /api/members/{memberId}/winning-auctions]")
+    @DisplayName("사용자의 낙찰된 경매 작품 조회 API [GET /api/members/{memberId}/winning-auctions] - AccessToken 필수")
     class getWinningAuctionArts {
         private static final String BASE_URL = "/api/members/{memberId}/winning-auctions";
         private static final Long MEMBER_ID = 1L;
-        private static final Long ANONYMOUS_ID = 2L;
 
         @Test
-        @DisplayName("Authorization Header에 AccessToken이 없으면 낙찰된 경매 작품 조회에 실패한다")
-        void withoutAccessToken() throws Exception {
-            // when
-            MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
-                    .get(BASE_URL, MEMBER_ID);
-
-            // then
-            final AuthErrorCode expectedError = AuthErrorCode.INVALID_PERMISSION;
-            mockMvc.perform(requestBuilder)
-                    .andExpectAll(
-                            status().isForbidden(),
-                            jsonPath("$.status").exists(),
-                            jsonPath("$.status").value(expectedError.getStatus().value()),
-                            jsonPath("$.errorCode").exists(),
-                            jsonPath("$.errorCode").value(expectedError.getErrorCode()),
-                            jsonPath("$.message").exists(),
-                            jsonPath("$.message").value(expectedError.getMessage())
-                    )
-                    .andDo(
-                            document(
-                                    "MemberApi/Information/WinningAuction/Failure/Case1",
-                                    getDocumentRequest(),
-                                    getDocumentResponse(),
-                                    pathParameters(
-                                            parameterWithName("memberId").description("조회할 사용자 ID(PK)")
-                                    ),
-                                    getExceptionResponseFiels()
-                            )
-                    );
-        }
-
-        @Test
-        @DisplayName("Token Payload가 Endpoint의 memberId와 일치하지 않음에 따라 낙찰된 경매 작품 조회에 실패한다")
-        void throwExceptionByInvalidPermission() throws Exception {
-            // given
-            given(jwtTokenProvider.isTokenValid(anyString())).willReturn(true);
-            given(jwtTokenProvider.getId(anyString())).willReturn(ANONYMOUS_ID);
-
-            // when
-            MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
-                    .get(BASE_URL, MEMBER_ID)
-                    .header(AUTHORIZATION, String.join(" ", BEARER_TOKEN, ACCESS_TOKEN));
-
-            // then
-            final AuthErrorCode expectedError = AuthErrorCode.INVALID_PERMISSION;
-            mockMvc.perform(requestBuilder)
-                    .andExpectAll(
-                            status().isForbidden(),
-                            jsonPath("$.status").exists(),
-                            jsonPath("$.status").value(expectedError.getStatus().value()),
-                            jsonPath("$.errorCode").exists(),
-                            jsonPath("$.errorCode").value(expectedError.getErrorCode()),
-                            jsonPath("$.message").exists(),
-                            jsonPath("$.message").value(expectedError.getMessage())
-                    )
-                    .andDo(
-                            document(
-                                    "MemberApi/Information/WinningAuction/Failure/Case2",
-                                    getDocumentRequest(),
-                                    getDocumentResponse(),
-                                    getHeaderWithAccessToken(),
-                                    pathParameters(
-                                            parameterWithName("memberId").description("조회할 사용자 ID(PK)")
-                                    ),
-                                    getExceptionResponseFiels()
-                            )
-                    );
-        }
-
-        @Test
+        @WithMockUser
         @DisplayName("낙찰된 경매 작품을 조회한다")
         void success() throws Exception {
             // given
-            given(jwtTokenProvider.isTokenValid(anyString())).willReturn(true);
-            given(jwtTokenProvider.getId(anyString())).willReturn(MEMBER_ID);
-
             WinningAuctionArtAssembler response = generateWinningAuctionArts();
             given(memberInformationService.getWinningAuctionArts(MEMBER_ID)).willReturn(response);
 
@@ -379,7 +158,7 @@ class MemberInformationApiControllerTest extends ControllerTest {
                     .andExpect(status().isOk())
                     .andDo(
                             document(
-                                    "MemberApi/Information/WinningAuction/Success",
+                                    "MemberApi/Information/WinningAuction",
                                     getDocumentRequest(),
                                     getDocumentResponse(),
                                     getHeaderWithAccessToken(),
@@ -412,89 +191,16 @@ class MemberInformationApiControllerTest extends ControllerTest {
     }
 
     @Nested
-    @DisplayName("사용자가 판매한 작품 조회 API [GET /api/members/{memberId}/arts/sold]")
+    @DisplayName("사용자가 판매한 작품 조회 API [GET /api/members/{memberId}/arts/sold] - AccessToken 필수")
     class getSoldArts {
         private static final String BASE_URL = "/api/members/{memberId}/arts/sold";
         private static final Long MEMBER_ID = 1L;
-        private static final Long ANONYMOUS_ID = 2L;
 
         @Test
-        @DisplayName("Authorization Header에 AccessToken이 없으면 판매한 작품 조회에 실패한다")
-        void withoutAccessToken() throws Exception {
-            // when
-            MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
-                    .get(BASE_URL, MEMBER_ID);
-
-            // then
-            final AuthErrorCode expectedError = AuthErrorCode.INVALID_PERMISSION;
-            mockMvc.perform(requestBuilder)
-                    .andExpectAll(
-                            status().isForbidden(),
-                            jsonPath("$.status").exists(),
-                            jsonPath("$.status").value(expectedError.getStatus().value()),
-                            jsonPath("$.errorCode").exists(),
-                            jsonPath("$.errorCode").value(expectedError.getErrorCode()),
-                            jsonPath("$.message").exists(),
-                            jsonPath("$.message").value(expectedError.getMessage())
-                    )
-                    .andDo(
-                            document(
-                                    "MemberApi/Information/SoldArt/Failure/Case1",
-                                    getDocumentRequest(),
-                                    getDocumentResponse(),
-                                    pathParameters(
-                                            parameterWithName("memberId").description("조회할 사용자 ID(PK)")
-                                    ),
-                                    getExceptionResponseFiels()
-                            )
-                    );
-        }
-
-        @Test
-        @DisplayName("Token Payload가 Endpoint의 memberId와 일치하지 않음에 따라 판매한 작품 조회에 실패한다")
-        void throwExceptionByInvalidPermission() throws Exception {
-            // given
-            given(jwtTokenProvider.isTokenValid(anyString())).willReturn(true);
-            given(jwtTokenProvider.getId(anyString())).willReturn(ANONYMOUS_ID);
-
-            // when
-            MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
-                    .get(BASE_URL, MEMBER_ID)
-                    .header(AUTHORIZATION, String.join(" ", BEARER_TOKEN, ACCESS_TOKEN));
-
-            // then
-            final AuthErrorCode expectedError = AuthErrorCode.INVALID_PERMISSION;
-            mockMvc.perform(requestBuilder)
-                    .andExpectAll(
-                            status().isForbidden(),
-                            jsonPath("$.status").exists(),
-                            jsonPath("$.status").value(expectedError.getStatus().value()),
-                            jsonPath("$.errorCode").exists(),
-                            jsonPath("$.errorCode").value(expectedError.getErrorCode()),
-                            jsonPath("$.message").exists(),
-                            jsonPath("$.message").value(expectedError.getMessage())
-                    )
-                    .andDo(
-                            document(
-                                    "MemberApi/Information/SoldArt/Failure/Case2",
-                                    getDocumentRequest(),
-                                    getDocumentResponse(),
-                                    getHeaderWithAccessToken(),
-                                    pathParameters(
-                                            parameterWithName("memberId").description("조회할 사용자 ID(PK)")
-                                    ),
-                                    getExceptionResponseFiels()
-                            )
-                    );
-        }
-
-        @Test
+        @WithMockUser
         @DisplayName("판매한 작품을 조회한다")
         void success() throws Exception {
             // given
-            given(jwtTokenProvider.isTokenValid(anyString())).willReturn(true);
-            given(jwtTokenProvider.getId(anyString())).willReturn(MEMBER_ID);
-
             TradedArtAssembler response = generateTradedArts();
             given(memberInformationService.getSoldArts(MEMBER_ID)).willReturn(response);
 
@@ -508,7 +214,7 @@ class MemberInformationApiControllerTest extends ControllerTest {
                     .andExpect(status().isOk())
                     .andDo(
                             document(
-                                    "MemberApi/Information/SoldArt/Success",
+                                    "MemberApi/Information/SoldArt",
                                     getDocumentRequest(),
                                     getDocumentResponse(),
                                     getHeaderWithAccessToken(),
@@ -552,89 +258,16 @@ class MemberInformationApiControllerTest extends ControllerTest {
     }
 
     @Nested
-    @DisplayName("사용자가 구매한 작품 조회 API [GET /api/members/{memberId}/arts/purchase]")
+    @DisplayName("사용자가 구매한 작품 조회 API [GET /api/members/{memberId}/arts/purchase] - AccessToken 필수")
     class getPurchaseArts {
         private static final String BASE_URL = "/api/members/{memberId}/arts/purchase";
         private static final Long MEMBER_ID = 1L;
-        private static final Long ANONYMOUS_ID = 2L;
 
         @Test
-        @DisplayName("Authorization Header에 AccessToken이 없으면 구매한 작품 조회에 실패한다")
-        void withoutAccessToken() throws Exception {
-            // when
-            MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
-                    .get(BASE_URL, MEMBER_ID);
-
-            // then
-            final AuthErrorCode expectedError = AuthErrorCode.INVALID_PERMISSION;
-            mockMvc.perform(requestBuilder)
-                    .andExpectAll(
-                            status().isForbidden(),
-                            jsonPath("$.status").exists(),
-                            jsonPath("$.status").value(expectedError.getStatus().value()),
-                            jsonPath("$.errorCode").exists(),
-                            jsonPath("$.errorCode").value(expectedError.getErrorCode()),
-                            jsonPath("$.message").exists(),
-                            jsonPath("$.message").value(expectedError.getMessage())
-                    )
-                    .andDo(
-                            document(
-                                    "MemberApi/Information/PurchaseArt/Failure/Case1",
-                                    getDocumentRequest(),
-                                    getDocumentResponse(),
-                                    pathParameters(
-                                            parameterWithName("memberId").description("조회할 사용자 ID(PK)")
-                                    ),
-                                    getExceptionResponseFiels()
-                            )
-                    );
-        }
-
-        @Test
-        @DisplayName("Token Payload가 Endpoint의 memberId와 일치하지 않음에 따라 구매한 작품 조회에 실패한다")
-        void throwExceptionByInvalidPermission() throws Exception {
-            // given
-            given(jwtTokenProvider.isTokenValid(anyString())).willReturn(true);
-            given(jwtTokenProvider.getId(anyString())).willReturn(ANONYMOUS_ID);
-
-            // when
-            MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
-                    .get(BASE_URL, MEMBER_ID)
-                    .header(AUTHORIZATION, String.join(" ", BEARER_TOKEN, ACCESS_TOKEN));
-
-            // then
-            final AuthErrorCode expectedError = AuthErrorCode.INVALID_PERMISSION;
-            mockMvc.perform(requestBuilder)
-                    .andExpectAll(
-                            status().isForbidden(),
-                            jsonPath("$.status").exists(),
-                            jsonPath("$.status").value(expectedError.getStatus().value()),
-                            jsonPath("$.errorCode").exists(),
-                            jsonPath("$.errorCode").value(expectedError.getErrorCode()),
-                            jsonPath("$.message").exists(),
-                            jsonPath("$.message").value(expectedError.getMessage())
-                    )
-                    .andDo(
-                            document(
-                                    "MemberApi/Information/PurchaseArt/Failure/Case2",
-                                    getDocumentRequest(),
-                                    getDocumentResponse(),
-                                    getHeaderWithAccessToken(),
-                                    pathParameters(
-                                            parameterWithName("memberId").description("조회할 사용자 ID(PK)")
-                                    ),
-                                    getExceptionResponseFiels()
-                            )
-                    );
-        }
-
-        @Test
+        @WithMockUser
         @DisplayName("구매한 작품을 조회한다")
         void success() throws Exception {
             // given
-            given(jwtTokenProvider.isTokenValid(anyString())).willReturn(true);
-            given(jwtTokenProvider.getId(anyString())).willReturn(MEMBER_ID);
-
             TradedArtAssembler response = generateTradedArts();
             given(memberInformationService.getPurchaseArts(MEMBER_ID)).willReturn(response);
 
@@ -648,7 +281,7 @@ class MemberInformationApiControllerTest extends ControllerTest {
                     .andExpect(status().isOk())
                     .andDo(
                             document(
-                                    "MemberApi/Information/PurchaseArt/Success",
+                                    "MemberApi/Information/PurchaseArt",
                                     getDocumentRequest(),
                                     getDocumentResponse(),
                                     getHeaderWithAccessToken(),

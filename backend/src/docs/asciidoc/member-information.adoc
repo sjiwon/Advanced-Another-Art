@@ -5,142 +5,52 @@
 :toc: left
 :toclevels: 2
 
-== 사용자 기본 정보
-=== 1. Authorization Header에 AccessToken이 없으면 기본 정보 조회에 실패한다
+== 사용자 기본 정보 [AccessToken 필수]
 HTTP Request
-include::{snippets}/MemberApi/Information/Basic/Failure/Case1/http-request.adoc[]
-include::{snippets}/MemberApi/Information/Basic/Failure/Case1/path-parameters.adoc[]
+include::{snippets}/MemberApi/Information/Basic/http-request.adoc[]
+include::{snippets}/MemberApi/Information/Basic/request-headers.adoc[]
+include::{snippets}/MemberApi/Information/Basic/path-parameters.adoc[]
 
 HTTP Response
-include::{snippets}/MemberApi/Information/Basic/Failure/Case1/response-body.adoc[]
+include::{snippets}/MemberApi/Information/Basic/response-body.adoc[]
+include::{snippets}/MemberApi/Information/Basic/response-fields.adoc[]
 
-=== 2. Token Payload가 Endpoint의 memberId와 일치하지 않음에 따라 기본 정보 조회에 실패한다
+== 포인트 활용 내역 조회 [AccessToken 필수]
 HTTP Request
-include::{snippets}/MemberApi/Information/Basic/Failure/Case2/http-request.adoc[]
-include::{snippets}/MemberApi/Information/Basic/Failure/Case2/request-headers.adoc[]
-include::{snippets}/MemberApi/Information/Basic/Failure/Case2/path-parameters.adoc[]
+include::{snippets}/MemberApi/Information/PointRecord/http-request.adoc[]
+include::{snippets}/MemberApi/Information/PointRecord/request-headers.adoc[]
+include::{snippets}/MemberApi/Information/PointRecord/path-parameters.adoc[]
 
 HTTP Response
-include::{snippets}/MemberApi/Information/Basic/Failure/Case2/response-body.adoc[]
+include::{snippets}/MemberApi/Information/PointRecord/response-body.adoc[]
+include::{snippets}/MemberApi/Information/PointRecord/response-fields.adoc[]
 
-=== 3. 사용자 기본 정보를 조회한다
+== 낙찰된 경매 작품 조회 [AccessToken 필수]
 HTTP Request
-include::{snippets}/MemberApi/Information/Basic/Success/http-request.adoc[]
-include::{snippets}/MemberApi/Information/Basic/Success/request-headers.adoc[]
-include::{snippets}/MemberApi/Information/Basic/Success/path-parameters.adoc[]
+include::{snippets}/MemberApi/Information/WinningAuction/http-request.adoc[]
+include::{snippets}/MemberApi/Information/WinningAuction/request-headers.adoc[]
+include::{snippets}/MemberApi/Information/WinningAuction/path-parameters.adoc[]
 
 HTTP Response
-include::{snippets}/MemberApi/Information/Basic/Success/response-body.adoc[]
-include::{snippets}/MemberApi/Information/Basic/Success/response-fields.adoc[]
+include::{snippets}/MemberApi/Information/WinningAuction/response-body.adoc[]
+include::{snippets}/MemberApi/Information/WinningAuction/response-fields.adoc[]
 
-== 포인트 활용 내역 조회
-=== 1. Authorization Header에 AccessToken이 없으면 포인트 활용 내역 조회에 실패한다
+== 판매한 작품 조회 [AccessToken 필수]
 HTTP Request
-include::{snippets}/MemberApi/Information/PointRecord/Failure/Case1/http-request.adoc[]
-include::{snippets}/MemberApi/Information/PointRecord/Failure/Case1/path-parameters.adoc[]
+include::{snippets}/MemberApi/Information/SoldArt/http-request.adoc[]
+include::{snippets}/MemberApi/Information/SoldArt/request-headers.adoc[]
+include::{snippets}/MemberApi/Information/SoldArt/path-parameters.adoc[]
 
 HTTP Response
-include::{snippets}/MemberApi/Information/PointRecord/Failure/Case1/response-body.adoc[]
+include::{snippets}/MemberApi/Information/SoldArt/response-body.adoc[]
+include::{snippets}/MemberApi/Information/SoldArt/response-fields.adoc[]
 
-=== 2. Token Payload가 Endpoint의 memberId와 일치하지 않음에 따라 포인트 활용 내역 조회에 실패한다
+== 구매한 작품 조회 [AccessToken 필수]
 HTTP Request
-include::{snippets}/MemberApi/Information/PointRecord/Failure/Case2/http-request.adoc[]
-include::{snippets}/MemberApi/Information/PointRecord/Failure/Case2/request-headers.adoc[]
-include::{snippets}/MemberApi/Information/PointRecord/Failure/Case2/path-parameters.adoc[]
+include::{snippets}/MemberApi/Information/PurchaseArt/http-request.adoc[]
+include::{snippets}/MemberApi/Information/PurchaseArt/request-headers.adoc[]
+include::{snippets}/MemberApi/Information/PurchaseArt/path-parameters.adoc[]
 
 HTTP Response
-include::{snippets}/MemberApi/Information/PointRecord/Failure/Case2/response-body.adoc[]
-
-=== 3. 포인트 활용 내역을 조회한다
-HTTP Request
-include::{snippets}/MemberApi/Information/PointRecord/Success/http-request.adoc[]
-include::{snippets}/MemberApi/Information/PointRecord/Success/request-headers.adoc[]
-include::{snippets}/MemberApi/Information/PointRecord/Success/path-parameters.adoc[]
-
-HTTP Response
-include::{snippets}/MemberApi/Information/PointRecord/Success/response-body.adoc[]
-include::{snippets}/MemberApi/Information/PointRecord/Success/response-fields.adoc[]
-
-== 낙찰된 경매 작품 조회
-=== 1. Authorization Header에 AccessToken이 없으면 낙찰된 경매 작품 조회에 실패한다
-HTTP Request
-include::{snippets}/MemberApi/Information/WinningAuction/Failure/Case1/http-request.adoc[]
-include::{snippets}/MemberApi/Information/WinningAuction/Failure/Case1/path-parameters.adoc[]
-
-HTTP Response
-include::{snippets}/MemberApi/Information/WinningAuction/Failure/Case1/response-body.adoc[]
-
-=== 2. Token Payload가 Endpoint의 memberId와 일치하지 않음에 따라 낙찰된 경매 작품 조회에 실패한다
-HTTP Request
-include::{snippets}/MemberApi/Information/WinningAuction/Failure/Case2/http-request.adoc[]
-include::{snippets}/MemberApi/Information/WinningAuction/Failure/Case2/request-headers.adoc[]
-include::{snippets}/MemberApi/Information/WinningAuction/Failure/Case2/path-parameters.adoc[]
-
-HTTP Response
-include::{snippets}/MemberApi/Information/WinningAuction/Failure/Case2/response-body.adoc[]
-
-=== 3. 낙찰된 경매 작품을 조회한다
-HTTP Request
-include::{snippets}/MemberApi/Information/WinningAuction/Success/http-request.adoc[]
-include::{snippets}/MemberApi/Information/WinningAuction/Success/request-headers.adoc[]
-include::{snippets}/MemberApi/Information/WinningAuction/Success/path-parameters.adoc[]
-
-HTTP Response
-include::{snippets}/MemberApi/Information/WinningAuction/Success/response-body.adoc[]
-include::{snippets}/MemberApi/Information/WinningAuction/Success/response-fields.adoc[]
-
-== 판매한 작품 조회
-=== 1. Authorization Header에 AccessToken이 없으면 판매한 작품 조회에 실패한다
-HTTP Request
-include::{snippets}/MemberApi/Information/SoldArt/Failure/Case1/http-request.adoc[]
-include::{snippets}/MemberApi/Information/SoldArt/Failure/Case1/path-parameters.adoc[]
-
-HTTP Response
-include::{snippets}/MemberApi/Information/SoldArt/Failure/Case1/response-body.adoc[]
-
-=== 2. Token Payload가 Endpoint의 memberId와 일치하지 않음에 따라 판매한 작품 조회에 실패한다
-HTTP Request
-include::{snippets}/MemberApi/Information/SoldArt/Failure/Case2/http-request.adoc[]
-include::{snippets}/MemberApi/Information/SoldArt/Failure/Case2/request-headers.adoc[]
-include::{snippets}/MemberApi/Information/SoldArt/Failure/Case2/path-parameters.adoc[]
-
-HTTP Response
-include::{snippets}/MemberApi/Information/SoldArt/Failure/Case2/response-body.adoc[]
-
-=== 3. 판매한 작품을 조회한다
-HTTP Request
-include::{snippets}/MemberApi/Information/SoldArt/Success/http-request.adoc[]
-include::{snippets}/MemberApi/Information/SoldArt/Success/request-headers.adoc[]
-include::{snippets}/MemberApi/Information/SoldArt/Success/path-parameters.adoc[]
-
-HTTP Response
-include::{snippets}/MemberApi/Information/SoldArt/Success/response-body.adoc[]
-include::{snippets}/MemberApi/Information/SoldArt/Success/response-fields.adoc[]
-
-== 구매한 작품 조회
-=== 1. Authorization Header에 AccessToken이 없으면 구매한 작품 조회에 실패한다
-HTTP Request
-include::{snippets}/MemberApi/Information/PurchaseArt/Failure/Case1/http-request.adoc[]
-include::{snippets}/MemberApi/Information/PurchaseArt/Failure/Case1/path-parameters.adoc[]
-
-HTTP Response
-include::{snippets}/MemberApi/Information/PurchaseArt/Failure/Case1/response-body.adoc[]
-
-=== 2. Token Payload가 Endpoint의 memberId와 일치하지 않음에 따라 구매한 작품 조회에 실패한다
-HTTP Request
-include::{snippets}/MemberApi/Information/PurchaseArt/Failure/Case2/http-request.adoc[]
-include::{snippets}/MemberApi/Information/PurchaseArt/Failure/Case2/request-headers.adoc[]
-include::{snippets}/MemberApi/Information/PurchaseArt/Failure/Case2/path-parameters.adoc[]
-
-HTTP Response
-include::{snippets}/MemberApi/Information/PurchaseArt/Failure/Case2/response-body.adoc[]
-
-=== 3. 구매한 작품을 조회한다
-HTTP Request
-include::{snippets}/MemberApi/Information/PurchaseArt/Success/http-request.adoc[]
-include::{snippets}/MemberApi/Information/PurchaseArt/Success/request-headers.adoc[]
-include::{snippets}/MemberApi/Information/PurchaseArt/Success/path-parameters.adoc[]
-
-HTTP Response
-include::{snippets}/MemberApi/Information/PurchaseArt/Success/response-body.adoc[]
-include::{snippets}/MemberApi/Information/PurchaseArt/Success/response-fields.adoc[]
+include::{snippets}/MemberApi/Information/PurchaseArt/response-body.adoc[]
+include::{snippets}/MemberApi/Information/PurchaseArt/response-fields.adoc[]

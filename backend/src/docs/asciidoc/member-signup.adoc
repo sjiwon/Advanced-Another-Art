@@ -44,7 +44,7 @@ include::{snippets}/MemberApi/SignUp/DuplicateCheck/Failure/Case2/response-body.
 === 3. 해당 값이 중복되지 않음에 따라 중복 체크를 통과한다
 HTTP Request
 include::{snippets}/MemberApi/SignUp/DuplicateCheck/Success/http-request.adoc[]
-include::{snippets}/MemberApi/SignUp/DuplicateCheck/Success/request-fields.adoc[]
+include::{snippets}/MemberApi/SignUp/DuplicateCheck/Success/request-parameters.adoc[]
 
 HTTP Response
 include::{snippets}/MemberApi/SignUp/DuplicateCheck/Success/http-response.adoc[]
