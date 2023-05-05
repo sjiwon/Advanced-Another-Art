@@ -11,6 +11,7 @@ import com.sjiwon.anotherart.member.infra.query.dto.response.MemberPointRecord;
 import com.sjiwon.anotherart.member.infra.query.dto.response.TradedArt;
 import com.sjiwon.anotherart.member.service.dto.response.MemberInformation;
 import com.sjiwon.anotherart.member.service.dto.response.PointRecordAssembler;
+import com.sjiwon.anotherart.member.service.dto.response.TradedArtAssembler;
 import com.sjiwon.anotherart.member.service.dto.response.WinningAuctionArtAssembler;
 import com.sjiwon.anotherart.purchase.domain.Purchase;
 import org.junit.jupiter.api.BeforeEach;
@@ -170,12 +171,11 @@ class MemberInformationServiceTest extends ServiceTest {
         purchaseAuctionArt(auctionArts[0], auctionArts[5], auctionArts[8]);
         purchaseGeneralArt(generalArts[0], generalArts[1], generalArts[3], generalArts[6], generalArts[9]);
 
-        List<TradedArt> auctionResult1 = memberRepository.findSoldArtByMemberIdAndType(owner.getId(), AUCTION);
-        List<TradedArt> generalResult1 = memberRepository.findSoldArtByMemberIdAndType(owner.getId(), GENERAL);
-        assertThatSoldArtMatch(
-                auctionResult1,
+        TradedArtAssembler assembler1 = memberInformationService.getSoldArts(owner.getId());
+        assertThatTradedArtMatch(
+                assembler1.tradedAuctions(),
                 List.of(8, 5, 0),
-                generalResult1,
+                assembler1.tradedGenerals(),
                 List.of(9, 6, 3, 1, 0)
         );
 
@@ -183,12 +183,39 @@ class MemberInformationServiceTest extends ServiceTest {
         purchaseAuctionArt(auctionArts[1], auctionArts[2], auctionArts[4], auctionArts[9]);
         purchaseGeneralArt(generalArts[5]);
 
-        List<TradedArt> auctionResult2 = memberRepository.findSoldArtByMemberIdAndType(owner.getId(), AUCTION);
-        List<TradedArt> generalResult2 = memberRepository.findSoldArtByMemberIdAndType(owner.getId(), GENERAL);
-        assertThatSoldArtMatch(
-                auctionResult2,
+        TradedArtAssembler assembler2 = memberInformationService.getSoldArts(owner.getId());
+        assertThatTradedArtMatch(
+                assembler2.tradedAuctions(),
                 List.of(9, 8, 5, 4, 2, 1, 0),
-                generalResult2,
+                assembler2.tradedGenerals(),
+                List.of(9, 6, 5, 3, 1, 0)
+        );
+    }
+
+    @Test
+    @DisplayName("구매한 작품을 조회한다")
+    void getPurchaseArts() {
+        /* 경매 작품 3건, 일반 작품 5건 */
+        purchaseAuctionArt(auctionArts[0], auctionArts[5], auctionArts[8]);
+        purchaseGeneralArt(generalArts[0], generalArts[1], generalArts[3], generalArts[6], generalArts[9]);
+
+        TradedArtAssembler assembler1 = memberInformationService.getPurchaseArts(buyer.getId());
+        assertThatTradedArtMatch(
+                assembler1.tradedAuctions(),
+                List.of(8, 5, 0),
+                assembler1.tradedGenerals(),
+                List.of(9, 6, 3, 1, 0)
+        );
+
+        /* 경매 작품 추가 4건, 일반 작품 추가 1건 */
+        purchaseAuctionArt(auctionArts[1], auctionArts[2], auctionArts[4], auctionArts[9]);
+        purchaseGeneralArt(generalArts[5]);
+
+        TradedArtAssembler assembler2 = memberInformationService.getPurchaseArts(buyer.getId());
+        assertThatTradedArtMatch(
+                assembler2.tradedAuctions(),
+                List.of(9, 8, 5, 4, 2, 1, 0),
+                assembler2.tradedGenerals(),
                 List.of(9, 6, 5, 3, 1, 0)
         );
     }
@@ -256,8 +283,8 @@ class MemberInformationServiceTest extends ServiceTest {
         }
     }
 
-    private void assertThatSoldArtMatch(List<TradedArt> auctionResult, List<Integer> auctionIndices,
-                                        List<TradedArt> generalResult, List<Integer> generalIndices) {
+    private void assertThatTradedArtMatch(List<TradedArt> auctionResult, List<Integer> auctionIndices,
+                                          List<TradedArt> generalResult, List<Integer> generalIndices) {
         int auctionTotalSize = auctionIndices.size();
         int generalTotalSize = generalIndices.size();
         assertThat(auctionResult).hasSize(auctionTotalSize);

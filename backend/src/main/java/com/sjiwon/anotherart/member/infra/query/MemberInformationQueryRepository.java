@@ -11,4 +11,5 @@ public interface MemberInformationQueryRepository {
     List<MemberPointRecord> findPointRecordByMemberId(Long memberId);
     List<AuctionArt> findWinningAuctionArtByMemberId(Long memberId);
     List<TradedArt> findSoldArtByMemberIdAndType(Long memberId, ArtType type);
+    List<TradedArt> findPurchaseArtByMemberIdAndType(Long memberId, ArtType type);
 }

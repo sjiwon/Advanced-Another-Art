@@ -93,6 +93,31 @@ public class MemberInformationQueryRepositoryImpl implements MemberInformationQu
         return result;
     }
 
+    @Override
+    public List<TradedArt> findPurchaseArtByMemberIdAndType(Long memberId, ArtType type) {
+        List<TradedArt> result = query
+                .select(assembleTradedArtProjections())
+                .from(art)
+                .innerJoin(art.owner, owner)
+                .innerJoin(purchase).on(purchase.art.id.eq(art.id))
+                .innerJoin(purchase.buyer, buyer)
+                .where(
+                        artBuyerIdEq(memberId),
+                        artTypeEq(type)
+                )
+                .orderBy(art.id.desc())
+                .fetch();
+
+        List<Long> artIds = result.stream()
+                .map(TradedArt::getArt)
+                .map(BasicArt::getId)
+                .toList();
+        List<BasicHashtag> hashtags = getHashtags(artIds);
+        result.forEach(arg -> arg.applyHashtags(collectHashtags(hashtags, arg.getArt())));
+
+        return result;
+    }
+
     private List<BasicHashtag> getHashtags(List<Long> artIds) {
         return query
                 .select(new QBasicHashtag(art.id, hashtag.name))
@@ -137,6 +162,10 @@ public class MemberInformationQueryRepositoryImpl implements MemberInformationQu
 
     private BooleanExpression artOwnerIdEq(Long memberId) {
         return (memberId != null) ? owner.id.eq(memberId) : null;
+    }
+
+    private BooleanExpression artBuyerIdEq(Long memberId) {
+        return (memberId != null) ? buyer.id.eq(memberId) : null;
     }
 
     private BooleanExpression artTypeEq(ArtType type) {

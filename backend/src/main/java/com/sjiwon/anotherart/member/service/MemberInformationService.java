@@ -41,8 +41,14 @@ public class MemberInformationService {
     }
 
     public TradedArtAssembler getSoldArts(Long memberId) {
-        List<TradedArt> soldAuctions = memberRepository.findSoldArtByMemberIdAndType(memberId, AUCTION);
-        List<TradedArt> soldGenerals = memberRepository.findSoldArtByMemberIdAndType(memberId, GENERAL);
-        return new TradedArtAssembler(soldAuctions, soldGenerals);
+        List<TradedArt> tradedAuctions = memberRepository.findSoldArtByMemberIdAndType(memberId, AUCTION);
+        List<TradedArt> tradedGenerals = memberRepository.findSoldArtByMemberIdAndType(memberId, GENERAL);
+        return new TradedArtAssembler(tradedAuctions, tradedGenerals);
+    }
+
+    public TradedArtAssembler getPurchaseArts(Long memberId) {
+        List<TradedArt> tradedAuctions = memberRepository.findPurchaseArtByMemberIdAndType(memberId, AUCTION);
+        List<TradedArt> tradedGenerals = memberRepository.findPurchaseArtByMemberIdAndType(memberId, GENERAL);
+        return new TradedArtAssembler(tradedAuctions, tradedGenerals);
     }
 }

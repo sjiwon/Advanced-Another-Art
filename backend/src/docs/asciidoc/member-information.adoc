@@ -116,3 +116,31 @@ include::{snippets}/MemberApi/Information/SoldArt/Success/path-parameters.adoc[]
 HTTP Response
 include::{snippets}/MemberApi/Information/SoldArt/Success/response-body.adoc[]
 include::{snippets}/MemberApi/Information/SoldArt/Success/response-fields.adoc[]
+
+== 구매한 작품 조회
+=== 1. Authorization Header에 AccessToken이 없으면 구매한 작품 조회에 실패한다
+HTTP Request
+include::{snippets}/MemberApi/Information/PurchaseArt/Failure/Case1/http-request.adoc[]
+include::{snippets}/MemberApi/Information/PurchaseArt/Failure/Case1/path-parameters.adoc[]
+
+HTTP Response
+include::{snippets}/MemberApi/Information/PurchaseArt/Failure/Case1/response-body.adoc[]
+
+=== 2. Token Payload가 Endpoint의 memberId와 일치하지 않음에 따라 구매한 작품 조회에 실패한다
+HTTP Request
+include::{snippets}/MemberApi/Information/PurchaseArt/Failure/Case2/http-request.adoc[]
+include::{snippets}/MemberApi/Information/PurchaseArt/Failure/Case2/request-headers.adoc[]
+include::{snippets}/MemberApi/Information/PurchaseArt/Failure/Case2/path-parameters.adoc[]
+
+HTTP Response
+include::{snippets}/MemberApi/Information/PurchaseArt/Failure/Case2/response-body.adoc[]
+
+=== 3. 구매한 작품을 조회한다
+HTTP Request
+include::{snippets}/MemberApi/Information/PurchaseArt/Success/http-request.adoc[]
+include::{snippets}/MemberApi/Information/PurchaseArt/Success/request-headers.adoc[]
+include::{snippets}/MemberApi/Information/PurchaseArt/Success/path-parameters.adoc[]
+
+HTTP Response
+include::{snippets}/MemberApi/Information/PurchaseArt/Success/response-body.adoc[]
+include::{snippets}/MemberApi/Information/PurchaseArt/Success/response-fields.adoc[]

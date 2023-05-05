@@ -495,7 +495,7 @@ class MemberInformationApiControllerTest extends ControllerTest {
             given(jwtTokenProvider.isTokenValid(anyString())).willReturn(true);
             given(jwtTokenProvider.getId(anyString())).willReturn(MEMBER_ID);
 
-            TradedArtAssembler response = generateSoldArts();
+            TradedArtAssembler response = generateTradedArts();
             given(memberInformationService.getSoldArts(MEMBER_ID)).willReturn(response);
 
             // when
@@ -516,35 +516,175 @@ class MemberInformationApiControllerTest extends ControllerTest {
                                             parameterWithName("memberId").description("조회할 사용자 ID(PK)")
                                     ),
                                     responseFields(
-                                            fieldWithPath("soldAuctions[].art.id").description("경매 작품 ID(PK)"),
-                                            fieldWithPath("soldAuctions[].art.name").description("경매 작품명"),
-                                            fieldWithPath("soldAuctions[].art.description").description("경매 작품 설명"),
-                                            fieldWithPath("soldAuctions[].art.price").description("경매 작품 판매 가격"),
-                                            fieldWithPath("soldAuctions[].art.status").description("경매 작품 상태 [판매 완료]"),
-                                            fieldWithPath("soldAuctions[].art.storageName").description("경매 작품 이미지 경로"),
-                                            fieldWithPath("soldAuctions[].art.registrationDate").description("경매 작품 등록 날짜"),
-                                            fieldWithPath("soldAuctions[].art.hashtags").description("경매 작품 해시태그"),
-                                            fieldWithPath("soldAuctions[].owner.id").description("작품 소유자 ID(PK)"),
-                                            fieldWithPath("soldAuctions[].owner.nickname").description("작품 소유자 닉네임"),
-                                            fieldWithPath("soldAuctions[].owner.school").description("작품 소유자 학교"),
-                                            fieldWithPath("soldAuctions[].buyer.id").description("작품 구매자 ID(PK)"),
-                                            fieldWithPath("soldAuctions[].buyer.nickname").description("작품 구매자 닉네임"),
-                                            fieldWithPath("soldAuctions[].buyer.school").description("작품 구매자 학교"),
+                                            fieldWithPath("tradedAuctions[].art.id").description("경매 작품 ID(PK)"),
+                                            fieldWithPath("tradedAuctions[].art.name").description("경매 작품명"),
+                                            fieldWithPath("tradedAuctions[].art.description").description("경매 작품 설명"),
+                                            fieldWithPath("tradedAuctions[].art.price").description("경매 작품 판매 가격"),
+                                            fieldWithPath("tradedAuctions[].art.status").description("경매 작품 상태 [판매 완료]"),
+                                            fieldWithPath("tradedAuctions[].art.storageName").description("경매 작품 이미지 경로"),
+                                            fieldWithPath("tradedAuctions[].art.registrationDate").description("경매 작품 등록 날짜"),
+                                            fieldWithPath("tradedAuctions[].art.hashtags").description("경매 작품 해시태그"),
+                                            fieldWithPath("tradedAuctions[].owner.id").description("작품 소유자 ID(PK)"),
+                                            fieldWithPath("tradedAuctions[].owner.nickname").description("작품 소유자 닉네임"),
+                                            fieldWithPath("tradedAuctions[].owner.school").description("작품 소유자 학교"),
+                                            fieldWithPath("tradedAuctions[].buyer.id").description("작품 구매자 ID(PK)"),
+                                            fieldWithPath("tradedAuctions[].buyer.nickname").description("작품 구매자 닉네임"),
+                                            fieldWithPath("tradedAuctions[].buyer.school").description("작품 구매자 학교"),
 
-                                            fieldWithPath("soldGenerals[].art.id").description("일반 작품 ID(PK)"),
-                                            fieldWithPath("soldGenerals[].art.name").description("일반 작품명"),
-                                            fieldWithPath("soldGenerals[].art.description").description("일반 작품 설명"),
-                                            fieldWithPath("soldGenerals[].art.price").description("일반 작품 판매 가격"),
-                                            fieldWithPath("soldGenerals[].art.status").description("일반 작품 상태 [판매 완료]"),
-                                            fieldWithPath("soldGenerals[].art.storageName").description("일반 작품 이미지 경로"),
-                                            fieldWithPath("soldGenerals[].art.registrationDate").description("일반 작품 등록 날짜"),
-                                            fieldWithPath("soldGenerals[].art.hashtags").description("일반 작품 해시태그"),
-                                            fieldWithPath("soldGenerals[].owner.id").description("작품 소유자 ID(PK)"),
-                                            fieldWithPath("soldGenerals[].owner.nickname").description("작품 소유자 닉네임"),
-                                            fieldWithPath("soldGenerals[].owner.school").description("작품 소유자 학교"),
-                                            fieldWithPath("soldGenerals[].buyer.id").description("작품 구매자 ID(PK)"),
-                                            fieldWithPath("soldGenerals[].buyer.nickname").description("작품 구매자 닉네임"),
-                                            fieldWithPath("soldGenerals[].buyer.school").description("작품 구매자 학교")
+                                            fieldWithPath("tradedGenerals[].art.id").description("일반 작품 ID(PK)"),
+                                            fieldWithPath("tradedGenerals[].art.name").description("일반 작품명"),
+                                            fieldWithPath("tradedGenerals[].art.description").description("일반 작품 설명"),
+                                            fieldWithPath("tradedGenerals[].art.price").description("일반 작품 판매 가격"),
+                                            fieldWithPath("tradedGenerals[].art.status").description("일반 작품 상태 [판매 완료]"),
+                                            fieldWithPath("tradedGenerals[].art.storageName").description("일반 작품 이미지 경로"),
+                                            fieldWithPath("tradedGenerals[].art.registrationDate").description("일반 작품 등록 날짜"),
+                                            fieldWithPath("tradedGenerals[].art.hashtags").description("일반 작품 해시태그"),
+                                            fieldWithPath("tradedGenerals[].owner.id").description("작품 소유자 ID(PK)"),
+                                            fieldWithPath("tradedGenerals[].owner.nickname").description("작품 소유자 닉네임"),
+                                            fieldWithPath("tradedGenerals[].owner.school").description("작품 소유자 학교"),
+                                            fieldWithPath("tradedGenerals[].buyer.id").description("작품 구매자 ID(PK)"),
+                                            fieldWithPath("tradedGenerals[].buyer.nickname").description("작품 구매자 닉네임"),
+                                            fieldWithPath("tradedGenerals[].buyer.school").description("작품 구매자 학교")
+                                    )
+                            )
+                    );
+        }
+    }
+
+    @Nested
+    @DisplayName("사용자가 구매한 작품 조회 API [GET /api/members/{memberId}/arts/purchase]")
+    class getPurchaseArts {
+        private static final String BASE_URL = "/api/members/{memberId}/arts/purchase";
+        private static final Long MEMBER_ID = 1L;
+        private static final Long ANONYMOUS_ID = 2L;
+
+        @Test
+        @DisplayName("Authorization Header에 AccessToken이 없으면 구매한 작품 조회에 실패한다")
+        void withoutAccessToken() throws Exception {
+            // when
+            MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
+                    .get(BASE_URL, MEMBER_ID);
+
+            // then
+            final AuthErrorCode expectedError = AuthErrorCode.INVALID_PERMISSION;
+            mockMvc.perform(requestBuilder)
+                    .andExpectAll(
+                            status().isForbidden(),
+                            jsonPath("$.status").exists(),
+                            jsonPath("$.status").value(expectedError.getStatus().value()),
+                            jsonPath("$.errorCode").exists(),
+                            jsonPath("$.errorCode").value(expectedError.getErrorCode()),
+                            jsonPath("$.message").exists(),
+                            jsonPath("$.message").value(expectedError.getMessage())
+                    )
+                    .andDo(
+                            document(
+                                    "MemberApi/Information/PurchaseArt/Failure/Case1",
+                                    getDocumentRequest(),
+                                    getDocumentResponse(),
+                                    pathParameters(
+                                            parameterWithName("memberId").description("조회할 사용자 ID(PK)")
+                                    ),
+                                    getExceptionResponseFiels()
+                            )
+                    );
+        }
+
+        @Test
+        @DisplayName("Token Payload가 Endpoint의 memberId와 일치하지 않음에 따라 구매한 작품 조회에 실패한다")
+        void throwExceptionByInvalidPermission() throws Exception {
+            // given
+            given(jwtTokenProvider.isTokenValid(anyString())).willReturn(true);
+            given(jwtTokenProvider.getId(anyString())).willReturn(ANONYMOUS_ID);
+
+            // when
+            MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
+                    .get(BASE_URL, MEMBER_ID)
+                    .header(AUTHORIZATION, String.join(" ", BEARER_TOKEN, ACCESS_TOKEN));
+
+            // then
+            final AuthErrorCode expectedError = AuthErrorCode.INVALID_PERMISSION;
+            mockMvc.perform(requestBuilder)
+                    .andExpectAll(
+                            status().isForbidden(),
+                            jsonPath("$.status").exists(),
+                            jsonPath("$.status").value(expectedError.getStatus().value()),
+                            jsonPath("$.errorCode").exists(),
+                            jsonPath("$.errorCode").value(expectedError.getErrorCode()),
+                            jsonPath("$.message").exists(),
+                            jsonPath("$.message").value(expectedError.getMessage())
+                    )
+                    .andDo(
+                            document(
+                                    "MemberApi/Information/PurchaseArt/Failure/Case2",
+                                    getDocumentRequest(),
+                                    getDocumentResponse(),
+                                    getHeaderWithAccessToken(),
+                                    pathParameters(
+                                            parameterWithName("memberId").description("조회할 사용자 ID(PK)")
+                                    ),
+                                    getExceptionResponseFiels()
+                            )
+                    );
+        }
+
+        @Test
+        @DisplayName("구매한 작품을 조회한다")
+        void success() throws Exception {
+            // given
+            given(jwtTokenProvider.isTokenValid(anyString())).willReturn(true);
+            given(jwtTokenProvider.getId(anyString())).willReturn(MEMBER_ID);
+
+            TradedArtAssembler response = generateTradedArts();
+            given(memberInformationService.getPurchaseArts(MEMBER_ID)).willReturn(response);
+
+            // when
+            MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
+                    .get(BASE_URL, MEMBER_ID)
+                    .header(AUTHORIZATION, String.join(" ", BEARER_TOKEN, ACCESS_TOKEN));
+
+            // then
+            mockMvc.perform(requestBuilder)
+                    .andExpect(status().isOk())
+                    .andDo(
+                            document(
+                                    "MemberApi/Information/PurchaseArt/Success",
+                                    getDocumentRequest(),
+                                    getDocumentResponse(),
+                                    getHeaderWithAccessToken(),
+                                    pathParameters(
+                                            parameterWithName("memberId").description("조회할 사용자 ID(PK)")
+                                    ),
+                                    responseFields(
+                                            fieldWithPath("tradedAuctions[].art.id").description("경매 작품 ID(PK)"),
+                                            fieldWithPath("tradedAuctions[].art.name").description("경매 작품명"),
+                                            fieldWithPath("tradedAuctions[].art.description").description("경매 작품 설명"),
+                                            fieldWithPath("tradedAuctions[].art.price").description("경매 작품 판매 가격"),
+                                            fieldWithPath("tradedAuctions[].art.status").description("경매 작품 상태 [판매 완료]"),
+                                            fieldWithPath("tradedAuctions[].art.storageName").description("경매 작품 이미지 경로"),
+                                            fieldWithPath("tradedAuctions[].art.registrationDate").description("경매 작품 등록 날짜"),
+                                            fieldWithPath("tradedAuctions[].art.hashtags").description("경매 작품 해시태그"),
+                                            fieldWithPath("tradedAuctions[].owner.id").description("작품 소유자 ID(PK)"),
+                                            fieldWithPath("tradedAuctions[].owner.nickname").description("작품 소유자 닉네임"),
+                                            fieldWithPath("tradedAuctions[].owner.school").description("작품 소유자 학교"),
+                                            fieldWithPath("tradedAuctions[].buyer.id").description("작품 구매자 ID(PK)"),
+                                            fieldWithPath("tradedAuctions[].buyer.nickname").description("작품 구매자 닉네임"),
+                                            fieldWithPath("tradedAuctions[].buyer.school").description("작품 구매자 학교"),
+
+                                            fieldWithPath("tradedGenerals[].art.id").description("일반 작품 ID(PK)"),
+                                            fieldWithPath("tradedGenerals[].art.name").description("일반 작품명"),
+                                            fieldWithPath("tradedGenerals[].art.description").description("일반 작품 설명"),
+                                            fieldWithPath("tradedGenerals[].art.price").description("일반 작품 판매 가격"),
+                                            fieldWithPath("tradedGenerals[].art.status").description("일반 작품 상태 [판매 완료]"),
+                                            fieldWithPath("tradedGenerals[].art.storageName").description("일반 작품 이미지 경로"),
+                                            fieldWithPath("tradedGenerals[].art.registrationDate").description("일반 작품 등록 날짜"),
+                                            fieldWithPath("tradedGenerals[].art.hashtags").description("일반 작품 해시태그"),
+                                            fieldWithPath("tradedGenerals[].owner.id").description("작품 소유자 ID(PK)"),
+                                            fieldWithPath("tradedGenerals[].owner.nickname").description("작품 소유자 닉네임"),
+                                            fieldWithPath("tradedGenerals[].owner.school").description("작품 소유자 학교"),
+                                            fieldWithPath("tradedGenerals[].buyer.id").description("작품 구매자 ID(PK)"),
+                                            fieldWithPath("tradedGenerals[].buyer.nickname").description("작품 구매자 닉네임"),
+                                            fieldWithPath("tradedGenerals[].buyer.school").description("작품 구매자 학교")
                                     )
                             )
                     );
@@ -646,8 +786,8 @@ class MemberInformationApiControllerTest extends ControllerTest {
         return new WinningAuctionArtAssembler(result);
     }
 
-    private TradedArtAssembler generateSoldArts() {
-        List<TradedArt> soldAuctions = List.of(
+    private TradedArtAssembler generateTradedArts() {
+        List<TradedArt> tradedAuctions = List.of(
                 new TradedArt(
                         new BasicArt(
                                 2L,
@@ -678,7 +818,7 @@ class MemberInformationApiControllerTest extends ControllerTest {
                 )
         );
 
-        List<TradedArt> soldGenerals = List.of(
+        List<TradedArt> tradedGenerals = List.of(
                 new TradedArt(
                         new BasicArt(
                                 1L,
@@ -695,6 +835,6 @@ class MemberInformationApiControllerTest extends ControllerTest {
                 )
         );
 
-        return new TradedArtAssembler(soldAuctions, soldGenerals);
+        return new TradedArtAssembler(tradedAuctions, tradedGenerals);
     }
 }

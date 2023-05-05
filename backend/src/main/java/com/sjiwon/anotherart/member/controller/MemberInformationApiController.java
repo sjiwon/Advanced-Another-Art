@@ -47,4 +47,11 @@ public class MemberInformationApiController {
         TradedArtAssembler response = memberInformationService.getSoldArts(memberId);
         return ResponseEntity.ok(response);
     }
+
+    @PreAuthorize("hasRole('USER') AND @tokenPayloadChecker.isTrustworthyMember(#payloadId, #memberId)")
+    @GetMapping("/arts/purchase")
+    public ResponseEntity<TradedArtAssembler> getPurchaseArts(@ExtractPayload Long payloadId, @PathVariable Long memberId) {
+        TradedArtAssembler response = memberInformationService.getPurchaseArts(memberId);
+        return ResponseEntity.ok(response);
+    }
 }
