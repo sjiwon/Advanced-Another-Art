@@ -17,6 +17,7 @@ public class BidService {
     private final MemberFindService memberFindService;
     private final AuctionRepository auctionRepository;
 
+    @Transactional
     public void bid(Long auctionId, Long bidderId, Integer bidPrice) {
         Auction auction = getAuction(auctionId);
         Member bidder = memberFindService.findById(bidderId);
@@ -25,7 +26,7 @@ public class BidService {
     }
 
     private Auction getAuction(Long auctionId) {
-        return auctionRepository.findById(auctionId)
+        return auctionRepository.findByIdWithPessimisticLock(auctionId)
                 .orElseThrow(() -> AnotherArtException.type(AuctionErrorCode.AUCTION_NOT_FOUND));
     }
 }
