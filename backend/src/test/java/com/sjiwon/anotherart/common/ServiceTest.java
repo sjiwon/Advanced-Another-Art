@@ -4,6 +4,7 @@ import com.sjiwon.anotherart.art.domain.ArtRepository;
 import com.sjiwon.anotherart.auction.domain.AuctionRepository;
 import com.sjiwon.anotherart.favorite.domain.FavoriteRepository;
 import com.sjiwon.anotherart.member.domain.MemberRepository;
+import com.sjiwon.anotherart.purchase.domain.PurchaseRepository;
 import com.sjiwon.anotherart.token.domain.TokenRepository;
 import com.sjiwon.anotherart.token.utils.JwtTokenProvider;
 import org.junit.jupiter.api.AfterEach;
@@ -39,6 +40,9 @@ public class ServiceTest {
 
     @Autowired
     protected AuctionRepository auctionRepository;
+
+    @Autowired
+    protected PurchaseRepository purchaseRepository;
 
     @AfterEach
     void clearDatabase() {

@@ -3,6 +3,7 @@ package com.sjiwon.anotherart.member.controller;
 import com.sjiwon.anotherart.member.service.MemberInformationService;
 import com.sjiwon.anotherart.member.service.dto.response.MemberInformation;
 import com.sjiwon.anotherart.member.service.dto.response.PointRecordAssembler;
+import com.sjiwon.anotherart.member.service.dto.response.TradedArtAssembler;
 import com.sjiwon.anotherart.member.service.dto.response.WinningAuctionArtAssembler;
 import com.sjiwon.anotherart.token.utils.ExtractPayload;
 import lombok.RequiredArgsConstructor;
@@ -37,6 +38,13 @@ public class MemberInformationApiController {
     @GetMapping("/winning-auctions")
     public ResponseEntity<WinningAuctionArtAssembler> getWinningAuctionArts(@ExtractPayload Long payloadId, @PathVariable Long memberId) {
         WinningAuctionArtAssembler response = memberInformationService.getWinningAuctionArts(memberId);
+        return ResponseEntity.ok(response);
+    }
+
+    @PreAuthorize("hasRole('USER') AND @tokenPayloadChecker.isTrustworthyMember(#payloadId, #memberId)")
+    @GetMapping("/arts/sold")
+    public ResponseEntity<TradedArtAssembler> getSoldArts(@ExtractPayload Long payloadId, @PathVariable Long memberId) {
+        TradedArtAssembler response = memberInformationService.getSoldArts(memberId);
         return ResponseEntity.ok(response);
     }
 }

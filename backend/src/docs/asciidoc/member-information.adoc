@@ -64,27 +64,55 @@ include::{snippets}/MemberApi/Information/PointRecord/Success/response-fields.ad
 == 낙찰된 경매 작품 조회
 === 1. Authorization Header에 AccessToken이 없으면 낙찰된 경매 작품 조회에 실패한다
 HTTP Request
-include::{snippets}/MemberApi/Information/WinningAuctions/Failure/Case1/http-request.adoc[]
-include::{snippets}/MemberApi/Information/WinningAuctions/Failure/Case1/path-parameters.adoc[]
+include::{snippets}/MemberApi/Information/WinningAuction/Failure/Case1/http-request.adoc[]
+include::{snippets}/MemberApi/Information/WinningAuction/Failure/Case1/path-parameters.adoc[]
 
 HTTP Response
-include::{snippets}/MemberApi/Information/WinningAuctions/Failure/Case1/response-body.adoc[]
+include::{snippets}/MemberApi/Information/WinningAuction/Failure/Case1/response-body.adoc[]
 
 === 2. Token Payload가 Endpoint의 memberId와 일치하지 않음에 따라 낙찰된 경매 작품 조회에 실패한다
 HTTP Request
-include::{snippets}/MemberApi/Information/WinningAuctions/Failure/Case2/http-request.adoc[]
-include::{snippets}/MemberApi/Information/WinningAuctions/Failure/Case2/request-headers.adoc[]
-include::{snippets}/MemberApi/Information/WinningAuctions/Failure/Case2/path-parameters.adoc[]
+include::{snippets}/MemberApi/Information/WinningAuction/Failure/Case2/http-request.adoc[]
+include::{snippets}/MemberApi/Information/WinningAuction/Failure/Case2/request-headers.adoc[]
+include::{snippets}/MemberApi/Information/WinningAuction/Failure/Case2/path-parameters.adoc[]
 
 HTTP Response
-include::{snippets}/MemberApi/Information/WinningAuctions/Failure/Case2/response-body.adoc[]
+include::{snippets}/MemberApi/Information/WinningAuction/Failure/Case2/response-body.adoc[]
 
 === 3. 낙찰된 경매 작품을 조회한다
 HTTP Request
-include::{snippets}/MemberApi/Information/WinningAuctions/Success/http-request.adoc[]
-include::{snippets}/MemberApi/Information/WinningAuctions/Success/request-headers.adoc[]
-include::{snippets}/MemberApi/Information/WinningAuctions/Success/path-parameters.adoc[]
+include::{snippets}/MemberApi/Information/WinningAuction/Success/http-request.adoc[]
+include::{snippets}/MemberApi/Information/WinningAuction/Success/request-headers.adoc[]
+include::{snippets}/MemberApi/Information/WinningAuction/Success/path-parameters.adoc[]
 
 HTTP Response
-include::{snippets}/MemberApi/Information/WinningAuctions/Success/response-body.adoc[]
-include::{snippets}/MemberApi/Information/WinningAuctions/Success/response-fields.adoc[]
+include::{snippets}/MemberApi/Information/WinningAuction/Success/response-body.adoc[]
+include::{snippets}/MemberApi/Information/WinningAuction/Success/response-fields.adoc[]
+
+== 판매한 작품 조회
+=== 1. Authorization Header에 AccessToken이 없으면 판매한 작품 조회에 실패한다
+HTTP Request
+include::{snippets}/MemberApi/Information/SoldArt/Failure/Case1/http-request.adoc[]
+include::{snippets}/MemberApi/Information/SoldArt/Failure/Case1/path-parameters.adoc[]
+
+HTTP Response
+include::{snippets}/MemberApi/Information/SoldArt/Failure/Case1/response-body.adoc[]
+
+=== 2. Token Payload가 Endpoint의 memberId와 일치하지 않음에 따라 판매한 작품 조회에 실패한다
+HTTP Request
+include::{snippets}/MemberApi/Information/SoldArt/Failure/Case2/http-request.adoc[]
+include::{snippets}/MemberApi/Information/SoldArt/Failure/Case2/request-headers.adoc[]
+include::{snippets}/MemberApi/Information/SoldArt/Failure/Case2/path-parameters.adoc[]
+
+HTTP Response
+include::{snippets}/MemberApi/Information/SoldArt/Failure/Case2/response-body.adoc[]
+
+=== 3. 판매한 작품을 조회한다
+HTTP Request
+include::{snippets}/MemberApi/Information/SoldArt/Success/http-request.adoc[]
+include::{snippets}/MemberApi/Information/SoldArt/Success/request-headers.adoc[]
+include::{snippets}/MemberApi/Information/SoldArt/Success/path-parameters.adoc[]
+
+HTTP Response
+include::{snippets}/MemberApi/Information/SoldArt/Success/response-body.adoc[]
+include::{snippets}/MemberApi/Information/SoldArt/Success/response-fields.adoc[]

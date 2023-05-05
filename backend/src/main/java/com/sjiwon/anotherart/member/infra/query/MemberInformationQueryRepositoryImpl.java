@@ -3,10 +3,13 @@ package com.sjiwon.anotherart.member.infra.query;
 import com.querydsl.core.types.ConstructorExpression;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.sjiwon.anotherart.art.domain.ArtType;
 import com.sjiwon.anotherart.art.infra.query.dto.response.*;
 import com.sjiwon.anotherart.member.domain.QMember;
 import com.sjiwon.anotherart.member.infra.query.dto.response.MemberPointRecord;
 import com.sjiwon.anotherart.member.infra.query.dto.response.QMemberPointRecord;
+import com.sjiwon.anotherart.member.infra.query.dto.response.QTradedArt;
+import com.sjiwon.anotherart.member.infra.query.dto.response.TradedArt;
 import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,6 +21,7 @@ import static com.sjiwon.anotherart.art.domain.QArt.art;
 import static com.sjiwon.anotherart.art.domain.hashtag.QHashtag.hashtag;
 import static com.sjiwon.anotherart.auction.domain.QAuction.auction;
 import static com.sjiwon.anotherart.member.domain.point.QPointRecord.pointRecord;
+import static com.sjiwon.anotherart.purchase.domain.QPurchase.purchase;
 
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
@@ -25,6 +29,7 @@ public class MemberInformationQueryRepositoryImpl implements MemberInformationQu
     private final JPAQueryFactory query;
 
     private static final QMember owner = new QMember("owner");
+    private static final QMember buyer = new QMember("buyer");
     private static final QMember highestBidder = new QMember("highestBidder");
 
     @Override
@@ -46,7 +51,7 @@ public class MemberInformationQueryRepositoryImpl implements MemberInformationQu
                 .innerJoin(art.owner, owner)
                 .innerJoin(auction.bidders.highestBidder, highestBidder)
                 .where(
-                        highestBidderIdEq(memberId),
+                        highestBidder.id.eq(memberId),
                         auctionIsFinished(),
                         artIsOnSale()
                 )
@@ -57,20 +62,44 @@ public class MemberInformationQueryRepositoryImpl implements MemberInformationQu
                 .map(AuctionArt::getArt)
                 .map(BasicArt::getId)
                 .toList();
-        applyArtHashtags(result, artIds);
+        List<BasicHashtag> hashtags = getHashtags(artIds);
+        result.forEach(arg -> arg.applyHashtags(collectHashtags(hashtags, arg.getArt())));
 
         return result;
     }
 
-    private void applyArtHashtags(List<AuctionArt> result, List<Long> artIds) {
-        List<BasicHashtag> hashtags = query
+    @Override
+    public List<TradedArt> findSoldArtByMemberIdAndType(Long memberId, ArtType type) {
+        List<TradedArt> result = query
+                .select(assembleTradedArtProjections())
+                .from(art)
+                .innerJoin(art.owner, owner)
+                .innerJoin(purchase).on(purchase.art.id.eq(art.id))
+                .innerJoin(purchase.buyer, buyer)
+                .where(
+                        artOwnerIdEq(memberId),
+                        artTypeEq(type)
+                )
+                .orderBy(art.id.desc())
+                .fetch();
+
+        List<Long> artIds = result.stream()
+                .map(TradedArt::getArt)
+                .map(BasicArt::getId)
+                .toList();
+        List<BasicHashtag> hashtags = getHashtags(artIds);
+        result.forEach(arg -> arg.applyHashtags(collectHashtags(hashtags, arg.getArt())));
+
+        return result;
+    }
+
+    private List<BasicHashtag> getHashtags(List<Long> artIds) {
+        return query
                 .select(new QBasicHashtag(art.id, hashtag.name))
                 .from(hashtag)
                 .innerJoin(art).on(art.id.eq(hashtag.art.id))
                 .where(art.id.in(artIds))
                 .fetch();
-
-        result.forEach(arg -> arg.applyHashtags(collectHashtags(hashtags, arg.getArt())));
     }
 
     private List<String> collectHashtags(List<BasicHashtag> hashtags, BasicArt art) {
@@ -90,8 +119,12 @@ public class MemberInformationQueryRepositoryImpl implements MemberInformationQu
         );
     }
 
-    private BooleanExpression highestBidderIdEq(Long memberId) {
-        return highestBidder.id.eq(memberId);
+    public static ConstructorExpression<TradedArt> assembleTradedArtProjections() {
+        return new QTradedArt(
+                art.id, art.name, art.description, purchase.price, art.status, art.storageName, art.createdAt,
+                owner.id, owner.nickname, owner.school,
+                buyer.id, buyer.nickname, buyer.school
+        );
     }
 
     private BooleanExpression auctionIsFinished() {
@@ -100,5 +133,13 @@ public class MemberInformationQueryRepositoryImpl implements MemberInformationQu
 
     private BooleanExpression artIsOnSale() {
         return art.status.eq(ON_SALE);
+    }
+
+    private BooleanExpression artOwnerIdEq(Long memberId) {
+        return (memberId != null) ? owner.id.eq(memberId) : null;
+    }
+
+    private BooleanExpression artTypeEq(ArtType type) {
+        return (type != null) ? art.type.eq(type) : null;
     }
 }

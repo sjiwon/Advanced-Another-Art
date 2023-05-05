@@ -14,6 +14,8 @@ public enum MemberFixture {
             "sjiwon4491@naver.com", 12345, "기본 주소", "상세 주소"),
     MEMBER_C("사용자C", "사용자C", "manager", "abcABC123!@#",
             "sjiwon@kyonggi.ac.kr", 12345, "기본 주소", "상세 주소"),
+    MEMBER_D("사용자D", "사용자D", "anonymous", "abcABC123!@#",
+            "sjiwon4491@kakao.com", 12345, "기본 주소", "상세 주소"),
     ;
 
     private final String name;
