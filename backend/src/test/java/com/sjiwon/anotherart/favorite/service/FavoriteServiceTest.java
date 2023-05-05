@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import static com.sjiwon.anotherart.fixture.ArtFixture.AUCTION_A;
+import static com.sjiwon.anotherart.fixture.ArtFixture.AUCTION_1;
 import static com.sjiwon.anotherart.fixture.MemberFixture.MEMBER_A;
 import static com.sjiwon.anotherart.fixture.MemberFixture.MEMBER_B;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -32,7 +32,7 @@ class FavoriteServiceTest extends ServiceTest {
         member = memberRepository.save(MEMBER_A.toMember());
 
         Member owner = memberRepository.save(MEMBER_B.toMember());
-        art = artRepository.save(AUCTION_A.toArt(owner));
+        art = artRepository.save(AUCTION_1.toArt(owner));
     }
 
     @Nested

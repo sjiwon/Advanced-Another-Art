@@ -61,7 +61,7 @@ class FileUploaderTest extends InfraTest {
         @DisplayName("이미지 업로드를 성공한다")
         void success() throws Exception {
             // given
-            MultipartFile file = createSingleMockMultipartFile("A.png", "image/png");
+            MultipartFile file = createSingleMockMultipartFile("1.png", "image/png");
 
             PutObjectResult putObjectResult = new PutObjectResult();
             given(amazonS3.putObject(any(PutObjectRequest.class))).willReturn(putObjectResult);

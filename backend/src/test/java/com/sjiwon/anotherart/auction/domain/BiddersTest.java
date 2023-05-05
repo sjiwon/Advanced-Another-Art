@@ -12,8 +12,8 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import static com.sjiwon.anotherart.fixture.ArtFixture.AUCTION_A;
-import static com.sjiwon.anotherart.fixture.AuctionFixture.AUCTION_A_3;
+import static com.sjiwon.anotherart.fixture.ArtFixture.AUCTION_1;
+import static com.sjiwon.anotherart.fixture.AuctionFixture.AUCTION_OPEN_NOW;
 import static com.sjiwon.anotherart.fixture.MemberFixture.*;
 import static com.sjiwon.anotherart.member.domain.point.PointType.CHARGE;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -35,7 +35,7 @@ class BiddersTest {
         memberB = createMember(MEMBER_B, 2L);
 
         Member owner = MEMBER_C.toMember();
-        art = AUCTION_A.toArt(owner);
+        art = AUCTION_1.toArt(owner);
     }
 
     private Member createMember(MemberFixture fixture, Long id) {
@@ -66,7 +66,7 @@ class BiddersTest {
 
         @BeforeEach
         void setup() {
-            auction = AUCTION_A_3.toAuction(art);
+            auction = AUCTION_OPEN_NOW.toAuction(art);
             bidders = Bidders.init(AUCTION_INIT_PRICE);
         }
 

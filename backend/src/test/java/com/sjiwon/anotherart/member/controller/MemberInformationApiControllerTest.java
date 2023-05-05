@@ -1,12 +1,17 @@
 package com.sjiwon.anotherart.member.controller;
 
+import com.sjiwon.anotherart.art.infra.query.dto.response.AuctionArt;
+import com.sjiwon.anotherart.art.infra.query.dto.response.BasicArt;
+import com.sjiwon.anotherart.art.infra.query.dto.response.BasicAuction;
 import com.sjiwon.anotherart.common.ControllerTest;
 import com.sjiwon.anotherart.fixture.MemberFixture;
 import com.sjiwon.anotherart.global.security.exception.AuthErrorCode;
 import com.sjiwon.anotherart.member.domain.Member;
+import com.sjiwon.anotherart.member.infra.query.dto.response.BasicMember;
 import com.sjiwon.anotherart.member.infra.query.dto.response.MemberPointRecord;
 import com.sjiwon.anotherart.member.service.dto.response.MemberInformation;
 import com.sjiwon.anotherart.member.service.dto.response.PointRecordAssembler;
+import com.sjiwon.anotherart.member.service.dto.response.WinningAuctionArtAssembler;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -17,8 +22,10 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 import java.time.LocalDateTime;
 import java.util.List;
 
+import static com.sjiwon.anotherart.art.domain.ArtStatus.ON_SALE;
 import static com.sjiwon.anotherart.common.utils.TokenUtils.ACCESS_TOKEN;
 import static com.sjiwon.anotherart.common.utils.TokenUtils.BEARER_TOKEN;
+import static com.sjiwon.anotherart.fixture.ArtFixture.*;
 import static com.sjiwon.anotherart.fixture.MemberFixture.MEMBER_A;
 import static com.sjiwon.anotherart.member.domain.point.PointType.*;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -158,7 +165,7 @@ class MemberInformationApiControllerTest extends ControllerTest {
     }
 
     @Nested
-    @DisplayName("사용자 포인트 활용 내역 조회 API [GET /api/members/{memberId}/points]")
+    @DisplayName("사용자의 포인트 활용 내역 조회 API [GET /api/members/{memberId}/points]")
     class getPointRecords {
         private static final String BASE_URL = "/api/members/{memberId}/points";
         private static final Long MEMBER_ID = 1L;
@@ -271,6 +278,135 @@ class MemberInformationApiControllerTest extends ControllerTest {
         }
     }
 
+    @Nested
+    @DisplayName("사용자의 낙찰된 경매 작품 조회 API [GET /api/members/{memberId}/winning-auctions]")
+    class getWinningAuctionArts {
+        private static final String BASE_URL = "/api/members/{memberId}/winning-auctions";
+        private static final Long MEMBER_ID = 1L;
+        private static final Long ANONYMOUS_ID = 2L;
+
+        @Test
+        @DisplayName("Authorization Header에 AccessToken이 없으면 낙찰된 경매 작품 조회에 실패한다")
+        void withoutAccessToken() throws Exception {
+            // when
+            MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
+                    .get(BASE_URL, MEMBER_ID);
+
+            // then
+            final AuthErrorCode expectedError = AuthErrorCode.INVALID_PERMISSION;
+            mockMvc.perform(requestBuilder)
+                    .andExpectAll(
+                            status().isForbidden(),
+                            jsonPath("$.status").exists(),
+                            jsonPath("$.status").value(expectedError.getStatus().value()),
+                            jsonPath("$.errorCode").exists(),
+                            jsonPath("$.errorCode").value(expectedError.getErrorCode()),
+                            jsonPath("$.message").exists(),
+                            jsonPath("$.message").value(expectedError.getMessage())
+                    )
+                    .andDo(
+                            document(
+                                    "MemberApi/Information/WinningAuctions/Failure/Case1",
+                                    getDocumentRequest(),
+                                    getDocumentResponse(),
+                                    pathParameters(
+                                            parameterWithName("memberId").description("조회할 사용자 ID(PK)")
+                                    ),
+                                    getExceptionResponseFiels()
+                            )
+                    );
+        }
+
+        @Test
+        @DisplayName("Token Payload가 Endpoint의 memberId와 일치하지 않음에 따라 낙찰된 경매 작품 조회에 실패한다")
+        void throwExceptionByInvalidPermission() throws Exception {
+            // given
+            given(jwtTokenProvider.isTokenValid(anyString())).willReturn(true);
+            given(jwtTokenProvider.getId(anyString())).willReturn(ANONYMOUS_ID);
+
+            // when
+            MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
+                    .get(BASE_URL, MEMBER_ID)
+                    .header(AUTHORIZATION, String.join(" ", BEARER_TOKEN, ACCESS_TOKEN));
+
+            // then
+            final AuthErrorCode expectedError = AuthErrorCode.INVALID_PERMISSION;
+            mockMvc.perform(requestBuilder)
+                    .andExpectAll(
+                            status().isForbidden(),
+                            jsonPath("$.status").exists(),
+                            jsonPath("$.status").value(expectedError.getStatus().value()),
+                            jsonPath("$.errorCode").exists(),
+                            jsonPath("$.errorCode").value(expectedError.getErrorCode()),
+                            jsonPath("$.message").exists(),
+                            jsonPath("$.message").value(expectedError.getMessage())
+                    )
+                    .andDo(
+                            document(
+                                    "MemberApi/Information/WinningAuctions/Failure/Case2",
+                                    getDocumentRequest(),
+                                    getDocumentResponse(),
+                                    getHeaderWithAccessToken(),
+                                    pathParameters(
+                                            parameterWithName("memberId").description("조회할 사용자 ID(PK)")
+                                    ),
+                                    getExceptionResponseFiels()
+                            )
+                    );
+        }
+
+        @Test
+        @DisplayName("낙찰된 경매 작품을 조회한다")
+        void success() throws Exception {
+            // given
+            given(jwtTokenProvider.isTokenValid(anyString())).willReturn(true);
+            given(jwtTokenProvider.getId(anyString())).willReturn(MEMBER_ID);
+
+            WinningAuctionArtAssembler response = generateWinningAuctionArts();
+            given(memberInformationService.getWinningAuctionArts(MEMBER_ID)).willReturn(response);
+
+            // when
+            MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
+                    .get(BASE_URL, MEMBER_ID)
+                    .header(AUTHORIZATION, String.join(" ", BEARER_TOKEN, ACCESS_TOKEN));
+
+            // then
+            mockMvc.perform(requestBuilder)
+                    .andExpect(status().isOk())
+                    .andDo(
+                            document(
+                                    "MemberApi/Information/WinningAuctions/Success",
+                                    getDocumentRequest(),
+                                    getDocumentResponse(),
+                                    getHeaderWithAccessToken(),
+                                    pathParameters(
+                                            parameterWithName("memberId").description("조회할 사용자 ID(PK)")
+                                    ),
+                                    responseFields(
+                                            fieldWithPath("result[].auction.id").description("경매 ID(PK)"),
+                                            fieldWithPath("result[].auction.highestBidPrice").description("경매 낙찰가"),
+                                            fieldWithPath("result[].auction.startDate").description("경매 시작날짜"),
+                                            fieldWithPath("result[].auction.endDate").description("경매 종료날짜"),
+                                            fieldWithPath("result[].art.id").description("경매 작품 ID(PK)"),
+                                            fieldWithPath("result[].art.name").description("경매 작품명"),
+                                            fieldWithPath("result[].art.description").description("경매 작품 설명"),
+                                            fieldWithPath("result[].art.price").description("경매 작품 초기 가격"),
+                                            fieldWithPath("result[].art.status").description("경매 작품 상태 [판매중 / 판매 완료]"),
+                                            fieldWithPath("result[].art.storageName").description("경매 작품 이미지 경로"),
+                                            fieldWithPath("result[].art.registrationDate").description("경매 작품 등록 날짜"),
+                                            fieldWithPath("result[].art.hashtags").description("경매 작품 해시태그"),
+                                            fieldWithPath("result[].owner.id").description("작품 소유자 ID(PK)"),
+                                            fieldWithPath("result[].owner.nickname").description("작품 소유자 닉네임"),
+                                            fieldWithPath("result[].owner.school").description("작품 소유자 학교"),
+                                            fieldWithPath("result[].highestBidder.id").description("작품 낙찰자 ID(PK)"),
+                                            fieldWithPath("result[].highestBidder.nickname").description("작품 낙찰자 닉네임"),
+                                            fieldWithPath("result[].highestBidder.school").description("작품 낙찰자 학교")
+                                    )
+                            )
+                    );
+        }
+    }
+
     private MemberInformation generateMemberInformationResponse() {
         Member member = createMember(MEMBER_A, 1L);
         return new MemberInformation(member);
@@ -297,5 +433,72 @@ class MemberInformationApiControllerTest extends ControllerTest {
         );
 
         return new PointRecordAssembler(result);
+    }
+
+    private WinningAuctionArtAssembler generateWinningAuctionArts() {
+        List<AuctionArt> result = List.of(
+                new AuctionArt(
+                        new BasicAuction(
+                                3L,
+                                180_000,
+                                LocalDateTime.now().minusDays(10),
+                                LocalDateTime.now().minusDays(4)
+                        ),
+                        new BasicArt(
+                                3L,
+                                AUCTION_3.getName(),
+                                AUCTION_3.getDescription(),
+                                AUCTION_3.getPrice(),
+                                ON_SALE.getDescription(),
+                                AUCTION_3.getStorageName(),
+                                LocalDateTime.now().minusDays(10),
+                                List.of("해시태그1", "해시태그2", "해시태그3")
+                        ),
+                        new BasicMember(1L, "작품소유자", "서울대학교"),
+                        new BasicMember(2L, "경매낙찰자", "경기대학교")
+                ),
+                new AuctionArt(
+                        new BasicAuction(
+                                2L,
+                                380_000,
+                                LocalDateTime.now().minusDays(7),
+                                LocalDateTime.now().minusDays(2)
+                        ),
+                        new BasicArt(
+                                2L,
+                                AUCTION_2.getName(),
+                                AUCTION_2.getDescription(),
+                                AUCTION_2.getPrice(),
+                                ON_SALE.getDescription(),
+                                AUCTION_2.getStorageName(),
+                                LocalDateTime.now().minusDays(7),
+                                List.of("해시태그1", "해시태그2", "해시태그3")
+                        ),
+                        new BasicMember(1L, "작품소유자", "서울대학교"),
+                        new BasicMember(2L, "경매낙찰자", "경기대학교")
+                ),
+                new AuctionArt(
+                        new BasicAuction(
+                                1L,
+                                235_000,
+                                LocalDateTime.now().minusDays(5),
+                                LocalDateTime.now().minusDays(1)
+                        ),
+                        new BasicArt(
+                                1L,
+                                AUCTION_1.getName(),
+                                AUCTION_1.getDescription(),
+                                AUCTION_1.getPrice(),
+                                ON_SALE.getDescription(),
+                                AUCTION_1.getStorageName(),
+                                LocalDateTime.now().minusDays(5),
+                                List.of("해시태그1", "해시태그2", "해시태그3")
+                        ),
+                        new BasicMember(1L, "작품소유자", "서울대학교"),
+                        new BasicMember(2L, "경매낙찰자", "경기대학교")
+                )
+        );
+
+        return new WinningAuctionArtAssembler(result);
     }
 }

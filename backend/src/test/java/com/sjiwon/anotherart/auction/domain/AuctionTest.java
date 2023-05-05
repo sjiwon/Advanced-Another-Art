@@ -50,7 +50,7 @@ class AuctionTest {
         @DisplayName("경매 작품이 아니면 Auction을 생성할 수 없다")
         void throwExceptionByInvalidArtType() {
             // given
-            Art generalArt = GENERAL_A.toArt(owner);
+            Art generalArt = GENERAL_1.toArt(owner);
 
             // when - then
             assertThatThrownBy(() -> Auction.createAuction(generalArt, OPEN_WEEK_1_LATER.toPeriod()))
@@ -62,7 +62,7 @@ class AuctionTest {
         @DisplayName("경매 작품에 대한 Auction을 생성한다")
         void success() {
             // given
-            Art auctionArt = AUCTION_A.toArt(owner);
+            Art auctionArt = AUCTION_1.toArt(owner);
 
             // when
             Auction auction = Auction.createAuction(auctionArt, OPEN_WEEK_1_LATER.toPeriod());
@@ -88,7 +88,7 @@ class AuctionTest {
 
         @BeforeEach
         void setUp() {
-            art = AUCTION_A.toArt(owner);
+            art = AUCTION_1.toArt(owner);
             auction = Auction.createAuction(art, OPEN_NOW.toPeriod());
             initBidPrice = art.getPrice();
         }
@@ -205,7 +205,7 @@ class AuctionTest {
     @DisplayName("최고 입찰자인지 판별한다")
     void isHighestBidder() {
         // given
-        Art art = AUCTION_A.toArt(owner);
+        Art art = AUCTION_1.toArt(owner);
         Auction auction = Auction.createAuction(art, OPEN_NOW.toPeriod());
         auction.applyNewBid(memberA, art.getPrice());
 
@@ -226,8 +226,8 @@ class AuctionTest {
     @DisplayName("경매가 종료되었는지 확인한다")
     void isAuctionFinished() {
         // given
-        Art artA = AUCTION_A.toArt(owner);
-        Art artB = AUCTION_B.toArt(owner);
+        Art artA = AUCTION_1.toArt(owner);
+        Art artB = AUCTION_2.toArt(owner);
 
         Auction auctionA = Auction.createAuction(artA, CLOSED_WEEK_1_AGO.toPeriod());
         Auction auctionB = Auction.createAuction(artB, OPEN_NOW.toPeriod());

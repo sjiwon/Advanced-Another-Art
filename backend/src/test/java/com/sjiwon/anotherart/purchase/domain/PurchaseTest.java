@@ -13,8 +13,8 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import static com.sjiwon.anotherart.fixture.ArtFixture.AUCTION_A;
-import static com.sjiwon.anotherart.fixture.ArtFixture.GENERAL_A;
+import static com.sjiwon.anotherart.fixture.ArtFixture.AUCTION_1;
+import static com.sjiwon.anotherart.fixture.ArtFixture.GENERAL_1;
 import static com.sjiwon.anotherart.fixture.MemberFixture.MEMBER_A;
 import static com.sjiwon.anotherart.fixture.MemberFixture.MEMBER_B;
 import static com.sjiwon.anotherart.fixture.PeriodFixture.OPEN_NOW;
@@ -36,8 +36,8 @@ class PurchaseTest {
     void setUp() {
         owner = createMember(MEMBER_A, 1L);
         member = createMember(MEMBER_B, 2L);
-        generalArt = GENERAL_A.toArt(owner);
-        auctionArt = AUCTION_A.toArt(owner);
+        generalArt = GENERAL_1.toArt(owner);
+        auctionArt = AUCTION_1.toArt(owner);
     }
 
     private Member createMember(MemberFixture fixture, Long id) {
