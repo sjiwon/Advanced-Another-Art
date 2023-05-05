@@ -2,6 +2,8 @@ package com.sjiwon.anotherart.common;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sjiwon.anotherart.auction.controller.BidApiController;
+import com.sjiwon.anotherart.auction.service.BidService;
 import com.sjiwon.anotherart.common.config.SecurityValiatorConfiguration;
 import com.sjiwon.anotherart.favorite.controller.FavoriteApiController;
 import com.sjiwon.anotherart.favorite.service.FavoriteService;
@@ -59,12 +61,15 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 
 @WebMvcTest({
-        // member
-        MemberApiController.class, MemberModifyApiController.class, MemberPointApiController.class,
-        MemberInformationApiController.class,
+        // auction
+        BidApiController.class,
 
         // Favorite
         FavoriteApiController.class,
+
+        // member
+        MemberApiController.class, MemberModifyApiController.class, MemberPointApiController.class,
+        MemberInformationApiController.class,
 
         // Token
         TokenReissueApiController.class
@@ -93,6 +98,14 @@ public abstract class ControllerTest {
     @MockBean
     private TokenManager tokenManager;
 
+    // auction
+    @MockBean
+    protected BidService bidService;
+
+    // favorite
+    @MockBean
+    protected FavoriteService favoriteService;
+
     // member
     @MockBean
     protected MemberService memberService;
@@ -102,10 +115,6 @@ public abstract class ControllerTest {
 
     @MockBean
     protected MemberInformationService memberInformationService;
-
-    // favorite
-    @MockBean
-    protected FavoriteService favoriteService;
 
     // token
     @MockBean

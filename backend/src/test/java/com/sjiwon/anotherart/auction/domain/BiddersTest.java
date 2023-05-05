@@ -92,6 +92,7 @@ class BiddersTest {
 
             // Case 2) HighestBidder가 존재하는 경우
             bidders.applyNewBid(auction, memberA, AUCTION_INIT_PRICE + 10_000);
+
             assertThatThrownBy(() -> bidders.applyNewBid(auction, memberB, AUCTION_INIT_PRICE + 10_000))
                     .isInstanceOf(AnotherArtException.class)
                     .hasMessage(AuctionErrorCode.BID_PRICE_IS_NOT_ENOUGH.getMessage());

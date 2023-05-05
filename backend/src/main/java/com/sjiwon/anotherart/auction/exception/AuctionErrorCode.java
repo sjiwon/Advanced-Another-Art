@@ -14,6 +14,7 @@ public enum AuctionErrorCode implements ErrorCode {
     ART_OWNER_CANNOT_BID(HttpStatus.CONFLICT, "AUCTION_004", "본인의 작품에 입찰을 진행할 수 없습니다."),
     HIGHEST_BIDDER_CANNOT_BID_AGAIN(HttpStatus.CONFLICT, "AUCTION_005", "현재 최고 입찰자는 연속해서 입찰할 수 없습니다."),
     BID_PRICE_IS_NOT_ENOUGH(HttpStatus.BAD_REQUEST, "AUCTION_006", "입찰 금액이 부족합니다."),
+    AUCTION_NOT_FOUND(HttpStatus.NOT_FOUND, "AUCTION_007", "경매 정보를 존재하지 않습니다.")
     ;
 
     private final HttpStatus status;
