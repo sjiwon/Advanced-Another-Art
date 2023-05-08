@@ -71,7 +71,7 @@ public class Auction extends BaseEntity {
         }
     }
 
-    public boolean isAuctionFinished() {
+    public boolean isFinished() {
         return period.isAuctionFinished(LocalDateTime.now());
     }
 

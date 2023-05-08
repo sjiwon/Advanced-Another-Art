@@ -13,6 +13,8 @@ import com.sjiwon.anotherart.member.controller.MemberPointApiController;
 import com.sjiwon.anotherart.member.service.MemberInformationService;
 import com.sjiwon.anotherart.member.service.MemberPointService;
 import com.sjiwon.anotherart.member.service.MemberService;
+import com.sjiwon.anotherart.purchase.controller.PurchaseApiController;
+import com.sjiwon.anotherart.purchase.service.PurchaseService;
 import com.sjiwon.anotherart.token.controller.TokenReissueApiController;
 import com.sjiwon.anotherart.token.service.TokenReissueService;
 import com.sjiwon.anotherart.token.utils.JwtTokenProvider;
@@ -54,6 +56,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
         MemberApiController.class, MemberModifyApiController.class, MemberPointApiController.class,
         MemberInformationApiController.class,
 
+        // purchase
+        PurchaseApiController.class,
+
         // Token
         TokenReissueApiController.class
 })
@@ -87,6 +92,10 @@ public abstract class ControllerTest {
 
     @MockBean
     protected MemberInformationService memberInformationService;
+
+    // purchase
+    @MockBean
+    protected PurchaseService purchaseService;
 
     // token
     @MockBean

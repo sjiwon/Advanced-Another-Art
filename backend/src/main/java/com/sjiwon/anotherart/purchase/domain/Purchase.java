@@ -47,7 +47,6 @@ public class Purchase extends BaseEntity {
     }
 
     public static Purchase purchaseAuctionArt(Art art, Member buyer, int bidPrice) {
-        validateBuyerIsArtOwner(art, buyer);
         validateArtIsOnSale(art);
         return proceedToPurchaseAuctionArt(art, buyer, bidPrice);
     }
@@ -71,6 +70,7 @@ public class Purchase extends BaseEntity {
         owner.addPointRecords(SOLD, purchasePrice);
         buyer.addPointRecords(PURCHASE, purchasePrice);
 
+        art.closeSale();
         return new Purchase(art, buyer, purchasePrice);
     }
 
@@ -84,6 +84,7 @@ public class Purchase extends BaseEntity {
             buyer.increaseAvailablePoint(bidPrice);
         }
 
+        art.closeSale();
         return new Purchase(art, buyer, bidPrice);
     }
 }

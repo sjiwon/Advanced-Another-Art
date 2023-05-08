@@ -93,6 +93,7 @@ class PurchaseTest {
             assertAll(
                     // Purchase Info
                     () -> assertThat(purchase.getArt()).isEqualTo(generalArt),
+                    () -> assertThat(purchase.getArt().isSold()).isTrue(),
                     () -> assertThat(purchase.getBuyer()).isEqualTo(member),
                     () -> assertThat(purchase.getPrice()).isEqualTo(generalArt.getPrice()),
 
@@ -114,14 +115,6 @@ class PurchaseTest {
         void setUp() {
             auction = Auction.createAuction(auctionArt, OPEN_NOW.toPeriod());
             auction.applyNewBid(member, auction.getHighestBidPrice());
-        }
-
-        @Test
-        @DisplayName("본인 작품은 구매할 수 없다")
-        void throwExceptionByArtOwnerCannotPurchaseOwn() {
-            assertThatThrownBy(() -> Purchase.purchaseGeneralArt(generalArt, owner))
-                    .isInstanceOf(AnotherArtException.class)
-                    .hasMessage(PurchaseErrorCode.ART_OWNER_CANNOT_PURCHASE_OWN.getMessage());
         }
 
         @Test
@@ -158,6 +151,7 @@ class PurchaseTest {
             assertAll(
                     // Purchase Info
                     () -> assertThat(purchase.getArt()).isEqualTo(auctionArt),
+                    () -> assertThat(purchase.getArt().isSold()).isTrue(),
                     () -> assertThat(purchase.getBuyer()).isEqualTo(member),
                     () -> assertThat(purchase.getPrice()).isEqualTo(auction.getHighestBidPrice()),
 

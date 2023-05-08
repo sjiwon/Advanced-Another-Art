@@ -233,8 +233,8 @@ class AuctionTest {
         Auction auctionB = Auction.createAuction(artB, OPEN_NOW.toPeriod());
 
         // when
-        boolean actual1 = auctionA.isAuctionFinished();
-        boolean actual2 = auctionB.isAuctionFinished();
+        boolean actual1 = auctionA.isFinished();
+        boolean actual2 = auctionB.isFinished();
 
         // then
         assertAll(
