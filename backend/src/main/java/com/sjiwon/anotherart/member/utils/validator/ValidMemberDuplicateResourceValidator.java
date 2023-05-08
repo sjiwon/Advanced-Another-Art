@@ -1,10 +1,10 @@
-package com.sjiwon.anotherart.global.annotation.validation;
+package com.sjiwon.anotherart.member.utils.validator;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 import java.util.List;
 
-public class ValidDuplicateResourceValidator implements ConstraintValidator<ValidDuplicateResource, String> {
+public class ValidMemberDuplicateResourceValidator implements ConstraintValidator<ValidMemberDuplicateResource, String> {
     private static final List<String> ALLOWED_RESOURCES = List.of("nickname", "loginId", "phone", "email");
 
     @Override

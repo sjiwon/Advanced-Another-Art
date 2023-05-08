@@ -1,11 +1,11 @@
 package com.sjiwon.anotherart.member.controller.dto.request;
 
-import com.sjiwon.anotherart.global.annotation.validation.ValidDuplicateResource;
+import com.sjiwon.anotherart.member.utils.validator.ValidMemberDuplicateResource;
 
 import javax.validation.constraints.NotBlank;
 
-public record DuplicateCheckRequest(
-        @ValidDuplicateResource
+public record MemberDuplicateCheckRequest(
+        @ValidMemberDuplicateResource
         @NotBlank(message = "중복 체크 타입은 필수입니다.")
         String resource,
 

@@ -1,4 +1,4 @@
-package com.sjiwon.anotherart.global.annotation.validation;
+package com.sjiwon.anotherart.member.utils.validator;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;
@@ -9,8 +9,8 @@ import java.lang.annotation.Target;
 
 @Target({ElementType.PARAMETER, ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
-@Constraint(validatedBy = ValidDuplicateResourceValidator.class)
-public @interface ValidDuplicateResource {
+@Constraint(validatedBy = ValidMemberDuplicateResourceValidator.class)
+public @interface ValidMemberDuplicateResource {
     String message() default "중복 체크 대상이 아닙니다.";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
