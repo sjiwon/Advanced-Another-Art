@@ -15,6 +15,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Set;
+
 import static com.sjiwon.anotherart.art.domain.ArtType.AUCTION;
 import static com.sjiwon.anotherart.art.domain.ArtType.GENERAL;
 
@@ -22,6 +24,7 @@ import static com.sjiwon.anotherart.art.domain.ArtType.GENERAL;
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class ArtService {
+    private final ArtFindService artFindService;
     private final MemberFindService memberFindService;
     private final FileUploader fileUploader;
     private final ArtValidator artValidator;
@@ -67,5 +70,17 @@ public class ArtService {
         if (resource.equals("name")) {
             artValidator.validateUniqueNameForCreate(ArtName.from(value));
         }
+    }
+
+    @Transactional
+    public void update(Long artId, String name, String description, Set<String> hashtags) {
+        validateUniqueNameForUpdate(name, artId);
+
+        Art art = artFindService.findById(artId);
+        art.update(ArtName.from(name), Description.from(description), hashtags);
+    }
+
+    private void validateUniqueNameForUpdate(String name, Long artId) {
+        artValidator.validateUniqueNameForUpdate(ArtName.from(name), artId);
     }
 }

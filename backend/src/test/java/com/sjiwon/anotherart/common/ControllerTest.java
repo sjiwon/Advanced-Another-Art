@@ -3,6 +3,7 @@ package com.sjiwon.anotherart.common;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sjiwon.anotherart.art.controller.ArtApiController;
+import com.sjiwon.anotherart.art.controller.ArtModifyApiController;
 import com.sjiwon.anotherart.art.service.ArtService;
 import com.sjiwon.anotherart.auction.controller.BidApiController;
 import com.sjiwon.anotherart.auction.service.BidService;
@@ -49,7 +50,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 
 @WebMvcTest({
         // art
-        ArtApiController.class,
+        ArtApiController.class, ArtModifyApiController.class,
 
         // auction
         BidApiController.class,

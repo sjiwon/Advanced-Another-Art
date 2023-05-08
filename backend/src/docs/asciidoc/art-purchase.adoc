@@ -1,4 +1,4 @@
-= 작푸 구매 API
+= 작품 구매 API
 :doctype: book
 :icons: font
 :source-highlighter: highlightjs

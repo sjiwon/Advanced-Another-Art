@@ -1,0 +1,25 @@
+= 작품 정보 수정 API
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 2
+
+== 작품 정보 수정 [AccessToken 필수]
+=== 1. 다른 작품이 사용하고 있는 작품명으로 수정할 수 없다
+HTTP Request
+include::{snippets}/ArtApi/Update/Failure/http-request.adoc[]
+include::{snippets}/ArtApi/Update/Failure/request-headers.adoc[]
+include::{snippets}/ArtApi/Update/Failure/request-fields.adoc[]
+
+HTTP Response
+include::{snippets}/ArtApi/Update/Failure/response-body.adoc[]
+
+=== 2. 작품 정보를 수정한다
+HTTP Request
+include::{snippets}/ArtApi/Update/Success/http-request.adoc[]
+include::{snippets}/ArtApi/Update/Success/request-headers.adoc[]
+include::{snippets}/ArtApi/Update/Success/request-fields.adoc[]
+
+HTTP Response
+include::{snippets}/ArtApi/Update/Success/http-response.adoc[]

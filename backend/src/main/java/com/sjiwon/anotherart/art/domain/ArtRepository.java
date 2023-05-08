@@ -17,4 +17,5 @@ public interface ArtRepository extends JpaRepository<Art, Long> {
     // Query Method
     boolean existsByName(ArtName name);
     boolean existsByNameAndIdNot(ArtName name, Long artId);
+    boolean existsByIdAndOwnerId(Long artId, Long memberId);
 }

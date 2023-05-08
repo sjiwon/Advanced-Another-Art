@@ -153,4 +153,24 @@ class ArtServiceTest extends ServiceTest {
             assertDoesNotThrow(() -> artService.duplicateCheck("name", diff));
         }
     }
+
+    @Test
+    @DisplayName("작품 정보를 수정한다 [작품명, 설명, 해시태그]")
+    void update() {
+        // given
+        Art art = artRepository.save(AUCTION_1.toArt(owner));
+
+        // when
+        final String updateName = "hello";
+        final String updateDescription = "hello world";
+        final Set<String> updateHashtags = Set.of("asdf", "asdflksdf", "wlejqkwpe");
+        artService.update(art.getId(), updateName, updateDescription, updateHashtags);
+
+        // then
+        assertAll(
+                () -> assertThat(art.getNameValue()).isEqualTo(updateName),
+                () -> assertThat(art.getDescriptionValue()).isEqualTo(updateDescription),
+                () -> assertThat(art.getHashtags()).containsExactlyInAnyOrderElementsOf(updateHashtags)
+        );
+    }
 }

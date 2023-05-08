@@ -82,4 +82,18 @@ class ArtRepositoryTest extends RepositoryTest {
                 () -> assertThat(actual2).isFalse()
         );
     }
+
+    @Test
+    @DisplayName("작품 소유자인지 확인한다")
+    void existsByIdAndOwnerId() {
+        // when
+        boolean actual1 = artRepository.existsByIdAndOwnerId(art.getId(), owner.getId());
+        boolean actual2 = artRepository.existsByIdAndOwnerId(art.getId(), owner.getId() + 100L);
+
+        // then
+        assertAll(
+                () -> assertThat(actual1).isTrue(),
+                () -> assertThat(actual2).isFalse()
+        );
+    }
 }
