@@ -36,7 +36,7 @@ include::{snippets}/ArtApi/Register/Success/Auction/request-parameters.adoc[]
 HTTP Response
 include::{snippets}/ArtApi/Register/Success/Auction/http-response.adoc[]
 
-== 중복 체크
+== 중복 체크 [AccessToken 필수]
 === 1. 해당 값이 중복됨에 따라 예외가 발생한다
 HTTP Request
 include::{snippets}/ArtApi/Register/DuplicateCheck/Failure/http-request.adoc[]

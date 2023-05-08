@@ -216,7 +216,7 @@ class ArtApiControllerTest extends ControllerTest {
     }
 
     @Nested
-    @DisplayName("중복 체크 API [GET /api/art/check-duplicates]")
+    @DisplayName("중복 체크 API [GET /api/art/check-duplicates] - AccessToken 필수")
     class checkDuplicates {
         private static final String BASE_URL = "/api/art/check-duplicates";
 
