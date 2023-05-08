@@ -21,7 +21,7 @@ public class MemberModifyApiController {
     @PatchMapping("/nickname")
     public ResponseEntity<Void> changeNickname(@ExtractPayload Long payloadId,
                                                @PathVariable Long memberId,
-                                               @Valid @RequestBody ChangeNicknameRequest request) {
+                                               @RequestBody @Valid ChangeNicknameRequest request) {
         memberService.changeNickname(memberId, request.value());
         return ResponseEntity.noContent().build();
     }
@@ -30,7 +30,7 @@ public class MemberModifyApiController {
     @PatchMapping("/address")
     public ResponseEntity<Void> changeAddress(@ExtractPayload Long payloadId,
                                               @PathVariable Long memberId,
-                                              @Valid @RequestBody ChangeAddressRequest request) {
+                                              @RequestBody @Valid ChangeAddressRequest request) {
         memberService.changeAddress(memberId, request.postcode(), request.defaultAddress(), request.detailAddress());
         return ResponseEntity.noContent().build();
     }

@@ -22,7 +22,7 @@ public class MemberPointApiController {
     @PostMapping("/charge")
     public ResponseEntity<Void> chargePoint(@ExtractPayload Long payloadId,
                                             @PathVariable Long memberId,
-                                            @Valid @RequestBody PointChargeRequest request) {
+                                            @RequestBody @Valid PointChargeRequest request) {
         memberPointService.chargePoint(memberId, request.chargeAmount());
         return ResponseEntity.noContent().build();
     }
@@ -31,7 +31,7 @@ public class MemberPointApiController {
     @PostMapping("/refund")
     public ResponseEntity<Void> refundPoint(@ExtractPayload Long payloadId,
                                             @PathVariable Long memberId,
-                                            @Valid @RequestBody PointRefundRequest request) {
+                                            @RequestBody @Valid PointRefundRequest request) {
         memberPointService.refundPoint(memberId, request.refundAmount());
         return ResponseEntity.noContent().build();
     }
