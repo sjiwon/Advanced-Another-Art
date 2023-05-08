@@ -14,7 +14,7 @@ import java.util.List;
 
 @Getter
 @AllArgsConstructor
-public class AuctionArt {
+public class AuctionArt implements ArtDetails {
     private final BasicAuction auction;
     private final BasicArt art;
     private final BasicMember owner;
