@@ -16,6 +16,14 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 @DisplayName("Auction 도메인 {Period VO} 테스트")
 class PeriodTest {
     @Test
+    @DisplayName("날짜가 입력되지 않으면 Period 생성에 실패한다")
+    void throwExceptionByPeriodMustExists() {
+        assertThatThrownBy(() -> Period.of(null, null))
+                .isInstanceOf(AnotherArtException.class)
+                .hasMessage(AuctionErrorCode.PERIOD_MUST_EXISTS.getMessage());
+    }
+
+    @Test
     @DisplayName("경매 종료날짜가 시작날짜 이전이면 Period 생성에 실패한다")
     void throwExceptionByPeriodEndDateMustBeAfterStartDate() {
         final LocalDateTime startDate = LocalDateTime.now().plusDays(7);

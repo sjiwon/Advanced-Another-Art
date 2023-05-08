@@ -26,8 +26,15 @@ public class Period {
     }
 
     public static Period of(LocalDateTime startDate, LocalDateTime endDate) {
+        validateDateExists(startDate, endDate);
         validateStartIsBeforeEnd(startDate, endDate);
         return new Period(startDate, endDate);
+    }
+
+    private static void validateDateExists(LocalDateTime startDate, LocalDateTime endDate) {
+        if (startDate == null || endDate == null) {
+            throw AnotherArtException.type(AuctionErrorCode.PERIOD_MUST_EXISTS);
+        }
     }
 
     private static void validateStartIsBeforeEnd(LocalDateTime startDate, LocalDateTime endDate) {
