@@ -13,6 +13,7 @@ public enum ArtErrorCode implements ErrorCode {
     DESCRIPTION_IS_BLANK(HttpStatus.BAD_REQUEST, "ART_003", "작품 설명은 공백을 허용하지 않습니다."),
     DESCRIPTION_LENGTH_OUT_OF_RANGE(HttpStatus.CONFLICT, "ART_004", "작품 설명은 최대 1000자까지 가능합니다."),
     ART_NOT_FOUND(HttpStatus.NOT_FOUND, "ART_005", "작품 정보가 존재하지 않습니다."),
+    DUPLICATE_NAME(HttpStatus.CONFLICT, "ART_006", "이미 사용중인 작품명입니다."),
     ;
 
     private final HttpStatus status;
