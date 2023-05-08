@@ -1,0 +1,37 @@
+= 작품 등록 API
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 2
+
+== 작품 등록 [AccessToken 필수]
+=== 1. 이미 사용하고 있는 작품명이면 등록에 실패한다
+HTTP Request
+include::{snippets}/ArtApi/Register/Failure/http-request.adoc[]
+include::{snippets}/ArtApi/Register/Failure/request-headers.adoc[]
+include::{snippets}/ArtApi/Register/Failure/request-parts.adoc[]
+include::{snippets}/ArtApi/Register/Failure/request-parameters.adoc[]
+
+HTTP Response
+include::{snippets}/ArtApi/Register/Failure/response-body.adoc[]
+
+=== 2. 일반 작품을 등록한다
+HTTP Request
+include::{snippets}/ArtApi/Register/Success/General/http-request.adoc[]
+include::{snippets}/ArtApi/Register/Success/General/request-headers.adoc[]
+include::{snippets}/ArtApi/Register/Success/General/request-parts.adoc[]
+include::{snippets}/ArtApi/Register/Success/General/request-parameters.adoc[]
+
+HTTP Response
+include::{snippets}/ArtApi/Register/Success/General/http-response.adoc[]
+
+=== 3. 경매 작품을 등록한다
+HTTP Request
+include::{snippets}/ArtApi/Register/Success/Auction/http-request.adoc[]
+include::{snippets}/ArtApi/Register/Success/Auction/request-headers.adoc[]
+include::{snippets}/ArtApi/Register/Success/Auction/request-parts.adoc[]
+include::{snippets}/ArtApi/Register/Success/Auction/request-parameters.adoc[]
+
+HTTP Response
+include::{snippets}/ArtApi/Register/Success/Auction/http-response.adoc[]

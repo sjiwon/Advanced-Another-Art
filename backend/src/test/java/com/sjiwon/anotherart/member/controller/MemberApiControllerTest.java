@@ -36,12 +36,12 @@ class MemberApiControllerTest extends ControllerTest {
         @DisplayName("중복되는 값(닉네임)에 의해서 회원가입에 실패한다")
         void throwExceptionByDuplicateNickname() throws Exception {
             // given
-            final SignUpRequest request = createSignUpRequest();
             doThrow(AnotherArtException.type(MemberErrorCode.DUPLICATE_NICKNAME))
                     .when(memberService)
                     .signUp(any());
 
             // when
+            final SignUpRequest request = createSignUpRequest();
             MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                     .post(BASE_URL)
                     .contentType(APPLICATION_JSON)
@@ -85,10 +85,10 @@ class MemberApiControllerTest extends ControllerTest {
         @DisplayName("회원가입에 성공한다")
         void success() throws Exception {
             // given
-            final SignUpRequest request = createSignUpRequest();
             given(memberService.signUp(any())).willReturn(1L);
 
             // when
+            final SignUpRequest request = createSignUpRequest();
             MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                     .post(BASE_URL)
                     .contentType(APPLICATION_JSON)
