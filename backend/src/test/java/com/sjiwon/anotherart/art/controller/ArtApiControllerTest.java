@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.multipart.MultipartFile;
@@ -29,6 +30,7 @@ import static com.sjiwon.anotherart.fixture.ArtFixture.AUCTION_1;
 import static com.sjiwon.anotherart.fixture.ArtFixture.GENERAL_1;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
@@ -207,6 +209,84 @@ class ArtApiControllerTest extends ControllerTest {
                                                     .attributes(constraint("type=auction일 경우 필수")),
                                             parameterWithName("hashtags").description("해시태그")
                                                     .attributes(constraint("1개 ~ 10개"))
+                                    )
+                            )
+                    );
+        }
+    }
+
+    @Nested
+    @DisplayName("중복 체크 API [GET /api/art/check-duplicates]")
+    class checkDuplicates {
+        private static final String BASE_URL = "/api/art/check-duplicates";
+
+        @Test
+        @DisplayName("해당 값이 중복됨에 따라 예외가 발생한다")
+        void throwExceptionByDuplicateResource() throws Exception {
+            // given
+            doThrow(AnotherArtException.type(ArtErrorCode.DUPLICATE_NAME))
+                    .when(artService)
+                    .duplicateCheck(any(), any());
+
+            // when
+            MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                    .get(BASE_URL)
+                    .param("resource", "name")
+                    .param("value", "중복체크작품명");
+
+            // then
+            final ArtErrorCode expectedError = ArtErrorCode.DUPLICATE_NAME;
+            mockMvc.perform(requestBuilder)
+                    .andExpectAll(
+                            status().isConflict(),
+                            jsonPath("$.status").exists(),
+                            jsonPath("$.status").value(expectedError.getStatus().value()),
+                            jsonPath("$.errorCode").exists(),
+                            jsonPath("$.errorCode").value(expectedError.getErrorCode()),
+                            jsonPath("$.message").exists(),
+                            jsonPath("$.message").value(expectedError.getMessage())
+                    )
+                    .andDo(
+                            document(
+                                    "ArtApi/Register/DuplicateCheck/Failure",
+                                    getDocumentRequest(),
+                                    getDocumentResponse(),
+                                    requestParameters(
+                                            parameterWithName("resource").description("중복 체크 타입")
+                                                    .attributes(constraint("name")),
+                                            parameterWithName("value").description("중복 체크 값")
+                                    ),
+                                    getExceptionResponseFiels()
+                            )
+                    );
+        }
+
+        @Test
+        @DisplayName("해당 값이 중복되지 않음에 따라 중복 체크를 통과한다")
+        void success() throws Exception {
+            // given
+            doNothing()
+                    .when(artService)
+                    .duplicateCheck(any(), any());
+
+            // when
+            MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                    .get(BASE_URL)
+                    .param("resource", "name")
+                    .param("value", "중복체크작품명");
+
+            // then
+            mockMvc.perform(requestBuilder)
+                    .andExpect(status().isNoContent())
+                    .andDo(
+                            document(
+                                    "ArtApi/Register/DuplicateCheck/Success",
+                                    getDocumentRequest(),
+                                    getDocumentResponse(),
+                                    requestParameters(
+                                            parameterWithName("resource").description("중복 체크 타입")
+                                                    .attributes(constraint("name")),
+                                            parameterWithName("value").description("중복 체크 값")
                                     )
                             )
                     );

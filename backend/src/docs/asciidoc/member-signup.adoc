@@ -24,24 +24,15 @@ HTTP Response
 include::{snippets}/MemberApi/SignUp/Success/http-response.adoc[]
 
 == 중복 체크
-=== 1. 중복 체크 대상이 아니면 예외가 발생한다
-==== 중복 체크 대상 -> 닉네임 / 로그인 아이디 / 전화번호 / 이메일
+=== 1. 해당 값이 중복됨에 따라 예외가 발생한다
 HTTP Request
-include::{snippets}/MemberApi/SignUp/DuplicateCheck/Failure/Case1/http-request.adoc[]
-include::{snippets}/MemberApi/SignUp/DuplicateCheck/Failure/Case1/request-parameters.adoc[]
+include::{snippets}/MemberApi/SignUp/DuplicateCheck/Failure/http-request.adoc[]
+include::{snippets}/MemberApi/SignUp/DuplicateCheck/Failure/request-parameters.adoc[]
 
 HTTP Response
-include::{snippets}/MemberApi/SignUp/DuplicateCheck/Failure/Case1/response-body.adoc[]
+include::{snippets}/MemberApi/SignUp/DuplicateCheck/Failure/response-body.adoc[]
 
-=== 2. 해당 값이 중복됨에 따라 예외가 발생한다
-HTTP Request
-include::{snippets}/MemberApi/SignUp/DuplicateCheck/Failure/Case2/http-request.adoc[]
-include::{snippets}/MemberApi/SignUp/DuplicateCheck/Failure/Case2/request-parameters.adoc[]
-
-HTTP Response
-include::{snippets}/MemberApi/SignUp/DuplicateCheck/Failure/Case2/response-body.adoc[]
-
-=== 3. 해당 값이 중복되지 않음에 따라 중복 체크를 통과한다
+=== 2. 해당 값이 중복되지 않음에 따라 중복 체크를 통과한다
 HTTP Request
 include::{snippets}/MemberApi/SignUp/DuplicateCheck/Success/http-request.adoc[]
 include::{snippets}/MemberApi/SignUp/DuplicateCheck/Success/request-parameters.adoc[]

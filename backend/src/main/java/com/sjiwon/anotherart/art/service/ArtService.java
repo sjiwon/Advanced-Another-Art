@@ -62,4 +62,10 @@ public class ArtService {
 
         return art.getId();
     }
+
+    public void duplicateCheck(String resource, String value) {
+        if (resource.equals("name")) {
+            artValidator.validateUniqueNameForCreate(ArtName.from(value));
+        }
+    }
 }

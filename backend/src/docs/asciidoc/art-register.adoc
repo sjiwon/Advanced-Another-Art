@@ -35,3 +35,20 @@ include::{snippets}/ArtApi/Register/Success/Auction/request-parameters.adoc[]
 
 HTTP Response
 include::{snippets}/ArtApi/Register/Success/Auction/http-response.adoc[]
+
+== 중복 체크
+=== 1. 해당 값이 중복됨에 따라 예외가 발생한다
+HTTP Request
+include::{snippets}/ArtApi/Register/DuplicateCheck/Failure/http-request.adoc[]
+include::{snippets}/ArtApi/Register/DuplicateCheck/Failure/request-parameters.adoc[]
+
+HTTP Response
+include::{snippets}/ArtApi/Register/DuplicateCheck/Failure/response-body.adoc[]
+
+=== 2. 해당 값이 중복되지 않음에 따라 중복 체크를 통과한다
+HTTP Request
+include::{snippets}/ArtApi/Register/DuplicateCheck/Success/http-request.adoc[]
+include::{snippets}/ArtApi/Register/DuplicateCheck/Success/request-parameters.adoc[]
+
+HTTP Response
+include::{snippets}/ArtApi/Register/DuplicateCheck/Success/http-response.adoc[]

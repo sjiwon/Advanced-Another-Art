@@ -10,7 +10,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.Mockito.mock;
 
-@DisplayName("Art [Validator] -> ValidMemberDuplicateResourceValidator 테스트")
+@DisplayName("Member [Validator] -> ValidMemberDuplicateResourceValidator 테스트")
 class ValidMemberDuplicateResourceValidatorTest {
     private ValidMemberDuplicateResourceValidator validator;
     private ConstraintValidatorContext context;

@@ -2,7 +2,6 @@ package com.sjiwon.anotherart.member.controller;
 
 import com.sjiwon.anotherart.common.ControllerTest;
 import com.sjiwon.anotherart.global.exception.AnotherArtException;
-import com.sjiwon.anotherart.global.exception.GlobalErrorCode;
 import com.sjiwon.anotherart.member.controller.dto.request.SignUpRequest;
 import com.sjiwon.anotherart.member.exception.MemberErrorCode;
 import org.junit.jupiter.api.DisplayName;
@@ -128,43 +127,6 @@ class MemberApiControllerTest extends ControllerTest {
         private static final String BASE_URL = "/api/member/check-duplicates";
 
         @Test
-        @DisplayName("중복 체크 대상이 아니면 예외가 발생한다")
-        void throwExceptionByNotAllowedDuplicateResource() throws Exception {
-            // when
-            MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                    .get(BASE_URL)
-                    .param("resource", "anonymous")
-                    .param("value", "중복체크닉네임");
-
-            // then
-            final GlobalErrorCode expectedError = GlobalErrorCode.VALIDATION_ERROR;
-            final String message = "중복 체크 대상이 아닙니다.";
-            mockMvc.perform(requestBuilder)
-                    .andExpectAll(
-                            status().isBadRequest(),
-                            jsonPath("$.status").exists(),
-                            jsonPath("$.status").value(expectedError.getStatus().value()),
-                            jsonPath("$.errorCode").exists(),
-                            jsonPath("$.errorCode").value(expectedError.getErrorCode()),
-                            jsonPath("$.message").exists(),
-                            jsonPath("$.message").value(message)
-                    )
-                    .andDo(
-                            document(
-                                    "MemberApi/SignUp/DuplicateCheck/Failure/Case1",
-                                    getDocumentRequest(),
-                                    getDocumentResponse(),
-                                    requestParameters(
-                                            parameterWithName("resource").description("중복 체크 타입")
-                                                    .attributes(constraint("nickname / loginId / phone / email")),
-                                            parameterWithName("value").description("중복 체크 값")
-                                    ),
-                                    getExceptionResponseFiels()
-                            )
-                    );
-        }
-
-        @Test
         @DisplayName("해당 값이 중복됨에 따라 예외가 발생한다")
         void throwExceptionByDuplicateResource() throws Exception {
             // given
@@ -192,7 +154,7 @@ class MemberApiControllerTest extends ControllerTest {
                     )
                     .andDo(
                             document(
-                                    "MemberApi/SignUp/DuplicateCheck/Failure/Case2",
+                                    "MemberApi/SignUp/DuplicateCheck/Failure",
                                     getDocumentRequest(),
                                     getDocumentResponse(),
                                     requestParameters(

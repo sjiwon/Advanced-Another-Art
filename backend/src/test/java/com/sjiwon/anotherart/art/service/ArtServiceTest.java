@@ -30,6 +30,7 @@ import static com.sjiwon.anotherart.fixture.MemberFixture.MEMBER_A;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.BDDMockito.given;
 
 @DisplayName("Art [Service Layer] -> ArtService 테스트")
@@ -125,6 +126,31 @@ class ArtServiceTest extends ServiceTest {
                     () -> assertThat(findAuction.getHighestBidder()).isNull(),
                     () -> assertThat(findAuction.getHighestBidPrice()).isEqualTo(AUCTION_1.getPrice())
             );
+        }
+    }
+
+    @Nested
+    @DisplayName("중복 체크")
+    class duplicateCheck {
+        private Art art;
+
+        @BeforeEach
+        void setUp() {
+            art = artRepository.save(AUCTION_1.toArt(owner));
+        }
+
+        @Test
+        @DisplayName("작품명 중복 체크를 진행한다")
+        void checkName() {
+            // given
+            final String same = art.getNameValue();
+            final String diff = "fake";
+
+            // when - then
+            assertThatThrownBy(() -> artService.duplicateCheck("name", same))
+                    .isInstanceOf(AnotherArtException.class)
+                    .hasMessage(ArtErrorCode.DUPLICATE_NAME.getMessage());
+            assertDoesNotThrow(() -> artService.duplicateCheck("name", diff));
         }
     }
 }

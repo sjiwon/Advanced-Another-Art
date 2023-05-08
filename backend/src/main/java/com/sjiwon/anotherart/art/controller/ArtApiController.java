@@ -1,5 +1,6 @@
 package com.sjiwon.anotherart.art.controller;
 
+import com.sjiwon.anotherart.art.controller.dto.request.ArtDuplicateCheckRequest;
 import com.sjiwon.anotherart.art.controller.dto.request.ArtRegisterRequest;
 import com.sjiwon.anotherart.art.service.ArtService;
 import com.sjiwon.anotherart.token.utils.ExtractPayload;
@@ -7,10 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.validation.Valid;
@@ -30,5 +28,11 @@ public class ArtApiController {
         return ResponseEntity
                 .created(UriComponentsBuilder.fromPath("/api/arts/{id}").build(savedArtId))
                 .build();
+    }
+
+    @GetMapping("/check-duplicates")
+    public ResponseEntity<Void> duplicateCheck(@ModelAttribute @Valid ArtDuplicateCheckRequest request) {
+        artService.duplicateCheck(request.resource(), request.value());
+        return ResponseEntity.noContent().build();
     }
 }
