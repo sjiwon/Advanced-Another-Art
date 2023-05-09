@@ -241,14 +241,16 @@ class MemberInformationQueryRepositoryTest extends RepositoryTest {
     }
 
     private void makeAuctionEnd(Auction... auctions) {
-        for (Auction auction : auctions) {
-            em.createQuery("UPDATE Auction a" +
-                            " SET a.period.endDate = :endDate" +
-                            " WHERE a.id = :auctionId")
-                    .setParameter("endDate", LocalDateTime.now().minusDays(1))
-                    .setParameter("auctionId", auction.getId())
-                    .executeUpdate();
-        }
+        List<Long> auctionIds = Arrays.stream(auctions)
+                .map(Auction::getId)
+                .toList();
+
+        em.createQuery("UPDATE Auction a" +
+                        " SET a.period.endDate = :endDate" +
+                        " WHERE a.id IN :auctionIds")
+                .setParameter("endDate", LocalDateTime.now().minusDays(1))
+                .setParameter("auctionIds", auctionIds)
+                .executeUpdate();
     }
 
     private void purchaseAuctionArt(Art... arts) {

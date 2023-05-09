@@ -33,6 +33,7 @@ public class AuctionArt implements ArtDetails {
                 startDate,
                 endDate
         );
+
         this.art = new BasicArt(
                 artId,
                 artName,
@@ -42,16 +43,16 @@ public class AuctionArt implements ArtDetails {
                 storageName,
                 registrationDate
         );
+
         this.owner = new BasicMember(
                 ownerId,
                 ownerNickname,
                 ownerSchool
         );
-        this.highestBidder = new BasicMember(
-                highestBidderId,
-                highestBidderNickname,
-                highestBidderSchool
-        );
+
+        this.highestBidder = highestBidderId != null
+                ? new BasicMember(highestBidderId, highestBidderNickname, highestBidderSchool)
+                : null;
     }
 
     public void applyHashtags(List<String> hashtags) {

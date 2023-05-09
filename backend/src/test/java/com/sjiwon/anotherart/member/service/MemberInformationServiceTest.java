@@ -31,7 +31,7 @@ import static com.sjiwon.anotherart.member.domain.point.PointType.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-@DisplayName("Member [Service Layer] -> MemberPointService 테스트")
+@DisplayName("Member [Service Layer] -> MemberInformationService 테스트")
 class MemberInformationServiceTest extends ServiceTest {
     @Autowired
     private MemberInformationService memberInformationService;

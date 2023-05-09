@@ -34,16 +34,16 @@ public class GeneralArt implements ArtDetails {
                 storageName,
                 registrationDate
         );
+
         this.owner = new BasicMember(
                 ownerId,
                 ownerNickname,
                 ownerSchool
         );
-        this.buyer = new BasicMember(
-                buyerId,
-                buyerNickname,
-                buyerSchool
-        );
+
+        this.buyer = buyerId != null
+                ? new BasicMember(buyerId, buyerNickname, buyerSchool)
+                : null;
     }
 
     public void applyHashtags(List<String> hashtags) {
