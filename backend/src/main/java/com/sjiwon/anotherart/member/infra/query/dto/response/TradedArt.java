@@ -49,4 +49,8 @@ public class TradedArt {
     public void applyHashtags(List<String> hashtags) {
         this.art.applyHashtags(hashtags);
     }
+
+    public void applyLikeCount(int likeCount) {
+        this.art.applyLikeCount(likeCount);
+    }
 }

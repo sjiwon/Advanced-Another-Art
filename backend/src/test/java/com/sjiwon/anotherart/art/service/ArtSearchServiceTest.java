@@ -6,6 +6,7 @@ import com.sjiwon.anotherart.art.infra.query.dto.response.AuctionArt;
 import com.sjiwon.anotherart.art.infra.query.dto.response.GeneralArt;
 import com.sjiwon.anotherart.auction.domain.Auction;
 import com.sjiwon.anotherart.common.ServiceTest;
+import com.sjiwon.anotherart.favorite.domain.Favorite;
 import com.sjiwon.anotherart.fixture.ArtFixture;
 import com.sjiwon.anotherart.fixture.MemberFixture;
 import com.sjiwon.anotherart.global.exception.AnotherArtException;
@@ -106,10 +107,12 @@ class ArtSearchServiceTest extends ServiceTest {
 
         private void bid() {
             auctions[1].applyNewBid(bidder, auctions[1].getHighestBidPrice());
+            favoriteRepository.save(Favorite.favoriteMarking(auctionArts[1].getId(), bidder.getId()));
         }
 
         private void purchase() {
             purchaseRepository.save(Purchase.purchaseAuctionArt(generalArts[1], buyer, generalArts[1].getPrice()));
+            favoriteRepository.save(Favorite.favoriteMarking(generalArts[1].getId(), buyer.getId()));
         }
     }
 
@@ -140,9 +143,13 @@ class ArtSearchServiceTest extends ServiceTest {
             );
 
             if (i == 0) { // 입찰 X
-                assertThat(auctionArt.getHighestBidder()).isNull();
+                assertAll(
+                        () -> assertThat(auctionArt.getArt().getLikeCount()).isEqualTo(0),
+                        () -> assertThat(auctionArt.getHighestBidder()).isNull()
+                );
             } else { // 입찰 O
                 assertAll(
+                        () -> assertThat(auctionArt.getArt().getLikeCount()).isEqualTo(1),
                         () -> assertThat(auctionArt.getHighestBidder().id()).isEqualTo(bidder.getId()),
                         () -> assertThat(auctionArt.getHighestBidder().nickname()).isEqualTo(bidder.getNicknameValue()),
                         () -> assertThat(auctionArt.getHighestBidder().school()).isEqualTo(bidder.getSchool())
@@ -171,9 +178,13 @@ class ArtSearchServiceTest extends ServiceTest {
             );
 
             if (i == 0) { // 구매 X
-                assertThat(generalArt.getBuyer()).isNull();
+                assertAll(
+                        () -> assertThat(generalArt.getArt().getLikeCount()).isEqualTo(0),
+                        () -> assertThat(generalArt.getBuyer()).isNull()
+                );
             } else { // 구매 O
                 assertAll(
+                        () -> assertThat(generalArt.getArt().getLikeCount()).isEqualTo(1),
                         () -> assertThat(generalArt.getBuyer().id()).isEqualTo(buyer.getId()),
                         () -> assertThat(generalArt.getBuyer().nickname()).isEqualTo(buyer.getNicknameValue()),
                         () -> assertThat(generalArt.getBuyer().school()).isEqualTo(buyer.getSchool())

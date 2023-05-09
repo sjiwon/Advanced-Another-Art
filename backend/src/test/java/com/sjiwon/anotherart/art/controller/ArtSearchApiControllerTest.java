@@ -68,14 +68,15 @@ class ArtSearchApiControllerTest extends ControllerTest {
                                                     .optional(),
                                             fieldWithPath("result.auction.bidCount").description("경매 입찰 횟수")
                                                     .optional(),
-                                            fieldWithPath("result.art.id").description("경매 작품 ID(PK)"),
-                                            fieldWithPath("result.art.name").description("경매 작품명"),
-                                            fieldWithPath("result.art.description").description("경매 작품 설명"),
-                                            fieldWithPath("result.art.price").description("경매 작품 초기 가격"),
-                                            fieldWithPath("result.art.status").description("경매 작품 상태 [판매중 / 판매 완료]"),
-                                            fieldWithPath("result.art.storageName").description("경매 작품 이미지 경로"),
-                                            fieldWithPath("result.art.registrationDate").description("경매 작품 등록 날짜"),
-                                            fieldWithPath("result.art.hashtags").description("경매 작품 해시태그"),
+                                            fieldWithPath("result.art.id").description("작품 ID(PK)"),
+                                            fieldWithPath("result.art.name").description("작품명"),
+                                            fieldWithPath("result.art.description").description("작품 설명"),
+                                            fieldWithPath("result.art.price").description("작품 초기 가격"),
+                                            fieldWithPath("result.art.status").description("작품 상태 [판매중 / 판매 완료]"),
+                                            fieldWithPath("result.art.storageName").description("작품 이미지 경로"),
+                                            fieldWithPath("result.art.registrationDate").description("작품 등록 날짜"),
+                                            fieldWithPath("result.art.hashtags").description("작품 해시태그"),
+                                            fieldWithPath("result.art.likeCount").description("작품 찜 횟수"),
                                             fieldWithPath("result.owner.id").description("작품 소유자 ID(PK)"),
                                             fieldWithPath("result.owner.nickname").description("작품 소유자 닉네임"),
                                             fieldWithPath("result.owner.school").description("작품 소유자 학교"),
@@ -113,14 +114,15 @@ class ArtSearchApiControllerTest extends ControllerTest {
                                             parameterWithName("artId").description("조회할 작품 ID(PK)")
                                     ),
                                     responseFields(
-                                            fieldWithPath("result.art.id").description("경매 작품 ID(PK)"),
-                                            fieldWithPath("result.art.name").description("경매 작품명"),
-                                            fieldWithPath("result.art.description").description("경매 작품 설명"),
-                                            fieldWithPath("result.art.price").description("경매 작품 초기 가격"),
-                                            fieldWithPath("result.art.status").description("경매 작품 상태 [판매중 / 판매 완료]"),
-                                            fieldWithPath("result.art.storageName").description("경매 작품 이미지 경로"),
-                                            fieldWithPath("result.art.registrationDate").description("경매 작품 등록 날짜"),
-                                            fieldWithPath("result.art.hashtags").description("경매 작품 해시태그"),
+                                            fieldWithPath("result.art.id").description("작품 ID(PK)"),
+                                            fieldWithPath("result.art.name").description("작품명"),
+                                            fieldWithPath("result.art.description").description("작품 설명"),
+                                            fieldWithPath("result.art.price").description("작품 가격"),
+                                            fieldWithPath("result.art.status").description("작품 상태 [판매중 / 판매 완료]"),
+                                            fieldWithPath("result.art.storageName").description("작품 이미지 경로"),
+                                            fieldWithPath("result.art.registrationDate").description("작품 등록 날짜"),
+                                            fieldWithPath("result.art.hashtags").description("작품 해시태그"),
+                                            fieldWithPath("result.art.likeCount").description("작품 찜 횟수"),
                                             fieldWithPath("result.owner.id").description("작품 소유자 ID(PK)"),
                                             fieldWithPath("result.owner.nickname").description("작품 소유자 닉네임"),
                                             fieldWithPath("result.owner.school").description("작품 소유자 학교"),
@@ -153,7 +155,8 @@ class ArtSearchApiControllerTest extends ControllerTest {
                         ON_SALE.getDescription(),
                         AUCTION_1.getStorageName(),
                         LocalDateTime.now().minusDays(5),
-                        List.of("해시태그1", "해시태그2", "해시태그3")
+                        List.of("해시태그1", "해시태그2", "해시태그3"),
+                        3
                 ),
                 new BasicMember(1L, "작품소유자", "서울대학교"),
                 new BasicMember(2L, "경매입찰자or낙찰자", "경기대학교")
@@ -170,7 +173,8 @@ class ArtSearchApiControllerTest extends ControllerTest {
                         ON_SALE.getDescription(),
                         GENERAL_1.getStorageName(),
                         LocalDateTime.now().minusDays(5),
-                        List.of("해시태그1", "해시태그2", "해시태그3")
+                        List.of("해시태그1", "해시태그2", "해시태그3"),
+                        6
                 ),
                 new BasicMember(1L, "작품소유자", "서울대학교"),
                 new BasicMember(2L, "작품구매자", "경기대학교")

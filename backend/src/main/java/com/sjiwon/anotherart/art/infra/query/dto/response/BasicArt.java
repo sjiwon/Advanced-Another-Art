@@ -20,6 +20,7 @@ public class BasicArt {
     private final String storageName;
     private final LocalDateTime registrationDate;
     private List<String> hashtags;
+    private int likeCount;
 
     public BasicArt(Long id, ArtName name, Description description, int price, ArtStatus status,
                     String storageName, LocalDateTime registrationDate) {
@@ -34,5 +35,9 @@ public class BasicArt {
 
     public void applyHashtags(List<String> hashtags) {
         this.hashtags = hashtags;
+    }
+
+    public void applyLikeCount(int likeCount) {
+        this.likeCount = likeCount;
     }
 }

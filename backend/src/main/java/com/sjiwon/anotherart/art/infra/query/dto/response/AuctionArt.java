@@ -59,6 +59,10 @@ public class AuctionArt implements ArtDetails {
         this.art.applyHashtags(hashtags);
     }
 
+    public void applyLikeCount(int likeCount) {
+        this.art.applyLikeCount(likeCount);
+    }
+
     public void applyBidCount(int bidCount) {
         this.auction.applyBidCount(bidCount);
     }

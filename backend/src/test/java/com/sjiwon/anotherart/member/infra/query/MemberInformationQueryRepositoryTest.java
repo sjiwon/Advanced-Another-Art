@@ -6,6 +6,8 @@ import com.sjiwon.anotherart.art.infra.query.dto.response.AuctionArt;
 import com.sjiwon.anotherart.auction.domain.Auction;
 import com.sjiwon.anotherart.auction.domain.AuctionRepository;
 import com.sjiwon.anotherart.common.RepositoryTest;
+import com.sjiwon.anotherart.favorite.domain.Favorite;
+import com.sjiwon.anotherart.favorite.domain.FavoriteRepository;
 import com.sjiwon.anotherart.fixture.ArtFixture;
 import com.sjiwon.anotherart.fixture.MemberFixture;
 import com.sjiwon.anotherart.member.domain.Member;
@@ -40,6 +42,9 @@ class MemberInformationQueryRepositoryTest extends RepositoryTest {
 
     @Autowired
     private ArtRepository artRepository;
+
+    @Autowired
+    private FavoriteRepository favoriteRepository;
 
     @Autowired
     private AuctionRepository auctionRepository;
@@ -144,6 +149,7 @@ class MemberInformationQueryRepositoryTest extends RepositoryTest {
         /* 7건 입찰 & 3건 낙찰 */
         bid(
                 List.of(10, 4, 7, 6, 10, 10, 3),
+                List.of(15, 20, 13, 3, 4, 8, 9),
                 List.of(auctions[0], auctions[2], auctions[3], auctions[5], auctions[6], auctions[8], auctions[9])
         );
         makeAuctionEnd(auctions[0], auctions[2], auctions[3], auctions[5], auctions[6], auctions[8], auctions[9]);
@@ -151,12 +157,14 @@ class MemberInformationQueryRepositoryTest extends RepositoryTest {
         List<AuctionArt> result1 = memberRepository.findWinningAuctionArtByMemberId(bidders[0].getId());
         assertThatWinningAuctionMatch(
                 result1,
-                List.of(8, 6, 0)
+                List.of(8, 6, 0),
+                List.of(8, 4, 15)
         );
 
         /* 추가 3건 입찰 & 2건 낙찰 */
         bid(
                 List.of(10, 3, 10),
+                List.of(10, 8, 23),
                 List.of(auctions[1], auctions[4], auctions[7])
         );
         makeAuctionEnd(auctions[1], auctions[4], auctions[7]);
@@ -164,7 +172,8 @@ class MemberInformationQueryRepositoryTest extends RepositoryTest {
         List<AuctionArt> result2 = memberRepository.findWinningAuctionArtByMemberId(bidders[0].getId());
         assertThatWinningAuctionMatch(
                 result2,
-                List.of(8, 7, 6, 1, 0)
+                List.of(8, 7, 6, 1, 0),
+                List.of(8, 23, 4, 10, 15)
         );
     }
 
@@ -228,14 +237,19 @@ class MemberInformationQueryRepositoryTest extends RepositoryTest {
         );
     }
 
-    private void bid(List<Integer> bidCounts, List<Auction> auctions) {
+    private void bid(List<Integer> bidCounts, List<Integer> likeCounts, List<Auction> auctions) {
         for (int i = 0; i < bidCounts.size(); i++) {
             int bidCount = bidCounts.get(i);
+            int likeCount = likeCounts.get(i);
             Auction auction = auctions.get(i);
 
             for (int index = bidders.length - 1; index >= bidders.length - bidCount; index--) {
                 Member bidder = bidders[index];
                 auction.applyNewBid(bidder, auction.getHighestBidPrice() + 50_000);
+            }
+
+            for (long index = 1; index <= likeCount; index++) {
+                favoriteRepository.save(Favorite.favoriteMarking(auction.getArt().getId(), index));
             }
         }
     }
@@ -256,22 +270,25 @@ class MemberInformationQueryRepositoryTest extends RepositoryTest {
     private void purchaseAuctionArt(Art... arts) {
         for (Art art : arts) {
             purchaseRepository.save(Purchase.purchaseAuctionArt(art, buyer, art.getPrice()));
+            favoriteRepository.save(Favorite.favoriteMarking(art.getId(), 1L));
         }
     }
 
     private void purchaseGeneralArt(Art... arts) {
         for (Art art : arts) {
             purchaseRepository.save(Purchase.purchaseGeneralArt(art, buyer));
+            favoriteRepository.save(Favorite.favoriteMarking(art.getId(), 1L));
         }
     }
 
-    private void assertThatWinningAuctionMatch(List<AuctionArt> result, List<Integer> indices) {
+    private void assertThatWinningAuctionMatch(List<AuctionArt> result, List<Integer> indices, List<Integer> likeCounts) {
         int totalSize = indices.size();
         assertThat(result).hasSize(totalSize);
 
         for (int i = 0; i < totalSize; i++) {
             AuctionArt auctionArt = result.get(i);
             int index = indices.get(i);
+            int likeCount = likeCounts.get(i);
 
             Auction auction = auctions[index];
             Art art = auctionArts[index];
@@ -288,6 +305,7 @@ class MemberInformationQueryRepositoryTest extends RepositoryTest {
                     () -> assertThat(auctionArt.getArt().getStatus()).isEqualTo(art.getStatus().getDescription()),
                     () -> assertThat(auctionArt.getArt().getStorageName()).isEqualTo(art.getStorageName()),
                     () -> assertThat(auctionArt.getArt().getHashtags()).containsExactlyInAnyOrderElementsOf(art.getHashtags()),
+                    () -> assertThat(auctionArt.getArt().getLikeCount()).isEqualTo(likeCount),
 
                     () -> assertThat(auctionArt.getOwner().id()).isEqualTo(owner.getId()),
                     () -> assertThat(auctionArt.getOwner().nickname()).isEqualTo(owner.getNicknameValue()),
@@ -321,6 +339,7 @@ class MemberInformationQueryRepositoryTest extends RepositoryTest {
                     () -> assertThat(tradedArt.getArt().getStatus()).isEqualTo(art.getStatus().getDescription()),
                     () -> assertThat(tradedArt.getArt().getStorageName()).isEqualTo(art.getStorageName()),
                     () -> assertThat(tradedArt.getArt().getHashtags()).containsExactlyInAnyOrderElementsOf(art.getHashtags()),
+                    () -> assertThat(tradedArt.getArt().getLikeCount()).isEqualTo(1),
 
                     () -> assertThat(tradedArt.getOwner().id()).isEqualTo(owner.getId()),
                     () -> assertThat(tradedArt.getOwner().nickname()).isEqualTo(owner.getNicknameValue()),
@@ -346,6 +365,7 @@ class MemberInformationQueryRepositoryTest extends RepositoryTest {
                     () -> assertThat(tradedArt.getArt().getStatus()).isEqualTo(art.getStatus().getDescription()),
                     () -> assertThat(tradedArt.getArt().getStorageName()).isEqualTo(art.getStorageName()),
                     () -> assertThat(tradedArt.getArt().getHashtags()).containsExactlyInAnyOrderElementsOf(art.getHashtags()),
+                    () -> assertThat(tradedArt.getArt().getLikeCount()).isEqualTo(1),
 
                     () -> assertThat(tradedArt.getOwner().id()).isEqualTo(owner.getId()),
                     () -> assertThat(tradedArt.getOwner().nickname()).isEqualTo(owner.getNicknameValue()),

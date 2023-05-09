@@ -4,6 +4,7 @@ import com.sjiwon.anotherart.art.domain.Art;
 import com.sjiwon.anotherart.art.infra.query.dto.response.AuctionArt;
 import com.sjiwon.anotherart.auction.domain.Auction;
 import com.sjiwon.anotherart.common.ServiceTest;
+import com.sjiwon.anotherart.favorite.domain.Favorite;
 import com.sjiwon.anotherart.fixture.ArtFixture;
 import com.sjiwon.anotherart.fixture.MemberFixture;
 import com.sjiwon.anotherart.member.domain.Member;
@@ -243,29 +244,34 @@ class MemberInformationServiceTest extends ServiceTest {
                 Member bidder = bidders[index];
                 auction.applyNewBid(bidder, auction.getHighestBidPrice() + 50_000);
             }
+            favoriteRepository.save(Favorite.favoriteMarking(auction.getArt().getId(), 1L));
         }
     }
 
     private void makeAuctionEnd(Auction... auctions) {
-        for (Auction auction : auctions) {
-            em.createQuery("UPDATE Auction a" +
-                            " SET a.period.endDate = :endDate" +
-                            " WHERE a.id = :auctionId")
-                    .setParameter("endDate", LocalDateTime.now().minusDays(1))
-                    .setParameter("auctionId", auction.getId())
-                    .executeUpdate();
-        }
+        List<Long> auctionIds = Arrays.stream(auctions)
+                .map(Auction::getId)
+                .toList();
+
+        em.createQuery("UPDATE Auction a" +
+                        " SET a.period.endDate = :endDate" +
+                        " WHERE a.id IN :auctionIds")
+                .setParameter("endDate", LocalDateTime.now().minusDays(1))
+                .setParameter("auctionIds", auctionIds)
+                .executeUpdate();
     }
 
     private void purchaseAuctionArt(Art... arts) {
         for (Art art : arts) {
             purchaseRepository.save(Purchase.purchaseAuctionArt(art, buyer, art.getPrice()));
+            favoriteRepository.save(Favorite.favoriteMarking(art.getId(), 1L));
         }
     }
 
     private void purchaseGeneralArt(Art... arts) {
         for (Art art : arts) {
             purchaseRepository.save(Purchase.purchaseGeneralArt(art, buyer));
+            favoriteRepository.save(Favorite.favoriteMarking(art.getId(), 1L));
         }
     }
 
@@ -292,6 +298,7 @@ class MemberInformationServiceTest extends ServiceTest {
                     () -> assertThat(auctionArt.getArt().getStatus()).isEqualTo(art.getStatus().getDescription()),
                     () -> assertThat(auctionArt.getArt().getStorageName()).isEqualTo(art.getStorageName()),
                     () -> assertThat(auctionArt.getArt().getHashtags()).containsExactlyInAnyOrderElementsOf(art.getHashtags()),
+                    () -> assertThat(auctionArt.getArt().getLikeCount()).isEqualTo(1),
 
                     () -> assertThat(auctionArt.getOwner().id()).isEqualTo(owner.getId()),
                     () -> assertThat(auctionArt.getOwner().nickname()).isEqualTo(owner.getNicknameValue()),
@@ -325,6 +332,7 @@ class MemberInformationServiceTest extends ServiceTest {
                     () -> assertThat(tradedArt.getArt().getStatus()).isEqualTo(art.getStatus().getDescription()),
                     () -> assertThat(tradedArt.getArt().getStorageName()).isEqualTo(art.getStorageName()),
                     () -> assertThat(tradedArt.getArt().getHashtags()).containsExactlyInAnyOrderElementsOf(art.getHashtags()),
+                    () -> assertThat(tradedArt.getArt().getLikeCount()).isEqualTo(1),
 
                     () -> assertThat(tradedArt.getOwner().id()).isEqualTo(owner.getId()),
                     () -> assertThat(tradedArt.getOwner().nickname()).isEqualTo(owner.getNicknameValue()),
@@ -350,6 +358,7 @@ class MemberInformationServiceTest extends ServiceTest {
                     () -> assertThat(tradedArt.getArt().getStatus()).isEqualTo(art.getStatus().getDescription()),
                     () -> assertThat(tradedArt.getArt().getStorageName()).isEqualTo(art.getStorageName()),
                     () -> assertThat(tradedArt.getArt().getHashtags()).containsExactlyInAnyOrderElementsOf(art.getHashtags()),
+                    () -> assertThat(tradedArt.getArt().getLikeCount()).isEqualTo(1),
 
                     () -> assertThat(tradedArt.getOwner().id()).isEqualTo(owner.getId()),
                     () -> assertThat(tradedArt.getOwner().nickname()).isEqualTo(owner.getNicknameValue()),

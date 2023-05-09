@@ -5,6 +5,7 @@ import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.sjiwon.anotherart.art.domain.ArtType;
 import com.sjiwon.anotherart.art.infra.query.dto.response.*;
+import com.sjiwon.anotherart.favorite.domain.Favorite;
 import com.sjiwon.anotherart.member.domain.QMember;
 import com.sjiwon.anotherart.member.infra.query.dto.response.MemberPointRecord;
 import com.sjiwon.anotherart.member.infra.query.dto.response.QMemberPointRecord;
@@ -21,6 +22,7 @@ import static com.sjiwon.anotherart.art.domain.QArt.art;
 import static com.sjiwon.anotherart.art.domain.hashtag.QHashtag.hashtag;
 import static com.sjiwon.anotherart.auction.domain.QAuction.auction;
 import static com.sjiwon.anotherart.auction.domain.record.QAuctionRecord.auctionRecord;
+import static com.sjiwon.anotherart.favorite.domain.QFavorite.favorite;
 import static com.sjiwon.anotherart.member.domain.point.QPointRecord.pointRecord;
 import static com.sjiwon.anotherart.purchase.domain.QPurchase.purchase;
 
@@ -63,7 +65,7 @@ public class MemberInformationQueryRepositoryImpl implements MemberInformationQu
                 .map(AuctionArt::getArt)
                 .map(BasicArt::getId)
                 .toList();
-        applyHashtagAndBidcount(result, artIds);
+        applyHashtagAndLikeCountAndBidcount(result, artIds);
 
         return result;
     }
@@ -87,7 +89,7 @@ public class MemberInformationQueryRepositoryImpl implements MemberInformationQu
                 .map(TradedArt::getArt)
                 .map(BasicArt::getId)
                 .toList();
-        applyHashtag(result, artIds);
+        applyHashtagAndLikeCount(result, artIds);
 
         return result;
     }
@@ -111,21 +113,28 @@ public class MemberInformationQueryRepositoryImpl implements MemberInformationQu
                 .map(TradedArt::getArt)
                 .map(BasicArt::getId)
                 .toList();
-        applyHashtag(result, artIds);
+        applyHashtagAndLikeCount(result, artIds);
 
         return result;
     }
 
-    private void applyHashtagAndBidcount(List<AuctionArt> result, List<Long> artIds) {
+    private void applyHashtagAndLikeCountAndBidcount(List<AuctionArt> result, List<Long> artIds) {
         List<SimpleHashtag> hashtags = getHashtags(artIds);
+        result.forEach(args -> args.applyHashtags(collectHashtags(hashtags, args.getArt().getId())));
+
+        List<Favorite> favorites = getFavorites(artIds);
+        result.forEach(args -> args.applyLikeCount(getLikeCount(favorites, args.getArt().getId())));
+
         List<SimpleAuction> auctions = getAuctions(artIds);
-        result.forEach(args -> args.applyHashtags(collectHashtags(hashtags, args.getArt())));
-        result.forEach(args -> args.applyBidCount(collectBidCount(auctions, args.getArt())));
+        result.forEach(args -> args.applyBidCount(getBidCount(auctions, args.getArt().getId())));
     }
 
-    private void applyHashtag(List<TradedArt> result, List<Long> artIds) {
+    private void applyHashtagAndLikeCount(List<TradedArt> result, List<Long> artIds) {
         List<SimpleHashtag> hashtags = getHashtags(artIds);
-        result.forEach(args -> args.applyHashtags(collectHashtags(hashtags, args.getArt())));
+        result.forEach(args -> args.applyHashtags(collectHashtags(hashtags, args.getArt().getId())));
+
+        List<Favorite> favorites = getFavorites(artIds);
+        result.forEach(args -> args.applyLikeCount(getLikeCount(favorites, args.getArt().getId())));
     }
 
     private List<SimpleHashtag> getHashtags(List<Long> artIds) {
@@ -137,12 +146,26 @@ public class MemberInformationQueryRepositoryImpl implements MemberInformationQu
                 .fetch();
     }
 
-    private List<String> collectHashtags(List<SimpleHashtag> hashtags, BasicArt art) {
+    private List<String> collectHashtags(List<SimpleHashtag> hashtags, Long artId) {
         return hashtags
                 .stream()
-                .filter(hashtag -> hashtag.artId().equals(art.getId()))
+                .filter(hashtag -> hashtag.artId().equals(artId))
                 .map(SimpleHashtag::name)
                 .toList();
+    }
+
+    private List<Favorite> getFavorites(List<Long> artIds) {
+        return query
+                .selectFrom(favorite)
+                .where(favorite.artId.in(artIds))
+                .fetch();
+    }
+
+    private int getLikeCount(List<Favorite> favorites, Long artId) {
+        return (int) favorites
+                .stream()
+                .filter(favorite -> favorite.getArtId().equals(artId))
+                .count();
     }
 
     private List<SimpleAuction> getAuctions(List<Long> artIds) {
@@ -156,10 +179,10 @@ public class MemberInformationQueryRepositoryImpl implements MemberInformationQu
                 .fetch();
     }
 
-    private int collectBidCount(List<SimpleAuction> auctions, BasicArt art) {
+    private int getBidCount(List<SimpleAuction> auctions, Long artId) {
         return auctions
                 .stream()
-                .filter(auction -> auction.artId().equals(art.getId()))
+                .filter(auction -> auction.artId().equals(artId))
                 .map(SimpleAuction::bidCount)
                 .findFirst()
                 .orElse(0);

@@ -7,6 +7,8 @@ import com.sjiwon.anotherart.art.infra.query.dto.response.GeneralArt;
 import com.sjiwon.anotherart.auction.domain.Auction;
 import com.sjiwon.anotherart.auction.domain.AuctionRepository;
 import com.sjiwon.anotherart.common.RepositoryTest;
+import com.sjiwon.anotherart.favorite.domain.Favorite;
+import com.sjiwon.anotherart.favorite.domain.FavoriteRepository;
 import com.sjiwon.anotherart.fixture.ArtFixture;
 import com.sjiwon.anotherart.fixture.MemberFixture;
 import com.sjiwon.anotherart.member.domain.Member;
@@ -33,6 +35,9 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 class ArtSingleQueryRepositoryTest extends RepositoryTest {
     @Autowired
     private ArtRepository artRepository;
+
+    @Autowired
+    private FavoriteRepository favoriteRepository;
 
     @Autowired
     private MemberRepository memberRepository;
@@ -104,10 +109,12 @@ class ArtSingleQueryRepositoryTest extends RepositoryTest {
 
     private void bid() {
         auctions[1].applyNewBid(bidder, auctions[1].getHighestBidPrice());
+        favoriteRepository.save(Favorite.favoriteMarking(auctionArts[1].getId(), bidder.getId()));
     }
 
     private void purchase() {
         purchaseRepository.save(Purchase.purchaseAuctionArt(generalArts[1], buyer, generalArts[1].getPrice()));
+        favoriteRepository.save(Favorite.favoriteMarking(generalArts[1].getId(), buyer.getId()));
     }
 
     private void assertThatAuctionArtMatch(List<AuctionArt> arts, List<Integer> bidCounts) {
@@ -137,9 +144,13 @@ class ArtSingleQueryRepositoryTest extends RepositoryTest {
             );
 
             if (i == 0) { // 입찰 X
-                assertThat(auctionArt.getHighestBidder()).isNull();
+                assertAll(
+                        () -> assertThat(auctionArt.getArt().getLikeCount()).isEqualTo(0),
+                        () -> assertThat(auctionArt.getHighestBidder()).isNull()
+                );
             } else { // 입찰 O
                 assertAll(
+                        () -> assertThat(auctionArt.getArt().getLikeCount()).isEqualTo(1),
                         () -> assertThat(auctionArt.getHighestBidder().id()).isEqualTo(bidder.getId()),
                         () -> assertThat(auctionArt.getHighestBidder().nickname()).isEqualTo(bidder.getNicknameValue()),
                         () -> assertThat(auctionArt.getHighestBidder().school()).isEqualTo(bidder.getSchool())
@@ -168,9 +179,13 @@ class ArtSingleQueryRepositoryTest extends RepositoryTest {
             );
 
             if (i == 0) { // 구매 X
-                assertThat(generalArt.getBuyer()).isNull();
+                assertAll(
+                        () -> assertThat(generalArt.getArt().getLikeCount()).isEqualTo(0),
+                        () -> assertThat(generalArt.getBuyer()).isNull()
+                );
             } else { // 구매 O
                 assertAll(
+                        () -> assertThat(generalArt.getArt().getLikeCount()).isEqualTo(1),
                         () -> assertThat(generalArt.getBuyer().id()).isEqualTo(buyer.getId()),
                         () -> assertThat(generalArt.getBuyer().nickname()).isEqualTo(buyer.getNicknameValue()),
                         () -> assertThat(generalArt.getBuyer().school()).isEqualTo(buyer.getSchool())

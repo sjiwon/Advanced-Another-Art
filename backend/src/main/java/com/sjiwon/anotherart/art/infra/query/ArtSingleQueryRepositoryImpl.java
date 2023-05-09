@@ -21,6 +21,7 @@ import static com.sjiwon.anotherart.art.domain.QArt.art;
 import static com.sjiwon.anotherart.art.domain.hashtag.QHashtag.hashtag;
 import static com.sjiwon.anotherart.auction.domain.QAuction.auction;
 import static com.sjiwon.anotherart.auction.domain.record.QAuctionRecord.auctionRecord;
+import static com.sjiwon.anotherart.favorite.domain.QFavorite.favorite;
 import static com.sjiwon.anotherart.purchase.domain.QPurchase.purchase;
 
 @Transactional(readOnly = true)
@@ -45,7 +46,10 @@ public class ArtSingleQueryRepositoryImpl implements ArtSingleQueryRepository {
                         artTypeEq(AUCTION)
                 )
                 .fetchOne();
-        applyHashtagAndBidcount(result, artId);
+
+        if (result != null) {
+            applyHashtagAndLikeCountAndBidcount(result, artId);
+        }
 
         return result;
     }
@@ -63,24 +67,29 @@ public class ArtSingleQueryRepositoryImpl implements ArtSingleQueryRepository {
                         artTypeEq(GENERAL)
                 )
                 .fetchOne();
-        applyHashtag(result, artId);
+
+        if (result != null) {
+            applyHashtagAndLikeCount(result, artId);
+        }
 
         return result;
     }
 
-    private void applyHashtagAndBidcount(AuctionArt result, Long artId) {
+    private void applyHashtagAndLikeCountAndBidcount(AuctionArt result, Long artId) {
         List<String> hashtags = getHashtags(artId);
         if (!CollectionUtils.isEmpty(hashtags)) {
             result.applyHashtags(hashtags);
         }
+        result.applyLikeCount(getLikeCount(artId));
         result.applyBidCount(getBidCount(artId));
     }
 
-    private void applyHashtag(GeneralArt result, Long artId) {
+    private void applyHashtagAndLikeCount(GeneralArt result, Long artId) {
         List<String> hashtags = getHashtags(artId);
         if (!CollectionUtils.isEmpty(hashtags)) {
             result.applyHashtags(hashtags);
         }
+        result.applyLikeCount(getLikeCount(artId));
     }
 
     private List<String> getHashtags(Long artId) {
@@ -89,6 +98,14 @@ public class ArtSingleQueryRepositoryImpl implements ArtSingleQueryRepository {
                 .from(hashtag)
                 .where(hashtag.art.id.eq(artId))
                 .fetch();
+    }
+
+    private int getLikeCount(Long artId) {
+        return query
+                .select(favorite.count().intValue())
+                .from(favorite)
+                .where(favorite.artId.eq(artId))
+                .fetchOne();
     }
 
     private int getBidCount(Long artId) {
