@@ -56,7 +56,7 @@ class FavoriteRepositoryTest extends RepositoryTest {
 
     @Test
     @DisplayName("특정 작품에 대해서 사용자가 찜을 했는지 여부를 확인한다")
-    void existsByStudyIdAndMemberId() {
+    void existsByArtIdAndMemberId() {
         // given
         favoriteRepository.save(Favorite.favoriteMarking(art1.getId(), member.getId()));
 

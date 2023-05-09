@@ -170,6 +170,7 @@ class MemberInformationApiControllerTest extends ControllerTest {
                                             fieldWithPath("result[].auction.highestBidPrice").description("경매 낙찰가"),
                                             fieldWithPath("result[].auction.startDate").description("경매 시작날짜"),
                                             fieldWithPath("result[].auction.endDate").description("경매 종료날짜"),
+                                            fieldWithPath("result[].auction.bidCount").description("경매 입찰 횟수"),
                                             fieldWithPath("result[].art.id").description("경매 작품 ID(PK)"),
                                             fieldWithPath("result[].art.name").description("경매 작품명"),
                                             fieldWithPath("result[].art.description").description("경매 작품 설명"),
@@ -359,7 +360,8 @@ class MemberInformationApiControllerTest extends ControllerTest {
                                 3L,
                                 180_000,
                                 LocalDateTime.now().minusDays(10),
-                                LocalDateTime.now().minusDays(4)
+                                LocalDateTime.now().minusDays(4),
+                                8
                         ),
                         new BasicArt(
                                 3L,
@@ -379,7 +381,8 @@ class MemberInformationApiControllerTest extends ControllerTest {
                                 2L,
                                 380_000,
                                 LocalDateTime.now().minusDays(7),
-                                LocalDateTime.now().minusDays(2)
+                                LocalDateTime.now().minusDays(2),
+                                5
                         ),
                         new BasicArt(
                                 2L,
@@ -399,7 +402,8 @@ class MemberInformationApiControllerTest extends ControllerTest {
                                 1L,
                                 235_000,
                                 LocalDateTime.now().minusDays(5),
-                                LocalDateTime.now().minusDays(1)
+                                LocalDateTime.now().minusDays(1),
+                                13
                         ),
                         new BasicArt(
                                 1L,

@@ -20,6 +20,7 @@ import static com.sjiwon.anotherart.art.domain.ArtStatus.ON_SALE;
 import static com.sjiwon.anotherart.art.domain.QArt.art;
 import static com.sjiwon.anotherart.art.domain.hashtag.QHashtag.hashtag;
 import static com.sjiwon.anotherart.auction.domain.QAuction.auction;
+import static com.sjiwon.anotherart.auction.domain.record.QAuctionRecord.auctionRecord;
 import static com.sjiwon.anotherart.member.domain.point.QPointRecord.pointRecord;
 import static com.sjiwon.anotherart.purchase.domain.QPurchase.purchase;
 
@@ -62,8 +63,7 @@ public class MemberInformationQueryRepositoryImpl implements MemberInformationQu
                 .map(AuctionArt::getArt)
                 .map(BasicArt::getId)
                 .toList();
-        List<BasicHashtag> hashtags = getHashtags(artIds);
-        result.forEach(arg -> arg.applyHashtags(collectHashtags(hashtags, arg.getArt())));
+        applyHashtagAndBidcount(result, artIds);
 
         return result;
     }
@@ -87,8 +87,7 @@ public class MemberInformationQueryRepositoryImpl implements MemberInformationQu
                 .map(TradedArt::getArt)
                 .map(BasicArt::getId)
                 .toList();
-        List<BasicHashtag> hashtags = getHashtags(artIds);
-        result.forEach(arg -> arg.applyHashtags(collectHashtags(hashtags, arg.getArt())));
+        applyHashtag(result, artIds);
 
         return result;
     }
@@ -112,27 +111,58 @@ public class MemberInformationQueryRepositoryImpl implements MemberInformationQu
                 .map(TradedArt::getArt)
                 .map(BasicArt::getId)
                 .toList();
-        List<BasicHashtag> hashtags = getHashtags(artIds);
-        result.forEach(arg -> arg.applyHashtags(collectHashtags(hashtags, arg.getArt())));
+        applyHashtag(result, artIds);
 
         return result;
     }
 
-    private List<BasicHashtag> getHashtags(List<Long> artIds) {
+    private void applyHashtagAndBidcount(List<AuctionArt> result, List<Long> artIds) {
+        List<SimpleHashtag> hashtags = getHashtags(artIds);
+        List<SimpleAuction> auctions = getAuctions(artIds);
+        result.forEach(args -> args.applyHashtags(collectHashtags(hashtags, args.getArt())));
+        result.forEach(args -> args.applyBidCount(collectBidCount(auctions, args.getArt())));
+    }
+
+    private void applyHashtag(List<TradedArt> result, List<Long> artIds) {
+        List<SimpleHashtag> hashtags = getHashtags(artIds);
+        result.forEach(args -> args.applyHashtags(collectHashtags(hashtags, args.getArt())));
+    }
+
+    private List<SimpleHashtag> getHashtags(List<Long> artIds) {
         return query
-                .select(new QBasicHashtag(art.id, hashtag.name))
+                .select(new QSimpleHashtag(art.id, hashtag.name))
                 .from(hashtag)
                 .innerJoin(art).on(art.id.eq(hashtag.art.id))
                 .where(art.id.in(artIds))
                 .fetch();
     }
 
-    private List<String> collectHashtags(List<BasicHashtag> hashtags, BasicArt art) {
+    private List<String> collectHashtags(List<SimpleHashtag> hashtags, BasicArt art) {
         return hashtags
                 .stream()
-                .filter(hashtag -> hashtag.studyId().equals(art.getId()))
-                .map(BasicHashtag::name)
+                .filter(hashtag -> hashtag.artId().equals(art.getId()))
+                .map(SimpleHashtag::name)
                 .toList();
+    }
+
+    private List<SimpleAuction> getAuctions(List<Long> artIds) {
+        return query
+                .select(new QSimpleAuction(art.id, auctionRecord.count().intValue()))
+                .from(auctionRecord)
+                .innerJoin(auctionRecord.auction, auction)
+                .innerJoin(auction.art, art)
+                .where(art.id.in(artIds))
+                .groupBy(art.id)
+                .fetch();
+    }
+
+    private int collectBidCount(List<SimpleAuction> auctions, BasicArt art) {
+        return auctions
+                .stream()
+                .filter(auction -> auction.artId().equals(art.getId()))
+                .map(SimpleAuction::bidCount)
+                .findFirst()
+                .orElse(0);
     }
 
     public static ConstructorExpression<AuctionArt> assembleAuctionArtProjections() {

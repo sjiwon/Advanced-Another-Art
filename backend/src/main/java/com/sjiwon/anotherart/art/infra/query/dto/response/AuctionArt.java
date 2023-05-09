@@ -57,4 +57,8 @@ public class AuctionArt implements ArtDetails {
     public void applyHashtags(List<String> hashtags) {
         this.art.applyHashtags(hashtags);
     }
+
+    public void applyBidCount(int bidCount) {
+        this.auction.applyBidCount(bidCount);
+    }
 }

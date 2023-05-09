@@ -18,8 +18,8 @@ public class FavoriteService {
     public Long like(Long artId, Long memberId) {
         validateLike(artId, memberId);
 
-        Favorite favoriteStudy = Favorite.favoriteMarking(artId, memberId);
-        return favoriteRepository.save(favoriteStudy).getId();
+        Favorite favoriteArt = Favorite.favoriteMarking(artId, memberId);
+        return favoriteRepository.save(favoriteArt).getId();
     }
 
     private void validateLike(Long artId, Long memberId) {

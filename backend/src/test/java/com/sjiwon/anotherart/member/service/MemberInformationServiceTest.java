@@ -38,8 +38,8 @@ class MemberInformationServiceTest extends ServiceTest {
 
     private Member member;
     private Member owner;
-    private Member bidder;
     private Member buyer;
+    private final Member[] bidders = new Member[10];
     private final Art[] generalArts = new Art[10];
     private final Art[] auctionArts = new Art[10];
     private final Auction[] auctions = new Auction[10];
@@ -48,8 +48,9 @@ class MemberInformationServiceTest extends ServiceTest {
     void setUp() {
         member = createMember(MEMBER_A);
         owner = createMember(MEMBER_B);
-        bidder = createMember(MEMBER_C);
-        buyer = createMember(MEMBER_D);
+        buyer = createMember(MEMBER_C);
+
+        initDummyBidders();
         initArtsAndAuctions();
     }
 
@@ -57,6 +58,13 @@ class MemberInformationServiceTest extends ServiceTest {
         Member member = fixture.toMember();
         member.addPointRecords(CHARGE, 100_000_000);
         return memberRepository.save(member);
+    }
+
+    private void initDummyBidders() {
+        List<MemberFixture> dummyFixtures = Arrays.stream(MemberFixture.values())
+                .filter(member -> member.getLoginId().startsWith("dummy"))
+                .toList();
+        Arrays.setAll(bidders, i -> createMember(dummyFixtures.get(i)));
     }
 
     private void initArtsAndAuctions() {
@@ -143,24 +151,30 @@ class MemberInformationServiceTest extends ServiceTest {
     @Test
     @DisplayName("낙찰된 경매 작품을 조회한다")
     void getWinningAuctionArts() {
-        /* 7건 입찰 & 낙찰 */
-        bid(auctions[0], auctions[2], auctions[3], auctions[5], auctions[6], auctions[8], auctions[9]);
+        /* 7건 입찰 & 5건 낙찰 */
+        bid(
+                List.of(10, 4, 10, 6, 10, 10, 10),
+                List.of(auctions[0], auctions[2], auctions[3], auctions[5], auctions[6], auctions[8], auctions[9])
+        );
         makeAuctionEnd(auctions[0], auctions[2], auctions[3], auctions[5], auctions[6], auctions[8], auctions[9]);
 
-        WinningAuctionArtAssembler assembler1 = memberInformationService.getWinningAuctionArts(bidder.getId());
+        WinningAuctionArtAssembler assembler1 = memberInformationService.getWinningAuctionArts(bidders[0].getId());
         assertThatWinningAuctionMatch(
                 assembler1.result(),
-                List.of(9, 8, 6, 5, 3, 2, 0)
+                List.of(9, 8, 6, 3, 0)
         );
 
-        /* 추가 3건 입찰 & 낙찰 */
-        bid(auctions[1], auctions[4], auctions[7]);
+        /* 추가 3건 입찰 & 2건 낙찰 */
+        bid(
+                List.of(10, 3, 10),
+                List.of(auctions[1], auctions[4], auctions[7])
+        );
         makeAuctionEnd(auctions[1], auctions[4], auctions[7]);
 
-        WinningAuctionArtAssembler assembler2 = memberInformationService.getWinningAuctionArts(bidder.getId());
+        WinningAuctionArtAssembler assembler2 = memberInformationService.getWinningAuctionArts(bidders[0].getId());
         assertThatWinningAuctionMatch(
                 assembler2.result(),
-                List.of(9, 8, 7, 6, 5, 4, 3, 2, 1, 0)
+                List.of(9, 8, 7, 6, 3, 1, 0)
         );
     }
 
@@ -220,9 +234,15 @@ class MemberInformationServiceTest extends ServiceTest {
         );
     }
 
-    private void bid(Auction... auctions) {
-        for (Auction auction : auctions) {
-            auction.applyNewBid(bidder, auction.getHighestBidPrice());
+    private void bid(List<Integer> bidCounts, List<Auction> auctions) {
+        for (int i = 0; i < bidCounts.size(); i++) {
+            int bidCount = bidCounts.get(i);
+            Auction auction = auctions.get(i);
+
+            for (int index = bidders.length - 1; index >= bidders.length - bidCount; index--) {
+                Member bidder = bidders[index];
+                auction.applyNewBid(bidder, auction.getHighestBidPrice() + 50_000);
+            }
         }
     }
 
@@ -254,15 +274,16 @@ class MemberInformationServiceTest extends ServiceTest {
         assertThat(result).hasSize(totalSize);
 
         for (int i = 0; i < totalSize; i++) {
+            AuctionArt auctionArt = result.get(i);
             int index = indices.get(i);
 
-            AuctionArt auctionArt = result.get(i);
             Auction auction = auctions[index];
             Art art = auctionArts[index];
 
             assertAll(
-                    () -> assertThat(auctionArt.getAuction().id()).isEqualTo(auction.getId()),
-                    () -> assertThat(auctionArt.getAuction().highestBidPrice()).isEqualTo(auction.getHighestBidPrice()),
+                    () -> assertThat(auctionArt.getAuction().getId()).isEqualTo(auction.getId()),
+                    () -> assertThat(auctionArt.getAuction().getHighestBidPrice()).isEqualTo(auction.getHighestBidPrice()),
+                    () -> assertThat(auctionArt.getAuction().getBidCount()).isEqualTo(10),
 
                     () -> assertThat(auctionArt.getArt().getId()).isEqualTo(art.getId()),
                     () -> assertThat(auctionArt.getArt().getName()).isEqualTo(art.getNameValue()),
@@ -276,9 +297,9 @@ class MemberInformationServiceTest extends ServiceTest {
                     () -> assertThat(auctionArt.getOwner().nickname()).isEqualTo(owner.getNicknameValue()),
                     () -> assertThat(auctionArt.getOwner().school()).isEqualTo(owner.getSchool()),
 
-                    () -> assertThat(auctionArt.getHighestBidder().id()).isEqualTo(bidder.getId()),
-                    () -> assertThat(auctionArt.getHighestBidder().nickname()).isEqualTo(bidder.getNicknameValue()),
-                    () -> assertThat(auctionArt.getHighestBidder().school()).isEqualTo(bidder.getSchool())
+                    () -> assertThat(auctionArt.getHighestBidder().id()).isEqualTo(bidders[0].getId()),
+                    () -> assertThat(auctionArt.getHighestBidder().nickname()).isEqualTo(bidders[0].getNicknameValue()),
+                    () -> assertThat(auctionArt.getHighestBidder().school()).isEqualTo(bidders[0].getSchool())
             );
         }
     }
@@ -291,9 +312,9 @@ class MemberInformationServiceTest extends ServiceTest {
         assertThat(generalResult).hasSize(generalTotalSize);
 
         for (int i = 0; i < auctionTotalSize; i++) {
+            TradedArt tradedArt = auctionResult.get(i);
             int index = auctionIndices.get(i);
 
-            TradedArt tradedArt = auctionResult.get(i);
             Art art = auctionArts[index];
 
             assertAll(
@@ -316,9 +337,9 @@ class MemberInformationServiceTest extends ServiceTest {
         }
 
         for (int i = 0; i < generalTotalSize; i++) {
+            TradedArt tradedArt = generalResult.get(i);
             int index = generalIndices.get(i);
 
-            TradedArt tradedArt = generalResult.get(i);
             Art art = generalArts[index];
 
             assertAll(
