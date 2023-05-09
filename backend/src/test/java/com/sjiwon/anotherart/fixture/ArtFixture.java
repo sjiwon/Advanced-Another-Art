@@ -79,6 +79,18 @@ public enum ArtFixture {
         );
     }
 
+    public Art toArt(Member owner, int price) {
+        return Art.createArt(
+                owner,
+                ArtName.from(name),
+                Description.from(description),
+                type,
+                price,
+                storageName,
+                hashtags
+        );
+    }
+
     public Art toArt(Member owner, Set<String> hashtags) {
         return Art.createArt(
                 owner,

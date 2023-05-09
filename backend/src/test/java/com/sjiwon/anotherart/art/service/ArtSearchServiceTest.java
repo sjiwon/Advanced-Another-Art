@@ -2,8 +2,11 @@ package com.sjiwon.anotherart.art.service;
 
 import com.sjiwon.anotherart.art.domain.Art;
 import com.sjiwon.anotherart.art.exception.ArtErrorCode;
+import com.sjiwon.anotherart.art.infra.query.dto.response.ArtDetails;
 import com.sjiwon.anotherart.art.infra.query.dto.response.AuctionArt;
 import com.sjiwon.anotherart.art.infra.query.dto.response.GeneralArt;
+import com.sjiwon.anotherart.art.service.dto.response.ArtAssembler;
+import com.sjiwon.anotherart.art.utils.search.Pagination;
 import com.sjiwon.anotherart.auction.domain.Auction;
 import com.sjiwon.anotherart.common.ServiceTest;
 import com.sjiwon.anotherart.favorite.domain.Favorite;
@@ -17,12 +20,15 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 
 import java.util.Arrays;
 import java.util.List;
 
 import static com.sjiwon.anotherart.art.domain.ArtType.AUCTION;
 import static com.sjiwon.anotherart.art.domain.ArtType.GENERAL;
+import static com.sjiwon.anotherart.art.utils.search.PagingConstants.getDefaultPageRequest;
+import static com.sjiwon.anotherart.art.utils.search.SortType.DATE_ASC;
 import static com.sjiwon.anotherart.fixture.AuctionFixture.AUCTION_OPEN_NOW;
 import static com.sjiwon.anotherart.fixture.MemberFixture.*;
 import static com.sjiwon.anotherart.member.domain.point.PointType.CHARGE;
@@ -41,6 +47,9 @@ class ArtSearchServiceTest extends ServiceTest {
     private final Art[] generalArts = new Art[2]; // [0] = 입찰 X, [1] = 입찰 O
     private final Art[] auctionArts = new Art[2]; // [0] = 구매 X, [1] = 구매 O
     private final Auction[] auctions = new Auction[2];
+
+    private static final Pageable PAGE_REQUEST_1 = getDefaultPageRequest(0);
+    private static final Pageable PAGE_REQUEST_2 = getDefaultPageRequest(1);
 
     @BeforeEach
     void setUp() {
@@ -114,82 +123,121 @@ class ArtSearchServiceTest extends ServiceTest {
             purchaseRepository.save(Purchase.purchaseAuctionArt(generalArts[1], buyer, generalArts[1].getPrice()));
             favoriteRepository.save(Favorite.favoriteMarking(generalArts[1].getId(), buyer.getId()));
         }
-    }
 
-    private void assertThatAuctionArtMatch(List<AuctionArt> arts, List<Integer> bidCounts) {
-        for (int i = 0; i < arts.size(); i++) {
-            AuctionArt auctionArt = arts.get(i);
-            int bidCount = bidCounts.get(i);
+        private void assertThatAuctionArtMatch(List<AuctionArt> arts, List<Integer> bidCounts) {
+            for (int i = 0; i < arts.size(); i++) {
+                AuctionArt auctionArt = arts.get(i);
+                int bidCount = bidCounts.get(i);
 
-            Auction auction = auctions[i];
-            Art art = auctionArts[i];
+                Auction auction = auctions[i];
+                Art art = auctionArts[i];
 
-            assertAll(
-                    () -> assertThat(auctionArt.getAuction().getId()).isEqualTo(auction.getId()),
-                    () -> assertThat(auctionArt.getAuction().getHighestBidPrice()).isEqualTo(auction.getHighestBidPrice()),
-                    () -> assertThat(auctionArt.getAuction().getBidCount()).isEqualTo(bidCount),
-
-                    () -> assertThat(auctionArt.getArt().getId()).isEqualTo(art.getId()),
-                    () -> assertThat(auctionArt.getArt().getName()).isEqualTo(art.getNameValue()),
-                    () -> assertThat(auctionArt.getArt().getDescription()).isEqualTo(art.getDescriptionValue()),
-                    () -> assertThat(auctionArt.getArt().getPrice()).isEqualTo(art.getPrice()),
-                    () -> assertThat(auctionArt.getArt().getStatus()).isEqualTo(art.getStatus().getDescription()),
-                    () -> assertThat(auctionArt.getArt().getStorageName()).isEqualTo(art.getStorageName()),
-                    () -> assertThat(auctionArt.getArt().getHashtags()).containsExactlyInAnyOrderElementsOf(art.getHashtags()),
-
-                    () -> assertThat(auctionArt.getOwner().id()).isEqualTo(owner.getId()),
-                    () -> assertThat(auctionArt.getOwner().nickname()).isEqualTo(owner.getNicknameValue()),
-                    () -> assertThat(auctionArt.getOwner().school()).isEqualTo(owner.getSchool())
-            );
-
-            if (i == 0) { // 입찰 X
                 assertAll(
-                        () -> assertThat(auctionArt.getArt().getLikeCount()).isEqualTo(0),
-                        () -> assertThat(auctionArt.getHighestBidder()).isNull()
+                        () -> assertThat(auctionArt.getAuction().getId()).isEqualTo(auction.getId()),
+                        () -> assertThat(auctionArt.getAuction().getHighestBidPrice()).isEqualTo(auction.getHighestBidPrice()),
+                        () -> assertThat(auctionArt.getAuction().getBidCount()).isEqualTo(bidCount),
+
+                        () -> assertThat(auctionArt.getArt().getId()).isEqualTo(art.getId()),
+                        () -> assertThat(auctionArt.getArt().getName()).isEqualTo(art.getNameValue()),
+                        () -> assertThat(auctionArt.getArt().getDescription()).isEqualTo(art.getDescriptionValue()),
+                        () -> assertThat(auctionArt.getArt().getPrice()).isEqualTo(art.getPrice()),
+                        () -> assertThat(auctionArt.getArt().getStatus()).isEqualTo(art.getStatus().getDescription()),
+                        () -> assertThat(auctionArt.getArt().getStorageName()).isEqualTo(art.getStorageName()),
+                        () -> assertThat(auctionArt.getArt().getHashtags()).containsExactlyInAnyOrderElementsOf(art.getHashtags()),
+
+                        () -> assertThat(auctionArt.getOwner().id()).isEqualTo(owner.getId()),
+                        () -> assertThat(auctionArt.getOwner().nickname()).isEqualTo(owner.getNicknameValue()),
+                        () -> assertThat(auctionArt.getOwner().school()).isEqualTo(owner.getSchool())
                 );
-            } else { // 입찰 O
+
+                if (i == 0) { // 입찰 X
+                    assertAll(
+                            () -> assertThat(auctionArt.getArt().getLikeCount()).isEqualTo(0),
+                            () -> assertThat(auctionArt.getHighestBidder()).isNull()
+                    );
+                } else { // 입찰 O
+                    assertAll(
+                            () -> assertThat(auctionArt.getArt().getLikeCount()).isEqualTo(1),
+                            () -> assertThat(auctionArt.getHighestBidder().id()).isEqualTo(bidder.getId()),
+                            () -> assertThat(auctionArt.getHighestBidder().nickname()).isEqualTo(bidder.getNicknameValue()),
+                            () -> assertThat(auctionArt.getHighestBidder().school()).isEqualTo(bidder.getSchool())
+                    );
+                }
+            }
+        }
+
+        private void assertThatGeneralArtMatch(List<GeneralArt> arts) {
+            for (int i = 0; i < arts.size(); i++) {
+                GeneralArt generalArt = arts.get(i);
+                Art art = generalArts[i];
+
                 assertAll(
-                        () -> assertThat(auctionArt.getArt().getLikeCount()).isEqualTo(1),
-                        () -> assertThat(auctionArt.getHighestBidder().id()).isEqualTo(bidder.getId()),
-                        () -> assertThat(auctionArt.getHighestBidder().nickname()).isEqualTo(bidder.getNicknameValue()),
-                        () -> assertThat(auctionArt.getHighestBidder().school()).isEqualTo(bidder.getSchool())
+                        () -> assertThat(generalArt.getArt().getId()).isEqualTo(art.getId()),
+                        () -> assertThat(generalArt.getArt().getName()).isEqualTo(art.getNameValue()),
+                        () -> assertThat(generalArt.getArt().getDescription()).isEqualTo(art.getDescriptionValue()),
+                        () -> assertThat(generalArt.getArt().getPrice()).isEqualTo(art.getPrice()),
+                        () -> assertThat(generalArt.getArt().getStatus()).isEqualTo(art.getStatus().getDescription()),
+                        () -> assertThat(generalArt.getArt().getStorageName()).isEqualTo(art.getStorageName()),
+                        () -> assertThat(generalArt.getArt().getHashtags()).containsExactlyInAnyOrderElementsOf(art.getHashtags()),
+
+                        () -> assertThat(generalArt.getOwner().id()).isEqualTo(owner.getId()),
+                        () -> assertThat(generalArt.getOwner().nickname()).isEqualTo(owner.getNicknameValue()),
+                        () -> assertThat(generalArt.getOwner().school()).isEqualTo(owner.getSchool())
                 );
+
+                if (i == 0) { // 구매 X
+                    assertAll(
+                            () -> assertThat(generalArt.getArt().getLikeCount()).isEqualTo(0),
+                            () -> assertThat(generalArt.getBuyer()).isNull()
+                    );
+                } else { // 구매 O
+                    assertAll(
+                            () -> assertThat(generalArt.getArt().getLikeCount()).isEqualTo(1),
+                            () -> assertThat(generalArt.getBuyer().id()).isEqualTo(buyer.getId()),
+                            () -> assertThat(generalArt.getBuyer().nickname()).isEqualTo(buyer.getNicknameValue()),
+                            () -> assertThat(generalArt.getBuyer().school()).isEqualTo(buyer.getSchool())
+                    );
+                }
             }
         }
     }
 
-    private void assertThatGeneralArtMatch(List<GeneralArt> arts) {
-        for (int i = 0; i < arts.size(); i++) {
-            GeneralArt generalArt = arts.get(i);
-            Art art = generalArts[i];
+    @Test
+    @DisplayName("현재 경매가 진행중인 작품을 조회한다 [등록날짜 ASC]")
+    void getActiveAuctionArts() {
+        ArtAssembler assembler1 = artSearchService.getActiveAuctionArts(DATE_ASC.getValue(), PAGE_REQUEST_1); // 2건
+        ArtAssembler assembler2 = artSearchService.getActiveAuctionArts(DATE_ASC.getValue(), PAGE_REQUEST_2); // 0건
 
-            assertAll(
-                    () -> assertThat(generalArt.getArt().getId()).isEqualTo(art.getId()),
-                    () -> assertThat(generalArt.getArt().getName()).isEqualTo(art.getNameValue()),
-                    () -> assertThat(generalArt.getArt().getDescription()).isEqualTo(art.getDescriptionValue()),
-                    () -> assertThat(generalArt.getArt().getPrice()).isEqualTo(art.getPrice()),
-                    () -> assertThat(generalArt.getArt().getStatus()).isEqualTo(art.getStatus().getDescription()),
-                    () -> assertThat(generalArt.getArt().getStorageName()).isEqualTo(art.getStorageName()),
-                    () -> assertThat(generalArt.getArt().getHashtags()).containsExactlyInAnyOrderElementsOf(art.getHashtags()),
+        Pagination pagination1 = assembler1.pagination();
+        Pagination pagination2 = assembler2.pagination();
+        assertAll(
+                () -> assertThat(pagination1.getCurrentPage()).isEqualTo(1),
+                () -> assertThat(pagination1.getTotalPages()).isEqualTo(1),
+                () -> assertThat(pagination1.getTotalElements()).isEqualTo(2),
+                () -> assertThat(pagination1.isPrevExists()).isFalse(),
+                () -> assertThat(pagination1.isNextExists()).isFalse(),
 
-                    () -> assertThat(generalArt.getOwner().id()).isEqualTo(owner.getId()),
-                    () -> assertThat(generalArt.getOwner().nickname()).isEqualTo(owner.getNicknameValue()),
-                    () -> assertThat(generalArt.getOwner().school()).isEqualTo(owner.getSchool())
-            );
+                () -> assertThat(pagination2.getCurrentPage()).isEqualTo(2),
+                () -> assertThat(pagination2.getTotalPages()).isEqualTo(1),
+                () -> assertThat(pagination2.getTotalElements()).isEqualTo(2),
+                () -> assertThat(pagination2.isPrevExists()).isFalse(),
+                () -> assertThat(pagination2.isNextExists()).isFalse()
+        );
 
-            if (i == 0) { // 구매 X
-                assertAll(
-                        () -> assertThat(generalArt.getArt().getLikeCount()).isEqualTo(0),
-                        () -> assertThat(generalArt.getBuyer()).isNull()
-                );
-            } else { // 구매 O
-                assertAll(
-                        () -> assertThat(generalArt.getArt().getLikeCount()).isEqualTo(1),
-                        () -> assertThat(generalArt.getBuyer().id()).isEqualTo(buyer.getId()),
-                        () -> assertThat(generalArt.getBuyer().nickname()).isEqualTo(buyer.getNicknameValue()),
-                        () -> assertThat(generalArt.getBuyer().school()).isEqualTo(buyer.getSchool())
-                );
-            }
+        List<ArtDetails> result1 = assembler1.result();
+        List<ArtDetails> result2 = assembler2.result();
+        asssertThatActiveAuctionArtMatch(result1, List.of(auctions[0], auctions[1]));
+        asssertThatActiveAuctionArtMatch(result2, List.of());
+    }
+
+    private void asssertThatActiveAuctionArtMatch(List<ArtDetails> result, List<Auction> auctions) {
+        int totalSize = auctions.size();
+        assertThat(result).hasSize(totalSize);
+
+        for (int i = 0; i < totalSize; i++) {
+            AuctionArt auctionArt = (AuctionArt) result.get(i);
+            Auction auction = auctions.get(i);
+            assertThat(auctionArt.getAuction().getId()).isEqualTo(auction.getId());
         }
     }
 }

@@ -43,4 +43,9 @@ public enum SortType {
                 .findFirst()
                 .orElseThrow(() -> AnotherArtException.type(ArtErrorCode.SORT_TYPE_NOT_PROVIED));
     }
+
+    public static boolean isNotSupportedSortType(String value) {
+        return Arrays.stream(values())
+                .noneMatch(sortType -> sortType.value.equals(value));
+    }
 }

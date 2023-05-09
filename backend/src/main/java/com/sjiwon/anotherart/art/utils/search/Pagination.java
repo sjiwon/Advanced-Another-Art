@@ -14,10 +14,10 @@ public class Pagination {
     private int currentPage; // 현재 페이지
     private int rangeStartNumber; // 현재 범위 시작 번호
     private int rangeEndNumber; // 현재 범위 마지막 번호
-    private boolean prev; // 이전 range 존재 여부
-    private boolean next; // 다음 range 존재 여부
+    private boolean prevExists; // 이전 range 존재 여부
+    private boolean nextExists; // 다음 range 존재 여부
 
-    public Pagination(Long totalElements, int totalPages, int currentPage) {
+    private Pagination(Long totalElements, int totalPages, int currentPage) {
         this.totalElements = totalElements;
         this.totalPages = totalPages;
         this.currentPage = currentPage;
@@ -32,7 +32,15 @@ public class Pagination {
             rangeEndNumber = totalPages;
         }
 
-        this.prev = this.rangeStartNumber > RANGE_PER_PAGE;
-        this.next = this.rangeEndNumber + 1 <= totalPages;
+        this.prevExists = this.rangeStartNumber > RANGE_PER_PAGE;
+        this.nextExists = this.rangeEndNumber + 1 <= totalPages;
+    }
+
+    public static Pagination of(Long totalElements, int totalPages, int currentPage) {
+        return new Pagination(totalElements, totalPages, currentPage);
+    }
+
+    public static Pagination getEmptyPage(int currentPage) {
+        return new Pagination(0L, 0, currentPage);
     }
 }

@@ -65,7 +65,7 @@ public class MemberInformationQueryRepositoryImpl implements MemberInformationQu
                 .map(AuctionArt::getArt)
                 .map(BasicArt::getId)
                 .toList();
-        applyHashtagAndLikeCountAndBidcount(result, artIds);
+        applyHashtagAndLikeCountAndBidCount(result, artIds);
 
         return result;
     }
@@ -118,7 +118,44 @@ public class MemberInformationQueryRepositoryImpl implements MemberInformationQu
         return result;
     }
 
-    private void applyHashtagAndLikeCountAndBidcount(List<AuctionArt> result, List<Long> artIds) {
+    public static ConstructorExpression<AuctionArt> assembleAuctionArtProjections() {
+        return new QAuctionArt(
+                auction.id, auction.bidders.highestBidPrice, auction.period.startDate, auction.period.endDate,
+                art.id, art.name, art.description, art.price, art.status, art.storageName, art.createdAt,
+                owner.id, owner.nickname, owner.school,
+                highestBidder.id, highestBidder.nickname, highestBidder.school
+        );
+    }
+
+    public static ConstructorExpression<TradedArt> assembleTradedArtProjections() {
+        return new QTradedArt(
+                art.id, art.name, art.description, purchase.price, art.status, art.storageName, art.createdAt,
+                owner.id, owner.nickname, owner.school,
+                buyer.id, buyer.nickname, buyer.school
+        );
+    }
+
+    private BooleanExpression auctionIsFinished() {
+        return auction.period.endDate.before(LocalDateTime.now());
+    }
+
+    private BooleanExpression artIsOnSale() {
+        return art.status.eq(ON_SALE);
+    }
+
+    private BooleanExpression artOwnerIdEq(Long memberId) {
+        return (memberId != null) ? owner.id.eq(memberId) : null;
+    }
+
+    private BooleanExpression artBuyerIdEq(Long memberId) {
+        return (memberId != null) ? buyer.id.eq(memberId) : null;
+    }
+
+    private BooleanExpression artTypeEq(ArtType type) {
+        return (type != null) ? art.type.eq(type) : null;
+    }
+
+    private void applyHashtagAndLikeCountAndBidCount(List<AuctionArt> result, List<Long> artIds) {
         List<SimpleHashtag> hashtags = getHashtags(artIds);
         result.forEach(args -> args.applyHashtags(collectHashtags(hashtags, args.getArt().getId())));
 
@@ -186,42 +223,5 @@ public class MemberInformationQueryRepositoryImpl implements MemberInformationQu
                 .map(SimpleAuction::bidCount)
                 .findFirst()
                 .orElse(0);
-    }
-
-    public static ConstructorExpression<AuctionArt> assembleAuctionArtProjections() {
-        return new QAuctionArt(
-                auction.id, auction.bidders.highestBidPrice, auction.period.startDate, auction.period.endDate,
-                art.id, art.name, art.description, art.price, art.status, art.storageName, art.createdAt,
-                owner.id, owner.nickname, owner.school,
-                highestBidder.id, highestBidder.nickname, highestBidder.school
-        );
-    }
-
-    public static ConstructorExpression<TradedArt> assembleTradedArtProjections() {
-        return new QTradedArt(
-                art.id, art.name, art.description, purchase.price, art.status, art.storageName, art.createdAt,
-                owner.id, owner.nickname, owner.school,
-                buyer.id, buyer.nickname, buyer.school
-        );
-    }
-
-    private BooleanExpression auctionIsFinished() {
-        return auction.period.endDate.before(LocalDateTime.now());
-    }
-
-    private BooleanExpression artIsOnSale() {
-        return art.status.eq(ON_SALE);
-    }
-
-    private BooleanExpression artOwnerIdEq(Long memberId) {
-        return (memberId != null) ? owner.id.eq(memberId) : null;
-    }
-
-    private BooleanExpression artBuyerIdEq(Long memberId) {
-        return (memberId != null) ? buyer.id.eq(memberId) : null;
-    }
-
-    private BooleanExpression artTypeEq(ArtType type) {
-        return (type != null) ? art.type.eq(type) : null;
     }
 }

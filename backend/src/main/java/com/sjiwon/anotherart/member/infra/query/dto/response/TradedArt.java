@@ -4,6 +4,7 @@ import com.querydsl.core.annotations.QueryProjection;
 import com.sjiwon.anotherart.art.domain.ArtName;
 import com.sjiwon.anotherart.art.domain.ArtStatus;
 import com.sjiwon.anotherart.art.domain.Description;
+import com.sjiwon.anotherart.art.infra.query.dto.response.ArtDetails;
 import com.sjiwon.anotherart.art.infra.query.dto.response.BasicArt;
 import com.sjiwon.anotherart.member.domain.Nickname;
 import lombok.AllArgsConstructor;
@@ -14,7 +15,7 @@ import java.util.List;
 
 @Getter
 @AllArgsConstructor
-public class TradedArt {
+public class TradedArt implements ArtDetails {
     private final BasicArt art;
     private final BasicMember owner;
     private final BasicMember buyer;
