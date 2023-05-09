@@ -1,0 +1,25 @@
+= 작품 조회 API
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 2
+
+== 단건 조회
+=== 1. 경매 작품을 조회한다
+HTTP Request
+include::{snippets}/ArtApi/Search/Basic/Auction/http-request.adoc[]
+include::{snippets}/ArtApi/Search/Basic/Auction/path-parameters.adoc[]
+
+HTTP Response
+include::{snippets}/ArtApi/Search/Basic/Auction/response-body.adoc[]
+include::{snippets}/ArtApi/Search/Basic/Auction/response-fields.adoc[]
+
+=== 2. 일반 작품을 조회한다
+HTTP Request
+include::{snippets}/ArtApi/Search/Basic/General/http-request.adoc[]
+include::{snippets}/ArtApi/Search/Basic/General/path-parameters.adoc[]
+
+HTTP Response
+include::{snippets}/ArtApi/Search/Basic/General/response-body.adoc[]
+include::{snippets}/ArtApi/Search/Basic/General/response-fields.adoc[]

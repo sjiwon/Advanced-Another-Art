@@ -4,6 +4,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sjiwon.anotherart.art.controller.ArtApiController;
 import com.sjiwon.anotherart.art.controller.ArtModifyApiController;
+import com.sjiwon.anotherart.art.controller.ArtSearchApiController;
+import com.sjiwon.anotherart.art.service.ArtSearchService;
 import com.sjiwon.anotherart.art.service.ArtService;
 import com.sjiwon.anotherart.auction.controller.BidApiController;
 import com.sjiwon.anotherart.auction.service.BidService;
@@ -50,7 +52,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 
 @WebMvcTest({
         // art
-        ArtApiController.class, ArtModifyApiController.class,
+        ArtApiController.class, ArtModifyApiController.class, ArtSearchApiController.class,
 
         // auction
         BidApiController.class,
@@ -84,6 +86,10 @@ public abstract class ControllerTest {
     // art
     @MockBean
     protected ArtService artService;
+
+
+    @MockBean
+    protected ArtSearchService artSearchService;
 
     // auction
     @MockBean
