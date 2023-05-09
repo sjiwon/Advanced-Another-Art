@@ -23,3 +23,12 @@ include::{snippets}/ArtApi/Search/Basic/General/path-parameters.adoc[]
 HTTP Response
 include::{snippets}/ArtApi/Search/Basic/General/response-body.adoc[]
 include::{snippets}/ArtApi/Search/Basic/General/response-fields.adoc[]
+
+== 현재 경매 진행중인 작품 조회
+HTTP Request
+include::{snippets}/ArtApi/Search/ActiveAuction/http-request.adoc[]
+include::{snippets}/ArtApi/Search/ActiveAuction/path-parameters.adoc[]
+
+HTTP Response
+include::{snippets}/ArtApi/Search/ActiveAuction/response-body.adoc[]
+include::{snippets}/ArtApi/Search/ActiveAuction/response-fields.adoc[]
