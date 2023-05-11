@@ -145,7 +145,7 @@ class ArtSearchApiControllerTest extends ControllerTest {
         @DisplayName("현재 경매가 진행중인 작품들을 조회한다")
         void getAuctionArt() throws Exception {
             // given
-            ArtAssembler response = generateActiveAuctionArtResponse();
+            ArtAssembler response = generateAuctionArtAssemblerResponse();
             given(artSearchService.getActiveAuctionArts(any(), any())).willReturn(response);
 
             // when
@@ -211,6 +211,150 @@ class ArtSearchApiControllerTest extends ControllerTest {
         }
     }
 
+    @Nested
+    @DisplayName("키워드 작품 조회 API [GET /api/arts/keyword]")
+    class getArtsByKeyword {
+        private static final String BASE_URL = "/api/arts/keyword";
+
+        @Test
+        @DisplayName("해당 키워드가 포함된 경매 작품을 조회한다")
+        void getAuctionArtsByKeyword() throws Exception {
+            // given
+            ArtAssembler response = generateAuctionArtAssemblerResponse();
+            given(artSearchService.getArtsByKeyword(any(), any())).willReturn(response);
+
+            // when
+            MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
+                    .get(BASE_URL)
+                    .param("sortType", "rdate")
+                    .param("page", String.valueOf(1))
+                    .param("artType", "auction")
+                    .param("keyword", "Hello");
+
+            // then
+            mockMvc.perform(requestBuilder)
+                    .andExpect(status().isOk())
+                    .andDo(
+                            document(
+                                    "ArtApi/Search/Keyword/AuctionArt",
+                                    getDocumentRequest(),
+                                    getDocumentResponse(),
+                                    requestParameters(
+                                            parameterWithName("sortType").description("정렬 기준")
+                                                    .attributes(constraint("date-rdate / price-rprice / like-rlike / count-rcount")),
+                                            parameterWithName("page").description("현재 페이지")
+                                                    .attributes(constraint("첫번째 페이지는 1부터 시작")),
+                                            parameterWithName("artType").description("작품 타입")
+                                                    .attributes(constraint("general / auction")),
+                                            parameterWithName("keyword").description("검색 키워드")
+                                    ),
+                                    responseFields(
+                                            fieldWithPath("result[].auction.id").description("경매 ID(PK)")
+                                                    .optional(),
+                                            fieldWithPath("result[].auction.highestBidPrice").description("경매 낙찰가")
+                                                    .optional(),
+                                            fieldWithPath("result[].auction.startDate").description("경매 시작날짜")
+                                                    .optional(),
+                                            fieldWithPath("result[].auction.endDate").description("경매 종료날짜")
+                                                    .optional(),
+                                            fieldWithPath("result[].auction.bidCount").description("경매 입찰 횟수")
+                                                    .optional(),
+                                            fieldWithPath("result[].art.id").description("작품 ID(PK)"),
+                                            fieldWithPath("result[].art.name").description("작품명"),
+                                            fieldWithPath("result[].art.description").description("작품 설명"),
+                                            fieldWithPath("result[].art.price").description("작품 초기 가격"),
+                                            fieldWithPath("result[].art.status").description("작품 상태 [판매중 / 판매 완료]"),
+                                            fieldWithPath("result[].art.storageName").description("작품 이미지 경로"),
+                                            fieldWithPath("result[].art.registrationDate").description("작품 등록 날짜"),
+                                            fieldWithPath("result[].art.hashtags").description("작품 해시태그"),
+                                            fieldWithPath("result[].art.likeCount").description("작품 찜 횟수"),
+                                            fieldWithPath("result[].owner.id").description("작품 소유자 ID(PK)"),
+                                            fieldWithPath("result[].owner.nickname").description("작품 소유자 닉네임"),
+                                            fieldWithPath("result[].owner.school").description("작품 소유자 학교"),
+                                            fieldWithPath("result[].highestBidder.id").description("작품 입찰자/낙찰자 ID(PK)")
+                                                    .optional(),
+                                            fieldWithPath("result[].highestBidder.nickname").description("작품 입찰자/낙찰자 닉네임")
+                                                    .optional(),
+                                            fieldWithPath("result[].highestBidder.school").description("작품 입찰자/낙찰자 학교")
+                                                    .optional(),
+
+                                            fieldWithPath("pagination.totalElements").description("전체 데이터 수"),
+                                            fieldWithPath("pagination.totalPages").description("전체 페이지 수"),
+                                            fieldWithPath("pagination.currentPage").description("현재 페이지"),
+                                            fieldWithPath("pagination.rangeStartNumber").description("현재 페이지 범위 첫번째 번호"),
+                                            fieldWithPath("pagination.rangeEndNumber").description("현재 페이지 범위 마지막 번호"),
+                                            fieldWithPath("pagination.prevExists").description("이전 페이지 존재 여부 [10 page 단위"),
+                                            fieldWithPath("pagination.nextExists").description("다음 페이지 존재 여부 [10 page 단위]")
+                                    )
+                            )
+                    );
+        }
+
+        @Test
+        @DisplayName("해당 키워드가 포함된 일반 작품을 조회한다")
+        void getGeneralArtsByKeyword() throws Exception {
+            // given
+            ArtAssembler response = generateGeneralArtAssemblerResponse();
+            given(artSearchService.getArtsByKeyword(any(), any())).willReturn(response);
+
+            // when
+            MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
+                    .get(BASE_URL)
+                    .param("sortType", "rdate")
+                    .param("page", String.valueOf(1))
+                    .param("artType", "general")
+                    .param("keyword", "Hello");
+
+            // then
+            mockMvc.perform(requestBuilder)
+                    .andExpect(status().isOk())
+                    .andDo(
+                            document(
+                                    "ArtApi/Search/Keyword/GeneralArt",
+                                    getDocumentRequest(),
+                                    getDocumentResponse(),
+                                    requestParameters(
+                                            parameterWithName("sortType").description("정렬 기준")
+                                                    .attributes(constraint("date-rdate / price-rprice / like-rlike / count-rcount")),
+                                            parameterWithName("page").description("현재 페이지")
+                                                    .attributes(constraint("첫번째 페이지는 1부터 시작")),
+                                            parameterWithName("artType").description("작품 타입")
+                                                    .attributes(constraint("general / auction")),
+                                            parameterWithName("keyword").description("검색 키워드")
+                                    ),
+                                    responseFields(
+                                            fieldWithPath("result[].art.id").description("작품 ID(PK)"),
+                                            fieldWithPath("result[].art.name").description("작품명"),
+                                            fieldWithPath("result[].art.description").description("작품 설명"),
+                                            fieldWithPath("result[].art.price").description("작품 초기 가격"),
+                                            fieldWithPath("result[].art.status").description("작품 상태 [판매중 / 판매 완료]"),
+                                            fieldWithPath("result[].art.storageName").description("작품 이미지 경로"),
+                                            fieldWithPath("result[].art.registrationDate").description("작품 등록 날짜"),
+                                            fieldWithPath("result[].art.hashtags").description("작품 해시태그"),
+                                            fieldWithPath("result[].art.likeCount").description("작품 찜 횟수"),
+                                            fieldWithPath("result[].owner.id").description("작품 소유자 ID(PK)"),
+                                            fieldWithPath("result[].owner.nickname").description("작품 소유자 닉네임"),
+                                            fieldWithPath("result[].owner.school").description("작품 소유자 학교"),
+                                            fieldWithPath("result[].buyer.id").description("작품 구매자 ID(PK)")
+                                                    .optional(),
+                                            fieldWithPath("result[].buyer.nickname").description("작품 구매자 닉네임")
+                                                    .optional(),
+                                            fieldWithPath("result[].buyer.school").description("작품 구매자 학교")
+                                                    .optional(),
+
+                                            fieldWithPath("pagination.totalElements").description("전체 데이터 수"),
+                                            fieldWithPath("pagination.totalPages").description("전체 페이지 수"),
+                                            fieldWithPath("pagination.currentPage").description("현재 페이지"),
+                                            fieldWithPath("pagination.rangeStartNumber").description("현재 페이지 범위 첫번째 번호"),
+                                            fieldWithPath("pagination.rangeEndNumber").description("현재 페이지 범위 마지막 번호"),
+                                            fieldWithPath("pagination.prevExists").description("이전 페이지 존재 여부 [10 page 단위"),
+                                            fieldWithPath("pagination.nextExists").description("다음 페이지 존재 여부 [10 page 단위]")
+                                    )
+                            )
+                    );
+        }
+    }
+
     private AuctionArt generateAuctionArtResponse() {
         return new AuctionArt(
                 new BasicAuction(
@@ -254,7 +398,7 @@ class ArtSearchApiControllerTest extends ControllerTest {
         );
     }
 
-    private ArtAssembler generateActiveAuctionArtResponse() {
+    private ArtAssembler generateAuctionArtAssemblerResponse() {
         List<ArtDetails> auctionArts = List.of(
                 new AuctionArt(
                         new BasicAuction(
@@ -326,5 +470,58 @@ class ArtSearchApiControllerTest extends ControllerTest {
         Pagination pagination = Pagination.of((long) auctionArts.size(), 1, 1);
 
         return new ArtAssembler(auctionArts, pagination);
+    }
+
+    private ArtAssembler generateGeneralArtAssemblerResponse() {
+        List<ArtDetails> generalArts = List.of(
+                new GeneralArt(
+                        new BasicArt(
+                                1L,
+                                GENERAL_1.getName(),
+                                GENERAL_1.getDescription(),
+                                GENERAL_1.getPrice(),
+                                ON_SALE.getDescription(),
+                                GENERAL_1.getStorageName(),
+                                LocalDateTime.now().minusDays(4),
+                                List.of("해시태그1", "해시태그2", "해시태그3"),
+                                3
+                        ),
+                        new BasicMember(1L, "작품소유자", "서울대학교"),
+                        new BasicMember(2L, "작품구매자", "경기대학교")
+                ),
+                new GeneralArt(
+                        new BasicArt(
+                                2L,
+                                GENERAL_2.getName(),
+                                GENERAL_2.getDescription(),
+                                GENERAL_2.getPrice(),
+                                ON_SALE.getDescription(),
+                                GENERAL_2.getStorageName(),
+                                LocalDateTime.now().minusDays(5),
+                                List.of("해시태그1", "해시태그2", "해시태그3"),
+                                8
+                        ),
+                        new BasicMember(1L, "작품소유자", "서울대학교"),
+                        new BasicMember(2L, "작품구매자", "경기대학교")
+                ),
+                new GeneralArt(
+                        new BasicArt(
+                                3L,
+                                GENERAL_3.getName(),
+                                GENERAL_3.getDescription(),
+                                GENERAL_3.getPrice(),
+                                ON_SALE.getDescription(),
+                                GENERAL_3.getStorageName(),
+                                LocalDateTime.now().minusDays(7),
+                                List.of("해시태그1", "해시태그2", "해시태그3"),
+                                17
+                        ),
+                        new BasicMember(1L, "작품소유자", "서울대학교"),
+                        new BasicMember(2L, "작품구매자", "경기대학교")
+                )
+        );
+        Pagination pagination = Pagination.of((long) generalArts.size(), 1, 1);
+
+        return new ArtAssembler(generalArts, pagination);
     }
 }

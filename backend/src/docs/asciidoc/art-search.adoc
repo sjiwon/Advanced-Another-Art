@@ -27,8 +27,27 @@ include::{snippets}/ArtApi/Search/Basic/General/response-fields.adoc[]
 == 현재 경매 진행중인 작품 조회
 HTTP Request
 include::{snippets}/ArtApi/Search/ActiveAuction/http-request.adoc[]
-include::{snippets}/ArtApi/Search/ActiveAuction/path-parameters.adoc[]
+include::{snippets}/ArtApi/Search/ActiveAuction/request-parameters.adoc[]
 
 HTTP Response
 include::{snippets}/ArtApi/Search/ActiveAuction/response-body.adoc[]
 include::{snippets}/ArtApi/Search/ActiveAuction/response-fields.adoc[]
+
+== 키워드 작품 조회
+=== 1. 키워드 일반 작품을 조회한다
+HTTP Request
+include::{snippets}/ArtApi/Search/Keyword/GeneralArt/http-request.adoc[]
+include::{snippets}/ArtApi/Search/Keyword/GeneralArt/request-parameters.adoc[]
+
+HTTP Response
+include::{snippets}/ArtApi/Search/Keyword/GeneralArt/response-body.adoc[]
+include::{snippets}/ArtApi/Search/Keyword/GeneralArt/response-fields.adoc[]
+
+=== 2. 키워드 경매 작품을 조회한다
+HTTP Request
+include::{snippets}/ArtApi/Search/Keyword/AuctionArt/http-request.adoc[]
+include::{snippets}/ArtApi/Search/Keyword/AuctionArt/request-parameters.adoc[]
+
+HTTP Response
+include::{snippets}/ArtApi/Search/Keyword/AuctionArt/response-body.adoc[]
+include::{snippets}/ArtApi/Search/Keyword/AuctionArt/response-fields.adoc[]
