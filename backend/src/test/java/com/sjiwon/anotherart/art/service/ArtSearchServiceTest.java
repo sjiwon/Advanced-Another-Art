@@ -6,6 +6,7 @@ import com.sjiwon.anotherart.art.infra.query.dto.response.ArtDetails;
 import com.sjiwon.anotherart.art.infra.query.dto.response.AuctionArt;
 import com.sjiwon.anotherart.art.infra.query.dto.response.GeneralArt;
 import com.sjiwon.anotherart.art.service.dto.response.ArtAssembler;
+import com.sjiwon.anotherart.art.utils.search.ArtDetailSearchCondition;
 import com.sjiwon.anotherart.art.utils.search.Pagination;
 import com.sjiwon.anotherart.auction.domain.Auction;
 import com.sjiwon.anotherart.common.ServiceTest;
@@ -24,13 +25,14 @@ import org.springframework.data.domain.Pageable;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 import static com.sjiwon.anotherart.art.domain.ArtType.AUCTION;
 import static com.sjiwon.anotherart.art.domain.ArtType.GENERAL;
-import static com.sjiwon.anotherart.art.utils.search.PagingConstants.getDefaultPageRequest;
+import static com.sjiwon.anotherart.art.utils.search.PagingConstants.getPageRequest;
 import static com.sjiwon.anotherart.art.utils.search.SortType.DATE_ASC;
-import static com.sjiwon.anotherart.fixture.AuctionFixture.AUCTION_OPEN_NOW;
 import static com.sjiwon.anotherart.fixture.MemberFixture.*;
+import static com.sjiwon.anotherart.fixture.PeriodFixture.OPEN_NOW;
 import static com.sjiwon.anotherart.member.domain.point.PointType.CHARGE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -48,8 +50,12 @@ class ArtSearchServiceTest extends ServiceTest {
     private final Art[] auctionArts = new Art[2]; // [0] = 구매 X, [1] = 구매 O
     private final Auction[] auctions = new Auction[2];
 
-    private static final Pageable PAGE_REQUEST_1 = getDefaultPageRequest(0);
-    private static final Pageable PAGE_REQUEST_2 = getDefaultPageRequest(1);
+    private static final Pageable PAGE_REQUEST_1 = getPageRequest(0);
+    private static final Pageable PAGE_REQUEST_2 = getPageRequest(1);
+
+    private static final String KEYWORD_HELLO = "Hello";
+    private static final String KEYWORD_WORLD = "World";
+    private static final Set<String> HASHTAGS = Set.of("A", "B", "C");
 
     @BeforeEach
     void setUp() {
@@ -73,9 +79,23 @@ class ArtSearchServiceTest extends ServiceTest {
         List<ArtFixture> auctionArtFixtures = Arrays.stream(ArtFixture.values())
                 .filter(art -> art.getType() == AUCTION)
                 .toList();
-        Arrays.setAll(generalArts, i -> artRepository.save(generalArtFixtures.get(i).toArt(owner)));
-        Arrays.setAll(auctionArts, i -> artRepository.save(auctionArtFixtures.get(i).toArt(owner)));
-        Arrays.setAll(auctions, i -> auctionRepository.save(AUCTION_OPEN_NOW.toAuction(auctionArts[i])));
+
+        for (int i = 0; i < auctionArts.length; i++) {
+            if (i % 2 == 0) {
+                auctionArts[i] = artRepository.save(auctionArtFixtures.get(i).toArt(owner, String.format("%s %d %s", KEYWORD_HELLO, i, "AUCTION"), HASHTAGS));
+            } else {
+                auctionArts[i] = artRepository.save(auctionArtFixtures.get(i).toArt(owner, String.format("%s %d %s", KEYWORD_WORLD, i, "AUCTION"), HASHTAGS));
+            }
+            auctions[i] = auctionRepository.save(Auction.createAuction(auctionArts[i], OPEN_NOW.toPeriod()));
+        }
+
+        for (int i = 0; i < generalArts.length; i++) {
+            if (i % 2 == 0) {
+                generalArts[i] = artRepository.save(generalArtFixtures.get(i).toArt(owner, String.format("%s %d %s", KEYWORD_HELLO, i, "GENERAL"), HASHTAGS));
+            } else {
+                generalArts[i] = artRepository.save(generalArtFixtures.get(i).toArt(owner, String.format("%s %d %s", KEYWORD_WORLD, i, "GENERAL"), HASHTAGS));
+            }
+        }
     }
 
     @Nested
@@ -224,13 +244,72 @@ class ArtSearchServiceTest extends ServiceTest {
                 () -> assertThat(pagination2.isNextExists()).isFalse()
         );
 
-        List<ArtDetails> result1 = assembler1.result();
-        List<ArtDetails> result2 = assembler2.result();
-        asssertThatActiveAuctionArtMatch(result1, List.of(auctions[0], auctions[1]));
-        asssertThatActiveAuctionArtMatch(result2, List.of());
+        asssertThatAuctionArtMatch(assembler1.result(), List.of(auctions[0], auctions[1]));
+        asssertThatAuctionArtMatch(assembler2.result(), List.of());
     }
 
-    private void asssertThatActiveAuctionArtMatch(List<ArtDetails> result, List<Auction> auctions) {
+    @Nested
+    @DisplayName("키워드 작품 조회")
+    class findArtsByKeyword {
+        private static final ArtDetailSearchCondition auctionCondition
+                = new ArtDetailSearchCondition(DATE_ASC, AUCTION, KEYWORD_HELLO);
+        private static final ArtDetailSearchCondition generalCondition
+                = new ArtDetailSearchCondition(DATE_ASC, GENERAL, KEYWORD_HELLO);
+
+        @Test
+        @DisplayName("Hello 키워드를 포함한 경매 작품을 조회한다 [등록날짜 ASC]")
+        void getAuctionArtsByKeyword() {
+            ArtAssembler assembler1 = artSearchService.getArtsByKeyword(auctionCondition, PAGE_REQUEST_1); // 1건
+            ArtAssembler assembler2 = artSearchService.getArtsByKeyword(auctionCondition, PAGE_REQUEST_2); // 0건
+
+            Pagination pagination1 = assembler1.pagination();
+            Pagination pagination2 = assembler2.pagination();
+            assertAll(
+                    () -> assertThat(pagination1.getCurrentPage()).isEqualTo(1),
+                    () -> assertThat(pagination1.getTotalPages()).isEqualTo(1),
+                    () -> assertThat(pagination1.getTotalElements()).isEqualTo(1),
+                    () -> assertThat(pagination1.isPrevExists()).isFalse(),
+                    () -> assertThat(pagination1.isNextExists()).isFalse(),
+
+                    () -> assertThat(pagination2.getCurrentPage()).isEqualTo(2),
+                    () -> assertThat(pagination2.getTotalPages()).isEqualTo(1),
+                    () -> assertThat(pagination2.getTotalElements()).isEqualTo(1),
+                    () -> assertThat(pagination2.isPrevExists()).isFalse(),
+                    () -> assertThat(pagination2.isNextExists()).isFalse()
+            );
+
+            asssertThatAuctionArtMatch(assembler1.result(), List.of(auctions[0]));
+            asssertThatAuctionArtMatch(assembler2.result(), List.of());
+        }
+
+        @Test
+        @DisplayName("Hello 키워드를 포함한 일반 작품을 조회한다 [등록날짜 ASC]")
+        void getGeneralArtsByKeyword() {
+            ArtAssembler assembler1 = artSearchService.getArtsByKeyword(generalCondition, PAGE_REQUEST_1); // 1건
+            ArtAssembler assembler2 = artSearchService.getArtsByKeyword(generalCondition, PAGE_REQUEST_2); // 0건
+
+            Pagination pagination1 = assembler1.pagination();
+            Pagination pagination2 = assembler2.pagination();
+            assertAll(
+                    () -> assertThat(pagination1.getCurrentPage()).isEqualTo(1),
+                    () -> assertThat(pagination1.getTotalPages()).isEqualTo(1),
+                    () -> assertThat(pagination1.getTotalElements()).isEqualTo(1),
+                    () -> assertThat(pagination1.isPrevExists()).isFalse(),
+                    () -> assertThat(pagination1.isNextExists()).isFalse(),
+
+                    () -> assertThat(pagination2.getCurrentPage()).isEqualTo(2),
+                    () -> assertThat(pagination2.getTotalPages()).isEqualTo(1),
+                    () -> assertThat(pagination2.getTotalElements()).isEqualTo(1),
+                    () -> assertThat(pagination2.isPrevExists()).isFalse(),
+                    () -> assertThat(pagination2.isNextExists()).isFalse()
+            );
+
+            asssertThatGeneralArtMatch(assembler1.result(), List.of(generalArts[0]));
+            asssertThatGeneralArtMatch(assembler2.result(), List.of());
+        }
+    }
+
+    private void asssertThatAuctionArtMatch(List<ArtDetails> result, List<Auction> auctions) {
         int totalSize = auctions.size();
         assertThat(result).hasSize(totalSize);
 
@@ -238,6 +317,17 @@ class ArtSearchServiceTest extends ServiceTest {
             AuctionArt auctionArt = (AuctionArt) result.get(i);
             Auction auction = auctions.get(i);
             assertThat(auctionArt.getAuction().getId()).isEqualTo(auction.getId());
+        }
+    }
+
+    private void asssertThatGeneralArtMatch(List<ArtDetails> result, List<Art> arts) {
+        int totalSize = arts.size();
+        assertThat(result).hasSize(totalSize);
+
+        for (int i = 0; i < totalSize; i++) {
+            GeneralArt generalArt = (GeneralArt) result.get(i);
+            Art art = arts.get(i);
+            assertThat(generalArt.getArt().getId()).isEqualTo(art.getId());
         }
     }
 }

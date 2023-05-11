@@ -17,4 +17,8 @@ public record ArtDetailSearchCondition(
                 value
         );
     }
+
+    public boolean isAuctionType() {
+        return artType == AUCTION;
+    }
 }

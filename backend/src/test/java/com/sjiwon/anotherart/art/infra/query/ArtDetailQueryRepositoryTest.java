@@ -3,6 +3,8 @@ package com.sjiwon.anotherart.art.infra.query;
 import com.sjiwon.anotherart.art.domain.Art;
 import com.sjiwon.anotherart.art.domain.ArtRepository;
 import com.sjiwon.anotherart.art.infra.query.dto.response.AuctionArt;
+import com.sjiwon.anotherart.art.infra.query.dto.response.GeneralArt;
+import com.sjiwon.anotherart.art.utils.search.ArtDetailSearchCondition;
 import com.sjiwon.anotherart.auction.domain.Auction;
 import com.sjiwon.anotherart.auction.domain.AuctionRepository;
 import com.sjiwon.anotherart.common.RepositoryTest;
@@ -25,9 +27,11 @@ import javax.persistence.PersistenceContext;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 import static com.sjiwon.anotherart.art.domain.ArtType.AUCTION;
-import static com.sjiwon.anotherart.art.utils.search.PagingConstants.getDefaultPageRequest;
+import static com.sjiwon.anotherart.art.domain.ArtType.GENERAL;
+import static com.sjiwon.anotherart.art.utils.search.PagingConstants.getPageRequest;
 import static com.sjiwon.anotherart.art.utils.search.SortType.*;
 import static com.sjiwon.anotherart.fixture.AuctionFixture.AUCTION_OPEN_NOW;
 import static com.sjiwon.anotherart.fixture.MemberFixture.MEMBER_A;
@@ -52,9 +56,9 @@ class ArtDetailQueryRepositoryTest extends RepositoryTest {
     @PersistenceContext
     private EntityManager em;
 
-    private static final Pageable PAGE_REQUEST_1 = getDefaultPageRequest(0);
-    private static final Pageable PAGE_REQUEST_2 = getDefaultPageRequest(1);
-    private static final Pageable PAGE_REQUEST_3 = getDefaultPageRequest(2);
+    private static final Pageable PAGE_REQUEST_1 = getPageRequest(0);
+    private static final Pageable PAGE_REQUEST_2 = getPageRequest(1);
+    private static final Pageable PAGE_REQUEST_3 = getPageRequest(2);
 
     private Member owner;
     private final Member[] bidders = new Member[20];
@@ -100,13 +104,12 @@ class ArtDetailQueryRepositoryTest extends RepositoryTest {
             for (int i = 0; i < 20; i++) {
                 if (i % 2 == 0) {
                     arts[i] = artRepository.save(auctionArtFixtures.get(i).toArt(owner, evenPrice));
-                    applyLikeMarking(arts[i], i);
                     evenPrice += 2000;
                 } else {
                     arts[i] = artRepository.save(auctionArtFixtures.get(i).toArt(owner, oddPrice));
-                    applyLikeMarking(arts[i], i);
                     oddPrice += 2000;
                 }
+                applyLikeMarking(arts[i], i);
 
                 auctions[i] = AUCTION_OPEN_NOW.toAuction(arts[i]);
                 auctionRepository.save(auctions[i]);
@@ -804,7 +807,7 @@ class ArtDetailQueryRepositoryTest extends RepositoryTest {
                     )
             );
 
-            Page<AuctionArt> result5 = artRepository.findActiveAuctionArts(BID_COUNT_DESC , PAGE_REQUEST_2);
+            Page<AuctionArt> result5 = artRepository.findActiveAuctionArts(BID_COUNT_DESC, PAGE_REQUEST_2);
             assertAll(
                     () -> assertThat(result5.hasPrevious()).isTrue(),
                     () -> assertThat(result5.hasNext()).isFalse()
@@ -821,19 +824,151 @@ class ArtDetailQueryRepositoryTest extends RepositoryTest {
                     )
             );
         }
+
+        private void makeAuctionEnd(Auction... auctions) {
+            List<Long> auctionIds = Arrays.stream(auctions)
+                    .map(Auction::getId)
+                    .toList();
+
+            em.createQuery("UPDATE Auction a" +
+                            " SET a.period.endDate = :endDate" +
+                            " WHERE a.id IN :auctionIds")
+                    .setParameter("endDate", LocalDateTime.now().minusDays(1))
+                    .setParameter("auctionIds", auctionIds)
+                    .executeUpdate();
+        }
     }
 
-    private void makeAuctionEnd(Auction... auctions) {
-        List<Long> auctionIds = Arrays.stream(auctions)
-                .map(Auction::getId)
-                .toList();
+    @Nested
+    @DisplayName("키워드 작품 조회 [작품명 or 작품 설명]")
+    class findArtsByKeyword {
+        private final Art[] generalArts = new Art[20];
+        private final Art[] auctionArts = new Art[20];
+        private final Auction[] auctions = new Auction[20];
 
-        em.createQuery("UPDATE Auction a" +
-                        " SET a.period.endDate = :endDate" +
-                        " WHERE a.id IN :auctionIds")
-                .setParameter("endDate", LocalDateTime.now().minusDays(1))
-                .setParameter("auctionIds", auctionIds)
-                .executeUpdate();
+        private static final String KEYWORD_HELLO = "Hello";
+        private static final String KEYWORD_WORLD = "World";
+        private static final Set<String> HASHTAGS = Set.of("A", "B", "C");
+
+        @BeforeEach
+        void setUp() {
+            initArts();
+        }
+
+        private void initArts() {
+            List<ArtFixture> auctionArtFixtures = Arrays.stream(ArtFixture.values())
+                    .filter(art -> art.getType() == AUCTION)
+                    .toList();
+            List<ArtFixture> generalArtFixtures = Arrays.stream(ArtFixture.values())
+                    .filter(art -> art.getType() == GENERAL)
+                    .toList();
+
+            for (int i = 0; i < auctionArts.length; i++) {
+                if (i % 2 == 0) {
+                    auctionArts[i] = artRepository.save(auctionArtFixtures.get(i).toArt(owner, String.format("%s %d %s", KEYWORD_HELLO, i, "AUCTION"), HASHTAGS));
+                } else {
+                    auctionArts[i] = artRepository.save(auctionArtFixtures.get(i).toArt(owner, String.format("%s %d %s", KEYWORD_WORLD, i, "AUCTION"), HASHTAGS));
+                }
+                applyLikeMarking(auctionArts[i], i);
+
+                auctions[i] = AUCTION_OPEN_NOW.toAuction(auctionArts[i]);
+                auctionRepository.save(auctions[i]);
+                applyBid(auctions[i], i);
+            }
+
+            for (int i = 0; i < generalArts.length; i++) {
+                if (i % 2 == 0) {
+                    generalArts[i] = artRepository.save(generalArtFixtures.get(i).toArt(owner, String.format("%s %d %s", KEYWORD_HELLO, i, "GENERAL"), HASHTAGS));
+                } else {
+                    generalArts[i] = artRepository.save(generalArtFixtures.get(i).toArt(owner, String.format("%s %d %s", KEYWORD_WORLD, i, "GENERAL"), HASHTAGS));
+                }
+                applyLikeMarking(generalArts[i], i);
+            }
+        }
+
+        private void applyLikeMarking(Art art, int count) {
+            for (int i = 0; i < count; i++) {
+                favoriteRepository.save(Favorite.favoriteMarking(art.getId(), bidders[i].getId()));
+            }
+        }
+
+        private void applyBid(Auction auction, int count) {
+            for (int i = 0; i < count; i++) {
+                auction.applyNewBid(bidders[i], auction.getHighestBidPrice() + 100);
+            }
+        }
+
+        @Test
+        @DisplayName("Hello라는 키워드를 포함한 경매 작품을 조회한다")
+        void findAuctionArtsBykeyword() {
+            final ArtDetailSearchCondition condition = new ArtDetailSearchCondition(DATE_ASC, AUCTION, KEYWORD_HELLO);
+
+            /* 1. 경매 작품 8건 fetching */
+            Page<AuctionArt> result1 = artRepository.findAuctionArtsBykeyword(condition, PAGE_REQUEST_1);
+            assertAll(
+                    () -> assertThat(result1.hasPrevious()).isFalse(),
+                    () -> assertThat(result1.hasNext()).isTrue()
+            );
+            assertThatPagingAuctionArtMatch(
+                    result1.getContent(),
+                    List.of(
+                            auctions[0], auctions[2], auctions[4], auctions[6],
+                            auctions[8], auctions[10], auctions[12], auctions[14]
+                    ),
+                    List.of(
+                            0, 2, 4, 6,
+                            8, 10, 12, 14
+                    )
+            );
+
+            /* 2. 경매 작품 2건 fetching */
+            Page<AuctionArt> result2 = artRepository.findAuctionArtsBykeyword(condition, PAGE_REQUEST_2);
+            assertAll(
+                    () -> assertThat(result2.hasPrevious()).isTrue(),
+                    () -> assertThat(result2.hasNext()).isFalse()
+            );
+            assertThatPagingAuctionArtMatch(
+                    result2.getContent(),
+                    List.of(auctions[16], auctions[18]),
+                    List.of(16, 18)
+            );
+        }
+
+        @Test
+        @DisplayName("Hello라는 키워드를 포함한 일반 작품을 조회한다")
+        void findGeneralArtsBykeyword() {
+            final ArtDetailSearchCondition condition = new ArtDetailSearchCondition(DATE_ASC, GENERAL, KEYWORD_HELLO);
+
+            /* 1. 일반 작품 8건 fetching */
+            Page<GeneralArt> result1 = artRepository.findGeneralArtsBykeyword(condition, PAGE_REQUEST_1);
+            assertAll(
+                    () -> assertThat(result1.hasPrevious()).isFalse(),
+                    () -> assertThat(result1.hasNext()).isTrue()
+            );
+            assertThatPagingGeneralArtMatch(
+                    result1.getContent(),
+                    List.of(
+                            generalArts[0], generalArts[2], generalArts[4], generalArts[6],
+                            generalArts[8], generalArts[10], generalArts[12], generalArts[14]
+                    ),
+                    List.of(
+                            0, 2, 4, 6,
+                            8, 10, 12, 14
+                    )
+            );
+
+            /* 2. 일반o 작품 2건 fetching */
+            Page<GeneralArt> result2 = artRepository.findGeneralArtsBykeyword(condition, PAGE_REQUEST_2);
+            assertAll(
+                    () -> assertThat(result2.hasPrevious()).isTrue(),
+                    () -> assertThat(result2.hasNext()).isFalse()
+            );
+            assertThatPagingGeneralArtMatch(
+                    result2.getContent(),
+                    List.of(generalArts[16], generalArts[18]),
+                    List.of(16, 18)
+            );
+        }
     }
 
     private void assertThatPagingAuctionArtMatch(List<AuctionArt> content, List<Auction> auctions, List<Integer> counts) {
@@ -849,6 +984,22 @@ class ArtDetailQueryRepositoryTest extends RepositoryTest {
                     () -> assertThat(auctionArt.getAuction().getId()).isEqualTo(auction.getId()),
                     () -> assertThat(auctionArt.getAuction().getBidCount()).isEqualTo(count),
                     () -> assertThat(auctionArt.getArt().getId()).isEqualTo(auction.getArt().getId()),
+                    () -> assertThat(auctionArt.getArt().getLikeCount()).isEqualTo(count)
+            );
+        }
+    }
+
+    private void assertThatPagingGeneralArtMatch(List<GeneralArt> content, List<Art> arts, List<Integer> counts) {
+        int totalSize = arts.size();
+        assertThat(content).hasSize(totalSize);
+
+        for (int i = 0; i < totalSize; i++) {
+            GeneralArt auctionArt = content.get(i);
+            Art art = arts.get(i);
+            Integer count = counts.get(i);
+
+            assertAll(
+                    () -> assertThat(auctionArt.getArt().getId()).isEqualTo(art.getId()),
                     () -> assertThat(auctionArt.getArt().getLikeCount()).isEqualTo(count)
             );
         }

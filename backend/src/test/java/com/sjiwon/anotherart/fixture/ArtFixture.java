@@ -91,11 +91,11 @@ public enum ArtFixture {
         );
     }
 
-    public Art toArt(Member owner, Set<String> hashtags) {
+    public Art toArt(Member owner, String keyword, Set<String> hashtags) {
         return Art.createArt(
                 owner,
-                ArtName.from(name),
-                Description.from(description),
+                ArtName.from(keyword),
+                Description.from(keyword),
                 type,
                 price,
                 storageName,
