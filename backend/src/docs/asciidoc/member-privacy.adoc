@@ -30,3 +30,20 @@ include::{snippets}/MemberApi/ResetPassword/Auth/Success/request-fields.adoc[]
 
 HTTP Response
 include::{snippets}/MemberApi/ResetPassword/Auth/Success/http-response.adoc[]
+
+== 비밀번호 초기화 간 사용자 인증
+=== 1. 이전과 동일한 비밀번호로 초기화할 수 없다
+HTTP Request
+include::{snippets}/MemberApi/ResetPassword/Failure/http-request.adoc[]
+include::{snippets}/MemberApi/ResetPassword/Failure/request-fields.adoc[]
+
+HTTP Response
+include::{snippets}/MemberApi/ResetPassword/Failure/response-body.adoc[]
+
+=== 2. 비밀번호를 초기화한다
+HTTP Request
+include::{snippets}/MemberApi/ResetPassword/Success/http-request.adoc[]
+include::{snippets}/MemberApi/ResetPassword/Success/request-fields.adoc[]
+
+HTTP Response
+include::{snippets}/MemberApi/ResetPassword/Success/http-response.adoc[]

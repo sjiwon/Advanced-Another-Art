@@ -7,6 +7,7 @@ import com.sjiwon.anotherart.member.domain.MemberRepository;
 import com.sjiwon.anotherart.member.domain.Nickname;
 import com.sjiwon.anotherart.member.exception.MemberErrorCode;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,6 +18,7 @@ public class MemberService {
     private final MemberValidator memberValidator;
     private final MemberRepository memberRepository;
     private final MemberFindService memberFindService;
+    private final PasswordEncoder passwordEncoder;
 
     @Transactional
     public Long signUp(Member member) {
@@ -63,5 +65,11 @@ public class MemberService {
         if (!memberRepository.existsByNameAndEmailAndLoginId(name, email, loginId)) {
             throw AnotherArtException.type(MemberErrorCode.MEMBER_NOT_FOUND);
         }
+    }
+
+    @Transactional
+    public void resetPassword(String loginId, String changePassword) {
+        Member member = memberFindService.findByLoginId(loginId);
+        member.changePassword(changePassword, passwordEncoder);
     }
 }

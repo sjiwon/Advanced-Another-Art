@@ -1,6 +1,7 @@
 package com.sjiwon.anotherart.member.service;
 
 import com.sjiwon.anotherart.common.ServiceTest;
+import com.sjiwon.anotherart.common.utils.PasswordEncoderUtils;
 import com.sjiwon.anotherart.global.exception.AnotherArtException;
 import com.sjiwon.anotherart.member.domain.*;
 import com.sjiwon.anotherart.member.exception.MemberErrorCode;
@@ -10,6 +11,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import static com.sjiwon.anotherart.fixture.MemberFixture.MEMBER_A;
 import static com.sjiwon.anotherart.fixture.MemberFixture.MEMBER_B;
@@ -22,6 +24,8 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 class MemberServiceTest extends ServiceTest {
     @Autowired
     private MemberService memberService;
+
+    private static final PasswordEncoder ENCODER = PasswordEncoderUtils.getEncoder();
 
     @Nested
     @DisplayName("회원가입")
@@ -288,6 +292,36 @@ class MemberServiceTest extends ServiceTest {
                 member.getEmail(),
                 member.getLoginId()
         ));
+    }
+
+    @Nested
+    @DisplayName("비밀번호 초기화")
+    class resetPassword {
+        private Member member;
+
+        @BeforeEach
+        void setUp() {
+            member = memberRepository.save(MEMBER_A.toMember());
+        }
+
+        @Test
+        @DisplayName("이전과 동일한 비밀번호로 초기화할 수 없다")
+        void failureBySameAsBefore() {
+            assertThatThrownBy(() -> memberService.resetPassword(member.getLoginId(), MEMBER_A.getPassword()))
+                    .isInstanceOf(AnotherArtException.class)
+                    .hasMessage(MemberErrorCode.PASSWORD_SAME_AS_BEFORE.getMessage());
+        }
+
+        @Test
+        @DisplayName("비밀번호를 초기화한다")
+        void success() {
+            // when
+            memberService.resetPassword(member.getLoginId(), "hello123ABC!@#");
+
+            // then
+            Member findMember = memberRepository.findById(member.getId()).orElseThrow();
+            assertThat(ENCODER.matches("hello123ABC!@#", findMember.getPasswordValue())).isTrue();
+        }
     }
 
     private Member createDuplicateMember(String nickname, String loginId, String phone, String email) {
