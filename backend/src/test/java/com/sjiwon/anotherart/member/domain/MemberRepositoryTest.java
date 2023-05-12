@@ -40,6 +40,28 @@ class MemberRepositoryTest extends RepositoryTest {
     }
 
     @Test
+    @DisplayName("이름 + 이메일로 사용자를 조회한다")
+    void findByNameAndEmail(){
+        // when
+        Optional<Member> emptyMember1 = memberRepository.findByNameAndEmail(
+                member.getName(),
+                member.getEmail()
+        );
+        Optional<Member> emptyMember2 = memberRepository.findByNameAndEmail(
+                member.getName(),
+                Email.from("diff" + member.getEmailValue())
+        );
+        Member actualMember = memberRepository.findByNameAndEmail(member.getName(), member.getEmail()).orElseThrow();
+
+        // then
+        assertAll(
+                () -> assertThat(emptyMember1).isEmpty(),
+                () -> assertThat(emptyMember2).isEmpty(),
+                () -> assertThat(actualMember).isEqualTo(member)
+        );
+    }
+
+    @Test
     @DisplayName("닉네임에 해당하는 사용자가 존재하는지 확인한다")
     void existsByNickname() {
         // given

@@ -9,7 +9,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 
 import static com.sjiwon.anotherart.fixture.MemberFixture.MEMBER_A;
 import static com.sjiwon.anotherart.fixture.MemberFixture.MEMBER_B;
@@ -255,12 +255,25 @@ class MemberServiceTest extends ServiceTest {
         );
     }
 
+    @Test
+    @DisplayName("사용자의 로그인 아이디를 조회한다")
+    void findLoginId() {
+        // given
+        Member member = memberRepository.save(MEMBER_A.toMember());
+
+        // when
+        String findLoginId = memberService.findLoginId(member.getName(), member.getEmail());
+
+        // then
+        assertThat(findLoginId).isEqualTo(member.getLoginId());
+    }
+
     private Member createDuplicateMember(String nickname, String loginId, String phone, String email) {
         return Member.createMember(
                 MEMBER_A.getName(),
                 Nickname.from(nickname),
                 loginId,
-                Password.encrypt(MEMBER_A.getPassword(), new BCryptPasswordEncoder()),
+                Password.encrypt(MEMBER_A.getPassword(), PasswordEncoderFactories.createDelegatingPasswordEncoder()),
                 "경기대학교",
                 phone,
                 Email.from(email),

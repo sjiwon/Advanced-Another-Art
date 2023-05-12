@@ -1,6 +1,7 @@
 package com.sjiwon.anotherart.member.service;
 
 import com.sjiwon.anotherart.global.exception.AnotherArtException;
+import com.sjiwon.anotherart.member.domain.Email;
 import com.sjiwon.anotherart.member.domain.Member;
 import com.sjiwon.anotherart.member.domain.MemberRepository;
 import com.sjiwon.anotherart.member.exception.MemberErrorCode;
@@ -21,6 +22,11 @@ public class MemberFindService {
 
     public Member findByLoginId(String loginId) {
         return memberRepository.findByLoginId(loginId)
+                .orElseThrow(() -> AnotherArtException.type(MemberErrorCode.MEMBER_NOT_FOUND));
+    }
+
+    public Member findByNameAndEmail(String name, Email email) {
+        return memberRepository.findByNameAndEmail(name, email)
                 .orElseThrow(() -> AnotherArtException.type(MemberErrorCode.MEMBER_NOT_FOUND));
     }
 }

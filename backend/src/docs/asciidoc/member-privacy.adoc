@@ -1,0 +1,15 @@
+= 사용자 개인 정보 조회 및 수정 API
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 2
+
+== 로그인 아이디 조회
+HTTP Request
+include::{snippets}/MemberApi/FindLoginId/http-request.adoc[]
+include::{snippets}/MemberApi/FindLoginId/request-parameters.adoc[]
+
+HTTP Response
+include::{snippets}/MemberApi/FindLoginId/response-body.adoc[]
+include::{snippets}/MemberApi/FindLoginId/response-fields.adoc[]

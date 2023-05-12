@@ -11,10 +11,7 @@ import com.sjiwon.anotherart.auction.controller.BidApiController;
 import com.sjiwon.anotherart.auction.service.BidService;
 import com.sjiwon.anotherart.favorite.controller.FavoriteApiController;
 import com.sjiwon.anotherart.favorite.service.FavoriteService;
-import com.sjiwon.anotherart.member.controller.MemberApiController;
-import com.sjiwon.anotherart.member.controller.MemberInformationApiController;
-import com.sjiwon.anotherart.member.controller.MemberModifyApiController;
-import com.sjiwon.anotherart.member.controller.MemberPointApiController;
+import com.sjiwon.anotherart.member.controller.*;
 import com.sjiwon.anotherart.member.service.MemberInformationService;
 import com.sjiwon.anotherart.member.service.MemberPointService;
 import com.sjiwon.anotherart.member.service.MemberService;
@@ -62,7 +59,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 
         // member
         MemberApiController.class, MemberModifyApiController.class, MemberPointApiController.class,
-        MemberInformationApiController.class,
+        MemberInformationApiController.class, MemberPrivacyInformationApiController.class,
 
         // purchase
         PurchaseApiController.class,

@@ -51,4 +51,9 @@ public class MemberService {
         Member member = memberFindService.findById(memberId);
         member.changeAddress(postcode, defaultAddress, detailAddress);
     }
+
+    public String findLoginId(String name, Email email) {
+        return memberFindService.findByNameAndEmail(name, email)
+                .getLoginId();
+    }
 }
