@@ -55,11 +55,26 @@ public class ArtSearchService {
     }
 
     private Page<AuctionArt> getAuctionArtsByKeyword(ArtDetailSearchCondition condition, Pageable pageable) {
-        return artRepository.findAuctionArtsBykeyword(condition, pageable);
+        return artRepository.findAuctionArtsByKeyword(condition, pageable);
     }
 
     private Page<GeneralArt> getGeneralArtsByKeyword(ArtDetailSearchCondition condition, Pageable pageable) {
-        return artRepository.findGeneralArtsBykeyword(condition, pageable);
+        return artRepository.findGeneralArtsByKeyword(condition, pageable);
+    }
+
+    public ArtAssembler getArtsByHashtag(ArtDetailSearchCondition condition, Pageable pageable) {
+        Page<? extends ArtDetails> result = condition.isAuctionType()
+                ? getAuctionArtsByHashtag(condition, pageable)
+                : getGeneralArtsByHashtag(condition, pageable);
+        return assemblingResult(result, pageable.getPageNumber() + 1);
+    }
+
+    private Page<AuctionArt> getAuctionArtsByHashtag(ArtDetailSearchCondition condition, Pageable pageable) {
+        return artRepository.findAuctionArtsByHashtag(condition, pageable);
+    }
+
+    private Page<GeneralArt> getGeneralArtsByHashtag(ArtDetailSearchCondition condition, Pageable pageable) {
+        return artRepository.findGeneralArtsByHashtag(condition, pageable);
     }
 
     private ArtAssembler assemblingResult(Page<? extends ArtDetails> result, int page) {

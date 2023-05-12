@@ -64,7 +64,7 @@ public class ArtDetailQueryRepositoryImpl implements ArtDetailQueryRepository {
     }
 
     @Override
-    public Page<AuctionArt> findAuctionArtsBykeyword(ArtDetailSearchCondition condition, Pageable pageable) {
+    public Page<AuctionArt> findAuctionArtsByKeyword(ArtDetailSearchCondition condition, Pageable pageable) {
         JPAQuery<AuctionArt> fetchQuery = query
                 .select(assembleAuctionArtProjections())
                 .from(art)
@@ -94,7 +94,44 @@ public class ArtDetailQueryRepositoryImpl implements ArtDetailQueryRepository {
     }
 
     @Override
-    public Page<GeneralArt> findGeneralArtsBykeyword(ArtDetailSearchCondition condition, Pageable pageable) {
+    public Page<AuctionArt> findAuctionArtsByHashtag(ArtDetailSearchCondition condition, Pageable pageable) {
+        List<Long> artIdsWithHashtag = query
+                .selectDistinct(art.id)
+                .from(art)
+                .innerJoin(hashtag).on(hashtag.art.id.eq(art.id))
+                .where(hashtag.name.eq(condition.value()))
+                .fetch();
+
+        JPAQuery<AuctionArt> fetchQuery = query
+                .select(assembleAuctionArtProjections())
+                .from(art)
+                .innerJoin(art.owner, owner)
+                .innerJoin(auction).on(auction.art.id.eq(art.id))
+                .leftJoin(auction.bidders.highestBidder, highestBidder)
+                .where(
+                        artTypeEq(condition.artType()),
+                        art.id.in(artIdsWithHashtag)
+                )
+                .orderBy(orderBySearchCondition(condition.sortType(), AUCTION).toArray(OrderSpecifier[]::new))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize());
+
+        List<AuctionArt> result = makeAuctionArtFetchQueryResult(fetchQuery, condition.sortType());
+        Long count = query
+                .select(art.count())
+                .from(art)
+                .innerJoin(auction).on(auction.art.id.eq(art.id))
+                .where(
+                        artTypeEq(condition.artType()),
+                        art.id.in(artIdsWithHashtag)
+                )
+                .fetchOne();
+
+        return PageableExecutionUtils.getPage(result, pageable, () -> count);
+    }
+
+    @Override
+    public Page<GeneralArt> findGeneralArtsByKeyword(ArtDetailSearchCondition condition, Pageable pageable) {
         JPAQuery<GeneralArt> fetchQuery = query
                 .select(assembleGeneralArtProjections())
                 .from(art)
@@ -116,6 +153,42 @@ public class ArtDetailQueryRepositoryImpl implements ArtDetailQueryRepository {
                 .where(
                         artTypeEq(condition.artType()),
                         artKeywordEq(condition.value())
+                )
+                .fetchOne();
+
+        return PageableExecutionUtils.getPage(result, pageable, () -> count);
+    }
+
+    @Override
+    public Page<GeneralArt> findGeneralArtsByHashtag(ArtDetailSearchCondition condition, Pageable pageable) {
+        List<Long> artIdsWithHashtag = query
+                .selectDistinct(art.id)
+                .from(art)
+                .innerJoin(hashtag).on(hashtag.art.id.eq(art.id))
+                .where(hashtag.name.eq(condition.value()))
+                .fetch();
+
+        JPAQuery<GeneralArt> fetchQuery = query
+                .select(assembleGeneralArtProjections())
+                .from(art)
+                .innerJoin(art.owner, owner)
+                .leftJoin(purchase).on(purchase.art.id.eq(art.id))
+                .leftJoin(purchase.buyer, buyer)
+                .where(
+                        artTypeEq(condition.artType()),
+                        art.id.in(artIdsWithHashtag)
+                )
+                .orderBy(orderBySearchCondition(condition.sortType(), GENERAL).toArray(OrderSpecifier[]::new))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize());
+
+        List<GeneralArt> result = makeGeneralArtFetchQueryResult(fetchQuery, condition.sortType());
+        Long count = query
+                .select(art.count())
+                .from(art)
+                .where(
+                        artTypeEq(condition.artType()),
+                        art.id.in(artIdsWithHashtag)
                 )
                 .fetchOne();
 

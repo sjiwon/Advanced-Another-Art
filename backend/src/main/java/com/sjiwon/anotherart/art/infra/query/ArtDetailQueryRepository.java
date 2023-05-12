@@ -9,6 +9,8 @@ import org.springframework.data.domain.Pageable;
 
 public interface ArtDetailQueryRepository {
     Page<AuctionArt> findActiveAuctionArts(SortType sortType, Pageable pageable);
-    Page<AuctionArt> findAuctionArtsBykeyword(ArtDetailSearchCondition condition, Pageable pageable);
-    Page<GeneralArt> findGeneralArtsBykeyword(ArtDetailSearchCondition condition, Pageable pageable);
+    Page<AuctionArt> findAuctionArtsByKeyword(ArtDetailSearchCondition condition, Pageable pageable);
+    Page<AuctionArt> findAuctionArtsByHashtag(ArtDetailSearchCondition condition, Pageable pageable);
+    Page<GeneralArt> findGeneralArtsByKeyword(ArtDetailSearchCondition condition, Pageable pageable);
+    Page<GeneralArt> findGeneralArtsByHashtag(ArtDetailSearchCondition condition, Pageable pageable);
 }

@@ -900,11 +900,11 @@ class ArtDetailQueryRepositoryTest extends RepositoryTest {
 
         @Test
         @DisplayName("Hello라는 키워드를 포함한 경매 작품을 조회한다")
-        void findAuctionArtsBykeyword() {
+        void findAuctionArtsByKeyword() {
             final ArtDetailSearchCondition condition = new ArtDetailSearchCondition(DATE_ASC, AUCTION, KEYWORD_HELLO);
 
             /* 1. 경매 작품 8건 fetching */
-            Page<AuctionArt> result1 = artRepository.findAuctionArtsBykeyword(condition, PAGE_REQUEST_1);
+            Page<AuctionArt> result1 = artRepository.findAuctionArtsByKeyword(condition, PAGE_REQUEST_1);
             assertAll(
                     () -> assertThat(result1.hasPrevious()).isFalse(),
                     () -> assertThat(result1.hasNext()).isTrue()
@@ -922,7 +922,7 @@ class ArtDetailQueryRepositoryTest extends RepositoryTest {
             );
 
             /* 2. 경매 작품 2건 fetching */
-            Page<AuctionArt> result2 = artRepository.findAuctionArtsBykeyword(condition, PAGE_REQUEST_2);
+            Page<AuctionArt> result2 = artRepository.findAuctionArtsByKeyword(condition, PAGE_REQUEST_2);
             assertAll(
                     () -> assertThat(result2.hasPrevious()).isTrue(),
                     () -> assertThat(result2.hasNext()).isFalse()
@@ -936,11 +936,11 @@ class ArtDetailQueryRepositoryTest extends RepositoryTest {
 
         @Test
         @DisplayName("Hello라는 키워드를 포함한 일반 작품을 조회한다")
-        void findGeneralArtsBykeyword() {
+        void findGeneralArtsByKeyword() {
             final ArtDetailSearchCondition condition = new ArtDetailSearchCondition(DATE_ASC, GENERAL, KEYWORD_HELLO);
 
             /* 1. 일반 작품 8건 fetching */
-            Page<GeneralArt> result1 = artRepository.findGeneralArtsBykeyword(condition, PAGE_REQUEST_1);
+            Page<GeneralArt> result1 = artRepository.findGeneralArtsByKeyword(condition, PAGE_REQUEST_1);
             assertAll(
                     () -> assertThat(result1.hasPrevious()).isFalse(),
                     () -> assertThat(result1.hasNext()).isTrue()
@@ -958,7 +958,141 @@ class ArtDetailQueryRepositoryTest extends RepositoryTest {
             );
 
             /* 2. 일반o 작품 2건 fetching */
-            Page<GeneralArt> result2 = artRepository.findGeneralArtsBykeyword(condition, PAGE_REQUEST_2);
+            Page<GeneralArt> result2 = artRepository.findGeneralArtsByKeyword(condition, PAGE_REQUEST_2);
+            assertAll(
+                    () -> assertThat(result2.hasPrevious()).isTrue(),
+                    () -> assertThat(result2.hasNext()).isFalse()
+            );
+            assertThatPagingGeneralArtMatch(
+                    result2.getContent(),
+                    List.of(generalArts[16], generalArts[18]),
+                    List.of(16, 18)
+            );
+        }
+    }
+
+    @Nested
+    @DisplayName("해시태그 작품 조회")
+    class findArtsByHashtag {
+        private final Art[] generalArts = new Art[20];
+        private final Art[] auctionArts = new Art[20];
+        private final Auction[] auctions = new Auction[20];
+
+        private static final String HASHTAG_A = "A";
+        private static final String KEYWORD_HELLO = "Hello";
+        private static final String KEYWORD_WORLD = "World";
+        private static final Set<String> HASHTAG_CONTAINS_A = Set.of("A", "C", "D", "E", "F");
+        private static final Set<String> HASHTAG_CONTAINS_B = Set.of("B", "C", "D", "E", "F");
+
+        @BeforeEach
+        void setUp() {
+            initArts();
+        }
+
+        private void initArts() {
+            List<ArtFixture> auctionArtFixtures = Arrays.stream(ArtFixture.values())
+                    .filter(art -> art.getType() == AUCTION)
+                    .toList();
+            List<ArtFixture> generalArtFixtures = Arrays.stream(ArtFixture.values())
+                    .filter(art -> art.getType() == GENERAL)
+                    .toList();
+
+            for (int i = 0; i < auctionArts.length; i++) {
+                if (i % 2 == 0) {
+                    auctionArts[i] = artRepository.save(auctionArtFixtures.get(i).toArt(owner, String.format("%s %d %s", KEYWORD_HELLO, i, "AUCTION"), HASHTAG_CONTAINS_A));
+                } else {
+                    auctionArts[i] = artRepository.save(auctionArtFixtures.get(i).toArt(owner, String.format("%s %d %s", KEYWORD_WORLD, i, "AUCTION"), HASHTAG_CONTAINS_B));
+                }
+                applyLikeMarking(auctionArts[i], i);
+
+                auctions[i] = AUCTION_OPEN_NOW.toAuction(auctionArts[i]);
+                auctionRepository.save(auctions[i]);
+                applyBid(auctions[i], i);
+            }
+
+            for (int i = 0; i < generalArts.length; i++) {
+                if (i % 2 == 0) {
+                    generalArts[i] = artRepository.save(generalArtFixtures.get(i).toArt(owner, String.format("%s %d %s", KEYWORD_HELLO, i, "GENERAL"), HASHTAG_CONTAINS_A));
+                } else {
+                    generalArts[i] = artRepository.save(generalArtFixtures.get(i).toArt(owner, String.format("%s %d %s", KEYWORD_WORLD, i, "GENERAL"), HASHTAG_CONTAINS_B));
+                }
+                applyLikeMarking(generalArts[i], i);
+            }
+        }
+
+        private void applyLikeMarking(Art art, int count) {
+            for (int i = 0; i < count; i++) {
+                favoriteRepository.save(Favorite.favoriteMarking(art.getId(), bidders[i].getId()));
+            }
+        }
+
+        private void applyBid(Auction auction, int count) {
+            for (int i = 0; i < count; i++) {
+                auction.applyNewBid(bidders[i], auction.getHighestBidPrice() + 100);
+            }
+        }
+
+        @Test
+        @DisplayName("해시태그 A를 포함한 경매 작품을 조회한다")
+        void findAuctionArtsByHashtag() {
+            final ArtDetailSearchCondition condition = new ArtDetailSearchCondition(DATE_ASC, AUCTION, HASHTAG_A);
+
+            /* 1. 경매 작품 8건 fetching */
+            Page<AuctionArt> result1 = artRepository.findAuctionArtsByHashtag(condition, PAGE_REQUEST_1);
+            assertAll(
+                    () -> assertThat(result1.hasPrevious()).isFalse(),
+                    () -> assertThat(result1.hasNext()).isTrue()
+            );
+            assertThatPagingAuctionArtMatch(
+                    result1.getContent(),
+                    List.of(
+                            auctions[0], auctions[2], auctions[4], auctions[6],
+                            auctions[8], auctions[10], auctions[12], auctions[14]
+                    ),
+                    List.of(
+                            0, 2, 4, 6,
+                            8, 10, 12, 14
+                    )
+            );
+
+            /* 2. 경매 작품 2건 fetching */
+            Page<AuctionArt> result2 = artRepository.findAuctionArtsByHashtag(condition, PAGE_REQUEST_2);
+            assertAll(
+                    () -> assertThat(result2.hasPrevious()).isTrue(),
+                    () -> assertThat(result2.hasNext()).isFalse()
+            );
+            assertThatPagingAuctionArtMatch(
+                    result2.getContent(),
+                    List.of(auctions[16], auctions[18]),
+                    List.of(16, 18)
+            );
+        }
+
+        @Test
+        @DisplayName("해시태그 A를 포함한 일반 작품을 조회한다")
+        void findGeneralArtsByHashtag() {
+            final ArtDetailSearchCondition condition = new ArtDetailSearchCondition(DATE_ASC, GENERAL, HASHTAG_A);
+
+            /* 1. 일반 작품 8건 fetching */
+            Page<GeneralArt> result1 = artRepository.findGeneralArtsByHashtag(condition, PAGE_REQUEST_1);
+            assertAll(
+                    () -> assertThat(result1.hasPrevious()).isFalse(),
+                    () -> assertThat(result1.hasNext()).isTrue()
+            );
+            assertThatPagingGeneralArtMatch(
+                    result1.getContent(),
+                    List.of(
+                            generalArts[0], generalArts[2], generalArts[4], generalArts[6],
+                            generalArts[8], generalArts[10], generalArts[12], generalArts[14]
+                    ),
+                    List.of(
+                            0, 2, 4, 6,
+                            8, 10, 12, 14
+                    )
+            );
+
+            /* 2. 일반o 작품 2건 fetching */
+            Page<GeneralArt> result2 = artRepository.findGeneralArtsByHashtag(condition, PAGE_REQUEST_2);
             assertAll(
                     () -> assertThat(result2.hasPrevious()).isTrue(),
                     () -> assertThat(result2.hasNext()).isFalse()

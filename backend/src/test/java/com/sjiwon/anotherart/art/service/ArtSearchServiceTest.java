@@ -53,9 +53,11 @@ class ArtSearchServiceTest extends ServiceTest {
     private static final Pageable PAGE_REQUEST_1 = getPageRequest(0);
     private static final Pageable PAGE_REQUEST_2 = getPageRequest(1);
 
+    private static final String HASHTAG_A = "A";
     private static final String KEYWORD_HELLO = "Hello";
     private static final String KEYWORD_WORLD = "World";
-    private static final Set<String> HASHTAGS = Set.of("A", "B", "C");
+    private static final Set<String> HASHTAG_CONTAINS_A = Set.of("A", "C", "D", "E", "F");
+    private static final Set<String> HASHTAG_CONTAINS_B = Set.of("B", "C", "D", "E", "F");
 
     @BeforeEach
     void setUp() {
@@ -82,18 +84,18 @@ class ArtSearchServiceTest extends ServiceTest {
 
         for (int i = 0; i < auctionArts.length; i++) {
             if (i % 2 == 0) {
-                auctionArts[i] = artRepository.save(auctionArtFixtures.get(i).toArt(owner, String.format("%s %d %s", KEYWORD_HELLO, i, "AUCTION"), HASHTAGS));
+                auctionArts[i] = artRepository.save(auctionArtFixtures.get(i).toArt(owner, String.format("%s %d %s", KEYWORD_HELLO, i, "AUCTION"), HASHTAG_CONTAINS_A));
             } else {
-                auctionArts[i] = artRepository.save(auctionArtFixtures.get(i).toArt(owner, String.format("%s %d %s", KEYWORD_WORLD, i, "AUCTION"), HASHTAGS));
+                auctionArts[i] = artRepository.save(auctionArtFixtures.get(i).toArt(owner, String.format("%s %d %s", KEYWORD_WORLD, i, "AUCTION"), HASHTAG_CONTAINS_B));
             }
             auctions[i] = auctionRepository.save(Auction.createAuction(auctionArts[i], OPEN_NOW.toPeriod()));
         }
 
         for (int i = 0; i < generalArts.length; i++) {
             if (i % 2 == 0) {
-                generalArts[i] = artRepository.save(generalArtFixtures.get(i).toArt(owner, String.format("%s %d %s", KEYWORD_HELLO, i, "GENERAL"), HASHTAGS));
+                generalArts[i] = artRepository.save(generalArtFixtures.get(i).toArt(owner, String.format("%s %d %s", KEYWORD_HELLO, i, "GENERAL"), HASHTAG_CONTAINS_A));
             } else {
-                generalArts[i] = artRepository.save(generalArtFixtures.get(i).toArt(owner, String.format("%s %d %s", KEYWORD_WORLD, i, "GENERAL"), HASHTAGS));
+                generalArts[i] = artRepository.save(generalArtFixtures.get(i).toArt(owner, String.format("%s %d %s", KEYWORD_WORLD, i, "GENERAL"), HASHTAG_CONTAINS_B));
             }
         }
     }
@@ -287,6 +289,67 @@ class ArtSearchServiceTest extends ServiceTest {
         void getGeneralArtsByKeyword() {
             ArtAssembler assembler1 = artSearchService.getArtsByKeyword(generalCondition, PAGE_REQUEST_1); // 1건
             ArtAssembler assembler2 = artSearchService.getArtsByKeyword(generalCondition, PAGE_REQUEST_2); // 0건
+
+            Pagination pagination1 = assembler1.pagination();
+            Pagination pagination2 = assembler2.pagination();
+            assertAll(
+                    () -> assertThat(pagination1.getCurrentPage()).isEqualTo(1),
+                    () -> assertThat(pagination1.getTotalPages()).isEqualTo(1),
+                    () -> assertThat(pagination1.getTotalElements()).isEqualTo(1),
+                    () -> assertThat(pagination1.isPrevExists()).isFalse(),
+                    () -> assertThat(pagination1.isNextExists()).isFalse(),
+
+                    () -> assertThat(pagination2.getCurrentPage()).isEqualTo(2),
+                    () -> assertThat(pagination2.getTotalPages()).isEqualTo(1),
+                    () -> assertThat(pagination2.getTotalElements()).isEqualTo(1),
+                    () -> assertThat(pagination2.isPrevExists()).isFalse(),
+                    () -> assertThat(pagination2.isNextExists()).isFalse()
+            );
+
+            asssertThatGeneralArtMatch(assembler1.result(), List.of(generalArts[0]));
+            asssertThatGeneralArtMatch(assembler2.result(), List.of());
+        }
+    }
+
+    @Nested
+    @DisplayName("해시태그 작품 조회")
+    class findArtsByHashtag {
+        private static final ArtDetailSearchCondition auctionCondition
+                = new ArtDetailSearchCondition(DATE_ASC, AUCTION, HASHTAG_A);
+        private static final ArtDetailSearchCondition generalCondition
+                = new ArtDetailSearchCondition(DATE_ASC, GENERAL, HASHTAG_A);
+
+        @Test
+        @DisplayName("해시태그 A를 포함한 경매 작품을 조회한다 [등록날짜 ASC]")
+        void getAuctionArtsByKeyword() {
+            ArtAssembler assembler1 = artSearchService.getArtsByHashtag(auctionCondition, PAGE_REQUEST_1); // 1건
+            ArtAssembler assembler2 = artSearchService.getArtsByHashtag(auctionCondition, PAGE_REQUEST_2); // 0건
+
+            Pagination pagination1 = assembler1.pagination();
+            Pagination pagination2 = assembler2.pagination();
+            assertAll(
+                    () -> assertThat(pagination1.getCurrentPage()).isEqualTo(1),
+                    () -> assertThat(pagination1.getTotalPages()).isEqualTo(1),
+                    () -> assertThat(pagination1.getTotalElements()).isEqualTo(1),
+                    () -> assertThat(pagination1.isPrevExists()).isFalse(),
+                    () -> assertThat(pagination1.isNextExists()).isFalse(),
+
+                    () -> assertThat(pagination2.getCurrentPage()).isEqualTo(2),
+                    () -> assertThat(pagination2.getTotalPages()).isEqualTo(1),
+                    () -> assertThat(pagination2.getTotalElements()).isEqualTo(1),
+                    () -> assertThat(pagination2.isPrevExists()).isFalse(),
+                    () -> assertThat(pagination2.isNextExists()).isFalse()
+            );
+
+            asssertThatAuctionArtMatch(assembler1.result(), List.of(auctions[0]));
+            asssertThatAuctionArtMatch(assembler2.result(), List.of());
+        }
+
+        @Test
+        @DisplayName("해시태그 A를 포함한 일반 작품을 조회한다 [등록날짜 ASC]")
+        void getGeneralArtsByKeyword() {
+            ArtAssembler assembler1 = artSearchService.getArtsByHashtag(generalCondition, PAGE_REQUEST_1); // 1건
+            ArtAssembler assembler2 = artSearchService.getArtsByHashtag(generalCondition, PAGE_REQUEST_2); // 0건
 
             Pagination pagination1 = assembler1.pagination();
             Pagination pagination2 = assembler2.pagination();
