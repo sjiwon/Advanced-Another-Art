@@ -1,4 +1,4 @@
-= 작품 정보 수정 API
+= 작품 정보 수정/삭제 API
 :doctype: book
 :icons: font
 :source-highlighter: highlightjs
@@ -23,3 +23,28 @@ include::{snippets}/ArtApi/Update/Success/request-fields.adoc[]
 
 HTTP Response
 include::{snippets}/ArtApi/Update/Success/http-response.adoc[]
+
+== 작품 삭제 [AccessToken 필수]
+=== 1. 작품이 판매되었다면 삭제할 수 없다
+HTTP Request
+include::{snippets}/ArtApi/Delete/Failure/Case1/http-request.adoc[]
+include::{snippets}/ArtApi/Delete/Failure/Case1/request-headers.adoc[]
+
+HTTP Response
+include::{snippets}/ArtApi/Delete/Failure/Case1/response-body.adoc[]
+
+=== 2. 입찰 기록이 존재하는 경매 작품은 삭제할 수 없다
+HTTP Request
+include::{snippets}/ArtApi/Delete/Failure/Case2/http-request.adoc[]
+include::{snippets}/ArtApi/Delete/Failure/Case2/request-headers.adoc[]
+
+HTTP Response
+include::{snippets}/ArtApi/Delete/Failure/Case2/response-body.adoc[]
+
+=== 3. 작품 정보를 수정한다
+HTTP Request
+include::{snippets}/ArtApi/Delete/Success/http-request.adoc[]
+include::{snippets}/ArtApi/Delete/Success/request-headers.adoc[]
+
+HTTP Response
+include::{snippets}/ArtApi/Delete/Success/http-response.adoc[]

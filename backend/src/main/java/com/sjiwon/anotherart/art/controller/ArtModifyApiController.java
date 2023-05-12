@@ -24,4 +24,12 @@ public class ArtModifyApiController {
         artService.update(artId, request.name(), request.description(), request.hashtags());
         return ResponseEntity.noContent().build();
     }
+
+    @PreAuthorize("hasRole('USER') AND @artOwnerChecker.isArtOwner(#memberId, #artId)")
+    @DeleteMapping
+    public ResponseEntity<Void> delete(@ExtractPayload Long memberId,
+                                       @PathVariable Long artId) {
+        artService.delete(artId);
+        return ResponseEntity.noContent().build();
+    }
 }

@@ -124,4 +124,118 @@ class ArtModifyApiControllerTest extends ControllerTest {
                     );
         }
     }
+
+    @Nested
+    @DisplayName("작품 삭제 API [DELETE /api/arts/{artId}] - AccessToken 필수")
+    class delete {
+        private static final String BASE_URL = "/api/arts/{artId}";
+        private static final Long ART_ID = 1L;
+
+        @Test
+        @DisplayName("작품이 판매되었다면 삭제할 수 없다")
+        void throwExceptionByCannotDeleteSoldArt() throws Exception {
+            // given
+            doThrow(AnotherArtException.type(ArtErrorCode.CANNOT_DELETE_SOLD_ART))
+                    .when(artService)
+                    .delete(any());
+
+            // when
+            MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
+                    .delete(BASE_URL, ART_ID)
+                    .header(AUTHORIZATION, String.join(" ", BEARER_TOKEN, ACCESS_TOKEN));
+
+            // then
+            final ArtErrorCode expectedError = ArtErrorCode.CANNOT_DELETE_SOLD_ART;
+            mockMvc.perform(requestBuilder)
+                    .andExpectAll(
+                            status().isConflict(),
+                            jsonPath("$.status").exists(),
+                            jsonPath("$.status").value(expectedError.getStatus().value()),
+                            jsonPath("$.errorCode").exists(),
+                            jsonPath("$.errorCode").value(expectedError.getErrorCode()),
+                            jsonPath("$.message").exists(),
+                            jsonPath("$.message").value(expectedError.getMessage())
+                    )
+                    .andDo(
+                            document(
+                                    "ArtApi/Delete/Failure/Case1",
+                                    getDocumentRequest(),
+                                    getDocumentResponse(),
+                                    getHeaderWithAccessToken(),
+                                    pathParameters(
+                                            parameterWithName("artId").description("작품 ID(PK)")
+                                    ),
+                                    getExceptionResponseFiels()
+                            )
+                    );
+        }
+
+        @Test
+        @DisplayName("입찰 기록이 존재하는 경매 작품은 삭제할 수 없다")
+        void throwExceptionByCannotDeleteIfBidExists() throws Exception {
+            // given
+            doThrow(AnotherArtException.type(ArtErrorCode.CANNOT_DELETE_IF_BID_EXISTS))
+                    .when(artService)
+                    .delete(any());
+
+            // when
+            MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
+                    .delete(BASE_URL, ART_ID)
+                    .header(AUTHORIZATION, String.join(" ", BEARER_TOKEN, ACCESS_TOKEN));
+
+            // then
+            final ArtErrorCode expectedError = ArtErrorCode.CANNOT_DELETE_IF_BID_EXISTS;
+            mockMvc.perform(requestBuilder)
+                    .andExpectAll(
+                            status().isConflict(),
+                            jsonPath("$.status").exists(),
+                            jsonPath("$.status").value(expectedError.getStatus().value()),
+                            jsonPath("$.errorCode").exists(),
+                            jsonPath("$.errorCode").value(expectedError.getErrorCode()),
+                            jsonPath("$.message").exists(),
+                            jsonPath("$.message").value(expectedError.getMessage())
+                    )
+                    .andDo(
+                            document(
+                                    "ArtApi/Delete/Failure/Case2",
+                                    getDocumentRequest(),
+                                    getDocumentResponse(),
+                                    getHeaderWithAccessToken(),
+                                    pathParameters(
+                                            parameterWithName("artId").description("작품 ID(PK)")
+                                    ),
+                                    getExceptionResponseFiels()
+                            )
+                    );
+        }
+
+        @Test
+        @DisplayName("삭제에 성공한다")
+        void success() throws Exception {
+            // given
+            doNothing()
+                    .when(artService)
+                    .delete(any());
+
+            // when
+            MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
+                    .delete(BASE_URL, ART_ID)
+                    .header(AUTHORIZATION, String.join(" ", BEARER_TOKEN, ACCESS_TOKEN));
+
+            // then
+            mockMvc.perform(requestBuilder)
+                    .andExpect(status().isNoContent())
+                    .andDo(
+                            document(
+                                    "ArtApi/Delete/Success",
+                                    getDocumentRequest(),
+                                    getDocumentResponse(),
+                                    getHeaderWithAccessToken(),
+                                    pathParameters(
+                                            parameterWithName("artId").description("작품 ID(PK)")
+                                    )
+                            )
+                    );
+        }
+    }
 }
