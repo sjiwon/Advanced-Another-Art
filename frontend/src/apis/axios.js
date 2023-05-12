@@ -2,6 +2,7 @@ import Axios from 'axios'
 import { accessTokenProvider, refreshTokenProvider } from '@/utils/token'
 
 const axios = Axios.create({
+  baseURL: process.env.VUE_APP_API_URL,
   headers: {
     'Content-Type': 'application/json;charset=UTF-8',
     accept: 'application/json'
@@ -10,6 +11,7 @@ const axios = Axios.create({
 })
 
 const axiosWithAccessToken = Axios.create({
+  baseURL: process.env.VUE_APP_API_URL,
   headers: {
     'Content-Type': 'application/json;charset=UTF-8',
     accept: 'application/json'
@@ -18,6 +20,7 @@ const axiosWithAccessToken = Axios.create({
 })
 
 const axiosWithRefreshToken = Axios.create({
+  baseURL: process.env.VUE_APP_API_URL,
   headers: {
     'Content-Type': 'application/json;charset=UTF-8',
     accept: 'application/json'
