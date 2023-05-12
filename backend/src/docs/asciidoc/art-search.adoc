@@ -51,3 +51,22 @@ include::{snippets}/ArtApi/Search/Keyword/AuctionArt/request-parameters.adoc[]
 HTTP Response
 include::{snippets}/ArtApi/Search/Keyword/AuctionArt/response-body.adoc[]
 include::{snippets}/ArtApi/Search/Keyword/AuctionArt/response-fields.adoc[]
+
+== 해시태그 작품 조회
+=== 1. 해시태그 일반 작품을 조회한다
+HTTP Request
+include::{snippets}/ArtApi/Search/Hashtag/GeneralArt/http-request.adoc[]
+include::{snippets}/ArtApi/Search/Hashtag/GeneralArt/request-parameters.adoc[]
+
+HTTP Response
+include::{snippets}/ArtApi/Search/Hashtag/GeneralArt/response-body.adoc[]
+include::{snippets}/ArtApi/Search/Hashtag/GeneralArt/response-fields.adoc[]
+
+=== 2. 해시태그 경매 작품을 조회한다
+HTTP Request
+include::{snippets}/ArtApi/Search/Hashtag/AuctionArt/http-request.adoc[]
+include::{snippets}/ArtApi/Search/Hashtag/AuctionArt/request-parameters.adoc[]
+
+HTTP Response
+include::{snippets}/ArtApi/Search/Hashtag/AuctionArt/response-body.adoc[]
+include::{snippets}/ArtApi/Search/Hashtag/AuctionArt/response-fields.adoc[]

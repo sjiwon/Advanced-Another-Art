@@ -1,6 +1,7 @@
 package com.sjiwon.anotherart.art.controller;
 
 import com.sjiwon.anotherart.art.controller.dto.request.ArtBasicSearchRequest;
+import com.sjiwon.anotherart.art.controller.dto.request.ArtHashtagSearchRequest;
 import com.sjiwon.anotherart.art.controller.dto.request.ArtKeywordSearchRequest;
 import com.sjiwon.anotherart.art.infra.query.dto.response.ArtDetails;
 import com.sjiwon.anotherart.art.service.ArtSearchService;
@@ -48,6 +49,17 @@ public class ArtSearchApiController {
 
         ArtDetailSearchCondition condition = new ArtDetailSearchCondition(request.sortType(), request.artType(), request.keyword());
         ArtAssembler response = artSearchService.getArtsByKeyword(condition, getPageRequest(request.page() - 1));
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/hashtag")
+    public ResponseEntity<ArtAssembler> getArtsByHashtag(@ModelAttribute @Valid ArtHashtagSearchRequest request) {
+        if (isNotSupportedSortType(request.sortType())) {
+            return ResponseEntity.ok(new ArtAssembler(List.of(), Pagination.getEmptyPage(request.page())));
+        }
+
+        ArtDetailSearchCondition condition = new ArtDetailSearchCondition(request.sortType(), request.artType(), request.hashtag());
+        ArtAssembler response = artSearchService.getArtsByHashtag(condition, getPageRequest(request.page() - 1));
         return ResponseEntity.ok(response);
     }
 }
