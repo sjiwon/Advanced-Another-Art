@@ -1,49 +1,49 @@
 <template>
   <div class="col">
-    <div v-if="auctionArt.art.auctionEndDate > new Date(new Date().getTime() - new Date().getTimezoneOffset() * 60000).toISOString()">
+    <div v-if="auctionArt.auction.endDate > new Date(new Date().getTime() - new Date().getTimezoneOffset() * 60000).toISOString()">
       <div class="card border-black-50">
         <div>
           <a>
-            <img :src="require(`/public/images/arts/${auctionArt.art.artStorageName}`)"
-                 @click="goToDetailPage(auctionArt.art.artId, auctionArt.art.artName)"
+            <img :src="`${auctionArt.art.storageName}`"
+                 @click="goToDetailPage(auctionArt.art.id, auctionArt.art.name)"
                  alt="" style="width: 100%; height: 200px; margin-bottom: 10px; cursor: pointer;">
           </a>
         </div>
         <div class="card-header">
-          <h3>{{ auctionArt.art.artName }}</h3>
+          <h3>{{ auctionArt.art.name }}</h3>
           <h6>
-            {{ auctionArt.art.ownerNickname }}
-            <small style="font-size: 12px;">({{ auctionArt.art.ownerSchool }})</small>
+            {{ auctionArt.owner.nickname }}
+            <small style="font-size: 12px;">({{ auctionArt.owner.school }})</small>
           </h6>
         </div>
         <div class="card-body">
           <p>
             <b>현재 경매가</b><br>
-            <small>{{ auctionArt.art.highestBidPrice }}원</small>
+            <small>{{ auctionArt.auction.highestBidPrice }}원</small>
           </p>
           <p>
             <b>현재 입찰횟수</b><br>
-            <small>{{ auctionArt.bidCount }}회</small>
+            <small>{{ auctionArt.auction.bidCount }}회</small>
           </p>
           <p>
             <b>작품 찜 횟수</b><br>
-            <small>{{ auctionArt.likeMarkingMembers.length }}회</small>
+            <small>{{ auctionArt.art.likeMembers.length }}회</small>
           </p>
           <p>
             <b>작품 등록 날짜</b><br>
-            <small>{{ translateLocalDateTime(auctionArt.art.artRegistrationDate) }}</small>
+            <small>{{ translateLocalDateTime(auctionArt.art.registrationDate) }}</small>
           </p>
           <p>
             <b>경매 시작 날짜</b><br>
-            <small>{{ translateLocalDateTime(auctionArt.art.auctionStartDate) }}</small>
+            <small>{{ translateLocalDateTime(auctionArt.auction.startDate) }}</small>
           </p>
           <p>
             <b>경매 종료 날짜</b><br>
-            <small>{{ translateLocalDateTime(auctionArt.art.auctionEndDate) }}</small>
+            <small>{{ translateLocalDateTime(auctionArt.auction.endDate) }}</small>
           </p>
         </div>
         <div class="card-footer">
-          <span class="product_tag" v-for="(tag, index) in auctionArt.hashtags" :key="index">#{{ tag }}</span>
+          <span class="product_tag" v-for="(tag, index) in auctionArt.art.hashtags" :key="index">#{{ tag }}</span>
         </div>
       </div>
     </div>
@@ -52,46 +52,46 @@
       <div class="card border-black-50">
         <div>
           <a>
-            <img :src="require(`/public/images/arts/${auctionArt.art.artStorageName}`)"
-                 @click="goToDetailPage(auctionArt.art.artId, auctionArt.art.artName)"
+            <img :src="`${auctionArt.art.storageName}`"
+                 @click="goToDetailPage(auctionArt.art.id, auctionArt.art.name)"
                  alt="" style="width: 100%; height: 200px; margin-bottom: 10px; cursor: pointer;" :style="applyOpacity">
           </a>
         </div>
         <div class="card-header">
-          <h3 :style="applyOpacity">{{ auctionArt.art.artName }} <b style="color: red; font-size: 18px;" :style="applyOpacity">(경매 완료)</b></h3>
+          <h3 :style="applyOpacity">{{ auctionArt.art.name }} <b style="color: red; font-size: 18px;" :style="applyOpacity">(경매 완료)</b></h3>
           <h6 :style="applyOpacity">
-            {{ auctionArt.art.ownerNickname }}
-            <small style="font-size: 12px;">({{ auctionArt.art.ownerSchool }})</small>
+            {{ auctionArt.owner.nickname }}
+            <small style="font-size: 12px;">({{ auctionArt.owner.school }})</small>
           </h6>
         </div>
         <div class="card-body">
           <p>
             <b :style="applyOpacity">현재 경매가</b><br>
-            <small :style="applyOpacity">{{ auctionArt.art.highestBidPrice }}원</small>
+            <small :style="applyOpacity">{{ auctionArt.auction.highestBidPrice }}원</small>
           </p>
           <p>
             <b :style="applyOpacity">현재 입찰횟수</b><br>
-            <small :style="applyOpacity">{{ auctionArt.bidCount }}회</small>
+            <small :style="applyOpacity">{{ auctionArt.auction.bidCount }}회</small>
           </p>
           <p>
             <b :style="applyOpacity">작품 찜 횟수</b><br>
-            <small :style="applyOpacity">{{ auctionArt.likeMarkingMembers.length }}회</small>
+            <small :style="applyOpacity">{{ auctionArt.art.likeMembers.length }}회</small>
           </p>
           <p>
             <b :style="applyOpacity">작품 등록 날짜</b><br>
-            <small :style="applyOpacity">{{ translateLocalDateTime(auctionArt.art.artRegistrationDate) }}</small>
+            <small :style="applyOpacity">{{ translateLocalDateTime(auctionArt.art.registrationDate) }}</small>
           </p>
           <p>
             <b :style="applyOpacity">경매 시작 날짜</b><br>
-            <small :style="applyOpacity">{{ translateLocalDateTime(auctionArt.art.auctionStartDate) }}</small>
+            <small :style="applyOpacity">{{ translateLocalDateTime(auctionArt.auction.startDate) }}</small>
           </p>
           <p>
             <b :style="applyOpacity">경매 종료 날짜</b><br>
-            <small :style="applyOpacity">{{ translateLocalDateTime(auctionArt.art.auctionEndDate) }}</small>
+            <small :style="applyOpacity">{{ translateLocalDateTime(auctionArt.auction.endDate) }}</small>
           </p>
         </div>
         <div class="card-footer">
-          <span :style="applyOpacity" class="product_tag" v-for="(tag, index) in auctionArt.hashtags" :key="index">#{{ tag }}</span>
+          <span :style="applyOpacity" class="product_tag" v-for="(tag, index) in auctionArt.art.hashtags" :key="index">#{{ tag }}</span>
         </div>
       </div>
     </div>

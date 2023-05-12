@@ -135,7 +135,7 @@ export default {
           )
         }
 
-        this.fetchDataList = [...response.data.artList]
+        this.fetchDataList = [...response.data.result]
         this.pagination = response.data.pagination
         this.range = []
         for (let i = this.pagination.rangeStartNumber; i <= this.pagination.rangeEndNumber; i++) {

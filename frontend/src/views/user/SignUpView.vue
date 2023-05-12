@@ -254,7 +254,7 @@ export default {
         isNotMeetCondition: false,
         isMeetCondition: false,
         errorMessage: '이메일 형식에 맞춰서 입력해주세요',
-        successMessage: '사용 가능한 이메일입니다'
+        successMessage: '올바른 형식입니다'
       }
     }
   },
@@ -271,7 +271,7 @@ export default {
       }
 
       try {
-        await this.axios.get(`/api/member/duplicate?resource=nickname&value=${nickname}`)
+        await this.axios.get(`/api/member/check-duplicates?resource=nickname&value=${nickname}`)
         alert('사용 가능한 닉네임입니다')
         this.duplicateApiCheck.nickNameDisabled = true
         this.duplicateApiCheck.nicknameCheck = true
@@ -291,7 +291,7 @@ export default {
       }
 
       try {
-        await this.axios.get(`/api/member/duplicate?resource=phone&value=${phone}`)
+        await this.axios.get(`/api/member/check-duplicates?resource=phone&value=${phone}`)
         alert('사용 가능한 전화번호입니다')
         this.duplicateApiCheck.phoneDisabled = true
         this.duplicateApiCheck.phoneCheck = true
@@ -311,7 +311,7 @@ export default {
       }
 
       try {
-        await this.axios.get(`/api/member/duplicate?resource=loginId&value=${loginId}`)
+        await this.axios.get(`/api/member/check-duplicates?resource=loginId&value=${loginId}`)
         alert('사용 가능한 아이디입니다')
         this.duplicateApiCheck.loginIdDisabled = true
         this.duplicateApiCheck.loginIdCheck = true
@@ -327,7 +327,7 @@ export default {
       }
 
       try {
-        await this.axios.get(`/api/member/duplicate?resource=email&value=${email}`)
+        await this.axios.get(`/api/member/check-duplicates?resource=email&value=${email}`)
         alert('사용 가능한 이메일입니다')
         this.duplicateApiCheck.emailDisabled = true
         this.duplicateApiCheck.emailCheck = true

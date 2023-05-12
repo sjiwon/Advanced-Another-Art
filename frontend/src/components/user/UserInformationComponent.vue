@@ -239,9 +239,11 @@ export default {
     async changeNicknameProcess() {
       try {
         const changeNicknameRequest = {
-          'changeNickname': this.changeNickname
+          'value': this.changeNickname
         }
-        await this.axiosWithAccessToken.patch('/api/member/nickname', changeNicknameRequest)
+
+        const memberId = this.$store.getters['memberStore/getMemberId']
+        await this.axiosWithAccessToken.patch(`/api/members/${memberId}/nickname`, changeNicknameRequest)
         alert('닉네임 변경이 완료되었습니다')
         this.$router.go()
       } catch (err) {

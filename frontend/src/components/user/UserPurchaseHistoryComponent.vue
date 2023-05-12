@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h2 class="text-center mb-4 fw-bold text-black">작품 구매 내역</h2>
+    <h2 class="text-center mb-4 fw-bold text-black">구매한 작품</h2>
     <div class="btn-group" style="border: none; margin-left: 20px;" role="group">
       <b-button :class="{ selectedBackgroundColor: isAuctionSelected, notSelectedBackground: isGeneralSelected }" @click="changeSaleType('auction')">
         경매 작품
@@ -52,10 +52,9 @@ export default {
     async fetchData() {
       try {
         const memberId = this.$store.getters['memberStore/getMemberId']
-        const auctionResponse = await this.axiosWithAccessToken.get(`/api/members/${memberId}/auctions/purchase`)
-        const generalResponse = await this.axiosWithAccessToken.get(`/api/members/${memberId}/generals/purchase`)
-        this.auctionArtFechDataList = auctionResponse.data.result
-        this.generalArtFechDataList = generalResponse.data.result
+        const response = await this.axiosWithAccessToken.get(`/api/members/${memberId}/arts/purchase`)
+        this.auctionArtFechDataList = response.data.tradedAuctions
+        this.generalArtFechDataList = response.data.tradedGenerals
       } catch (err) {
         alert(err.response.data.message)
       }

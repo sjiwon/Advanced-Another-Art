@@ -3,7 +3,7 @@ const memberStore = {
 
   state: {
     loginSuccess: false,
-    id: '',
+    memberId: '',
     nickname: '',
     accessToken: '',
     refreshToken: ''
@@ -11,7 +11,7 @@ const memberStore = {
 
   getters: {
     isAuthenticated: state => state.loginSuccess,
-    getMemberId: state => state.id,
+    getMemberId: state => state.memberId,
     getMemberNickname: state => state.nickname,
     getAccessToken: state => state.accessToken,
     getRefreshToken: state => state.refreshToken
@@ -20,7 +20,7 @@ const memberStore = {
   mutations: {
     loginSuccess: (state, payload) => {
       state.loginSuccess = true
-      state.id = payload.memberId
+      state.memberId = payload.memberId
       state.nickname = payload.nickname
       state.accessToken = payload.accessToken
       state.refreshToken = payload.refreshToken
@@ -33,7 +33,7 @@ const memberStore = {
     },
     reset: (state) => {
       state.loginSuccess = false
-      state.id = ''
+      state.memberId = ''
       state.nickname = ''
       state.accessToken = ''
       state.refreshToken = ''

@@ -4,7 +4,7 @@
       <div class="col-md-5">
         <div class="row">
           <div class="col-md-12 offset-md-1 mt-5">
-            <img :src="require(`/public/images/arts/${generalArt.art.artStorageName}`)"
+            <img :src="`${generalArt.art.storageName}`"
                  style="width: 100%; height: 100%;" alt="">
           </div>
         </div>
@@ -15,24 +15,24 @@
           <div class="row g-2 mt-2">
             <div>
               <h2>
-                {{ generalArt.art.artName }} - {{ generalArt.art.ownerNickname }}
+                {{ generalArt.art.name }} - {{ generalArt.owner.nickname }}
                 <span v-if="isAlreadySoldOut === true" style="color: red; font-size:20px;">(판매 완료)</span>
               </h2>
-              <p>{{ generalArt.art.artDescription }}</p>
-              <span class="product_tag" v-for="(tag, index) in generalArt.hashtags" :key="index">#{{ tag }}</span>
+              <p>{{ generalArt.art.description }}</p>
+              <span class="product_tag" v-for="(tag, index) in generalArt.art.hashtags" :key="index">#{{ tag }}</span>
             </div>
 
             <hr>
 
             <div>
-              <p>작품 찜 횟수 | {{ generalArt.likeMarkingMembers.length }}회</p>
-              <p>작품 등록 날짜 | {{ translateLocalDateTime(generalArt.art.artRegistrationDate) }}</p>
+              <p>작품 찜 횟수 | {{ generalArt.art.likeMembers.length }}회</p>
+              <p>작품 등록 날짜 | {{ translateLocalDateTime(generalArt.art.registrationDate) }}</p>
             </div>
 
             <hr>
 
             <div>
-              <h4>작품 가격 | {{ generalArt.art.artPrice }}원</h4>
+              <h4>작품 가격 | {{ generalArt.art.price }}원</h4>
             </div>
           </div>
 
@@ -40,12 +40,12 @@
             <div class="row g-3">
               <div v-if="isAlreadySoldOut === true">
                 <span style="color: blueviolet; font-size: 20px;">
-                  구매자 <font-awesome-icon icon="fa-solid fa-user-secret" /> | {{ generalArt.art.buyerNickname }}
-                  <span style="font-size: 13px;">{{ generalArt.art.buyerSchool }}</span>
+                  구매자 <font-awesome-icon icon="fa-solid fa-user-secret" /> | {{ generalArt.buyer.nickname }}
+                  <span style="font-size: 13px;">{{ generalArt.buyer.school }}</span>
                 </span>
               </div>
               <div v-if="isAlreadySoldOut === false">
-                <span v-if="Object.values(generalArt.likeMarkingMembers).includes(currentAuthenticatedUserId) === false">
+                <span v-if="Object.values(generalArt.art.likeMembers).includes(currentAuthenticatedUserId) === false">
                     <b-button @click="likeMarking()" variant="outline-danger">
                       <font-awesome-icon icon="fa-solid fa-heart" style="margin-right: 5px;"/> 찜 등록
                     </b-button>
@@ -79,7 +79,7 @@
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body text-center">
-              <h5><b>{{ generalArt.art.artName }}</b>의 가격은 <b>{{ generalArt.art.artPrice }}포인트</b>입니다</h5>
+              <h5><b>{{ generalArt.art.name }}</b>의 가격은 <b>{{ generalArt.art.price }}포인트</b>입니다</h5>
               <h5>구매를 진행하시겠습니까?</h5>
             </div>
             <div class="modal-footer">
@@ -117,7 +117,7 @@ export default {
     },
     async likeMarking() {
       try {
-        await this.axiosWithAccessToken.post(`/api/art/${this.generalArt.art.artId}/like`)
+        await this.axiosWithAccessToken.post(`/api/arts/${this.generalArt.art.id}/like`)
         this.$router.go()
       } catch (err) {
         alert(err.response.data.message)
@@ -125,7 +125,7 @@ export default {
     },
     async likeCancel() {
       try {
-        await this.axiosWithAccessToken.delete(`/api/art/${this.generalArt.art.artId}/like`)
+        await this.axiosWithAccessToken.delete(`/api/arts/${this.generalArt.art.id}/like`)
         this.$router.go()
       } catch (err) {
         alert(err.response.data.message)
@@ -135,7 +135,7 @@ export default {
       const check = confirm('작품을 정말 삭제하시겠습니까?')
       if (check) {
         try {
-          await this.axiosWithAccessToken.delete(`/api/art/${this.generalArt.art.artId}`)
+          await this.axiosWithAccessToken.delete(`/api/arts/${this.generalArt.art.id}`)
           alert('작품이 삭제되었습니다')
           this.$router.push('/')
         } catch (err) {
@@ -145,7 +145,7 @@ export default {
     },
     async generalArtPurchase() {
       try {
-        await this.axiosWithAccessToken.post(`/api/art/${this.generalArt.art.artId}/purchase`)
+        await this.axiosWithAccessToken.post(`/api/arts/${this.generalArt.art.id}/purchase`)
         alert('구매가 완료되었습니다')
         this.$router.push('/')
       } catch (err) {
@@ -155,10 +155,10 @@ export default {
   },
   computed: {
     isOwnWork() {
-      return this.currentAuthenticatedUserId === this.generalArt.art.artOwnerId
+      return this.currentAuthenticatedUserId === this.generalArt.owner.id
     },
     isAlreadySoldOut() {
-      return this.generalArt.art.artStatus === 'SOLD_OUT'
+      return this.generalArt.art.status === '판매 완료'
     }
   }
 }

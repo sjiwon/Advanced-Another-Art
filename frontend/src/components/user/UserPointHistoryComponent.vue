@@ -41,14 +41,15 @@ export default {
         const response = await this.axiosWithAccessToken.get(`/api/members/${memberId}/points`)
         const fetchDataList = response.data.result
         this.pointHistoryData = []
-        for (let i = fetchDataList.length - 1; i >= 0; i--) {
+        // for (let i = fetchDataList.length - 1; i >= 0; i--) {
+        for (let i = 0; i < fetchDataList.length; i++) {
           const jsonData = {
-            index: (i + 1),
+            index: fetchDataList.length - i,
             pointType: fetchDataList[i].pointType,
-            dealAmount: fetchDataList[i].dealAmount,
+            dealAmount: fetchDataList[i].amount,
             recordDate: dayjs(fetchDataList[i].recordDate).format('YYYY년 MM월 DD일 HH시 mm분 ss초')
-          }
-          this.pointHistoryData.push(jsonData)
+          };
+          this.pointHistoryData.push(jsonData);
         }
       } catch (err) {
         alert(err.response.data.message)

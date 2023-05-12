@@ -19,7 +19,7 @@
               @click="$router.push('/mypage/winning-auction')"
               @mouseenter="mouseOverEvent(1)"
               @mouseleave="mouseLeaveEvent(1)">
-              경매 작품 낙찰 내역
+              낙찰된 경매 작품
             </b-button>
           </div>
           <div>
@@ -28,7 +28,7 @@
               @click="$router.push('/mypage/art/purchase')"
               @mouseenter="mouseOverEvent(2)"
               @mouseleave="mouseLeaveEvent(2)">
-              작품 구매 내역
+              구매한 작품
             </b-button>
           </div>
           <div>
@@ -37,7 +37,7 @@
               @click="$router.push('/mypage/art/sold')"
               @mouseenter="mouseOverEvent(3)"
               @mouseleave="mouseLeaveEvent(3)">
-              작품 판매 내역
+              판매한 작품
             </b-button>
           </div>
           <div>

@@ -117,7 +117,7 @@ export default {
       this.findIdResult = ''
       try {
         const { name, email } = this.requestData
-        const response = await this.axios.get(`/api/member/id?name=${name}&email=${email}`)
+        const response = await this.axios.get(`/api/member/login-id?name=${name}&email=${email}`)
         this.findIdResult = response.data.result
 
         this.successFindButtonDisplay.display = 'none'

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h2 class="text-center mb-4 fw-bold text-black">낙찰된 경매 작품 내역</h2>
+    <h2 class="text-center mb-4 fw-bold text-black">낙찰된 경매 작품</h2>
     <div class="album py-5">
       <div class="container">
         <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">

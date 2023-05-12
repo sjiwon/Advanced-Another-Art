@@ -4,19 +4,19 @@ const detailSearch = {
   state: {
     keywordSearch: {
       keyword: '',
-      type: '', // general, auction
-      sort: 'rdate',
+      artType: '', // general, auction
+      sortType: 'rdate',
       page: 1
     },
 
     hashtagSearch: {
       hashtag: '',
-      type: '', // general, auction
-      sort: 'rdate',
+      artType: '', // general, auction
+      sortType: 'rdate',
       page: 1
     },
 
-    sortType: '등록 날짜 최신순',
+    sortTypeStr: '등록 날짜 최신순',
     currentSearchType: '',
     currentSelectedArt: {
       artId: '',
@@ -26,21 +26,21 @@ const detailSearch = {
 
   getters: {
     getKeywordWithKeywordSearch: state => state.keywordSearch.keyword,
-    getTypeWithKeywordSearch: state => state.keywordSearch.type,
-    getSortWithKeywordSearch: state => state.keywordSearch.sort,
+    getTypeWithKeywordSearch: state => state.keywordSearch.artType,
+    getSortWithKeywordSearch: state => state.keywordSearch.sortType,
     getKeywordSearchCriteria: state => state.keywordSearch,
 
     getHashtagWithHashtagSearch: state => state.hashtagSearch.hashtag,
-    getTypeWithHashtagSearch: state => state.hashtagSearch.type,
-    getSortWithHashtagSearch: state => state.hashtagSearch.sort,
+    getTypeWithHashtagSearch: state => state.hashtagSearch.artType,
+    getSortWithHashtagSearch: state => state.hashtagSearch.sortType,
     getHashtagSearchCriteria: state => state.hashtagSearch,
 
     isCurrentRequestEqualsKeyword: state => state.keywordSearch.keyword !== '' && state.hashtagSearch.hashtag === '',
     isCurrentRequestEqualsHashtag: state => state.keywordSearch.keyword === '' && state.hashtagSearch.hashtag !== '',
-    isCurrentRequestEqualsAuctionArt: state => state.keywordSearch.type === 'auction' || state.hashtagSearch.type === 'auction',
-    isCurrentRequestEqualsGeneralArt: state => state.keywordSearch.type === 'general' || state.hashtagSearch.type === 'general',
+    isCurrentRequestEqualsAuctionArt: state => state.keywordSearch.artType === 'auction' || state.hashtagSearch.artType === 'auction',
+    isCurrentRequestEqualsGeneralArt: state => state.keywordSearch.artType === 'general' || state.hashtagSearch.artType === 'general',
 
-    getSortType: state => state.sortType,
+    getSortType: state => state.sortTypeStr,
     getArtSearchType: state => (state.currentSearchType === '') ? '경매 작품' : state.currentSearchType,
     getCurrentSelectedArtId: state => state.currentSelectedArt.artId,
     getCurrentSelectedArtType: state => state.currentSelectedArt.artType
@@ -48,20 +48,20 @@ const detailSearch = {
 
   mutations: {
     changeSortType: (state, type) => {
-      state.sortType = type
+      state.sortTypeStr = type
     },
 
     applyKeywordSearch: (state, searchInfo) => {
       state.keywordSearch.keyword = searchInfo.keyword
-      state.keywordSearch.sort = 'rdate'
-      state.keywordSearch.type = searchInfo.type
+      state.keywordSearch.sortType = 'rdate'
+      state.keywordSearch.artType = searchInfo.type
 
       state.hashtagSearch.hashtag = ''
-      state.hashtagSearch.sort = 'rdate'
-      state.hashtagSearch.type = ''
+      state.hashtagSearch.sortType = 'rdate'
+      state.hashtagSearch.artType = ''
 
       state.currentSearchSortType = '등록 날짜 최신순'
-      if (searchInfo.type === 'auction') {
+      if (searchInfo.artType === 'auction') {
         state.currentSearchType = '경매 작품'
       } else {
         state.currentSearchType = '일반 작품'
@@ -70,14 +70,16 @@ const detailSearch = {
 
     applyHashtagSearch: (state, searchInfo) => {
       state.hashtagSearch.hashtag = searchInfo.hashtag
-      state.hashtagSearch.sort = 'rdate'
-      state.hashtagSearch.type = searchInfo.type
+      state.hashtagSearch.sortType = 'rdate'
+      state.hashtagSearch.artType = searchInfo.type
+
       state.keywordSearch.keyword = ''
-      state.keywordSearch.sort = 'rdate'
-      state.keywordSearch.type = ''
+      state.keywordSearch.sortType = 'rdate'
+      state.keywordSearch.artType = ''
+
       state.currentSearchSortType = '등록 날짜 최신순'
 
-      if (searchInfo.type === 'auction') {
+      if (searchInfo.artType === 'auction') {
         state.currentSearchType = '경매 작품'
       } else {
         state.currentSearchType = '일반 작품'
@@ -100,7 +102,7 @@ const detailSearch = {
       if (state.keywordSearch.page % 10 === 0) {
         state.keywordSearch.page -= 19
       } else {
-        state.keywordSearch.page = Math.floor(pageInfo / 10 - 1) + 1
+        state.keywordSearch.page = Math.floor(state.keywordSearch.page / 10 - 1) + 1
       }
     },
     changePageToIndexWithKeywordSearch: (state, index) => {
@@ -118,7 +120,7 @@ const detailSearch = {
       if (state.hashtagSearch.page % 10 === 0) {
         state.hashtagSearch.page -= 19
       } else {
-        state.hashtagSearch.page = Math.floor(pageInfo / 10 - 1) + 1
+        state.hashtagSearch.page = Math.floor(state.hashtagSearch.page / 10 - 1) + 1
       }
     },
     changePageToIndexWithHashtagSearch: (state, index) => {
@@ -133,17 +135,19 @@ const detailSearch = {
     },
 
     resetDetailSearchCriteria: (state) => {
-      state.sortType = '등록 날짜 최신순'
+      state.sortTypeStr = '등록 날짜 최신순'
       state.currentSearchType = '경매 작품'
       state.currentSelectedArt.artId = ''
       state.currentSelectedArt.artType = ''
 
       state.keywordSearch.keyword = ''
-      state.keywordSearch.sort = 'rdate'
+      state.keywordSearch.sortType = 'rdate'
       state.keywordSearch.page = 1
+
       state.hashtagSearch.hashtag = ''
-      state.hashtagSearch.sort = 'rdate'
+      state.hashtagSearch.sortType = 'rdate'
       state.hashtagSearch.page = 1
+
       state.currentSearchType = ''
     }
   }

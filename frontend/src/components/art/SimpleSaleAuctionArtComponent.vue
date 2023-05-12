@@ -3,30 +3,30 @@
     <div class="card border-black-50">
       <div>
         <a>
-          <img :src="require(`/public/images/arts/${auctionArt.art.artStorageName}`)"
-               @click="goToDetailPage(auctionArt.art.artId, auctionArt.art.artName)"
+          <img :src="`${auctionArt.art.storageName}`"
+               @click="goToDetailPage(auctionArt.art.id, auctionArt.art.name)"
                alt="" style="width: 100%; height: 200px; margin-bottom: 10px; cursor: pointer;">
         </a>
       </div>
       <div class="card-header">
-        <h3>{{ auctionArt.art.artName }}</h3>
-        <h6>{{ auctionArt.art.artDescription }}</h6>
+        <h3>{{ auctionArt.art.name }}</h3>
+        <h6>{{ auctionArt.art.description }}</h6>
       </div>
       <div class="card-body">
         <p>
           <b>구매자</b><br>
           <span>
-            {{ auctionArt.art.buyerNickname }}
-            <small style="font-size: 12px;">({{ auctionArt.art.buyerSchool }})</small>
+            {{ auctionArt.buyer.nickname }}
+            <small style="font-size: 12px;">({{ auctionArt.buyer.school }})</small>
           </span>
         </p>
         <p>
           <b>판매 가격</b><br>
-          <small>{{ auctionArt.art.purchasePrice }}원</small>
+          <small>{{ auctionArt.art.price }}원</small>
         </p>
       </div>
       <div class="card-footer">
-        <span class="product_tag" v-for="(tag, index) in auctionArt.hashtags" :key="index">#{{ tag }}</span>
+        <span class="product_tag" v-for="(tag, index) in auctionArt.art.hashtags" :key="index">#{{ tag }}</span>
       </div>
     </div>
   </div>

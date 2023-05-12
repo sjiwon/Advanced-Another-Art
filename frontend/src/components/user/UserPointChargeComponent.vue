@@ -119,7 +119,9 @@ export default {
             const chargeRequest = {
               chargeAmount: this.importRequestData.amount
             }
-            await this.axiosWithAccessToken.post('/api/member/point/charge', chargeRequest)
+
+            const memberId = this.$store.getters['memberStore/getMemberId']
+            await this.axiosWithAccessToken.post(`/api/members/${memberId}/point/charge`, chargeRequest)
             alert('충전이 완료되었습니다')
             this.$router.push('/mypage/point/history')
           } catch (err) {

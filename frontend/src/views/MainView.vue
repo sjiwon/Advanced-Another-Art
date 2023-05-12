@@ -92,10 +92,10 @@ export default {
     },
     async fetchData() {
       try {
-        const { sort, page } = this.$store.getters['mainPageSearch/getMainPageCriteria']
-        const response = await this.axios.get(`/api/arts/main?sort=${sort}&page=${page}`)
+        const { sortType, page } = this.$store.getters['mainPageSearch/getMainPageCriteria']
+        const response = await this.axios.get(`/api/arts?sortType=${sortType}&page=${page}`)
 
-        this.fetchDataList = [...response.data.artList]
+        this.fetchDataList = [...response.data.result]
         this.pagination = response.data.pagination
         this.range = []
         for (let i = this.pagination.rangeStartNumber; i <= this.pagination.rangeEndNumber; i++) {
