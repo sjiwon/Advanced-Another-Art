@@ -50,7 +50,7 @@ public class Art extends BaseEntity {
     @JoinColumn(name = "owner_id", referencedColumnName = "id", nullable = false, updatable = false)
     private Member owner;
 
-    @OneToMany(mappedBy = "art", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
+    @OneToMany(mappedBy = "art", cascade = CascadeType.PERSIST)
     private List<Hashtag> hashtags = new ArrayList<>();
 
     private Art(Member owner, ArtName name, Description description, ArtType type,

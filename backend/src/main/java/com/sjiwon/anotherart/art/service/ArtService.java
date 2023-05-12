@@ -5,9 +5,12 @@ import com.sjiwon.anotherart.art.domain.Art;
 import com.sjiwon.anotherart.art.domain.ArtName;
 import com.sjiwon.anotherart.art.domain.ArtRepository;
 import com.sjiwon.anotherart.art.domain.Description;
+import com.sjiwon.anotherart.art.domain.hashtag.HashtagRepository;
+import com.sjiwon.anotherart.art.exception.ArtErrorCode;
 import com.sjiwon.anotherart.auction.domain.Auction;
 import com.sjiwon.anotherart.auction.domain.AuctionRepository;
 import com.sjiwon.anotherart.auction.domain.Period;
+import com.sjiwon.anotherart.global.exception.AnotherArtException;
 import com.sjiwon.anotherart.member.domain.Member;
 import com.sjiwon.anotherart.member.service.MemberFindService;
 import com.sjiwon.anotherart.upload.utils.FileUploader;
@@ -29,6 +32,7 @@ public class ArtService {
     private final FileUploader fileUploader;
     private final ArtValidator artValidator;
     private final ArtRepository artRepository;
+    private final HashtagRepository hashtagRepository;
     private final AuctionRepository auctionRepository;
 
     @Transactional
@@ -82,5 +86,35 @@ public class ArtService {
 
     private void validateUniqueNameForUpdate(String name, Long artId) {
         artValidator.validateUniqueNameForUpdate(ArtName.from(name), artId);
+    }
+
+    @Transactional
+    public void delete(Long artId) {
+        Art art = artFindService.findById(artId);
+        validateArtIsSold(art);
+        validateAuctionRecordIsExists(art);
+        proceedToDeleteArt(artId);
+    }
+
+    private void validateArtIsSold(Art art) {
+        if (art.isSold()) {
+            throw AnotherArtException.type(ArtErrorCode.CANNOT_DELETE_SOLD_ART);
+        }
+    }
+
+    private void validateAuctionRecordIsExists(Art art) {
+        if (art.isAuctionType() && hasAuctionRecords(art.getId())) {
+            throw AnotherArtException.type(ArtErrorCode.CANNOT_DELETE_IF_BID_EXISTS);
+        }
+    }
+
+    private boolean hasAuctionRecords(Long artId) {
+        return artRepository.isAuctionRecordExists(artId);
+    }
+
+    private void proceedToDeleteArt(Long artId) {
+        hashtagRepository.deleteByArtId(artId);
+        auctionRepository.deleteByArtId(artId);
+        artRepository.deleteById(artId);
     }
 }

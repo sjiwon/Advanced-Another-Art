@@ -1,6 +1,7 @@
 package com.sjiwon.anotherart.art.domain;
 
 import com.sjiwon.anotherart.art.infra.query.ArtDetailQueryRepository;
+import com.sjiwon.anotherart.art.infra.query.ArtSimpleQueryRepository;
 import com.sjiwon.anotherart.art.infra.query.ArtSingleQueryRepository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -9,7 +10,7 @@ import org.springframework.data.repository.query.Param;
 import java.util.Optional;
 
 public interface ArtRepository extends JpaRepository<Art, Long>,
-        ArtSingleQueryRepository, ArtDetailQueryRepository {
+        ArtSingleQueryRepository, ArtDetailQueryRepository, ArtSimpleQueryRepository {
     // @Query
     @Query("SELECT a" +
             " FROM Art a" +

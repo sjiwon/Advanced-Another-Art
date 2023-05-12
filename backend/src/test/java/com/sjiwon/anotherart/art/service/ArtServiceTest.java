@@ -16,6 +16,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Optional;
 import java.util.Set;
 
 import static com.sjiwon.anotherart.art.controller.utils.ArtRegisterRequestUtils.createAuctionArtRegisterRequest;
@@ -27,6 +28,9 @@ import static com.sjiwon.anotherart.common.utils.FileMockingUtils.createSingleMo
 import static com.sjiwon.anotherart.fixture.ArtFixture.AUCTION_1;
 import static com.sjiwon.anotherart.fixture.ArtFixture.GENERAL_1;
 import static com.sjiwon.anotherart.fixture.MemberFixture.MEMBER_A;
+import static com.sjiwon.anotherart.fixture.MemberFixture.MEMBER_B;
+import static com.sjiwon.anotherart.fixture.PeriodFixture.OPEN_NOW;
+import static com.sjiwon.anotherart.member.domain.point.PointType.CHARGE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -172,5 +176,57 @@ class ArtServiceTest extends ServiceTest {
                 () -> assertThat(art.getDescriptionValue()).isEqualTo(updateDescription),
                 () -> assertThat(art.getHashtags()).containsExactlyInAnyOrderElementsOf(updateHashtags)
         );
+    }
+
+    @Nested
+    @DisplayName("작품 삭제")
+    class delete {
+        private Member bidder;
+        private Art art;
+        private Auction auction;
+
+        @BeforeEach
+        void setUp() {
+            bidder = memberRepository.save(MEMBER_B.toMember());
+            bidder.addPointRecords(CHARGE, 100_000_000);
+
+            art = artRepository.save(AUCTION_1.toArt(owner));
+            auction = auctionRepository.save(Auction.createAuction(art, OPEN_NOW.toPeriod()));
+        }
+
+        @Test
+        @DisplayName("작품이 판매되었다면 삭제할 수 없다")
+        void throwExceptionByCannotDeleteSoldArt() {
+            // given
+            art.closeSale();
+
+            // when - then
+            assertThatThrownBy(() -> artService.delete(art.getId()))
+                    .isInstanceOf(AnotherArtException.class)
+                    .hasMessage(ArtErrorCode.CANNOT_DELETE_SOLD_ART.getMessage());
+        }
+        
+        @Test
+        @DisplayName("입찰 기록이 존재하는 경매 작품은 삭제할 수 없다")
+        void throwExceptionByCannotDeleteIfBidExists() {
+            // given
+            auction.applyNewBid(bidder, auction.getHighestBidPrice());
+
+            // when - then
+            assertThatThrownBy(() -> artService.delete(art.getId()))
+                    .isInstanceOf(AnotherArtException.class)
+                    .hasMessage(ArtErrorCode.CANNOT_DELETE_IF_BID_EXISTS.getMessage());
+        }
+        
+        @Test
+        @DisplayName("삭제에 성공한다")
+        void success() {
+            // when
+            artService.delete(art.getId());
+            
+            // then
+            Optional<Art> findArt = artRepository.findById(art.getId());
+            assertThat(findArt).isEmpty();
+        }
     }
 }

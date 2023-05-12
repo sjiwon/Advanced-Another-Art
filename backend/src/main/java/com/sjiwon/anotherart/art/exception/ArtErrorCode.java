@@ -15,6 +15,8 @@ public enum ArtErrorCode implements ErrorCode {
     ART_NOT_FOUND(HttpStatus.NOT_FOUND, "ART_005", "작품 정보가 존재하지 않습니다."),
     DUPLICATE_NAME(HttpStatus.CONFLICT, "ART_006", "이미 사용중인 작품명입니다."),
     SORT_TYPE_NOT_PROVIED(HttpStatus.BAD_REQUEST, "ART_007", "제공하지 않는 정렬 타입입니다."),
+    CANNOT_DELETE_SOLD_ART(HttpStatus.CONFLICT, "ART_008", "이미 판매된 작품은 삭제할 수 없습니다."),
+    CANNOT_DELETE_IF_BID_EXISTS(HttpStatus.CONFLICT, "ART_009", "이미 입찰이 진행된 경매 작품은 삭제할 수 없습니다."),
     ;
 
     private final HttpStatus status;
