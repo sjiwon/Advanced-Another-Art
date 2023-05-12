@@ -3,6 +3,7 @@ package com.sjiwon.anotherart.member.controller;
 import com.sjiwon.anotherart.common.ControllerTest;
 import com.sjiwon.anotherart.global.exception.AnotherArtException;
 import com.sjiwon.anotherart.member.controller.dto.request.AuthForResetPasswordRequest;
+import com.sjiwon.anotherart.member.controller.dto.request.ChangePasswordRequest;
 import com.sjiwon.anotherart.member.controller.dto.request.ResetPasswordRequest;
 import com.sjiwon.anotherart.member.exception.MemberErrorCode;
 import org.junit.jupiter.api.DisplayName;
@@ -11,10 +12,13 @@ import org.junit.jupiter.api.Test;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
+import static com.sjiwon.anotherart.common.utils.TokenUtils.ACCESS_TOKEN;
+import static com.sjiwon.anotherart.common.utils.TokenUtils.BEARER_TOKEN;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
@@ -231,6 +235,86 @@ class MemberPrivacyInformationApiControllerTest extends ControllerTest {
                                     getDocumentResponse(),
                                     requestFields(
                                             fieldWithPath("loginId").description("사용자 로그인 아이디"),
+                                            fieldWithPath("changePassword").description("변경할 비밀번호")
+                                    )
+                            )
+                    );
+        }
+    }
+
+    @Nested
+    @DisplayName("비밀번호 변경 API [PATCH /api/member/password] - AccessToken 필수")
+    class changePassword {
+        private static final String BASE_URL = "/api/member/password";
+
+        @Test
+        @DisplayName("이전과 동일한 비밀번호로 초기화할 수 없다")
+        void throwExceptionByMemberNotFound() throws Exception {
+            // given
+            doThrow(AnotherArtException.type(MemberErrorCode.PASSWORD_SAME_AS_BEFORE))
+                    .when(memberService)
+                    .changePassword(any(), any());
+
+            // when
+            final ChangePasswordRequest request = new ChangePasswordRequest("hello123ABC!@#");
+            MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
+                    .patch(BASE_URL)
+                    .header(AUTHORIZATION, String.join(" ", BEARER_TOKEN, ACCESS_TOKEN))
+                    .contentType(APPLICATION_JSON)
+                    .content(convertObjectToJson(request));
+
+            // then
+            final MemberErrorCode expectedError = MemberErrorCode.PASSWORD_SAME_AS_BEFORE;
+            mockMvc.perform(requestBuilder)
+                    .andExpectAll(
+                            status().isConflict(),
+                            jsonPath("$.status").exists(),
+                            jsonPath("$.status").value(expectedError.getStatus().value()),
+                            jsonPath("$.errorCode").exists(),
+                            jsonPath("$.errorCode").value(expectedError.getErrorCode()),
+                            jsonPath("$.message").exists(),
+                            jsonPath("$.message").value(expectedError.getMessage())
+                    )
+                    .andDo(
+                            document(
+                                    "MemberApi/ChangePassword/Failure",
+                                    getDocumentRequest(),
+                                    getDocumentResponse(),
+                                    getHeaderWithAccessToken(),
+                                    requestFields(
+                                            fieldWithPath("changePassword").description("변경할 비밀번호")
+                                    ),
+                                    getExceptionResponseFiels()
+                            )
+                    );
+        }
+
+        @Test
+        @DisplayName("비밀번호를 초기화한다")
+        void success() throws Exception {
+            // given
+            doNothing()
+                    .when(memberService)
+                    .changePassword(any(), any());
+
+            // when
+            final ChangePasswordRequest request = new ChangePasswordRequest("hello123ABC!@#");
+            MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
+                    .patch(BASE_URL)
+                    .header(AUTHORIZATION, String.join(" ", BEARER_TOKEN, ACCESS_TOKEN))
+                    .contentType(APPLICATION_JSON)
+                    .content(convertObjectToJson(request));
+
+            // then
+            mockMvc.perform(requestBuilder)
+                    .andExpect(status().isNoContent())
+                    .andDo(
+                            document(
+                                    "MemberApi/ChangePassword/Success",
+                                    getDocumentRequest(),
+                                    getDocumentResponse(),
+                                    getHeaderWithAccessToken(),
+                                    requestFields(
                                             fieldWithPath("changePassword").description("변경할 비밀번호")
                                     )
                             )

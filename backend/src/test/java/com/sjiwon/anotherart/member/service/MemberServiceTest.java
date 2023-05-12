@@ -295,7 +295,7 @@ class MemberServiceTest extends ServiceTest {
     }
 
     @Nested
-    @DisplayName("비밀번호 초기화")
+    @DisplayName("비밀번호 초기화 [익명 사용자]")
     class resetPassword {
         private Member member;
 
@@ -317,6 +317,36 @@ class MemberServiceTest extends ServiceTest {
         void success() {
             // when
             memberService.resetPassword(member.getLoginId(), "hello123ABC!@#");
+
+            // then
+            Member findMember = memberRepository.findById(member.getId()).orElseThrow();
+            assertThat(ENCODER.matches("hello123ABC!@#", findMember.getPasswordValue())).isTrue();
+        }
+    }
+
+    @Nested
+    @DisplayName("비밀번호 초기화 [인증된 사용자]")
+    class changePassword {
+        private Member member;
+
+        @BeforeEach
+        void setUp() {
+            member = memberRepository.save(MEMBER_A.toMember());
+        }
+
+        @Test
+        @DisplayName("이전과 동일한 비밀번호로 초기화할 수 없다")
+        void failureBySameAsBefore() {
+            assertThatThrownBy(() -> memberService.changePassword(member.getId(), MEMBER_A.getPassword()))
+                    .isInstanceOf(AnotherArtException.class)
+                    .hasMessage(MemberErrorCode.PASSWORD_SAME_AS_BEFORE.getMessage());
+        }
+
+        @Test
+        @DisplayName("비밀번호를 초기화한다")
+        void success() {
+            // when
+            memberService.changePassword(member.getId(), "hello123ABC!@#");
 
             // then
             Member findMember = memberRepository.findById(member.getId()).orElseThrow();

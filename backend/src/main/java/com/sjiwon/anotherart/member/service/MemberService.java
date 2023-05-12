@@ -72,4 +72,10 @@ public class MemberService {
         Member member = memberFindService.findByLoginId(loginId);
         member.changePassword(changePassword, passwordEncoder);
     }
+
+    @Transactional
+    public void changePassword(Long memberId, String changePassword) {
+        Member member = memberFindService.findById(memberId);
+        member.changePassword(changePassword, passwordEncoder);
+    }
 }

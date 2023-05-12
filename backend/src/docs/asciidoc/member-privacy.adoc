@@ -31,7 +31,7 @@ include::{snippets}/MemberApi/ResetPassword/Auth/Success/request-fields.adoc[]
 HTTP Response
 include::{snippets}/MemberApi/ResetPassword/Auth/Success/http-response.adoc[]
 
-== 비밀번호 초기화 간 사용자 인증
+== 비밀번호 초기화
 === 1. 이전과 동일한 비밀번호로 초기화할 수 없다
 HTTP Request
 include::{snippets}/MemberApi/ResetPassword/Failure/http-request.adoc[]
@@ -47,3 +47,20 @@ include::{snippets}/MemberApi/ResetPassword/Success/request-fields.adoc[]
 
 HTTP Response
 include::{snippets}/MemberApi/ResetPassword/Success/http-response.adoc[]
+
+== 비밀번호 변경 [AccessToken 필수]
+=== 1. 이전과 동일한 비밀번호로 초기화할 수 없다
+HTTP Request
+include::{snippets}/MemberApi/ChangePassword/Failure/http-request.adoc[]
+include::{snippets}/MemberApi/ChangePassword/Failure/request-fields.adoc[]
+
+HTTP Response
+include::{snippets}/MemberApi/ChangePassword/Failure/response-body.adoc[]
+
+=== 2. 비밀번호를 초기화한다
+HTTP Request
+include::{snippets}/MemberApi/ChangePassword/Success/http-request.adoc[]
+include::{snippets}/MemberApi/ChangePassword/Success/request-fields.adoc[]
+
+HTTP Response
+include::{snippets}/MemberApi/ChangePassword/Success/http-response.adoc[]
