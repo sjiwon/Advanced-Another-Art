@@ -44,7 +44,7 @@ class MemberRepositoryTest extends RepositoryTest {
     void findByNameAndEmail(){
         // when
         Optional<Member> emptyMember1 = memberRepository.findByNameAndEmail(
-                member.getName(),
+                "diff" + member.getName(),
                 member.getEmail()
         );
         Optional<Member> emptyMember2 = memberRepository.findByNameAndEmail(
@@ -142,6 +142,28 @@ class MemberRepositoryTest extends RepositoryTest {
         // when
         boolean actual1 = memberRepository.existsByEmail(same);
         boolean actual2 = memberRepository.existsByEmail(diff);
+
+        // then
+        assertAll(
+                () -> assertThat(actual1).isTrue(),
+                () -> assertThat(actual2).isFalse()
+        );
+    }
+
+    @Test
+    @DisplayName("비밀번호 초기화를 위한 사용자 인증을 진행한다")
+    void existsByNameAndEmailAndLoginId() {
+        // when
+        boolean actual1 = memberRepository.existsByNameAndEmailAndLoginId(
+                member.getName(),
+                member.getEmail(),
+                member.getLoginId()
+        );
+        boolean actual2 = memberRepository.existsByNameAndEmailAndLoginId(
+                member.getName() + "diff",
+                member.getEmail(),
+                member.getLoginId()
+        );
 
         // then
         assertAll(

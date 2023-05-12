@@ -1,15 +1,13 @@
 package com.sjiwon.anotherart.member.controller;
 
 import com.sjiwon.anotherart.global.dto.SimpleReponseWrapper;
+import com.sjiwon.anotherart.member.controller.dto.request.AuthForResetPasswordRequest;
 import com.sjiwon.anotherart.member.controller.dto.request.FindLoginIdRequest;
 import com.sjiwon.anotherart.member.domain.Email;
 import com.sjiwon.anotherart.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
@@ -23,5 +21,11 @@ public class MemberPrivacyInformationApiController {
     public ResponseEntity<SimpleReponseWrapper<String>> findLoginId(@ModelAttribute @Valid FindLoginIdRequest request) {
         String loginId = memberService.findLoginId(request.name(), Email.from(request.email()));
         return ResponseEntity.ok(new SimpleReponseWrapper<>(loginId));
+    }
+
+    @PostMapping("/reset-password/auth")
+    public ResponseEntity<Void> authForResetPassword(@RequestBody @Valid AuthForResetPasswordRequest request) {
+        memberService.authForResetPassword(request.name(), Email.from(request.email()), request.loginId());
+        return ResponseEntity.noContent().build();
     }
 }

@@ -1,9 +1,11 @@
 package com.sjiwon.anotherart.member.service;
 
+import com.sjiwon.anotherart.global.exception.AnotherArtException;
 import com.sjiwon.anotherart.member.domain.Email;
 import com.sjiwon.anotherart.member.domain.Member;
 import com.sjiwon.anotherart.member.domain.MemberRepository;
 import com.sjiwon.anotherart.member.domain.Nickname;
+import com.sjiwon.anotherart.member.exception.MemberErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -55,5 +57,11 @@ public class MemberService {
     public String findLoginId(String name, Email email) {
         return memberFindService.findByNameAndEmail(name, email)
                 .getLoginId();
+    }
+
+    public void authForResetPassword(String name, Email email, String loginId) {
+        if (!memberRepository.existsByNameAndEmailAndLoginId(name, email, loginId)) {
+            throw AnotherArtException.type(MemberErrorCode.MEMBER_NOT_FOUND);
+        }
     }
 }

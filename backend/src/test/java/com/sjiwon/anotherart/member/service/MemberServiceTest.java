@@ -268,6 +268,28 @@ class MemberServiceTest extends ServiceTest {
         assertThat(findLoginId).isEqualTo(member.getLoginId());
     }
 
+    @Test
+    @DisplayName("비밀번호 초기화를 위한 사용자 인증을 진행한다")
+    void authForResetPassword() {
+        // given
+        Member member = memberRepository.save(MEMBER_A.toMember());
+
+        // when - then
+        assertThatThrownBy(() -> memberService.authForResetPassword(
+                "diff" + member.getName(),
+                member.getEmail(),
+                member.getLoginId()
+        ))
+                .isInstanceOf(AnotherArtException.class)
+                .hasMessage(MemberErrorCode.MEMBER_NOT_FOUND.getMessage());
+
+        assertDoesNotThrow(() -> memberService.authForResetPassword(
+                member.getName(),
+                member.getEmail(),
+                member.getLoginId()
+        ));
+    }
+
     private Member createDuplicateMember(String nickname, String loginId, String phone, String email) {
         return Member.createMember(
                 MEMBER_A.getName(),
