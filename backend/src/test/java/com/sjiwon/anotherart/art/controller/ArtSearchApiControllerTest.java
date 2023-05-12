@@ -74,7 +74,7 @@ class ArtSearchApiControllerTest extends ControllerTest {
                                             fieldWithPath("result.art.storageName").description("작품 이미지 경로"),
                                             fieldWithPath("result.art.registrationDate").description("작품 등록 날짜"),
                                             fieldWithPath("result.art.hashtags").description("작품 해시태그"),
-                                            fieldWithPath("result.art.likeCount").description("작품 찜 횟수"),
+                                            fieldWithPath("result.art.likeMembers[]").description("작품 찜한 사용자 ID(PK) 리스트"),
                                             fieldWithPath("result.owner.id").description("작품 소유자 ID(PK)"),
                                             fieldWithPath("result.owner.nickname").description("작품 소유자 닉네임"),
                                             fieldWithPath("result.owner.school").description("작품 소유자 학교"),
@@ -120,7 +120,7 @@ class ArtSearchApiControllerTest extends ControllerTest {
                                             fieldWithPath("result.art.storageName").description("작품 이미지 경로"),
                                             fieldWithPath("result.art.registrationDate").description("작품 등록 날짜"),
                                             fieldWithPath("result.art.hashtags").description("작품 해시태그"),
-                                            fieldWithPath("result.art.likeCount").description("작품 찜 횟수"),
+                                            fieldWithPath("result.art.likeMembers[]").description("작품 찜한 사용자 ID(PK) 리스트"),
                                             fieldWithPath("result.owner.id").description("작품 소유자 ID(PK)"),
                                             fieldWithPath("result.owner.nickname").description("작품 소유자 닉네임"),
                                             fieldWithPath("result.owner.school").description("작품 소유자 학교"),
@@ -187,7 +187,7 @@ class ArtSearchApiControllerTest extends ControllerTest {
                                             fieldWithPath("result[].art.storageName").description("작품 이미지 경로"),
                                             fieldWithPath("result[].art.registrationDate").description("작품 등록 날짜"),
                                             fieldWithPath("result[].art.hashtags").description("작품 해시태그"),
-                                            fieldWithPath("result[].art.likeCount").description("작품 찜 횟수"),
+                                            fieldWithPath("result[].art.likeMembers[]").description("작품 찜한 사용자 ID(PK) 리스트"),
                                             fieldWithPath("result[].owner.id").description("작품 소유자 ID(PK)"),
                                             fieldWithPath("result[].owner.nickname").description("작품 소유자 닉네임"),
                                             fieldWithPath("result[].owner.school").description("작품 소유자 학교"),
@@ -267,7 +267,7 @@ class ArtSearchApiControllerTest extends ControllerTest {
                                             fieldWithPath("result[].art.storageName").description("작품 이미지 경로"),
                                             fieldWithPath("result[].art.registrationDate").description("작품 등록 날짜"),
                                             fieldWithPath("result[].art.hashtags").description("작품 해시태그"),
-                                            fieldWithPath("result[].art.likeCount").description("작품 찜 횟수"),
+                                            fieldWithPath("result[].art.likeMembers[]").description("작품 찜한 사용자 ID(PK) 리스트"),
                                             fieldWithPath("result[].owner.id").description("작품 소유자 ID(PK)"),
                                             fieldWithPath("result[].owner.nickname").description("작품 소유자 닉네임"),
                                             fieldWithPath("result[].owner.school").description("작품 소유자 학교"),
@@ -331,7 +331,7 @@ class ArtSearchApiControllerTest extends ControllerTest {
                                             fieldWithPath("result[].art.storageName").description("작품 이미지 경로"),
                                             fieldWithPath("result[].art.registrationDate").description("작품 등록 날짜"),
                                             fieldWithPath("result[].art.hashtags").description("작품 해시태그"),
-                                            fieldWithPath("result[].art.likeCount").description("작품 찜 횟수"),
+                                            fieldWithPath("result[].art.likeMembers[]").description("작품 찜한 사용자 ID(PK) 리스트"),
                                             fieldWithPath("result[].owner.id").description("작품 소유자 ID(PK)"),
                                             fieldWithPath("result[].owner.nickname").description("작품 소유자 닉네임"),
                                             fieldWithPath("result[].owner.school").description("작품 소유자 학교"),
@@ -411,7 +411,7 @@ class ArtSearchApiControllerTest extends ControllerTest {
                                             fieldWithPath("result[].art.storageName").description("작품 이미지 경로"),
                                             fieldWithPath("result[].art.registrationDate").description("작품 등록 날짜"),
                                             fieldWithPath("result[].art.hashtags").description("작품 해시태그"),
-                                            fieldWithPath("result[].art.likeCount").description("작품 찜 횟수"),
+                                            fieldWithPath("result[].art.likeMembers[]").description("작품 찜한 사용자 ID(PK) 리스트"),
                                             fieldWithPath("result[].owner.id").description("작품 소유자 ID(PK)"),
                                             fieldWithPath("result[].owner.nickname").description("작품 소유자 닉네임"),
                                             fieldWithPath("result[].owner.school").description("작품 소유자 학교"),
@@ -475,7 +475,7 @@ class ArtSearchApiControllerTest extends ControllerTest {
                                             fieldWithPath("result[].art.storageName").description("작품 이미지 경로"),
                                             fieldWithPath("result[].art.registrationDate").description("작품 등록 날짜"),
                                             fieldWithPath("result[].art.hashtags").description("작품 해시태그"),
-                                            fieldWithPath("result[].art.likeCount").description("작품 찜 횟수"),
+                                            fieldWithPath("result[].art.likeMembers[]").description("작품 찜한 사용자 ID(PK) 리스트"),
                                             fieldWithPath("result[].owner.id").description("작품 소유자 ID(PK)"),
                                             fieldWithPath("result[].owner.nickname").description("작품 소유자 닉네임"),
                                             fieldWithPath("result[].owner.school").description("작품 소유자 학교"),
@@ -517,7 +517,7 @@ class ArtSearchApiControllerTest extends ControllerTest {
                         AUCTION_1.getStorageName(),
                         LocalDateTime.now().minusDays(5),
                         List.of("해시태그1", "해시태그2", "해시태그3"),
-                        3
+                        List.of(1L, 2L, 3L)
                 ),
                 new BasicMember(1L, "작품소유자", "서울대학교"),
                 new BasicMember(2L, "경매입찰자or낙찰자", "경기대학교")
@@ -535,7 +535,7 @@ class ArtSearchApiControllerTest extends ControllerTest {
                         GENERAL_1.getStorageName(),
                         LocalDateTime.now().minusDays(6),
                         List.of("해시태그1", "해시태그2", "해시태그3"),
-                        6
+                        List.of(1L, 2L, 3L)
                 ),
                 new BasicMember(1L, "작품소유자", "서울대학교"),
                 new BasicMember(2L, "작품구매자", "경기대학교")
@@ -561,7 +561,7 @@ class ArtSearchApiControllerTest extends ControllerTest {
                                 AUCTION_1.getStorageName(),
                                 LocalDateTime.now().minusDays(4),
                                 List.of("해시태그1", "해시태그2", "해시태그3"),
-                                3
+                                List.of(1L, 2L, 3L)
                         ),
                         new BasicMember(1L, "작품소유자", "서울대학교"),
                         new BasicMember(2L, "경매입찰자or낙찰자", "경기대학교")
@@ -583,7 +583,7 @@ class ArtSearchApiControllerTest extends ControllerTest {
                                 AUCTION_2.getStorageName(),
                                 LocalDateTime.now().minusDays(5),
                                 List.of("해시태그1", "해시태그2", "해시태그3"),
-                                8
+                                List.of(1L, 2L, 3L)
                         ),
                         new BasicMember(1L, "작품소유자", "서울대학교"),
                         new BasicMember(2L, "경매입찰자or낙찰자", "경기대학교")
@@ -605,7 +605,7 @@ class ArtSearchApiControllerTest extends ControllerTest {
                                 AUCTION_3.getStorageName(),
                                 LocalDateTime.now().minusDays(7),
                                 List.of("해시태그1", "해시태그2", "해시태그3"),
-                                17
+                                List.of(1L, 2L, 3L)
                         ),
                         new BasicMember(1L, "작품소유자", "서울대학교"),
                         new BasicMember(2L, "경매입찰자or낙찰자", "경기대학교")
@@ -628,7 +628,7 @@ class ArtSearchApiControllerTest extends ControllerTest {
                                 GENERAL_1.getStorageName(),
                                 LocalDateTime.now().minusDays(4),
                                 List.of("해시태그1", "해시태그2", "해시태그3"),
-                                3
+                                List.of(1L, 2L, 3L)
                         ),
                         new BasicMember(1L, "작품소유자", "서울대학교"),
                         new BasicMember(2L, "작품구매자", "경기대학교")
@@ -643,7 +643,7 @@ class ArtSearchApiControllerTest extends ControllerTest {
                                 GENERAL_2.getStorageName(),
                                 LocalDateTime.now().minusDays(5),
                                 List.of("해시태그1", "해시태그2", "해시태그3"),
-                                8
+                                List.of(1L, 2L, 3L)
                         ),
                         new BasicMember(1L, "작품소유자", "서울대학교"),
                         new BasicMember(2L, "작품구매자", "경기대학교")
@@ -658,7 +658,7 @@ class ArtSearchApiControllerTest extends ControllerTest {
                                 GENERAL_3.getStorageName(),
                                 LocalDateTime.now().minusDays(7),
                                 List.of("해시태그1", "해시태그2", "해시태그3"),
-                                17
+                                List.of(1L, 2L, 3L)
                         ),
                         new BasicMember(1L, "작품소유자", "서울대학교"),
                         new BasicMember(2L, "작품구매자", "경기대학교")

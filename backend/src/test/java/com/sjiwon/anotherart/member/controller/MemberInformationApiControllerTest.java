@@ -179,7 +179,7 @@ class MemberInformationApiControllerTest extends ControllerTest {
                                             fieldWithPath("result[].art.storageName").description("경매 작품 이미지 경로"),
                                             fieldWithPath("result[].art.registrationDate").description("경매 작품 등록 날짜"),
                                             fieldWithPath("result[].art.hashtags").description("경매 작품 해시태그"),
-                                            fieldWithPath("result[].art.likeCount").description("경매 작품 찜 횟수"),
+                                            fieldWithPath("result[].art.likeMembers[]").description("작품 찜한 사용자 ID(PK) 리스트"),
                                             fieldWithPath("result[].owner.id").description("작품 소유자 ID(PK)"),
                                             fieldWithPath("result[].owner.nickname").description("작품 소유자 닉네임"),
                                             fieldWithPath("result[].owner.school").description("작품 소유자 학교"),
@@ -232,7 +232,7 @@ class MemberInformationApiControllerTest extends ControllerTest {
                                             fieldWithPath("tradedAuctions[].art.storageName").description("경매 작품 이미지 경로"),
                                             fieldWithPath("tradedAuctions[].art.registrationDate").description("경매 작품 등록 날짜"),
                                             fieldWithPath("tradedAuctions[].art.hashtags").description("경매 작품 해시태그"),
-                                            fieldWithPath("tradedAuctions[].art.likeCount").description("경매 작품 찜 횟수"),
+                                            fieldWithPath("tradedAuctions[].art.likeMembers[]").description("작품 찜한 사용자 ID(PK) 리스트"),
                                             fieldWithPath("tradedAuctions[].owner.id").description("작품 소유자 ID(PK)"),
                                             fieldWithPath("tradedAuctions[].owner.nickname").description("작품 소유자 닉네임"),
                                             fieldWithPath("tradedAuctions[].owner.school").description("작품 소유자 학교"),
@@ -248,7 +248,7 @@ class MemberInformationApiControllerTest extends ControllerTest {
                                             fieldWithPath("tradedGenerals[].art.storageName").description("일반 작품 이미지 경로"),
                                             fieldWithPath("tradedGenerals[].art.registrationDate").description("일반 작품 등록 날짜"),
                                             fieldWithPath("tradedGenerals[].art.hashtags").description("일반 작품 해시태그"),
-                                            fieldWithPath("tradedGenerals[].art.likeCount").description("일반 작품 찜 횟수"),
+                                            fieldWithPath("tradedGenerals[].art.likeMembers[]").description("작품 찜한 사용자 ID(PK) 리스트"),
                                             fieldWithPath("tradedGenerals[].owner.id").description("작품 소유자 ID(PK)"),
                                             fieldWithPath("tradedGenerals[].owner.nickname").description("작품 소유자 닉네임"),
                                             fieldWithPath("tradedGenerals[].owner.school").description("작품 소유자 학교"),
@@ -301,7 +301,7 @@ class MemberInformationApiControllerTest extends ControllerTest {
                                             fieldWithPath("tradedAuctions[].art.storageName").description("경매 작품 이미지 경로"),
                                             fieldWithPath("tradedAuctions[].art.registrationDate").description("경매 작품 등록 날짜"),
                                             fieldWithPath("tradedAuctions[].art.hashtags").description("경매 작품 해시태그"),
-                                            fieldWithPath("tradedAuctions[].art.likeCount").description("경매 작품 찜 횟수"),
+                                            fieldWithPath("tradedAuctions[].art.likeMembers[]").description("작품 찜한 사용자 ID(PK) 리스트"),
                                             fieldWithPath("tradedAuctions[].owner.id").description("작품 소유자 ID(PK)"),
                                             fieldWithPath("tradedAuctions[].owner.nickname").description("작품 소유자 닉네임"),
                                             fieldWithPath("tradedAuctions[].owner.school").description("작품 소유자 학교"),
@@ -317,7 +317,7 @@ class MemberInformationApiControllerTest extends ControllerTest {
                                             fieldWithPath("tradedGenerals[].art.storageName").description("일반 작품 이미지 경로"),
                                             fieldWithPath("tradedGenerals[].art.registrationDate").description("일반 작품 등록 날짜"),
                                             fieldWithPath("tradedGenerals[].art.hashtags").description("일반 작품 해시태그"),
-                                            fieldWithPath("tradedGenerals[].art.likeCount").description("일반 작품 찜 횟수"),
+                                            fieldWithPath("tradedGenerals[].art.likeMembers[]").description("작품 찜한 사용자 ID(PK) 리스트"),
                                             fieldWithPath("tradedGenerals[].owner.id").description("작품 소유자 ID(PK)"),
                                             fieldWithPath("tradedGenerals[].owner.nickname").description("작품 소유자 닉네임"),
                                             fieldWithPath("tradedGenerals[].owner.school").description("작품 소유자 학교"),
@@ -377,7 +377,7 @@ class MemberInformationApiControllerTest extends ControllerTest {
                                 AUCTION_3.getStorageName(),
                                 LocalDateTime.now().minusDays(10),
                                 List.of("해시태그1", "해시태그2", "해시태그3"),
-                                5
+                                List.of(1L, 2L, 3L)
                         ),
                         new BasicMember(1L, "작품소유자", "서울대학교"),
                         new BasicMember(2L, "경매낙찰자", "경기대학교")
@@ -399,7 +399,7 @@ class MemberInformationApiControllerTest extends ControllerTest {
                                 AUCTION_2.getStorageName(),
                                 LocalDateTime.now().minusDays(7),
                                 List.of("해시태그1", "해시태그2", "해시태그3"),
-                                7
+                                List.of(1L, 2L, 3L)
                         ),
                         new BasicMember(1L, "작품소유자", "서울대학교"),
                         new BasicMember(2L, "경매낙찰자", "경기대학교")
@@ -421,7 +421,7 @@ class MemberInformationApiControllerTest extends ControllerTest {
                                 AUCTION_1.getStorageName(),
                                 LocalDateTime.now().minusDays(5),
                                 List.of("해시태그1", "해시태그2", "해시태그3"),
-                                13
+                                List.of(1L, 2L, 3L)
                         ),
                         new BasicMember(1L, "작품소유자", "서울대학교"),
                         new BasicMember(2L, "경매낙찰자", "경기대학교")
@@ -443,7 +443,7 @@ class MemberInformationApiControllerTest extends ControllerTest {
                                 AUCTION_2.getStorageName(),
                                 LocalDateTime.now().minusDays(7),
                                 List.of("해시태그1", "해시태그2", "해시태그3"),
-                                2
+                                List.of(1L, 2L, 3L)
                         ),
                         new BasicMember(1L, "작품소유자", "서울대학교"),
                         new BasicMember(2L, "작품구매자", "경기대학교")
@@ -458,7 +458,7 @@ class MemberInformationApiControllerTest extends ControllerTest {
                                 AUCTION_1.getStorageName(),
                                 LocalDateTime.now().minusDays(5),
                                 List.of("해시태그1", "해시태그2", "해시태그3"),
-                                8
+                                List.of(1L, 2L, 3L)
                         ),
                         new BasicMember(1L, "작품소유자", "서울대학교"),
                         new BasicMember(2L, "작품구매자", "경기대학교")
@@ -476,7 +476,7 @@ class MemberInformationApiControllerTest extends ControllerTest {
                                 GENERAL_1.getStorageName(),
                                 LocalDateTime.now().minusDays(5),
                                 List.of("해시태그1", "해시태그2", "해시태그3"),
-                                16
+                                List.of(1L, 2L, 3L)
                         ),
                         new BasicMember(1L, "작품소유자", "서울대학교"),
                         new BasicMember(2L, "작품구매자", "경기대학교")

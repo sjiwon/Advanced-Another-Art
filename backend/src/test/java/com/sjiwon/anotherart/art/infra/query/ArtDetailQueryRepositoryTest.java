@@ -1118,7 +1118,7 @@ class ArtDetailQueryRepositoryTest extends RepositoryTest {
                     () -> assertThat(auctionArt.getAuction().getId()).isEqualTo(auction.getId()),
                     () -> assertThat(auctionArt.getAuction().getBidCount()).isEqualTo(count),
                     () -> assertThat(auctionArt.getArt().getId()).isEqualTo(auction.getArt().getId()),
-                    () -> assertThat(auctionArt.getArt().getLikeCount()).isEqualTo(count)
+                    () -> assertThat(auctionArt.getArt().getLikeMembers()).hasSize(count)
             );
         }
     }
@@ -1134,7 +1134,7 @@ class ArtDetailQueryRepositoryTest extends RepositoryTest {
 
             assertAll(
                     () -> assertThat(auctionArt.getArt().getId()).isEqualTo(art.getId()),
-                    () -> assertThat(auctionArt.getArt().getLikeCount()).isEqualTo(count)
+                    () -> assertThat(auctionArt.getArt().getLikeMembers()).hasSize(count)
             );
         }
     }

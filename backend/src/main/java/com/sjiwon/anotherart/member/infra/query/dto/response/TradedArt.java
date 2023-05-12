@@ -51,7 +51,7 @@ public class TradedArt implements ArtDetails {
         this.art.applyHashtags(hashtags);
     }
 
-    public void applyLikeCount(int likeCount) {
-        this.art.applyLikeCount(likeCount);
+    public void applyLikeCount(List<Long> likeMembers) {
+        this.art.applyLikeMembers(likeMembers);
     }
 }

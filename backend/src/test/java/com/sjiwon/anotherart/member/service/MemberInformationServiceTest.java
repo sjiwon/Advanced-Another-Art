@@ -298,7 +298,7 @@ class MemberInformationServiceTest extends ServiceTest {
                     () -> assertThat(auctionArt.getArt().getStatus()).isEqualTo(art.getStatus().getDescription()),
                     () -> assertThat(auctionArt.getArt().getStorageName()).isEqualTo(art.getStorageName()),
                     () -> assertThat(auctionArt.getArt().getHashtags()).containsExactlyInAnyOrderElementsOf(art.getHashtags()),
-                    () -> assertThat(auctionArt.getArt().getLikeCount()).isEqualTo(1),
+                    () -> assertThat(auctionArt.getArt().getLikeMembers()).hasSize(1),
 
                     () -> assertThat(auctionArt.getOwner().id()).isEqualTo(owner.getId()),
                     () -> assertThat(auctionArt.getOwner().nickname()).isEqualTo(owner.getNicknameValue()),
@@ -332,7 +332,7 @@ class MemberInformationServiceTest extends ServiceTest {
                     () -> assertThat(tradedArt.getArt().getStatus()).isEqualTo(art.getStatus().getDescription()),
                     () -> assertThat(tradedArt.getArt().getStorageName()).isEqualTo(art.getStorageName()),
                     () -> assertThat(tradedArt.getArt().getHashtags()).containsExactlyInAnyOrderElementsOf(art.getHashtags()),
-                    () -> assertThat(tradedArt.getArt().getLikeCount()).isEqualTo(1),
+                    () -> assertThat(tradedArt.getArt().getLikeMembers()).hasSize(1),
 
                     () -> assertThat(tradedArt.getOwner().id()).isEqualTo(owner.getId()),
                     () -> assertThat(tradedArt.getOwner().nickname()).isEqualTo(owner.getNicknameValue()),
@@ -358,7 +358,7 @@ class MemberInformationServiceTest extends ServiceTest {
                     () -> assertThat(tradedArt.getArt().getStatus()).isEqualTo(art.getStatus().getDescription()),
                     () -> assertThat(tradedArt.getArt().getStorageName()).isEqualTo(art.getStorageName()),
                     () -> assertThat(tradedArt.getArt().getHashtags()).containsExactlyInAnyOrderElementsOf(art.getHashtags()),
-                    () -> assertThat(tradedArt.getArt().getLikeCount()).isEqualTo(1),
+                    () -> assertThat(tradedArt.getArt().getLikeMembers()).hasSize(1),
 
                     () -> assertThat(tradedArt.getOwner().id()).isEqualTo(owner.getId()),
                     () -> assertThat(tradedArt.getOwner().nickname()).isEqualTo(owner.getNicknameValue()),

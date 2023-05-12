@@ -80,7 +80,7 @@ public class ArtSingleQueryRepositoryImpl implements ArtSingleQueryRepository {
         if (!CollectionUtils.isEmpty(hashtags)) {
             result.applyHashtags(hashtags);
         }
-        result.applyLikeCount(getLikeCount(artId));
+        result.applyLikeMembers(collectLikeMemberIds(artId));
         result.applyBidCount(getBidCount(artId));
     }
 
@@ -89,7 +89,7 @@ public class ArtSingleQueryRepositoryImpl implements ArtSingleQueryRepository {
         if (!CollectionUtils.isEmpty(hashtags)) {
             result.applyHashtags(hashtags);
         }
-        result.applyLikeCount(getLikeCount(artId));
+        result.applyLikeMembers(collectLikeMemberIds(artId));
     }
 
     private List<String> getHashtags(Long artId) {
@@ -100,12 +100,12 @@ public class ArtSingleQueryRepositoryImpl implements ArtSingleQueryRepository {
                 .fetch();
     }
 
-    private int getLikeCount(Long artId) {
+    private List<Long> collectLikeMemberIds(Long artId) {
         return query
-                .select(favorite.count().intValue())
+                .select(favorite.memberId)
                 .from(favorite)
                 .where(favorite.artId.eq(artId))
-                .fetchOne();
+                .fetch();
     }
 
     private int getBidCount(Long artId) {

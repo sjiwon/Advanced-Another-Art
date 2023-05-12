@@ -174,12 +174,12 @@ class ArtSearchServiceTest extends ServiceTest {
 
                 if (i == 0) { // 입찰 X
                     assertAll(
-                            () -> assertThat(auctionArt.getArt().getLikeCount()).isEqualTo(0),
+                            () -> assertThat(auctionArt.getArt().getLikeMembers()).hasSize(0),
                             () -> assertThat(auctionArt.getHighestBidder()).isNull()
                     );
                 } else { // 입찰 O
                     assertAll(
-                            () -> assertThat(auctionArt.getArt().getLikeCount()).isEqualTo(1),
+                            () -> assertThat(auctionArt.getArt().getLikeMembers()).hasSize(1),
                             () -> assertThat(auctionArt.getHighestBidder().id()).isEqualTo(bidder.getId()),
                             () -> assertThat(auctionArt.getHighestBidder().nickname()).isEqualTo(bidder.getNicknameValue()),
                             () -> assertThat(auctionArt.getHighestBidder().school()).isEqualTo(bidder.getSchool())
@@ -209,12 +209,12 @@ class ArtSearchServiceTest extends ServiceTest {
 
                 if (i == 0) { // 구매 X
                     assertAll(
-                            () -> assertThat(generalArt.getArt().getLikeCount()).isEqualTo(0),
+                            () -> assertThat(generalArt.getArt().getLikeMembers()).hasSize(0),
                             () -> assertThat(generalArt.getBuyer()).isNull()
                     );
                 } else { // 구매 O
                     assertAll(
-                            () -> assertThat(generalArt.getArt().getLikeCount()).isEqualTo(1),
+                            () -> assertThat(generalArt.getArt().getLikeMembers()).hasSize(1),
                             () -> assertThat(generalArt.getBuyer().id()).isEqualTo(buyer.getId()),
                             () -> assertThat(generalArt.getBuyer().nickname()).isEqualTo(buyer.getNicknameValue()),
                             () -> assertThat(generalArt.getBuyer().school()).isEqualTo(buyer.getSchool())

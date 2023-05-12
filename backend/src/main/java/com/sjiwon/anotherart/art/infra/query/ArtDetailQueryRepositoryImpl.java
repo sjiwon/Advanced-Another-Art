@@ -295,7 +295,7 @@ public class ArtDetailQueryRepositoryImpl implements ArtDetailQueryRepository {
         result.forEach(args -> args.applyHashtags(collectHashtags(hashtags, args.getArt().getId())));
 
         List<Favorite> favorites = getFavorites(artIds);
-        result.forEach(args -> args.applyLikeCount(getLikeCount(favorites, args.getArt().getId())));
+        result.forEach(args -> args.applyLikeMembers(collectLikeMemberIds(favorites, args.getArt().getId())));
 
         List<SimpleAuction> auctions = getAuctions(artIds);
         result.forEach(args -> args.applyBidCount(getBidCount(auctions, args.getArt().getId())));
@@ -306,7 +306,7 @@ public class ArtDetailQueryRepositoryImpl implements ArtDetailQueryRepository {
         result.forEach(args -> args.applyHashtags(collectHashtags(hashtags, args.getArt().getId())));
 
         List<Favorite> favorites = getFavorites(artIds);
-        result.forEach(args -> args.applyLikeCount(getLikeCount(favorites, args.getArt().getId())));
+        result.forEach(args -> args.applyLikeMembers(collectLikeMemberIds(favorites, args.getArt().getId())));
     }
 
     private List<SimpleHashtag> getHashtags(List<Long> artIds) {
@@ -333,11 +333,12 @@ public class ArtDetailQueryRepositoryImpl implements ArtDetailQueryRepository {
                 .fetch();
     }
 
-    private int getLikeCount(List<Favorite> favorites, Long artId) {
-        return (int) favorites
+    private List<Long> collectLikeMemberIds(List<Favorite> favorites, Long artId) {
+        return favorites
                 .stream()
                 .filter(favorite -> favorite.getArtId().equals(artId))
-                .count();
+                .map(Favorite::getMemberId)
+                .toList();
     }
 
     private List<SimpleAuction> getAuctions(List<Long> artIds) {
