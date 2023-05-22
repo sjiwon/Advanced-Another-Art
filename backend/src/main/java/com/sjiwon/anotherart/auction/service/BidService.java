@@ -16,7 +16,7 @@ public class BidService {
 
     @Transactional
     public void bid(Long auctionId, Long bidderId, Integer bidPrice) {
-        Auction auction = auctionFindService.findByIdWithPessimisticLock(auctionId);
+        Auction auction = auctionFindService.findById(auctionId);
         Member bidder = memberFindService.findById(bidderId);
 
         auction.applyNewBid(bidder, bidPrice);

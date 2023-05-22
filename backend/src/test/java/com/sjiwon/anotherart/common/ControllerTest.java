@@ -8,7 +8,7 @@ import com.sjiwon.anotherart.art.controller.ArtSearchApiController;
 import com.sjiwon.anotherart.art.service.ArtSearchService;
 import com.sjiwon.anotherart.art.service.ArtService;
 import com.sjiwon.anotherart.auction.controller.BidApiController;
-import com.sjiwon.anotherart.auction.service.BidService;
+import com.sjiwon.anotherart.auction.facade.BidFacade;
 import com.sjiwon.anotherart.favorite.controller.FavoriteApiController;
 import com.sjiwon.anotherart.favorite.service.FavoriteService;
 import com.sjiwon.anotherart.member.controller.*;
@@ -90,7 +90,7 @@ public abstract class ControllerTest {
 
     // auction
     @MockBean
-    protected BidService bidService;
+    protected BidFacade bidFacade;
 
     // favorite
     @MockBean

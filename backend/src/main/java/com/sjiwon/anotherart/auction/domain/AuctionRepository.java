@@ -10,6 +10,14 @@ import javax.persistence.LockModeType;
 import java.util.Optional;
 
 public interface AuctionRepository extends JpaRepository<Auction, Long> {
+    @Override
+    @Query("SELECT ac" +
+            " FROM Auction ac" +
+            " JOIN FETCH ac.art a" +
+            " JOIN FETCH a.owner" +
+            " WHERE ac.id = :auctionId")
+    Optional<Auction> findById(@Param("auctionId") Long auctionId);
+
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("SELECT ac" +
             " FROM Auction ac" +

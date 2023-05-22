@@ -41,7 +41,7 @@ class BidApiControllerTest extends ControllerTest {
         void throwExceptionByAuctionIsNotInProgess() throws Exception {
             // given
             doThrow(AnotherArtException.type(AuctionErrorCode.AUCTION_IS_NOT_IN_PROGRESS))
-                    .when(bidService)
+                    .when(bidFacade)
                     .bid(any(), any(), any());
 
             // when
@@ -87,7 +87,7 @@ class BidApiControllerTest extends ControllerTest {
         void throwExceptionByArtOwnerCannotBid() throws Exception {
             // given
             doThrow(AnotherArtException.type(AuctionErrorCode.ART_OWNER_CANNOT_BID))
-                    .when(bidService)
+                    .when(bidFacade)
                     .bid(any(), any(), any());
 
             // when
@@ -133,7 +133,7 @@ class BidApiControllerTest extends ControllerTest {
         void throwExceptionByHighestBidderCannotBidAgain() throws Exception {
             // given
             doThrow(AnotherArtException.type(AuctionErrorCode.HIGHEST_BIDDER_CANNOT_BID_AGAIN))
-                    .when(bidService)
+                    .when(bidFacade)
                     .bid(any(), any(), any());
 
             // when
@@ -179,7 +179,7 @@ class BidApiControllerTest extends ControllerTest {
         void throwExceptionByBidPriceIsNotEnough() throws Exception {
             // given
             doThrow(AnotherArtException.type(AuctionErrorCode.BID_PRICE_IS_NOT_ENOUGH))
-                    .when(bidService)
+                    .when(bidFacade)
                     .bid(any(), any(), any());
 
             // when
@@ -225,7 +225,7 @@ class BidApiControllerTest extends ControllerTest {
         void throwExceptionByPointIsNotEnough() throws Exception {
             // given
             doThrow(AnotherArtException.type(MemberErrorCode.POINT_IS_NOT_ENOUGH))
-                    .when(bidService)
+                    .when(bidFacade)
                     .bid(any(), any(), any());
 
             // when
@@ -271,7 +271,7 @@ class BidApiControllerTest extends ControllerTest {
         void success() throws Exception {
             // given
             doNothing()
-                    .when(bidService)
+                    .when(bidFacade)
                     .bid(any(), any(), any());
 
             // when

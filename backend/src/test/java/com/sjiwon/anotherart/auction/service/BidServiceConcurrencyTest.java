@@ -2,12 +2,15 @@ package com.sjiwon.anotherart.auction.service;
 
 import com.sjiwon.anotherart.art.domain.Art;
 import com.sjiwon.anotherart.auction.domain.Auction;
+import com.sjiwon.anotherart.auction.facade.BidFacade;
 import com.sjiwon.anotherart.common.ConcurrencyTest;
+import com.sjiwon.anotherart.common.config.TestContainerConfiguration;
 import com.sjiwon.anotherart.member.domain.Member;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.concurrent.CountDownLatch;
@@ -20,10 +23,11 @@ import static com.sjiwon.anotherart.fixture.MemberFixture.MEMBER_A;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @Slf4j
+@ExtendWith(TestContainerConfiguration.class)
 @DisplayName("Auction [Service Layer] -> BidService 동시성 테스트")
 class BidServiceConcurrencyTest extends ConcurrencyTest {
     @Autowired
-    private BidService bidService;
+    private BidFacade bidFacade;
 
     private static final int THREAD_COUNT = 10;
     private Auction auction;
@@ -49,7 +53,7 @@ class BidServiceConcurrencyTest extends ConcurrencyTest {
         for (Long bidderId : memberIds) {
             executorService.submit(() -> {
                 try {
-                    bidService.bid(auction.getId(), bidderId, bidAmount);
+                    bidFacade.bid(auction.getId(), bidderId, bidAmount);
                 } catch (Exception e) {
                     log.error(e.getMessage());
                 } finally {
