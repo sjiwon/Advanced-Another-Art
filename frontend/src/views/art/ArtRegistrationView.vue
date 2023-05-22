@@ -219,7 +219,7 @@ export default {
       }
 
       try {
-        await this.axiosWithAccessToken.get(`/api/art/duplicate?name=${name}`)
+        await this.axiosWithAccessToken.get(`/api/art/check-duplicates?resource=name&value=${name}`)
         alert('사용 가능한 작품명입니다.')
         this.duplicateApiCheck.nameCheck = true
         this.duplicateApiCheck.nameDisabled = true
@@ -302,13 +302,13 @@ export default {
         const formData = new FormData()
         const file = document.getElementById('imageFile')
         formData.append('file', file.files[0])
-        formData.append('artType', this.registerData.artType)
+        formData.append('type', this.registerData.artType)
         formData.append('name', this.registerData.name)
         formData.append('description', this.registerData.description)
         formData.append('price', this.registerData.price)
-        formData.append('hashtagList', this.registerData.hashtagList)
-        formData.append('startDate', this.registerData.startDate)
-        formData.append('endDate', this.registerData.endDate)
+        formData.append('hashtags', this.registerData.hashtagList)
+        formData.append('auctionStartDate', this.registerData.startDate)
+        formData.append('auctionEndDate', this.registerData.endDate)
 
         await this.axiosWithAccessToken.post('/api/art', formData, {
           headers: {
