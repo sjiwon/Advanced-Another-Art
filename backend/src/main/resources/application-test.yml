@@ -19,6 +19,10 @@ spring:
         format_sql: true
         default_batch_fetch_size: 50
 
+  redis:
+    host: localhost
+    port: 6379
+
 jwt:
   secret-key: adsfasjdflksajdlkfjasldjflkasdjflasjdlfjasldfjlkasdfasdasd
   access-token-validity: 1234
