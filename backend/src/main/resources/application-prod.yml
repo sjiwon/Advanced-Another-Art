@@ -3,3 +3,6 @@ spring:
     import:
       - security/application-external.yml
       - security/application-prod-datasource.yml
+
+server:
+  port: 8080
