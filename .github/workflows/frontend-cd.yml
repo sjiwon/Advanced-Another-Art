@@ -1,0 +1,66 @@
+name: Frontend CD
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - frontend/**
+
+jobs:
+  buildAndDeploy:
+    name: Frontend(React) Build & Push To Cloud Server
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: ./frontend
+
+    steps:
+      - name: Repository를 가져온다
+        uses: actions/checkout@v3
+
+      - name: Github Actions Secrets에 등록된 정보들을 가져온다
+        env:
+          ENV_VALUE: ${{ secrets.FE_ENV_VALUE }}
+          NGINX_CONFIG: ${{ secrets.FE_NGINX_CONFIG }}
+        run: mkdir -p nginx &&
+          echo $ENV_VALUE | base64 --decode > .env &&
+          echo $NGINX_CONFIG | base64 --decode > nginx/nginx.conf
+
+      - name: node_modules 캐싱 여부를 확인한다
+        uses: actions/cache@v3
+        id: npm-cache
+        with:
+          path: '**/node_modules'
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - name: npm install을 진행한다 (캐싱된 경우 pass)
+        if: steps.npm-cache.outputs.cache-hit != 'true'
+        run: echo 'npm cache missed!' && npm install -f
+
+      - name: React Build를 진행한다
+        run: npm run build
+
+      - name: NCP Server로 빌드 파일을 전송한다
+        uses: appleboy/scp-action@master
+        with:
+          username: ${{ secrets.FE_SSH_USERNAME }}
+          password: ${{ secrets.FE_SSH_PASSWORD }}
+          host: ${{ secrets.FE_SSH_HOST }}
+          port: ${{ secrets.FE_SSH_PORT }}
+          source: "./dist"
+          target: "/app"
+
+      - name: NCP Server에 SSH 접속 후 빌드 파일을 Nginx로 옮긴다
+        uses: appleboy/ssh-action@master
+        with:
+          username: ${{ secrets.FE_SSH_USERNAME }}
+          password: ${{ secrets.FE_SSH_PASSWORD }}
+          host: ${{ secrets.FE_SSH_HOST }}
+          port: ${{ secrets.FE_SSH_PORT }}
+          script: |
+            sudo rm -rf /usr/share/nginx/html/*
+            sudo mv /app/dist/* /usr/share/nginx/html/
