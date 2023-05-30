@@ -6,6 +6,7 @@ on:
       - main
     paths:
       - frontend/**
+      - .github/**
 
 jobs:
   buildAndDeploy:
@@ -51,7 +52,7 @@ jobs:
           password: ${{ secrets.FE_SSH_PASSWORD }}
           host: ${{ secrets.FE_SSH_HOST }}
           port: ${{ secrets.FE_SSH_PORT }}
-          source: "./dist"
+          source: "./frontend/dist"
           target: "/app"
 
       - name: NCP Server에 SSH 접속 후 빌드 파일을 Nginx로 옮긴다

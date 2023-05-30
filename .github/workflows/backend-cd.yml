@@ -1,4 +1,4 @@
-name: Backend CI
+name: Backend CD
 
 on:
   push:
@@ -6,10 +6,11 @@ on:
       - main
     paths:
       - backend/**
+      - .github/**
 
 jobs:
   deploy:
-    name: Backend Deploy
+    name: Backend(SpringBoot) Deploy
     runs-on: ubuntu-latest
 
     defaults:
@@ -36,10 +37,10 @@ jobs:
           EXTERNAL_CONFIG: ${{ secrets.BE_EXTERNAL_CONFIG }}
           LOCAL_DATASOURCE: ${{ secrets.BE_LOCAL_DATASOURCE }}
           PROD_DATASOURCE: ${{ secrets.BE_PROD_DATASOURCE }}
-        run: mkdir -p src/main/resources/security &&
-          echo $EXTERNAL_CONFIG | base64 --decode > src/main/resources/security/application-external.yml &&
-          echo $LOCAL_DATASOURCE | base64 --decode > src/main/resources/security/application-local-datasource.yml &&
-          echo $PROD_DATASOURCE | base64 --decode > src/main/resources/security/application-prod-datasource.yml
+        run: mkdir -p ./backend/src/main/resources/security &&
+          echo $EXTERNAL_CONFIG | base64 --decode > ./backend/src/main/resources/security/application-external.yml &&
+          echo $LOCAL_DATASOURCE | base64 --decode > ./backend/src/main/resources/security/application-local-datasource.yml &&
+          echo $PROD_DATASOURCE | base64 --decode > ./backend/src/main/resources/security/application-prod-datasource.yml
 
       - name: 테스트시 필요한 Local Redis에 대한 Action을 가져온다
         uses: supercharge/redis-github-action@1.2.0
@@ -65,7 +66,7 @@ jobs:
           password: ${{ secrets.BE_SSH_PASSWORD }}
           host: ${{ secrets.BE_SSH_HOST }}
           port: ${{ secrets.BE_SSH_PORT }}
-          source: "./build/libs/AnotherArt.jar, ./script/deploy.sh"
+          source: "./backend/build/libs/AnotherArt.jar, ./backend/script/deploy.sh"
           target: "/app"
 
       - name: NCP Server에 SSH 접속 후 deploy.sh을 실행시킨다
