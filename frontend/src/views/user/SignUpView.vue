@@ -391,7 +391,7 @@ export default {
       const key = 'ac28e0697af24886fdf4a130fe263b13'
 
       try {
-        const response = await this.externalAxios.get(`http://www.career.go.kr/cnet/openapi/getOpenApi?apiKey=${key}&svcType=api&svcCode=SCHOOL&contentType=json&gubun=univ_list&searchSchulNm=${searchKeyword}`)
+        const response = await this.externalAxios.get(`https://www.career.go.kr/cnet/openapi/getOpenApi?apiKey=${key}&svcType=api&svcCode=SCHOOL&contentType=json&gubun=univ_list&searchSchulNm=${searchKeyword}`)
         const schoolList = response.data.dataSearch.content
         this.aboutSchool.univSearchResult = []
         for (let i = 0; i < schoolList.length; i++) {
