@@ -1,6 +1,6 @@
 #!/bin/bash
 
-REPOSITORY=/app/build/libs
+REPOSITORY=/app/backend/build/libs
 PROJECT_NAME=AnotherArt
 
 # 1. Production Level에서의 Profile 설정하기

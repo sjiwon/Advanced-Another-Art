@@ -77,6 +77,6 @@ jobs:
           host: ${{ secrets.BE_SSH_HOST }}
           port: ${{ secrets.BE_SSH_PORT }}
           script: |
-            cd /app/script
+            cd /app/backend/script
             sudo chmod +x deploy.sh
             sudo ./deploy.sh
