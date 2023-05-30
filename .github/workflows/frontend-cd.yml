@@ -10,7 +10,7 @@ on:
 
 jobs:
   buildAndDeploy:
-    name: Frontend(React) Build & Push To Cloud Server
+    name: Frontend(Vue.js) Build & Push To Cloud Server
     runs-on: ubuntu-latest
 
     defaults:
@@ -25,9 +25,9 @@ jobs:
         env:
           ENV_VALUE: ${{ secrets.FE_ENV_VALUE }}
           NGINX_CONFIG: ${{ secrets.FE_NGINX_CONFIG }}
-        run: mkdir -p nginx &&
-          echo $ENV_VALUE | base64 --decode > .env &&
-          echo $NGINX_CONFIG | base64 --decode > nginx/nginx.conf
+        run: mkdir -p ./frontend/nginx &&
+          echo $ENV_VALUE | base64 --decode > ./frontend/.env &&
+          echo $NGINX_CONFIG | base64 --decode > ./frontend/nginx/nginx.conf
 
       - name: node_modules 캐싱 여부를 확인한다
         uses: actions/cache@v3
@@ -64,4 +64,4 @@ jobs:
           port: ${{ secrets.FE_SSH_PORT }}
           script: |
             sudo rm -rf /usr/share/nginx/html/*
-            sudo mv /app/dist/* /usr/share/nginx/html/
+            sudo mv /app/frontend/dist/* /usr/share/nginx/html/
