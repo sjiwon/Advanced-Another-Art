@@ -32,7 +32,7 @@ jobs:
         with:
           timezone: Asia/Seoul
 
-      - name: Github Actions Secrets에 등록된 정보들을 가져온다
+      - name: Github Action Secrets에 등록된 정보들을 가져온다
         env:
           EXTERNAL_CONFIG: ${{ secrets.BE_EXTERNAL_CONFIG }}
           LOCAL_DATASOURCE: ${{ secrets.BE_LOCAL_DATASOURCE }}
