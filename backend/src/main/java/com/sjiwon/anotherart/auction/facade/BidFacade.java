@@ -30,7 +30,9 @@ public class BidFacade {
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         } finally {
-            rLock.unlock();
+            if (rLock != null && rLock.isLocked() && rLock.isHeldByCurrentThread()) {
+                rLock.unlock();
+            }
         }
     }
 }
