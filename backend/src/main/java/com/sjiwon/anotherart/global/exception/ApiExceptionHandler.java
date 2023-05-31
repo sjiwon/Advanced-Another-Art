@@ -3,8 +3,11 @@ package com.sjiwon.anotherart.global.exception;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sjiwon.anotherart.global.security.exception.AuthErrorCode;
-import lombok.RequiredArgsConstructor;
+import com.slack.api.Slack;
+import com.slack.api.model.Attachment;
+import com.slack.api.model.Field;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
@@ -19,15 +22,30 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.NoHandlerFoundException;
 
+import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.sjiwon.anotherart.global.slack.SlackMetadata.*;
+import static com.slack.api.webhook.WebhookPayloads.payload;
+
 @Slf4j
 @RestControllerAdvice
-@RequiredArgsConstructor
 public class ApiExceptionHandler {
+    private static final Slack SLACK_CLIENT = Slack.getInstance();
+
     private final ObjectMapper objectMapper;
+    private final String slackWebhookUrl;
+
+    public ApiExceptionHandler(ObjectMapper objectMapper,
+                               @Value("${slack.webhook.url}") String slackWebhookUrl) {
+        this.objectMapper = objectMapper;
+        this.slackWebhookUrl = slackWebhookUrl;
+    }
 
     @ExceptionHandler(AnotherArtException.class)
     public ResponseEntity<ErrorResponse> anotherArtException(AnotherArtException exception) {
@@ -110,7 +128,8 @@ public class ApiExceptionHandler {
      * 내부 서버 오류 전용 ExceptionHandler
      */
     @ExceptionHandler(RuntimeException.class)
-    public ResponseEntity<ErrorResponse> runtimeException(RuntimeException e) {
+    public ResponseEntity<ErrorResponse> runtimeException(RuntimeException e, HttpServletRequest request) {
+        sendSlackAlertErrorLog(e, request);
         return convert(GlobalErrorCode.INTERNAL_SERVER_ERROR);
     }
 
@@ -118,7 +137,9 @@ public class ApiExceptionHandler {
      * Exception
      */
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorResponse> exception(Exception e) {
+    public ResponseEntity<ErrorResponse> exception(Exception e, HttpServletRequest request) {
+        sendSlackAlertErrorLog(e, request);
+
         ErrorCode code = GlobalErrorCode.INTERNAL_SERVER_ERROR;
         logging(code, e.getMessage());
 
@@ -157,5 +178,55 @@ public class ApiExceptionHandler {
                 code.getErrorCode(),
                 message
         );
+    }
+
+    public void sendSlackAlertErrorLog(Exception e, HttpServletRequest request) {
+        try {
+            SLACK_CLIENT.send(
+                    slackWebhookUrl,
+                    payload(p -> p
+                            .text("서버 에러 발생!!")
+                            .attachments(
+                                    List.of(generateSlackErrorAttachments(e, request))
+                            )
+                    ));
+        } catch (IOException slackApiError) {
+            log.error("Slack API 통신 간 에러 발생");
+        }
+    }
+
+    private Attachment generateSlackErrorAttachments(Exception e, HttpServletRequest request) {
+        String requestTime = DateTimeFormatter.ofPattern(DATETIME_FORMAT).format(LocalDateTime.now());
+        String xffHeader = request.getHeader(XFF_HEADER);
+        return Attachment.builder()
+                .color(LOG_COLOR)
+                .title(requestTime + " 발생 에러 로그")
+                .fields(
+                        List.of(
+                                generateSlackField(TITLE_REQUEST_IP, (xffHeader == null) ? request.getRemoteAddr() : xffHeader),
+                                generateSlackField(TITLE_REQUEST_URL, createRequestFullPath(request)),
+                                generateSlackField(TITLE_ERROR_MESSAGE, e.toString())
+                        )
+                )
+                .build();
+    }
+
+    private Field generateSlackField(String title, String value) {
+        return Field.builder()
+                .title(title)
+                .value(value)
+                .valueShortEnough(false)
+                .build();
+    }
+
+    private String createRequestFullPath(HttpServletRequest request) {
+        String fullPath = request.getMethod() + " " + request.getRequestURL();
+
+        String queryString = request.getQueryString();
+        if (queryString != null) {
+            fullPath += "?" + queryString;
+        }
+
+        return fullPath;
     }
 }
