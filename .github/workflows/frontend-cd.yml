@@ -24,10 +24,7 @@ jobs:
       - name: Github Action Secrets에 등록된 정보들을 가져온다
         env:
           ENV_VALUE: ${{ secrets.FE_ENV_VALUE }}
-          NGINX_CONFIG: ${{ secrets.FE_NGINX_CONFIG }}
-        run: mkdir -p ./frontend/nginx &&
-          echo $ENV_VALUE | base64 --decode > ./frontend/.env &&
-          echo $NGINX_CONFIG | base64 --decode > ./frontend/nginx/nginx.conf
+        run: echo $ENV_VALUE | base64 --decode > ./frontend/.env
 
       - name: node_modules 캐싱 여부를 확인한다
         uses: actions/cache@v3
