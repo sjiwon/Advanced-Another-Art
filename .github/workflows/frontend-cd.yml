@@ -24,7 +24,7 @@ jobs:
       - name: Github Action Secrets에 등록된 정보들을 가져온다
         env:
           ENV_VALUE: ${{ secrets.FE_ENV_VALUE }}
-        run: echo $ENV_VALUE | base64 --decode > ./frontend/.env
+        run: echo $ENV_VALUE | base64 --decode > .env
 
       - name: node_modules 캐싱 여부를 확인한다
         uses: actions/cache@v3
