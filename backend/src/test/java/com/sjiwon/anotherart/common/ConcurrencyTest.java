@@ -2,11 +2,13 @@ package com.sjiwon.anotherart.common;
 
 import com.sjiwon.anotherart.art.domain.ArtRepository;
 import com.sjiwon.anotherart.auction.domain.AuctionRepository;
+import com.sjiwon.anotherart.common.config.TestContainerConfiguration;
 import com.sjiwon.anotherart.common.utils.PasswordEncoderUtils;
 import com.sjiwon.anotherart.member.domain.*;
 import com.sjiwon.anotherart.member.domain.point.PointRecord;
 import com.sjiwon.anotherart.member.domain.point.PointRecordRepository;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -19,6 +21,7 @@ import java.util.List;
 import static com.sjiwon.anotherart.member.domain.point.PointType.CHARGE;
 
 @SpringBootTest
+@ExtendWith(TestContainerConfiguration.class)
 public class ConcurrencyTest {
     @Autowired
     private DatabaseCleaner databaseCleaner;

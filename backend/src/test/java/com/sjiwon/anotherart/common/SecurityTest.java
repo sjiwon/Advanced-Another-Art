@@ -3,6 +3,7 @@ package com.sjiwon.anotherart.common;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sjiwon.anotherart.common.config.ObjectMapperConfiguration;
+import com.sjiwon.anotherart.common.config.TestContainerConfiguration;
 import com.sjiwon.anotherart.fixture.MemberFixture;
 import com.sjiwon.anotherart.global.security.SecurityConfiguration;
 import com.sjiwon.anotherart.member.domain.Member;
@@ -11,6 +12,7 @@ import com.sjiwon.anotherart.member.exception.MemberErrorCode;
 import com.sjiwon.anotherart.token.service.TokenManager;
 import com.sjiwon.anotherart.token.utils.JwtTokenProvider;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -34,6 +36,7 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWit
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 
 @SpringBootTest(classes = {SecurityConfiguration.class, ObjectMapperConfiguration.class})
+@ExtendWith(TestContainerConfiguration.class)
 @AutoConfigureMockMvc
 @AutoConfigureRestDocs
 public class SecurityTest {
