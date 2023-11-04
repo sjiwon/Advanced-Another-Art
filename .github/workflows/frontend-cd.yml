@@ -3,10 +3,9 @@ name: Frontend CD
 on:
   push:
     branches:
-      - main
+      - main-x
     paths:
       - frontend/**
-      - .github/**
 
 jobs:
   buildAndDeploy:

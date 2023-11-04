@@ -3,8 +3,8 @@ name: Backend CI
 on:
   pull_request:
     branches:
-      - main
-      - develop
+      - main-x
+      - develop-x
     types:
       - opened
       - synchronize

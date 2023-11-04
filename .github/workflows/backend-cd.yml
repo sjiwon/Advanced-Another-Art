@@ -3,10 +3,9 @@ name: Backend CD
 on:
   push:
     branches:
-      - main
+      - main-x
     paths:
       - backend/**
-      - .github/**
 
 jobs:
   deploy:
