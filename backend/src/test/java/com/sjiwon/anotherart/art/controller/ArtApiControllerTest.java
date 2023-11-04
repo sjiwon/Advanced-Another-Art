@@ -70,11 +70,11 @@ class ArtApiControllerTest extends ControllerTest {
                     .multipart(BASE_URL)
                     .file((MockMultipartFile) file)
                     .header(AUTHORIZATION, String.join(" ", BEARER_TOKEN, ACCESS_TOKEN))
-                    .param("name", request.name())
-                    .param("description", request.description())
-                    .param("type", request.type())
-                    .param("price", String.valueOf(request.price()))
-                    .params(createHashtagParams(request.hashtags()));
+                    .queryParam("name", request.name())
+                    .queryParam("description", request.description())
+                    .queryParam("type", request.type())
+                    .queryParam("price", String.valueOf(request.price()))
+                    .queryParams(createHashtagParams(request.hashtags()));
 
             // then
             final ArtErrorCode expectedError = ArtErrorCode.DUPLICATE_NAME;
@@ -129,11 +129,11 @@ class ArtApiControllerTest extends ControllerTest {
                     .multipart(BASE_URL)
                     .file((MockMultipartFile) file)
                     .header(AUTHORIZATION, String.join(" ", BEARER_TOKEN, ACCESS_TOKEN))
-                    .param("name", request.name())
-                    .param("description", request.description())
-                    .param("type", request.type())
-                    .param("price", String.valueOf(request.price()))
-                    .params(createHashtagParams(request.hashtags()));
+                    .queryParam("name", request.name())
+                    .queryParam("description", request.description())
+                    .queryParam("type", request.type())
+                    .queryParam("price", String.valueOf(request.price()))
+                    .queryParams(createHashtagParams(request.hashtags()));
 
             // then
             mockMvc.perform(requestBuilder)
@@ -178,13 +178,13 @@ class ArtApiControllerTest extends ControllerTest {
                     .multipart(BASE_URL)
                     .file((MockMultipartFile) file)
                     .header(AUTHORIZATION, String.join(" ", BEARER_TOKEN, ACCESS_TOKEN))
-                    .param("name", request.name())
-                    .param("description", request.description())
-                    .param("type", request.type())
-                    .param("price", String.valueOf(request.price()))
-                    .param("auctionStartDate", request.auctionStartDate().format(DATE_TIME_FORMATTER))
-                    .param("auctionEndDate", request.auctionEndDate().format(DATE_TIME_FORMATTER))
-                    .params(createHashtagParams(request.hashtags()));
+                    .queryParam("name", request.name())
+                    .queryParam("description", request.description())
+                    .queryParam("type", request.type())
+                    .queryParam("price", String.valueOf(request.price()))
+                    .queryParam("auctionStartDate", request.auctionStartDate().format(DATE_TIME_FORMATTER))
+                    .queryParam("auctionEndDate", request.auctionEndDate().format(DATE_TIME_FORMATTER))
+                    .queryParams(createHashtagParams(request.hashtags()));
 
             // then
             mockMvc.perform(requestBuilder)

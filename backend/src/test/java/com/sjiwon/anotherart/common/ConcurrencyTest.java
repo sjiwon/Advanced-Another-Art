@@ -2,7 +2,8 @@ package com.sjiwon.anotherart.common;
 
 import com.sjiwon.anotherart.art.domain.ArtRepository;
 import com.sjiwon.anotherart.auction.domain.AuctionRepository;
-import com.sjiwon.anotherart.common.config.TestContainerConfiguration;
+import com.sjiwon.anotherart.common.config.DatabaseCleanerEachCallbackExtension;
+import com.sjiwon.anotherart.common.config.RedisTestContainersExtension;
 import com.sjiwon.anotherart.common.utils.PasswordEncoderUtils;
 import com.sjiwon.anotherart.member.domain.Address;
 import com.sjiwon.anotherart.member.domain.Email;
@@ -26,7 +27,10 @@ import java.util.List;
 import static com.sjiwon.anotherart.member.domain.point.PointType.CHARGE;
 
 @SpringBootTest
-@ExtendWith(TestContainerConfiguration.class)
+@ExtendWith({
+        DatabaseCleanerEachCallbackExtension.class,
+        RedisTestContainersExtension.class
+})
 public class ConcurrencyTest {
     @Autowired
     private DatabaseCleaner databaseCleaner;

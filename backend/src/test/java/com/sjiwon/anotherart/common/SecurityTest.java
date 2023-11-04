@@ -3,7 +3,7 @@ package com.sjiwon.anotherart.common;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sjiwon.anotherart.common.config.ObjectMapperConfiguration;
-import com.sjiwon.anotherart.common.config.TestContainerConfiguration;
+import com.sjiwon.anotherart.common.config.RedisTestContainersExtension;
 import com.sjiwon.anotherart.fixture.MemberFixture;
 import com.sjiwon.anotherart.global.security.SecurityConfiguration;
 import com.sjiwon.anotherart.member.domain.Member;
@@ -38,7 +38,7 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWit
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 
 @SpringBootTest(classes = {SecurityConfiguration.class, ObjectMapperConfiguration.class})
-@ExtendWith(TestContainerConfiguration.class)
+@ExtendWith(RedisTestContainersExtension.class)
 @AutoConfigureMockMvc
 @AutoConfigureRestDocs
 public class SecurityTest {
