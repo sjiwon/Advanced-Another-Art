@@ -52,12 +52,13 @@ dependencies {
     annotationProcessor "jakarta.annotation:jakarta.annotation-api"
     annotationProcessor "jakarta.persistence:jakarta.persistence-api"
 
-    // Amazon S3 (NCP Object Storage)
-    implementation "com.amazonaws:aws-java-sdk-s3:1.12.450"
-
     // Redis & Redisson Client
     implementation "org.springframework.boot:spring-boot-starter-data-redis"
     implementation "org.redisson:redisson-spring-boot-starter:3.21.3"
+
+    // AWS
+    implementation "io.awspring.cloud:spring-cloud-aws-starter:3.0.1"
+    implementation "io.awspring.cloud:spring-cloud-aws-starter-s3:3.0.1"
 
     // JWT
     implementation "io.jsonwebtoken:jjwt-api:0.11.5"
