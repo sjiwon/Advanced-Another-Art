@@ -1,10 +1,9 @@
 package com.sjiwon.anotherart.art.utils.validator;
 
+import jakarta.validation.ConstraintValidatorContext;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
-import javax.validation.ConstraintValidatorContext;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
@@ -27,7 +26,7 @@ class ValidArtDuplicateResourceValidatorTest {
         final String unknown = "unknown";
 
         // when
-        boolean actual = validator.isValid(unknown, context);
+        final boolean actual = validator.isValid(unknown, context);
 
         // then
         assertThat(actual).isFalse();
@@ -40,7 +39,7 @@ class ValidArtDuplicateResourceValidatorTest {
         final String name = "name";
 
         // when
-        boolean actual = validator.isValid(name, context);
+        final boolean actual = validator.isValid(name, context);
 
         // then
         assertThat(actual).isTrue();

@@ -82,10 +82,10 @@ class ArtServiceTest extends ServiceTest {
             given(fileUploader.uploadArtImage(file)).willReturn(uploadLink);
 
             // when
-            Long artId = artService.registerArt(owner.getId(), createGeneralArtRegisterRequest(GENERAL_1, file, hashtags));
+            final Long artId = artService.registerArt(owner.getId(), createGeneralArtRegisterRequest(GENERAL_1, file, hashtags));
 
             // then
-            Art findArt = artRepository.findById(artId).orElseThrow();
+            final Art findArt = artRepository.findById(artId).orElseThrow();
             assertAll(
                     () -> assertThat(findArt.getNameValue()).isEqualTo(GENERAL_1.getName()),
                     () -> assertThat(findArt.getDescriptionValue()).isEqualTo(GENERAL_1.getDescription()),
@@ -108,10 +108,10 @@ class ArtServiceTest extends ServiceTest {
             given(fileUploader.uploadArtImage(file)).willReturn(uploadLink);
 
             // when
-            Long artId = artService.registerArt(owner.getId(), createAuctionArtRegisterRequest(AUCTION_1, file, hashtags));
+            final Long artId = artService.registerArt(owner.getId(), createAuctionArtRegisterRequest(AUCTION_1, file, hashtags));
 
             // then
-            Art findArt = artRepository.findById(artId).orElseThrow();
+            final Art findArt = artRepository.findById(artId).orElseThrow();
             assertAll(
                     () -> assertThat(findArt.getNameValue()).isEqualTo(AUCTION_1.getName()),
                     () -> assertThat(findArt.getDescriptionValue()).isEqualTo(AUCTION_1.getDescription()),
@@ -123,7 +123,7 @@ class ArtServiceTest extends ServiceTest {
                     () -> assertThat(findArt.getHashtags()).containsExactlyInAnyOrderElementsOf(hashtags)
             );
 
-            Auction findAuction = auctionRepository.findByArtId(artId).orElseThrow();
+            final Auction findAuction = auctionRepository.findByArtId(artId).orElseThrow();
             assertAll(
                     () -> assertThat(findAuction.getArt()).isEqualTo(findArt),
                     () -> assertThat(findAuction.getAuctionRecords()).hasSize(0),
@@ -162,7 +162,7 @@ class ArtServiceTest extends ServiceTest {
     @DisplayName("작품 정보를 수정한다 [작품명, 설명, 해시태그]")
     void update() {
         // given
-        Art art = artRepository.save(AUCTION_1.toArt(owner));
+        final Art art = artRepository.save(AUCTION_1.toArt(owner));
 
         // when
         final String updateName = "hello";
@@ -225,7 +225,7 @@ class ArtServiceTest extends ServiceTest {
             artService.delete(art.getId());
             
             // then
-            Optional<Art> findArt = artRepository.findById(art.getId());
+            final Optional<Art> findArt = artRepository.findById(art.getId());
             assertThat(findArt).isEmpty();
         }
     }

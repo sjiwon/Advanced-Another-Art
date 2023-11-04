@@ -29,8 +29,8 @@ class MemberRepositoryTest extends RepositoryTest {
     @DisplayName("로그인 아이디로 사용자를 조회한다")
     void findByLoginId(){
         // when
-        Optional<Member> emptyMember = memberRepository.findByLoginId("fake");
-        Member actualMember = memberRepository.findByLoginId(member.getLoginId()).orElseThrow();
+        final Optional<Member> emptyMember = memberRepository.findByLoginId("fake");
+        final Member actualMember = memberRepository.findByLoginId(member.getLoginId()).orElseThrow();
 
         // then
         assertAll(
@@ -43,15 +43,15 @@ class MemberRepositoryTest extends RepositoryTest {
     @DisplayName("이름 + 이메일로 사용자를 조회한다")
     void findByNameAndEmail(){
         // when
-        Optional<Member> emptyMember1 = memberRepository.findByNameAndEmail(
+        final Optional<Member> emptyMember1 = memberRepository.findByNameAndEmail(
                 "diff" + member.getName(),
                 member.getEmail()
         );
-        Optional<Member> emptyMember2 = memberRepository.findByNameAndEmail(
+        final Optional<Member> emptyMember2 = memberRepository.findByNameAndEmail(
                 member.getName(),
                 Email.from("diff" + member.getEmailValue())
         );
-        Member actualMember = memberRepository.findByNameAndEmail(member.getName(), member.getEmail()).orElseThrow();
+        final Member actualMember = memberRepository.findByNameAndEmail(member.getName(), member.getEmail()).orElseThrow();
 
         // then
         assertAll(
@@ -69,8 +69,8 @@ class MemberRepositoryTest extends RepositoryTest {
         final Nickname diff = Nickname.from("diff" + member.getNicknameValue());
 
         // when
-        boolean actual1 = memberRepository.existsByNickname(same);
-        boolean actual2 = memberRepository.existsByNickname(diff);
+        final boolean actual1 = memberRepository.existsByNickname(same);
+        final boolean actual2 = memberRepository.existsByNickname(diff);
 
         // then
         assertAll(
@@ -83,11 +83,11 @@ class MemberRepositoryTest extends RepositoryTest {
     @DisplayName("해당 닉네임을 타인이 사용하고 있는지 확인한다")
     void existsByIdNotAndNickname() {
         // given
-        Member compare = memberRepository.save(MEMBER_B.toMember());
+        final Member compare = memberRepository.save(MEMBER_B.toMember());
 
         // when
-        boolean actual1 = memberRepository.existsByIdNotAndNickname(member.getId(), member.getNickname());
-        boolean actual2 = memberRepository.existsByIdNotAndNickname(member.getId(), compare.getNickname());
+        final boolean actual1 = memberRepository.existsByIdNotAndNickname(member.getId(), member.getNickname());
+        final boolean actual2 = memberRepository.existsByIdNotAndNickname(member.getId(), compare.getNickname());
 
         // then
         assertAll(
@@ -104,8 +104,8 @@ class MemberRepositoryTest extends RepositoryTest {
         final String diff = member.getLoginId() + "fake";
 
         // when
-        boolean actual1 = memberRepository.existsByLoginId(same);
-        boolean actual2 = memberRepository.existsByLoginId(diff);
+        final boolean actual1 = memberRepository.existsByLoginId(same);
+        final boolean actual2 = memberRepository.existsByLoginId(diff);
 
         // then
         assertAll(
@@ -122,8 +122,8 @@ class MemberRepositoryTest extends RepositoryTest {
         final String diff = member.getPhone().replaceAll("0", "9");
 
         // when
-        boolean actual1 = memberRepository.existsByPhone(same);
-        boolean actual2 = memberRepository.existsByPhone(diff);
+        final boolean actual1 = memberRepository.existsByPhone(same);
+        final boolean actual2 = memberRepository.existsByPhone(diff);
 
         // then
         assertAll(
@@ -140,8 +140,8 @@ class MemberRepositoryTest extends RepositoryTest {
         final Email diff = Email.from("diff" + member.getEmailValue());
 
         // when
-        boolean actual1 = memberRepository.existsByEmail(same);
-        boolean actual2 = memberRepository.existsByEmail(diff);
+        final boolean actual1 = memberRepository.existsByEmail(same);
+        final boolean actual2 = memberRepository.existsByEmail(diff);
 
         // then
         assertAll(
@@ -154,12 +154,12 @@ class MemberRepositoryTest extends RepositoryTest {
     @DisplayName("비밀번호 초기화를 위한 사용자 인증을 진행한다")
     void existsByNameAndEmailAndLoginId() {
         // when
-        boolean actual1 = memberRepository.existsByNameAndEmailAndLoginId(
+        final boolean actual1 = memberRepository.existsByNameAndEmailAndLoginId(
                 member.getName(),
                 member.getEmail(),
                 member.getLoginId()
         );
-        boolean actual2 = memberRepository.existsByNameAndEmailAndLoginId(
+        final boolean actual2 = memberRepository.existsByNameAndEmailAndLoginId(
                 member.getName() + "diff",
                 member.getEmail(),
                 member.getLoginId()

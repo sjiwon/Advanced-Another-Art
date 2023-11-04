@@ -5,7 +5,14 @@ import com.sjiwon.anotherart.global.exception.AnotherArtException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static com.sjiwon.anotherart.art.utils.search.SortType.*;
+import static com.sjiwon.anotherart.art.utils.search.SortType.BID_COUNT_ASC;
+import static com.sjiwon.anotherart.art.utils.search.SortType.BID_COUNT_DESC;
+import static com.sjiwon.anotherart.art.utils.search.SortType.DATE_ASC;
+import static com.sjiwon.anotherart.art.utils.search.SortType.DATE_DESC;
+import static com.sjiwon.anotherart.art.utils.search.SortType.LIKE_ASC;
+import static com.sjiwon.anotherart.art.utils.search.SortType.LIKE_DESC;
+import static com.sjiwon.anotherart.art.utils.search.SortType.PRICE_ASC;
+import static com.sjiwon.anotherart.art.utils.search.SortType.PRICE_DESC;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -39,8 +46,8 @@ class SortTypeTest {
     @DisplayName("제공하는 SortType인지 확인한다")
     void isNotSupportedSortType() {
         // when
-        boolean actual1 = SortType.isNotSupportedSortType("anonymous");
-        boolean actual2 = SortType.isNotSupportedSortType("date");
+        final boolean actual1 = SortType.isNotSupportedSortType("anonymous");
+        final boolean actual2 = SortType.isNotSupportedSortType("date");
 
         // then
         assertAll(

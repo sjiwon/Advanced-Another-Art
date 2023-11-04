@@ -3,11 +3,24 @@ package com.sjiwon.anotherart.art.domain;
 import com.sjiwon.anotherart.art.domain.hashtag.Hashtag;
 import com.sjiwon.anotherart.global.BaseEntity;
 import com.sjiwon.anotherart.member.domain.Member;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Embedded;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -51,10 +64,10 @@ public class Art extends BaseEntity {
     private Member owner;
 
     @OneToMany(mappedBy = "art", cascade = CascadeType.PERSIST)
-    private List<Hashtag> hashtags = new ArrayList<>();
+    private final List<Hashtag> hashtags = new ArrayList<>();
 
-    private Art(Member owner, ArtName name, Description description, ArtType type,
-                int price, String storageName, Set<String> hashtags) {
+    private Art(final Member owner, final ArtName name, final Description description, final ArtType type,
+                final int price, final String storageName, final Set<String> hashtags) {
         this.owner = owner;
         this.name = name;
         this.description = description;
@@ -65,18 +78,18 @@ public class Art extends BaseEntity {
         applyHashtags(hashtags);
     }
 
-    public static Art createArt(Member owner, ArtName name, Description description, ArtType type,
-                                int price, String storageName, Set<String> hashtags) {
+    public static Art createArt(final Member owner, final ArtName name, final Description description, final ArtType type,
+                                final int price, final String storageName, final Set<String> hashtags) {
         return new Art(owner, name, description, type, price, storageName, hashtags);
     }
 
-    public void update(ArtName name, Description description, Set<String> hashtags) {
+    public void update(final ArtName name, final Description description, final Set<String> hashtags) {
         this.name = name;
         this.description = description;
         applyHashtags(hashtags);
     }
 
-    public void applyHashtags(Set<String> hashtags) {
+    public void applyHashtags(final Set<String> hashtags) {
         this.hashtags.clear();
         this.hashtags.addAll(
                 hashtags.stream()
@@ -97,7 +110,7 @@ public class Art extends BaseEntity {
         return this.type == AUCTION;
     }
 
-    public boolean isArtOwner(Member other) {
+    public boolean isArtOwner(final Member other) {
         return owner.isSameMember(other);
     }
 

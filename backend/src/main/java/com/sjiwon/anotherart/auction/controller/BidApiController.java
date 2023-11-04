@@ -3,12 +3,15 @@ package com.sjiwon.anotherart.auction.controller;
 import com.sjiwon.anotherart.auction.controller.dto.request.BidRequest;
 import com.sjiwon.anotherart.auction.facade.BidFacade;
 import com.sjiwon.anotherart.token.utils.ExtractPayload;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.*;
-
-import javax.validation.Valid;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
@@ -18,9 +21,9 @@ public class BidApiController {
 
     @PreAuthorize("hasRole('USER')")
     @PostMapping
-    public ResponseEntity<Void> bid(@ExtractPayload Long memberId,
-                                    @PathVariable Long auctionId,
-                                    @RequestBody @Valid BidRequest request) {
+    public ResponseEntity<Void> bid(@ExtractPayload final Long memberId,
+                                    @PathVariable final Long auctionId,
+                                    @RequestBody @Valid final BidRequest request) {
         bidFacade.bid(auctionId, memberId, request.bidPrice());
         return ResponseEntity.noContent().build();
     }

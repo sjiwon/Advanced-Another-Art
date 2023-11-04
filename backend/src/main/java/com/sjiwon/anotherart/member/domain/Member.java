@@ -3,12 +3,20 @@ package com.sjiwon.anotherart.member.domain;
 import com.sjiwon.anotherart.global.BaseEntity;
 import com.sjiwon.anotherart.member.domain.point.PointRecord;
 import com.sjiwon.anotherart.member.domain.point.PointType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Embedded;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import javax.persistence.*;
 import java.util.List;
 import java.util.Objects;
 
@@ -54,8 +62,8 @@ public class Member extends BaseEntity {
     @Column(name = "role", nullable = false)
     private Role role;
 
-    private Member(String name, Nickname nickname, String loginId, Password password,
-                   String school, String phone, Email email, Address address) {
+    private Member(final String name, final Nickname nickname, final String loginId, final Password password,
+                   final String school, final String phone, final Email email, final Address address) {
         this.name = name;
         this.nickname = nickname;
         this.loginId = loginId;
@@ -68,36 +76,36 @@ public class Member extends BaseEntity {
         this.role = USER;
     }
 
-    public static Member createMember(String name, Nickname nickname, String loginId, Password password,
-                                      String school, String phone, Email email, Address address) {
+    public static Member createMember(final String name, final Nickname nickname, final String loginId, final Password password,
+                                      final String school, final String phone, final Email email, final Address address) {
         return new Member(name, nickname, loginId, password, school, phone, email, address);
     }
 
-    public void addPointRecords(PointType type, int amount) {
+    public void addPointRecords(final PointType type, final int amount) {
         this.point.addPointRecords(this, type, amount);
     }
 
-    public void decreaseAvailablePoint(int point) {
+    public void decreaseAvailablePoint(final int point) {
         this.point = this.point.decreaseAvailablePoint(point);
     }
 
-    public void increaseAvailablePoint(int point) {
+    public void increaseAvailablePoint(final int point) {
         this.point = this.point.increaseAvailablePoint(point);
     }
 
-    public void changeNickname(String nickname) {
+    public void changeNickname(final String nickname) {
         this.nickname = this.nickname.update(nickname);
     }
 
-    public void changePassword(String password, PasswordEncoder encoder) {
+    public void changePassword(final String password, final PasswordEncoder encoder) {
         this.password = this.password.update(password, encoder);
     }
 
-    public void changeAddress(int postcode, String defaultAddress, String detailAddress) {
+    public void changeAddress(final int postcode, final String defaultAddress, final String detailAddress) {
         this.address = this.address.update(postcode, defaultAddress, detailAddress);
     }
 
-    public boolean isSameMember(Member other) {
+    public boolean isSameMember(final Member other) {
         return Objects.equals(this.id, other.getId());
     }
 

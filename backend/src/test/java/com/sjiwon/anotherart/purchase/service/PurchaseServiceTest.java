@@ -20,7 +20,9 @@ import java.time.LocalDateTime;
 import static com.sjiwon.anotherart.fixture.ArtFixture.AUCTION_1;
 import static com.sjiwon.anotherart.fixture.ArtFixture.GENERAL_1;
 import static com.sjiwon.anotherart.fixture.AuctionFixture.AUCTION_OPEN_NOW;
-import static com.sjiwon.anotherart.fixture.MemberFixture.*;
+import static com.sjiwon.anotherart.fixture.MemberFixture.MEMBER_A;
+import static com.sjiwon.anotherart.fixture.MemberFixture.MEMBER_B;
+import static com.sjiwon.anotherart.fixture.MemberFixture.MEMBER_C;
 import static com.sjiwon.anotherart.member.domain.point.PointType.CHARGE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -48,8 +50,8 @@ class PurchaseServiceTest extends ServiceTest {
         auction = auctionRepository.save(AUCTION_OPEN_NOW.toAuction(auctionArt));
     }
 
-    private Member createMember(MemberFixture fixture) {
-        Member member = fixture.toMember();
+    private Member createMember(final MemberFixture fixture) {
+        final Member member = fixture.toMember();
         member.addPointRecords(CHARGE, 100_000_000);
 
         return memberRepository.save(member);
@@ -82,10 +84,10 @@ class PurchaseServiceTest extends ServiceTest {
         @DisplayName("작품을 구매한다")
         void success() {
             // when
-            Long purchaseId = purchaseService.purchaseArt(generalArt.getId(), buyer.getId());
+            final Long purchaseId = purchaseService.purchaseArt(generalArt.getId(), buyer.getId());
 
             // then
-            Purchase findPurchase = purchaseRepository.findById(purchaseId).orElseThrow();
+            final Purchase findPurchase = purchaseRepository.findById(purchaseId).orElseThrow();
             assertAll(
                     () -> assertThat(findPurchase.getArt()).isEqualTo(generalArt),
                     () -> assertThat(findPurchase.getBuyer()).isEqualTo(buyer),
@@ -142,10 +144,10 @@ class PurchaseServiceTest extends ServiceTest {
             makeAuctionFinish();
 
             // when
-            Long purchaseId = purchaseService.purchaseArt(auctionArt.getId(), buyer.getId());
+            final Long purchaseId = purchaseService.purchaseArt(auctionArt.getId(), buyer.getId());
 
             // then
-            Purchase findPurchase = purchaseRepository.findById(purchaseId).orElseThrow();
+            final Purchase findPurchase = purchaseRepository.findById(purchaseId).orElseThrow();
             assertAll(
                     () -> assertThat(findPurchase.getArt()).isEqualTo(auctionArt),
                     () -> assertThat(findPurchase.getBuyer()).isEqualTo(buyer),
@@ -153,7 +155,7 @@ class PurchaseServiceTest extends ServiceTest {
             );
         }
 
-        private void bid(Member bidder, int bidPrice) {
+        private void bid(final Member bidder, final int bidPrice) {
             auction.applyNewBid(bidder, bidPrice);
         }
 

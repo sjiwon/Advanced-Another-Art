@@ -46,7 +46,7 @@ class MemberModifyApiControllerTest extends ControllerTest {
 
             // when
             final ChangeNicknameRequest request = new ChangeNicknameRequest("update");
-            MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
+            final MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
                     .patch(BASE_URL, MEMBER_ID)
                     .header(AUTHORIZATION, String.join(" ", BEARER_TOKEN, ACCESS_TOKEN))
                     .contentType(APPLICATION_JSON)
@@ -92,7 +92,7 @@ class MemberModifyApiControllerTest extends ControllerTest {
 
             // when
             final ChangeNicknameRequest request = new ChangeNicknameRequest("update");
-            MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
+            final MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
                     .patch(BASE_URL, MEMBER_ID)
                     .header(AUTHORIZATION, String.join(" ", BEARER_TOKEN, ACCESS_TOKEN))
                     .contentType(APPLICATION_JSON)
@@ -138,7 +138,7 @@ class MemberModifyApiControllerTest extends ControllerTest {
 
             // when
             final ChangeNicknameRequest request = new ChangeNicknameRequest("update");
-            MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
+            final MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
                     .patch(BASE_URL, MEMBER_ID)
                     .header(AUTHORIZATION, String.join(" ", BEARER_TOKEN, ACCESS_TOKEN))
                     .contentType(APPLICATION_JSON)
@@ -181,7 +181,7 @@ class MemberModifyApiControllerTest extends ControllerTest {
 
             // when
             final ChangeAddressRequest request = new ChangeAddressRequest(12345, "기본 주소", "상세 주소");
-            MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
+            final MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
                     .patch(BASE_URL, MEMBER_ID)
                     .header(AUTHORIZATION, String.join(" ", BEARER_TOKEN, ACCESS_TOKEN))
                     .contentType(APPLICATION_JSON)

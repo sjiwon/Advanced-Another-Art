@@ -15,17 +15,17 @@ import org.springframework.transaction.annotation.Transactional;
 public class MemberFindService {
     private final MemberRepository memberRepository;
 
-    public Member findById(Long memberId) {
+    public Member findById(final Long memberId) {
         return memberRepository.findById(memberId)
                 .orElseThrow(() -> AnotherArtException.type(MemberErrorCode.MEMBER_NOT_FOUND));
     }
 
-    public Member findByLoginId(String loginId) {
+    public Member findByLoginId(final String loginId) {
         return memberRepository.findByLoginId(loginId)
                 .orElseThrow(() -> AnotherArtException.type(MemberErrorCode.MEMBER_NOT_FOUND));
     }
 
-    public Member findByNameAndEmail(String name, Email email) {
+    public Member findByNameAndEmail(final String name, final Email email) {
         return memberRepository.findByNameAndEmail(name, email)
                 .orElseThrow(() -> AnotherArtException.type(MemberErrorCode.MEMBER_NOT_FOUND));
     }

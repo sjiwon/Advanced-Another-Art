@@ -1,7 +1,7 @@
 package com.sjiwon.anotherart.auction.controller.dto.request;
 
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Positive;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 
 public record BidRequest(
         @NotNull(message = "입찰가는 필수입니다.")

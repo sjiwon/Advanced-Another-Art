@@ -15,9 +15,9 @@ public class BidService {
     private final AuctionFindService auctionFindService;
 
     @Transactional
-    public void bid(Long auctionId, Long bidderId, Integer bidPrice) {
-        Auction auction = auctionFindService.findById(auctionId);
-        Member bidder = memberFindService.findById(bidderId);
+    public void bid(final Long auctionId, final Long bidderId, final Integer bidPrice) {
+        final Auction auction = auctionFindService.findById(auctionId);
+        final Member bidder = memberFindService.findById(bidderId);
 
         auction.applyNewBid(bidder, bidPrice);
     }

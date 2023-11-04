@@ -41,7 +41,7 @@ class FavoriteApiControllerTest extends ControllerTest {
                     .like(any(), any());
 
             // when
-            MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
+            final MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
                     .post(BASE_URL, ART_ID)
                     .header(AUTHORIZATION, String.join(" ", BEARER_TOKEN, ACCESS_TOKEN));
 
@@ -79,7 +79,7 @@ class FavoriteApiControllerTest extends ControllerTest {
             given(favoriteService.like(any(), any())).willReturn(1L);
 
             // when
-            MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
+            final MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
                     .post(BASE_URL, ART_ID)
                     .header(AUTHORIZATION, String.join(" ", BEARER_TOKEN, ACCESS_TOKEN));
 
@@ -116,7 +116,7 @@ class FavoriteApiControllerTest extends ControllerTest {
                     .cancel(any(), any());
 
             // when
-            MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
+            final MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
                     .delete(BASE_URL, ART_ID)
                     .header(AUTHORIZATION, String.join(" ", BEARER_TOKEN, ACCESS_TOKEN));
 
@@ -156,7 +156,7 @@ class FavoriteApiControllerTest extends ControllerTest {
                     .cancel(any(), any());
 
             // when
-            MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
+            final MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
                     .delete(BASE_URL, ART_ID)
                     .header(AUTHORIZATION, String.join(" ", BEARER_TOKEN, ACCESS_TOKEN));
 

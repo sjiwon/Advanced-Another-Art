@@ -8,12 +8,12 @@ import org.springframework.security.access.AccessDeniedException;
 public class AnotherArtAccessDeniedException extends AccessDeniedException {
     private final ErrorCode code;
 
-    protected AnotherArtAccessDeniedException(ErrorCode code) {
+    protected AnotherArtAccessDeniedException(final ErrorCode code) {
         super(code.getMessage());
         this.code = code;
     }
 
-    public static AnotherArtAccessDeniedException type(ErrorCode code) {
+    public static AnotherArtAccessDeniedException type(final ErrorCode code) {
         return new AnotherArtAccessDeniedException(code);
     }
 }

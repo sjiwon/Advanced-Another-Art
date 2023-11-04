@@ -14,12 +14,12 @@ import org.springframework.transaction.annotation.Transactional;
 public class ArtFindService {
     private final ArtRepository artRepository;
 
-    public Art findById(Long artId) {
+    public Art findById(final Long artId) {
         return artRepository.findById(artId)
                 .orElseThrow(() -> AnotherArtException.type(ArtErrorCode.ART_NOT_FOUND));
     }
 
-    public Art findByIdWithOwner(Long artId) {
+    public Art findByIdWithOwner(final Long artId) {
         return artRepository.findByIdWithOwner(artId)
                 .orElseThrow(() -> AnotherArtException.type(ArtErrorCode.ART_NOT_FOUND));
     }

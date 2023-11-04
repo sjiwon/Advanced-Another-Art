@@ -3,7 +3,11 @@ package com.sjiwon.anotherart.member.service;
 import com.sjiwon.anotherart.common.ServiceTest;
 import com.sjiwon.anotherart.common.utils.PasswordEncoderUtils;
 import com.sjiwon.anotherart.global.exception.AnotherArtException;
-import com.sjiwon.anotherart.member.domain.*;
+import com.sjiwon.anotherart.member.domain.Address;
+import com.sjiwon.anotherart.member.domain.Email;
+import com.sjiwon.anotherart.member.domain.Member;
+import com.sjiwon.anotherart.member.domain.Nickname;
+import com.sjiwon.anotherart.member.domain.Password;
 import com.sjiwon.anotherart.member.exception.MemberErrorCode;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -113,10 +117,10 @@ class MemberServiceTest extends ServiceTest {
             final Member member = MEMBER_A.toMember();
 
             // when
-            Long savedMemberId = memberService.signUp(member);
+            final Long savedMemberId = memberService.signUp(member);
 
             // then
-            Member findMember = memberRepository.findById(savedMemberId).orElseThrow();
+            final Member findMember = memberRepository.findById(savedMemberId).orElseThrow();
             assertThat(findMember).isEqualTo(member);
         }
     }
@@ -202,7 +206,7 @@ class MemberServiceTest extends ServiceTest {
         @DisplayName("타인이 사용하고 있는 닉네임으로 변경하려고 하면 예외가 발생한다")
         void throwExceptionByDuplicateNickname() {
             // given
-            Member compare = memberRepository.save(MEMBER_B.toMember());
+            final Member compare = memberRepository.save(MEMBER_B.toMember());
 
             // when - then
             assertThatThrownBy(() -> memberService.changeNickname(member.getId(), compare.getNicknameValue()))
@@ -228,7 +232,7 @@ class MemberServiceTest extends ServiceTest {
             memberService.changeNickname(member.getId(), update);
 
             // then
-            Member findMember = memberRepository.findById(member.getId()).orElseThrow();
+            final Member findMember = memberRepository.findById(member.getId()).orElseThrow();
             assertThat(findMember.getNicknameValue()).isEqualTo(update);
         }
     }
@@ -237,7 +241,7 @@ class MemberServiceTest extends ServiceTest {
     @DisplayName("주소 변경에 성공한다")
     void changeAddress() {
         // given
-        Member member = memberRepository.save(MEMBER_A.toMember());
+        final Member member = memberRepository.save(MEMBER_A.toMember());
 
         // when
         final int postcode = 99999;
@@ -246,8 +250,8 @@ class MemberServiceTest extends ServiceTest {
         memberService.changeAddress(member.getId(), postcode, defaultAddress, detailAddress);
 
         // then
-        Member findMember = memberRepository.findById(member.getId()).orElseThrow();
-        Address updateAddress = findMember.getAddress();
+        final Member findMember = memberRepository.findById(member.getId()).orElseThrow();
+        final Address updateAddress = findMember.getAddress();
 
         assertAll(
                 () -> assertThat(updateAddress.getPostcode()).isNotEqualTo(MEMBER_A.getPostcode()),
@@ -263,10 +267,10 @@ class MemberServiceTest extends ServiceTest {
     @DisplayName("사용자의 로그인 아이디를 조회한다")
     void findLoginId() {
         // given
-        Member member = memberRepository.save(MEMBER_A.toMember());
+        final Member member = memberRepository.save(MEMBER_A.toMember());
 
         // when
-        String findLoginId = memberService.findLoginId(member.getName(), member.getEmail());
+        final String findLoginId = memberService.findLoginId(member.getName(), member.getEmail());
 
         // then
         assertThat(findLoginId).isEqualTo(member.getLoginId());
@@ -276,7 +280,7 @@ class MemberServiceTest extends ServiceTest {
     @DisplayName("비밀번호 초기화를 위한 사용자 인증을 진행한다")
     void authForResetPassword() {
         // given
-        Member member = memberRepository.save(MEMBER_A.toMember());
+        final Member member = memberRepository.save(MEMBER_A.toMember());
 
         // when - then
         assertThatThrownBy(() -> memberService.authForResetPassword(
@@ -319,7 +323,7 @@ class MemberServiceTest extends ServiceTest {
             memberService.resetPassword(member.getLoginId(), "hello123ABC!@#");
 
             // then
-            Member findMember = memberRepository.findById(member.getId()).orElseThrow();
+            final Member findMember = memberRepository.findById(member.getId()).orElseThrow();
             assertThat(ENCODER.matches("hello123ABC!@#", findMember.getPasswordValue())).isTrue();
         }
     }
@@ -349,12 +353,12 @@ class MemberServiceTest extends ServiceTest {
             memberService.changePassword(member.getId(), "hello123ABC!@#");
 
             // then
-            Member findMember = memberRepository.findById(member.getId()).orElseThrow();
+            final Member findMember = memberRepository.findById(member.getId()).orElseThrow();
             assertThat(ENCODER.matches("hello123ABC!@#", findMember.getPasswordValue())).isTrue();
         }
     }
 
-    private Member createDuplicateMember(String nickname, String loginId, String phone, String email) {
+    private Member createDuplicateMember(final String nickname, final String loginId, final String phone, final String email) {
         return Member.createMember(
                 MEMBER_A.getName(),
                 Nickname.from(nickname),

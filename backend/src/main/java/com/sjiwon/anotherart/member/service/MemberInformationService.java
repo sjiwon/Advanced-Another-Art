@@ -25,30 +25,30 @@ public class MemberInformationService {
     private final MemberFindService memberFindService;
     private final MemberRepository memberRepository;
 
-    public MemberInformation getInformation(Long memberId) {
-        Member member = memberFindService.findById(memberId);
+    public MemberInformation getInformation(final Long memberId) {
+        final Member member = memberFindService.findById(memberId);
         return new MemberInformation(member);
     }
 
-    public PointRecordAssembler getPointRecords(Long memberId) {
-        List<MemberPointRecord> result = memberRepository.findPointRecordByMemberId(memberId);
+    public PointRecordAssembler getPointRecords(final Long memberId) {
+        final List<MemberPointRecord> result = memberRepository.findPointRecordByMemberId(memberId);
         return new PointRecordAssembler(result);
     }
 
-    public WinningAuctionArtAssembler getWinningAuctionArts(Long memberId) {
-        List<AuctionArt> result = memberRepository.findWinningAuctionArtByMemberId(memberId);
+    public WinningAuctionArtAssembler getWinningAuctionArts(final Long memberId) {
+        final List<AuctionArt> result = memberRepository.findWinningAuctionArtByMemberId(memberId);
         return new WinningAuctionArtAssembler(result);
     }
 
-    public TradedArtAssembler getSoldArts(Long memberId) {
-        List<TradedArt> tradedAuctions = memberRepository.findSoldArtByMemberIdAndType(memberId, AUCTION);
-        List<TradedArt> tradedGenerals = memberRepository.findSoldArtByMemberIdAndType(memberId, GENERAL);
+    public TradedArtAssembler getSoldArts(final Long memberId) {
+        final List<TradedArt> tradedAuctions = memberRepository.findSoldArtByMemberIdAndType(memberId, AUCTION);
+        final List<TradedArt> tradedGenerals = memberRepository.findSoldArtByMemberIdAndType(memberId, GENERAL);
         return new TradedArtAssembler(tradedAuctions, tradedGenerals);
     }
 
-    public TradedArtAssembler getPurchaseArts(Long memberId) {
-        List<TradedArt> tradedAuctions = memberRepository.findPurchaseArtByMemberIdAndType(memberId, AUCTION);
-        List<TradedArt> tradedGenerals = memberRepository.findPurchaseArtByMemberIdAndType(memberId, GENERAL);
+    public TradedArtAssembler getPurchaseArts(final Long memberId) {
+        final List<TradedArt> tradedAuctions = memberRepository.findPurchaseArtByMemberIdAndType(memberId, AUCTION);
+        final List<TradedArt> tradedGenerals = memberRepository.findPurchaseArtByMemberIdAndType(memberId, GENERAL);
         return new TradedArtAssembler(tradedAuctions, tradedGenerals);
     }
 }

@@ -1,7 +1,7 @@
 package com.sjiwon.anotherart.member.controller.dto.request;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 public record ChangeAddressRequest(
         @NotNull(message = "우편번호는 필수입니다.")

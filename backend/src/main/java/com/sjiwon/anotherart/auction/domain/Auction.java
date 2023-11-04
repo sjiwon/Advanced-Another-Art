@@ -6,11 +6,19 @@ import com.sjiwon.anotherart.auction.exception.AuctionErrorCode;
 import com.sjiwon.anotherart.global.BaseEntity;
 import com.sjiwon.anotherart.global.exception.AnotherArtException;
 import com.sjiwon.anotherart.member.domain.Member;
+import jakarta.persistence.Embedded;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -33,24 +41,24 @@ public class Auction extends BaseEntity {
     @JoinColumn(name = "art_id", referencedColumnName = "id", nullable = false, updatable = false)
     private Art art;
 
-    private Auction(Art art, Period period) {
+    private Auction(final Art art, final Period period) {
         this.art = art;
         this.period = period;
         this.bidders = Bidders.init(art.getPrice());
     }
 
-    public static Auction createAuction(Art art, Period period) {
+    public static Auction createAuction(final Art art, final Period period) {
         validateArtType(art);
         return new Auction(art, period);
     }
 
-    private static void validateArtType(Art art) {
+    private static void validateArtType(final Art art) {
         if (!art.isAuctionType()) {
             throw AnotherArtException.type(AuctionErrorCode.INVALID_ART_TYPE);
         }
     }
 
-    public void applyNewBid(Member bidder, int bidPrice) {
+    public void applyNewBid(final Member bidder, final int bidPrice) {
         validateAuctionIsOpen();
         validateArtOwner(bidder);
 
@@ -65,7 +73,7 @@ public class Auction extends BaseEntity {
         }
     }
 
-    private void validateArtOwner(Member bidder) {
+    private void validateArtOwner(final Member bidder) {
         if (art.isArtOwner(bidder)) {
             throw AnotherArtException.type(AuctionErrorCode.ART_OWNER_CANNOT_BID);
         }
@@ -75,7 +83,7 @@ public class Auction extends BaseEntity {
         return period.isAuctionFinished(LocalDateTime.now());
     }
 
-    public boolean isHighestBidder(Member other) {
+    public boolean isHighestBidder(final Member other) {
         return getHighestBidder().isSameMember(other);
     }
 

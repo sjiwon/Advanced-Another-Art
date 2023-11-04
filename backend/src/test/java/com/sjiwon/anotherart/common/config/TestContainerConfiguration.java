@@ -10,8 +10,8 @@ public class TestContainerConfiguration implements BeforeAllCallback {
     private static final int REDIS_PORT = 6379;
 
     @Override
-    public void beforeAll(ExtensionContext context) {
-        GenericContainer<?> REDIS_CONTAINER = new GenericContainer<>(DockerImageName.parse(REDIS_IMAGE))
+    public void beforeAll(final ExtensionContext context) {
+        final GenericContainer<?> REDIS_CONTAINER = new GenericContainer<>(DockerImageName.parse(REDIS_IMAGE))
                 .withExposedPorts(REDIS_PORT)
                 .withReuse(true);
         REDIS_CONTAINER.start();

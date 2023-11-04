@@ -4,17 +4,22 @@ import com.sjiwon.anotherart.art.domain.ArtRepository;
 import com.sjiwon.anotherart.auction.domain.AuctionRepository;
 import com.sjiwon.anotherart.common.config.TestContainerConfiguration;
 import com.sjiwon.anotherart.common.utils.PasswordEncoderUtils;
-import com.sjiwon.anotherart.member.domain.*;
+import com.sjiwon.anotherart.member.domain.Address;
+import com.sjiwon.anotherart.member.domain.Email;
+import com.sjiwon.anotherart.member.domain.Member;
+import com.sjiwon.anotherart.member.domain.MemberRepository;
+import com.sjiwon.anotherart.member.domain.Nickname;
+import com.sjiwon.anotherart.member.domain.Password;
 import com.sjiwon.anotherart.member.domain.point.PointRecord;
 import com.sjiwon.anotherart.member.domain.point.PointRecordRepository;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,12 +48,12 @@ public class ConcurrencyTest {
 
     protected final List<Long> memberIds = new ArrayList<>();
 
-    protected void createMembers(int threadCount) {
-        List<Member> members = new ArrayList<>();
-        List<PointRecord> pointRecords = new ArrayList<>();
+    protected void createMembers(final int threadCount) {
+        final List<Member> members = new ArrayList<>();
+        final List<PointRecord> pointRecords = new ArrayList<>();
 
         for (int i = 1; i <= threadCount; i++) {
-            Member member = createMember(i);
+            final Member member = createMember(i);
             increaseMemberPoint(member);
             members.add(member);
             pointRecords.add(PointRecord.addPointRecord(member, CHARGE, 100_000_000));
@@ -59,7 +64,7 @@ public class ConcurrencyTest {
         members.forEach(member -> memberIds.add(member.getId()));
     }
 
-    private Member createMember(int index) {
+    private Member createMember(final int index) {
         return Member.createMember(
                 "name" + index,
                 Nickname.from("nick" + index),
@@ -73,14 +78,14 @@ public class ConcurrencyTest {
     }
 
     private String generateRandomPhoneNumber() {
-        String first = "010";
-        String second = String.valueOf((int) (Math.random() * 9000 + 1000));
-        String third = String.valueOf((int) (Math.random() * 9000 + 1000));
+        final String first = "010";
+        final String second = String.valueOf((int) (Math.random() * 9000 + 1000));
+        final String third = String.valueOf((int) (Math.random() * 9000 + 1000));
 
         return first + second + third;
     }
 
-    private void increaseMemberPoint(Member member) {
+    private void increaseMemberPoint(final Member member) {
         ReflectionTestUtils.setField(member.getPoint(), "totalPoint", 100_000_000);
         ReflectionTestUtils.setField(member.getPoint(), "availablePoint", 100_000_000);
     }

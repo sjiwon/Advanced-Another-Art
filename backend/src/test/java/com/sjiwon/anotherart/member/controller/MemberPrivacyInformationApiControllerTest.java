@@ -21,9 +21,11 @@ import static org.mockito.Mockito.doThrow;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
-import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
+import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
-import static org.springframework.restdocs.request.RequestDocumentation.requestParameters;
+import static org.springframework.restdocs.request.RequestDocumentation.queryParameters;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -41,7 +43,7 @@ class MemberPrivacyInformationApiControllerTest extends ControllerTest {
             given(memberService.findLoginId(any(), any())).willReturn("user");
 
             // when
-            MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
+            final MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
                     .get(BASE_URL)
                     .param("name", "이름")
                     .param("email", "email@gmail.com");
@@ -58,7 +60,7 @@ class MemberPrivacyInformationApiControllerTest extends ControllerTest {
                                     "MemberApi/FindLoginId",
                                     getDocumentRequest(),
                                     getDocumentResponse(),
-                                    requestParameters(
+                                    queryParameters(
                                             parameterWithName("name").description("사용자 이름"),
                                             parameterWithName("email").description("사용자 이메일")
                                     ),
@@ -89,7 +91,7 @@ class MemberPrivacyInformationApiControllerTest extends ControllerTest {
                     "email@gmail.com",
                     "로그인아이디"
             );
-            MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
+            final MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
                     .post(BASE_URL)
                     .contentType(APPLICATION_JSON)
                     .content(convertObjectToJson(request));
@@ -135,7 +137,7 @@ class MemberPrivacyInformationApiControllerTest extends ControllerTest {
                     "email@gmail.com",
                     "로그인아이디"
             );
-            MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
+            final MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
                     .post(BASE_URL)
                     .contentType(APPLICATION_JSON)
                     .content(convertObjectToJson(request));
@@ -176,7 +178,7 @@ class MemberPrivacyInformationApiControllerTest extends ControllerTest {
                     "로그인아이디",
                     "hello123ABC!@#"
             );
-            MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
+            final MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
                     .post(BASE_URL)
                     .contentType(APPLICATION_JSON)
                     .content(convertObjectToJson(request));
@@ -220,7 +222,7 @@ class MemberPrivacyInformationApiControllerTest extends ControllerTest {
                     "로그인아이디",
                     "hello123ABC!@#"
             );
-            MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
+            final MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
                     .post(BASE_URL)
                     .contentType(APPLICATION_JSON)
                     .content(convertObjectToJson(request));
@@ -257,7 +259,7 @@ class MemberPrivacyInformationApiControllerTest extends ControllerTest {
 
             // when
             final ChangePasswordRequest request = new ChangePasswordRequest("hello123ABC!@#");
-            MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
+            final MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
                     .patch(BASE_URL)
                     .header(AUTHORIZATION, String.join(" ", BEARER_TOKEN, ACCESS_TOKEN))
                     .contentType(APPLICATION_JSON)
@@ -299,7 +301,7 @@ class MemberPrivacyInformationApiControllerTest extends ControllerTest {
 
             // when
             final ChangePasswordRequest request = new ChangePasswordRequest("hello123ABC!@#");
-            MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
+            final MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
                     .patch(BASE_URL)
                     .header(AUTHORIZATION, String.join(" ", BEARER_TOKEN, ACCESS_TOKEN))
                     .contentType(APPLICATION_JSON)

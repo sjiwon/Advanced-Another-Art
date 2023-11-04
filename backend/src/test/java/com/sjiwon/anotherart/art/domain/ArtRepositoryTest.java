@@ -12,7 +12,9 @@ import java.util.Optional;
 
 import static com.sjiwon.anotherart.art.domain.ArtType.AUCTION;
 import static com.sjiwon.anotherart.art.domain.ArtType.GENERAL;
-import static com.sjiwon.anotherart.fixture.ArtFixture.*;
+import static com.sjiwon.anotherart.fixture.ArtFixture.AUCTION_1;
+import static com.sjiwon.anotherart.fixture.ArtFixture.AUCTION_2;
+import static com.sjiwon.anotherart.fixture.ArtFixture.GENERAL_1;
 import static com.sjiwon.anotherart.fixture.MemberFixture.MEMBER_A;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -40,8 +42,8 @@ class ArtRepositoryTest extends RepositoryTest {
     @DisplayName("ID(PK)로 작품을 조회한다")
     void findById() {
         // when
-        Optional<Art> emptyArt = artRepository.findByIdWithOwner(auctionArt.getId() + 100L);
-        Optional<Art> existsArt = artRepository.findByIdWithOwner(auctionArt.getId());
+        final Optional<Art> emptyArt = artRepository.findByIdWithOwner(auctionArt.getId() + 100L);
+        final Optional<Art> existsArt = artRepository.findByIdWithOwner(auctionArt.getId());
 
         // then
         assertAll(
@@ -59,8 +61,8 @@ class ArtRepositoryTest extends RepositoryTest {
         final ArtName diff = ArtName.from("diff" + auctionArt.getNameValue());
 
         // when
-        boolean actual1 = artRepository.existsByName(same);
-        boolean actual2 = artRepository.existsByName(diff);
+        final boolean actual1 = artRepository.existsByName(same);
+        final boolean actual2 = artRepository.existsByName(diff);
 
         // then
         assertAll(
@@ -73,11 +75,11 @@ class ArtRepositoryTest extends RepositoryTest {
     @DisplayName("해당 작품명을 사용하는 다른 작품이 존재하는지 확인한다")
     void existsByNameAndIdNot() {
         // given
-        Art another = artRepository.save(AUCTION_2.toArt(owner));
+        final Art another = artRepository.save(AUCTION_2.toArt(owner));
 
         // when
-        boolean actual1 = artRepository.existsByNameAndIdNot(another.getName(), auctionArt.getId());
-        boolean actual2 = artRepository.existsByNameAndIdNot(another.getName(), another.getId());
+        final boolean actual1 = artRepository.existsByNameAndIdNot(another.getName(), auctionArt.getId());
+        final boolean actual2 = artRepository.existsByNameAndIdNot(another.getName(), another.getId());
 
         // then
         assertAll(
@@ -90,8 +92,8 @@ class ArtRepositoryTest extends RepositoryTest {
     @DisplayName("작품 소유자인지 확인한다")
     void existsByIdAndOwnerId() {
         // when
-        boolean actual1 = artRepository.existsByIdAndOwnerId(auctionArt.getId(), owner.getId());
-        boolean actual2 = artRepository.existsByIdAndOwnerId(auctionArt.getId(), owner.getId() + 100L);
+        final boolean actual1 = artRepository.existsByIdAndOwnerId(auctionArt.getId(), owner.getId());
+        final boolean actual2 = artRepository.existsByIdAndOwnerId(auctionArt.getId(), owner.getId() + 100L);
 
         // then
         assertAll(
@@ -104,8 +106,8 @@ class ArtRepositoryTest extends RepositoryTest {
     @DisplayName("해당 작품의 타입을 조회한다")
     void getArtTypeById() {
         // when
-        ArtType general = artRepository.getArtTypeById(generalArt.getId());
-        ArtType auction = artRepository.getArtTypeById(auctionArt.getId());
+        final ArtType general = artRepository.getArtTypeById(generalArt.getId());
+        final ArtType auction = artRepository.getArtTypeById(auctionArt.getId());
 
         // then
         assertAll(

@@ -1,11 +1,18 @@
 package com.sjiwon.anotherart.art.domain.hashtag;
 
 import com.sjiwon.anotherart.art.domain.Art;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import javax.persistence.*;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -23,12 +30,12 @@ public class Hashtag {
     @JoinColumn(name = "art_id", referencedColumnName = "id", nullable = false)
     private Art art;
 
-    private Hashtag(Art art, String name) {
+    private Hashtag(final Art art, final String name) {
         this.art = art;
         this.name = name;
     }
 
-    public static Hashtag applyHashtag(Art art, String name) {
+    public static Hashtag applyHashtag(final Art art, final String name) {
         return new Hashtag(art, name);
     }
 }

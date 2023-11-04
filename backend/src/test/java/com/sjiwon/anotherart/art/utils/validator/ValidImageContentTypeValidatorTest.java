@@ -1,12 +1,12 @@
 package com.sjiwon.anotherart.art.utils.validator;
 
+import jakarta.validation.ConstraintValidatorContext;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.validation.ConstraintValidatorContext;
 import java.io.IOException;
 
 import static com.sjiwon.anotherart.common.utils.FileMockingUtils.createSingleMockMultipartFile;
@@ -36,7 +36,7 @@ class ValidImageContentTypeValidatorTest {
         final MultipartFile file = new MockMultipartFile("file", new byte[0]);
 
         // when
-        boolean actual = validator.isValid(file, null);
+        final boolean actual = validator.isValid(file, null);
 
         // then
         assertThat(actual).isFalse();
@@ -52,7 +52,7 @@ class ValidImageContentTypeValidatorTest {
         given(builder.addConstraintViolation()).willReturn(context);
 
         // when
-        boolean actual = validator.isValid(file, context);
+        final boolean actual = validator.isValid(file, context);
 
         // then
         verify(context).disableDefaultConstraintViolation();
@@ -68,7 +68,7 @@ class ValidImageContentTypeValidatorTest {
         final MultipartFile file = createSingleMockMultipartFile("1.png", "image/png");
 
         // when
-        boolean actual = validator.isValid(file, context);
+        final boolean actual = validator.isValid(file, context);
 
         // then
         assertThat(actual).isTrue();

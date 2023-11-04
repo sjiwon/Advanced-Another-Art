@@ -22,8 +22,8 @@ public class BasicArt {
     private List<String> hashtags;
     private List<Long> likeMembers;
 
-    public BasicArt(Long id, ArtName name, Description description, int price, ArtStatus status,
-                    String storageName, LocalDateTime registrationDate) {
+    public BasicArt(final Long id, final ArtName name, final Description description, final int price, final ArtStatus status,
+                    final String storageName, final LocalDateTime registrationDate) {
         this.id = id;
         this.name = name.getValue();
         this.description = description.getValue();
@@ -33,11 +33,11 @@ public class BasicArt {
         this.registrationDate = registrationDate;
     }
 
-    public void applyHashtags(List<String> hashtags) {
+    public void applyHashtags(final List<String> hashtags) {
         this.hashtags = hashtags;
     }
 
-    public void applyLikeMembers(List<Long> likeMembers) {
+    public void applyLikeMembers(final List<Long> likeMembers) {
         this.likeMembers = likeMembers;
     }
 }

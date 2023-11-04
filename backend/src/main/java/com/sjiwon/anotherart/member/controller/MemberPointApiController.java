@@ -5,12 +5,15 @@ import com.sjiwon.anotherart.member.controller.dto.request.PointChargeRequest;
 import com.sjiwon.anotherart.member.controller.dto.request.PointRefundRequest;
 import com.sjiwon.anotherart.member.service.MemberPointService;
 import com.sjiwon.anotherart.token.utils.ExtractPayload;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.*;
-
-import javax.validation.Valid;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
@@ -20,18 +23,18 @@ public class MemberPointApiController {
 
     @PreAuthorize("hasRole('USER') AND @tokenPayloadChecker.isTrustworthyMember(#payloadId, #memberId)")
     @PostMapping("/charge")
-    public ResponseEntity<Void> chargePoint(@ExtractPayload Long payloadId,
-                                            @PathVariable Long memberId,
-                                            @RequestBody @Valid PointChargeRequest request) {
+    public ResponseEntity<Void> chargePoint(@ExtractPayload final Long payloadId,
+                                            @PathVariable final Long memberId,
+                                            @RequestBody @Valid final PointChargeRequest request) {
         memberPointService.chargePoint(memberId, request.chargeAmount());
         return ResponseEntity.noContent().build();
     }
 
     @PreAuthorize("hasRole('USER') AND @tokenPayloadChecker.isTrustworthyMember(#payloadId, #memberId)")
     @PostMapping("/refund")
-    public ResponseEntity<Void> refundPoint(@ExtractPayload Long payloadId,
-                                            @PathVariable Long memberId,
-                                            @RequestBody @Valid PointRefundRequest request) {
+    public ResponseEntity<Void> refundPoint(@ExtractPayload final Long payloadId,
+                                            @PathVariable final Long memberId,
+                                            @RequestBody @Valid final PointRefundRequest request) {
         memberPointService.refundPoint(memberId, request.refundAmount());
         return ResponseEntity.noContent().build();
     }

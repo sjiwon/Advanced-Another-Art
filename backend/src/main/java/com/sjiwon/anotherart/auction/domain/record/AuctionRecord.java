@@ -3,11 +3,18 @@ package com.sjiwon.anotherart.auction.domain.record;
 import com.sjiwon.anotherart.auction.domain.Auction;
 import com.sjiwon.anotherart.global.BaseEntity;
 import com.sjiwon.anotherart.member.domain.Member;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import javax.persistence.*;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -29,13 +36,13 @@ public class AuctionRecord extends BaseEntity {
     @JoinColumn(name = "bidder_id", referencedColumnName = "id", updatable = false)
     private Member bidder;
 
-    private AuctionRecord(Auction auction, Member bidder, int bidPrice) {
+    private AuctionRecord(final Auction auction, final Member bidder, final int bidPrice) {
         this.auction = auction;
         this.bidder = bidder;
         this.bidPrice = bidPrice;
     }
 
-    public static AuctionRecord createAuctionRecord(Auction auction, Member bidder, int bidPrice) {
+    public static AuctionRecord createAuctionRecord(final Auction auction, final Member bidder, final int bidPrice) {
         return new AuctionRecord(auction, bidder, bidPrice);
     }
 }

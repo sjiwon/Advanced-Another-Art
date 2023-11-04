@@ -6,12 +6,12 @@ import lombok.Getter;
 public class AnotherArtException extends RuntimeException {
     private final ErrorCode code;
 
-    public AnotherArtException(ErrorCode code) {
+    public AnotherArtException(final ErrorCode code) {
         super(code.getMessage());
         this.code = code;
     }
 
-    public static AnotherArtException type(ErrorCode code) {
+    public static AnotherArtException type(final ErrorCode code) {
         return new AnotherArtException(code);
     }
 }

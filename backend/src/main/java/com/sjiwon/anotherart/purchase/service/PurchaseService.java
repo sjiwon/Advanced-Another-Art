@@ -25,38 +25,38 @@ public class PurchaseService {
     private final PurchaseRepository purchaseRepository;
 
     @Transactional
-    public Long purchaseArt(Long artId, Long memberId) {
-        Art art = artFindService.findByIdWithOwner(artId);
-        Member buyer = memberFindService.findById(memberId);
+    public Long purchaseArt(final Long artId, final Long memberId) {
+        final Art art = artFindService.findByIdWithOwner(artId);
+        final Member buyer = memberFindService.findById(memberId);
 
         try {
             return processArtPurchase(art, buyer);
-        } catch (DataIntegrityViolationException e) {
+        } catch (final DataIntegrityViolationException e) {
             throw AnotherArtException.type(PurchaseErrorCode.ALREADY_SOLD);
         }
     }
 
-    private Long processArtPurchase(Art art, Member buyer) {
+    private Long processArtPurchase(final Art art, final Member buyer) {
         if (art.isAuctionType()) {
-            Auction auction = auctionFindService.findByArtId(art.getId());
+            final Auction auction = auctionFindService.findByArtId(art.getId());
             validateAuctionFinished(auction);
             validateHighestBidder(auction, buyer);
 
-            Purchase purchaseAuctionArt = Purchase.purchaseAuctionArt(art, buyer, auction.getHighestBidPrice());
+            final Purchase purchaseAuctionArt = Purchase.purchaseAuctionArt(art, buyer, auction.getHighestBidPrice());
             return purchaseRepository.save(purchaseAuctionArt).getId();
         } else {
-            Purchase purchasedGeneralArt = Purchase.purchaseGeneralArt(art, buyer);
+            final Purchase purchasedGeneralArt = Purchase.purchaseGeneralArt(art, buyer);
             return purchaseRepository.save(purchasedGeneralArt).getId();
         }
     }
 
-    private void validateAuctionFinished(Auction auction) {
+    private void validateAuctionFinished(final Auction auction) {
         if (!auction.isFinished()) {
             throw AnotherArtException.type(PurchaseErrorCode.AUCTION_NOT_FINISHED);
         }
     }
 
-    private void validateHighestBidder(Auction auction, Member buyer) {
+    private void validateHighestBidder(final Auction auction, final Member buyer) {
         if (!auction.isHighestBidder(buyer)) {
             throw AnotherArtException.type(PurchaseErrorCode.BUYER_IS_NOT_HIGHEST_BIDDER);
         }

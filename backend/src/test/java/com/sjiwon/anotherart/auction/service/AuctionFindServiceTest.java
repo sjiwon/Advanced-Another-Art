@@ -45,8 +45,8 @@ class AuctionFindServiceTest extends ServiceTest {
                 .isInstanceOf(AnotherArtException.class)
                 .hasMessage(AuctionErrorCode.AUCTION_NOT_FOUND.getMessage());
 
-        Auction findAuction1 = auctionFindService.findById(auction.getId());
-        Auction findAuction2 = auctionFindService.findByIdWithPessimisticLock(auction.getId());
+        final Auction findAuction1 = auctionFindService.findById(auction.getId());
+        final Auction findAuction2 = auctionFindService.findByIdWithPessimisticLock(auction.getId());
 
         // then
         assertAll(
@@ -63,7 +63,7 @@ class AuctionFindServiceTest extends ServiceTest {
                 .isInstanceOf(AnotherArtException.class)
                 .hasMessage(AuctionErrorCode.AUCTION_NOT_FOUND.getMessage());
 
-        Auction findAuction = auctionFindService.findByArtId(art.getId());
+        final Auction findAuction = auctionFindService.findByArtId(art.getId());
 
         // then
         assertAll(

@@ -1,6 +1,6 @@
 package com.sjiwon.anotherart.member.controller.dto.request;
 
-import javax.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotBlank;
 
 public record AuthForResetPasswordRequest(
         @NotBlank(message = "이름은 필수입니다.")

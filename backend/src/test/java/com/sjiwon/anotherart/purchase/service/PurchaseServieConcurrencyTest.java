@@ -28,7 +28,7 @@ class PurchaseServieConcurrencyTest extends ConcurrencyTest {
 
     @BeforeEach
     void setUp() {
-        Member owner = memberRepository.save(MEMBER_A.toMember());
+        final Member owner = memberRepository.save(MEMBER_A.toMember());
         art = artRepository.save(GENERAL_1.toArt(owner));
 
         createMembers(THREAD_COUNT); // 10명의 구매자 생성
@@ -38,15 +38,15 @@ class PurchaseServieConcurrencyTest extends ConcurrencyTest {
     @DisplayName("10명의 구매자가 동시에 일반 작품 구매를 진행한다면 1명만 구매에 성공해야 한다")
     void concurrencyPurchase() throws InterruptedException {
         // given
-        ExecutorService executorService = Executors.newFixedThreadPool(THREAD_COUNT);
-        CountDownLatch countDownLatch = new CountDownLatch(THREAD_COUNT);
+        final ExecutorService executorService = Executors.newFixedThreadPool(THREAD_COUNT);
+        final CountDownLatch countDownLatch = new CountDownLatch(THREAD_COUNT);
 
         // when
-        for (Long buyerId : memberIds) {
+        for (final Long buyerId : memberIds) {
             executorService.submit(() -> {
                 try {
                     purchaseService.purchaseArt(art.getId(), buyerId);
-                } catch (Exception e) {
+                } catch (final Exception e) {
                     log.error(e.getMessage());
                 } finally {
                     countDownLatch.countDown();

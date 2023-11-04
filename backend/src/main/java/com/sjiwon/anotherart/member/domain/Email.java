@@ -2,12 +2,12 @@ package com.sjiwon.anotherart.member.domain;
 
 import com.sjiwon.anotherart.global.exception.AnotherArtException;
 import com.sjiwon.anotherart.member.exception.MemberErrorCode;
+import jakarta.persistence.Column;
+import jakarta.persistence.Embeddable;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Column;
-import javax.persistence.Embeddable;
 import java.util.regex.Pattern;
 
 @Getter
@@ -20,26 +20,26 @@ public class Email {
     @Column(name = "email", nullable = false, unique = true, updatable = false)
     private String value;
 
-    private Email(String value) {
+    private Email(final String value) {
         this.value = value;
     }
 
-    public static Email from(String value) {
+    public static Email from(final String value) {
         validateEmailPattern(value);
         return new Email(value);
     }
 
-    private static void validateEmailPattern(String value) {
+    private static void validateEmailPattern(final String value) {
         if (isNotValidPattern(value)) {
             throw AnotherArtException.type(MemberErrorCode.INVALID_EMAIL_PATTERN);
         }
     }
 
-    private static boolean isNotValidPattern(String email) {
+    private static boolean isNotValidPattern(final String email) {
         return !EMAIL_MATCHER.matcher(email).matches();
     }
 
-    public boolean isSameEmail(Email other) {
+    public boolean isSameEmail(final Email other) {
         return this.value.equals(other.getValue());
     }
 }

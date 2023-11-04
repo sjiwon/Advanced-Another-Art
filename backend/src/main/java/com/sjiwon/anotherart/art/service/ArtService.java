@@ -36,20 +36,20 @@ public class ArtService {
     private final AuctionRepository auctionRepository;
 
     @Transactional
-    public Long registerArt(Long ownerId, ArtRegisterRequest request) {
+    public Long registerArt(final Long ownerId, final ArtRegisterRequest request) {
         validateUniqueNameForCreate(request.name());
 
-        Member owner = memberFindService.findById(ownerId);
-        String storageName = fileUploader.uploadArtImage(request.file());
+        final Member owner = memberFindService.findById(ownerId);
+        final String storageName = fileUploader.uploadArtImage(request.file());
         return buildArt(owner, storageName, request);
     }
 
-    private void validateUniqueNameForCreate(String name) {
+    private void validateUniqueNameForCreate(final String name) {
         artValidator.validateUniqueNameForCreate(ArtName.from(name));
     }
 
-    private Long buildArt(Member owner, String storageName, ArtRegisterRequest request) {
-        Art art = artRepository.save(
+    private Long buildArt(final Member owner, final String storageName, final ArtRegisterRequest request) {
+        final Art art = artRepository.save(
                 Art.createArt(
                         owner,
                         ArtName.from(request.name()),
@@ -70,49 +70,49 @@ public class ArtService {
         return art.getId();
     }
 
-    public void duplicateCheck(String resource, String value) {
+    public void duplicateCheck(final String resource, final String value) {
         if (resource.equals("name")) {
             artValidator.validateUniqueNameForCreate(ArtName.from(value));
         }
     }
 
     @Transactional
-    public void update(Long artId, String name, String description, Set<String> hashtags) {
+    public void update(final Long artId, final String name, final String description, final Set<String> hashtags) {
         validateUniqueNameForUpdate(name, artId);
 
-        Art art = artFindService.findById(artId);
+        final Art art = artFindService.findById(artId);
         art.update(ArtName.from(name), Description.from(description), hashtags);
     }
 
-    private void validateUniqueNameForUpdate(String name, Long artId) {
+    private void validateUniqueNameForUpdate(final String name, final Long artId) {
         artValidator.validateUniqueNameForUpdate(ArtName.from(name), artId);
     }
 
     @Transactional
-    public void delete(Long artId) {
-        Art art = artFindService.findById(artId);
+    public void delete(final Long artId) {
+        final Art art = artFindService.findById(artId);
         validateArtIsSold(art);
         validateAuctionRecordIsExists(art);
         proceedToDeleteArt(artId);
     }
 
-    private void validateArtIsSold(Art art) {
+    private void validateArtIsSold(final Art art) {
         if (art.isSold()) {
             throw AnotherArtException.type(ArtErrorCode.CANNOT_DELETE_SOLD_ART);
         }
     }
 
-    private void validateAuctionRecordIsExists(Art art) {
+    private void validateAuctionRecordIsExists(final Art art) {
         if (art.isAuctionType() && hasAuctionRecords(art.getId())) {
             throw AnotherArtException.type(ArtErrorCode.CANNOT_DELETE_IF_BID_EXISTS);
         }
     }
 
-    private boolean hasAuctionRecords(Long artId) {
+    private boolean hasAuctionRecords(final Long artId) {
         return artRepository.isAuctionRecordExists(artId);
     }
 
-    private void proceedToDeleteArt(Long artId) {
+    private void proceedToDeleteArt(final Long artId) {
         hashtagRepository.deleteByArtId(artId);
         auctionRepository.deleteByArtId(artId);
         artRepository.deleteById(artId);

@@ -56,8 +56,8 @@ class PeriodTest {
         final Period period = Period.of(startDate, endDate);
 
         // when
-        boolean actual1 = period.isDateWithInRange(LocalDateTime.now().plusDays(4));
-        boolean actual2 = period.isDateWithInRange(LocalDateTime.now().plusDays(8));
+        final boolean actual1 = period.isDateWithInRange(LocalDateTime.now().plusDays(4));
+        final boolean actual2 = period.isDateWithInRange(LocalDateTime.now().plusDays(8));
 
         // then
         assertAll(
@@ -74,8 +74,8 @@ class PeriodTest {
         final Period periodB = OPEN_NOW.toPeriod();
 
         // when
-        boolean actual1 = periodA.isAuctionFinished(LocalDateTime.now());
-        boolean actual2 = periodB.isAuctionFinished(LocalDateTime.now());
+        final boolean actual1 = periodA.isAuctionFinished(LocalDateTime.now());
+        final boolean actual2 = periodB.isAuctionFinished(LocalDateTime.now());
 
         // then
         assertAll(

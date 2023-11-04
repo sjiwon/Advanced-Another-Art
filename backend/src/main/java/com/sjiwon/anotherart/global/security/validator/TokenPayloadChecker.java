@@ -6,7 +6,7 @@ import java.util.Objects;
 
 @Component
 public class TokenPayloadChecker {
-    public boolean isTrustworthyMember(Long payloadId, Long memberId) {
+    public boolean isTrustworthyMember(final Long payloadId, final Long memberId) {
         return Objects.equals(payloadId, memberId);
     }
 }

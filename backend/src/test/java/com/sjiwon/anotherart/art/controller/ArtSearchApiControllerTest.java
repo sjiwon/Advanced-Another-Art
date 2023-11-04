@@ -1,6 +1,10 @@
 package com.sjiwon.anotherart.art.controller;
 
-import com.sjiwon.anotherart.art.infra.query.dto.response.*;
+import com.sjiwon.anotherart.art.infra.query.dto.response.ArtDetails;
+import com.sjiwon.anotherart.art.infra.query.dto.response.AuctionArt;
+import com.sjiwon.anotherart.art.infra.query.dto.response.BasicArt;
+import com.sjiwon.anotherart.art.infra.query.dto.response.BasicAuction;
+import com.sjiwon.anotherart.art.infra.query.dto.response.GeneralArt;
 import com.sjiwon.anotherart.art.service.dto.response.ArtAssembler;
 import com.sjiwon.anotherart.art.utils.search.Pagination;
 import com.sjiwon.anotherart.common.ControllerTest;
@@ -15,13 +19,20 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import static com.sjiwon.anotherart.art.domain.ArtStatus.ON_SALE;
-import static com.sjiwon.anotherart.fixture.ArtFixture.*;
+import static com.sjiwon.anotherart.fixture.ArtFixture.AUCTION_1;
+import static com.sjiwon.anotherart.fixture.ArtFixture.AUCTION_2;
+import static com.sjiwon.anotherart.fixture.ArtFixture.AUCTION_3;
+import static com.sjiwon.anotherart.fixture.ArtFixture.GENERAL_1;
+import static com.sjiwon.anotherart.fixture.ArtFixture.GENERAL_2;
+import static com.sjiwon.anotherart.fixture.ArtFixture.GENERAL_3;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
-import static org.springframework.restdocs.request.RequestDocumentation.*;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
+import static org.springframework.restdocs.request.RequestDocumentation.queryParameters;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @DisplayName("Art [Controller Layer] -> ArtSearchApiController 테스트")
@@ -37,11 +48,11 @@ class ArtSearchApiControllerTest extends ControllerTest {
         @DisplayName("단건 경매 작품을 조회한다")
         void getAuctionArt() throws Exception {
             // given
-            AuctionArt response = generateAuctionArtResponse();
+            final AuctionArt response = generateAuctionArtResponse();
             given(artSearchService.getArt(ART_ID)).willReturn(response);
 
             // when
-            MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
+            final MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
                     .get(BASE_URL, ART_ID);
 
             // then
@@ -93,11 +104,11 @@ class ArtSearchApiControllerTest extends ControllerTest {
         @DisplayName("단건 일반 작품을 조회한다")
         void getGeneralArt() throws Exception {
             // given
-            GeneralArt response = generateGeneralArtResponse();
+            final GeneralArt response = generateGeneralArtResponse();
             given(artSearchService.getArt(ART_ID)).willReturn(response);
 
             // when
-            MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
+            final MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
                     .get(BASE_URL, ART_ID);
 
             // then
@@ -145,11 +156,11 @@ class ArtSearchApiControllerTest extends ControllerTest {
         @DisplayName("현재 경매가 진행중인 작품들을 조회한다")
         void getAuctionArt() throws Exception {
             // given
-            ArtAssembler response = generateAuctionArtAssemblerResponse();
+            final ArtAssembler response = generateAuctionArtAssemblerResponse();
             given(artSearchService.getActiveAuctionArts(any(), any())).willReturn(response);
 
             // when
-            MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
+            final MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
                     .get(BASE_URL)
                     .param("sortType", "rdate")
                     .param("page", String.valueOf(1));
@@ -162,7 +173,7 @@ class ArtSearchApiControllerTest extends ControllerTest {
                                     "ArtApi/Search/ActiveAuction",
                                     getDocumentRequest(),
                                     getDocumentResponse(),
-                                    requestParameters(
+                                    queryParameters(
                                             parameterWithName("sortType").description("정렬 기준")
                                                     .attributes(constraint("date-rdate / price-rprice / like-rlike / count-rcount")),
                                             parameterWithName("page").description("현재 페이지")
@@ -220,11 +231,11 @@ class ArtSearchApiControllerTest extends ControllerTest {
         @DisplayName("해당 키워드가 포함된 경매 작품을 조회한다")
         void getAuctionArtsByKeyword() throws Exception {
             // given
-            ArtAssembler response = generateAuctionArtAssemblerResponse();
+            final ArtAssembler response = generateAuctionArtAssemblerResponse();
             given(artSearchService.getArtsByKeyword(any(), any())).willReturn(response);
 
             // when
-            MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
+            final MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
                     .get(BASE_URL)
                     .param("sortType", "rdate")
                     .param("page", String.valueOf(1))
@@ -239,7 +250,7 @@ class ArtSearchApiControllerTest extends ControllerTest {
                                     "ArtApi/Search/Keyword/AuctionArt",
                                     getDocumentRequest(),
                                     getDocumentResponse(),
-                                    requestParameters(
+                                    queryParameters(
                                             parameterWithName("sortType").description("정렬 기준")
                                                     .attributes(constraint("date-rdate / price-rprice / like-rlike / count-rcount")),
                                             parameterWithName("page").description("현재 페이지")
@@ -294,11 +305,11 @@ class ArtSearchApiControllerTest extends ControllerTest {
         @DisplayName("해당 키워드가 포함된 일반 작품을 조회한다")
         void getGeneralArtsByKeyword() throws Exception {
             // given
-            ArtAssembler response = generateGeneralArtAssemblerResponse();
+            final ArtAssembler response = generateGeneralArtAssemblerResponse();
             given(artSearchService.getArtsByKeyword(any(), any())).willReturn(response);
 
             // when
-            MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
+            final MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
                     .get(BASE_URL)
                     .param("sortType", "rdate")
                     .param("page", String.valueOf(1))
@@ -313,7 +324,7 @@ class ArtSearchApiControllerTest extends ControllerTest {
                                     "ArtApi/Search/Keyword/GeneralArt",
                                     getDocumentRequest(),
                                     getDocumentResponse(),
-                                    requestParameters(
+                                    queryParameters(
                                             parameterWithName("sortType").description("정렬 기준")
                                                     .attributes(constraint("date-rdate / price-rprice / like-rlike / count-rcount")),
                                             parameterWithName("page").description("현재 페이지")
@@ -364,11 +375,11 @@ class ArtSearchApiControllerTest extends ControllerTest {
         @DisplayName("해당 해시태그가 포함된 경매 작품을 조회한다")
         void getAuctionArtsByKeyword() throws Exception {
             // given
-            ArtAssembler response = generateAuctionArtAssemblerResponse();
+            final ArtAssembler response = generateAuctionArtAssemblerResponse();
             given(artSearchService.getArtsByHashtag(any(), any())).willReturn(response);
 
             // when
-            MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
+            final MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
                     .get(BASE_URL)
                     .param("sortType", "rdate")
                     .param("page", String.valueOf(1))
@@ -383,7 +394,7 @@ class ArtSearchApiControllerTest extends ControllerTest {
                                     "ArtApi/Search/Hashtag/AuctionArt",
                                     getDocumentRequest(),
                                     getDocumentResponse(),
-                                    requestParameters(
+                                    queryParameters(
                                             parameterWithName("sortType").description("정렬 기준")
                                                     .attributes(constraint("date-rdate / price-rprice / like-rlike / count-rcount")),
                                             parameterWithName("page").description("현재 페이지")
@@ -438,11 +449,11 @@ class ArtSearchApiControllerTest extends ControllerTest {
         @DisplayName("해당 해시태그가 포함된 일반 작품을 조회한다")
         void getGeneralArtsByKeyword() throws Exception {
             // given
-            ArtAssembler response = generateGeneralArtAssemblerResponse();
+            final ArtAssembler response = generateGeneralArtAssemblerResponse();
             given(artSearchService.getArtsByHashtag(any(), any())).willReturn(response);
 
             // when
-            MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
+            final MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
                     .get(BASE_URL)
                     .param("sortType", "rdate")
                     .param("page", String.valueOf(1))
@@ -457,7 +468,7 @@ class ArtSearchApiControllerTest extends ControllerTest {
                                     "ArtApi/Search/Hashtag/GeneralArt",
                                     getDocumentRequest(),
                                     getDocumentResponse(),
-                                    requestParameters(
+                                    queryParameters(
                                             parameterWithName("sortType").description("정렬 기준")
                                                     .attributes(constraint("date-rdate / price-rprice / like-rlike / count-rcount")),
                                             parameterWithName("page").description("현재 페이지")
@@ -543,7 +554,7 @@ class ArtSearchApiControllerTest extends ControllerTest {
     }
 
     private ArtAssembler generateAuctionArtAssemblerResponse() {
-        List<ArtDetails> auctionArts = List.of(
+        final List<ArtDetails> auctionArts = List.of(
                 new AuctionArt(
                         new BasicAuction(
                                 1L,
@@ -611,13 +622,13 @@ class ArtSearchApiControllerTest extends ControllerTest {
                         new BasicMember(2L, "경매입찰자or낙찰자", "경기대학교")
                 )
         );
-        Pagination pagination = Pagination.of((long) auctionArts.size(), 1, 1);
+        final Pagination pagination = Pagination.of((long) auctionArts.size(), 1, 1);
 
         return new ArtAssembler(auctionArts, pagination);
     }
 
     private ArtAssembler generateGeneralArtAssemblerResponse() {
-        List<ArtDetails> generalArts = List.of(
+        final List<ArtDetails> generalArts = List.of(
                 new GeneralArt(
                         new BasicArt(
                                 1L,
@@ -664,7 +675,7 @@ class ArtSearchApiControllerTest extends ControllerTest {
                         new BasicMember(2L, "작품구매자", "경기대학교")
                 )
         );
-        Pagination pagination = Pagination.of((long) generalArts.size(), 1, 1);
+        final Pagination pagination = Pagination.of((long) generalArts.size(), 1, 1);
 
         return new ArtAssembler(generalArts, pagination);
     }

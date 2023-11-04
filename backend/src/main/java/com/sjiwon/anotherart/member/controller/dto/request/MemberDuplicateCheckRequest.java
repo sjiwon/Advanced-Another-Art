@@ -1,8 +1,7 @@
 package com.sjiwon.anotherart.member.controller.dto.request;
 
 import com.sjiwon.anotherart.member.utils.validator.ValidMemberDuplicateResource;
-
-import javax.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotBlank;
 
 public record MemberDuplicateCheckRequest(
         @ValidMemberDuplicateResource

@@ -21,19 +21,19 @@ public class MemberService {
     private final PasswordEncoder passwordEncoder;
 
     @Transactional
-    public Long signUp(Member member) {
+    public Long signUp(final Member member) {
         validateUniqueFields(member);
         return memberRepository.save(member).getId();
     }
 
-    private void validateUniqueFields(Member member) {
+    private void validateUniqueFields(final Member member) {
         memberValidator.validateNickname(member.getNickname());
         memberValidator.validateLoginId(member.getLoginId());
         memberValidator.validatePhone(member.getPhone());
         memberValidator.validateEmail(member.getEmail());
     }
 
-    public void duplicateCheck(String resource, String value) {
+    public void duplicateCheck(final String resource, final String value) {
         switch (resource) {
             case "nickname" -> memberValidator.validateNickname(Nickname.from(value));
             case "loginId" -> memberValidator.validateLoginId(value);
@@ -43,39 +43,39 @@ public class MemberService {
     }
 
     @Transactional
-    public void changeNickname(Long memberId, String value) {
+    public void changeNickname(final Long memberId, final String value) {
         memberValidator.validateNicknameForModify(memberId, Nickname.from(value));
 
-        Member member = memberFindService.findById(memberId);
+        final Member member = memberFindService.findById(memberId);
         member.changeNickname(value);
     }
 
     @Transactional
-    public void changeAddress(Long memberId, Integer postcode, String defaultAddress, String detailAddress) {
-        Member member = memberFindService.findById(memberId);
+    public void changeAddress(final Long memberId, final Integer postcode, final String defaultAddress, final String detailAddress) {
+        final Member member = memberFindService.findById(memberId);
         member.changeAddress(postcode, defaultAddress, detailAddress);
     }
 
-    public String findLoginId(String name, Email email) {
+    public String findLoginId(final String name, final Email email) {
         return memberFindService.findByNameAndEmail(name, email)
                 .getLoginId();
     }
 
-    public void authForResetPassword(String name, Email email, String loginId) {
+    public void authForResetPassword(final String name, final Email email, final String loginId) {
         if (!memberRepository.existsByNameAndEmailAndLoginId(name, email, loginId)) {
             throw AnotherArtException.type(MemberErrorCode.MEMBER_NOT_FOUND);
         }
     }
 
     @Transactional
-    public void resetPassword(String loginId, String changePassword) {
-        Member member = memberFindService.findByLoginId(loginId);
+    public void resetPassword(final String loginId, final String changePassword) {
+        final Member member = memberFindService.findByLoginId(loginId);
         member.changePassword(changePassword, passwordEncoder);
     }
 
     @Transactional
-    public void changePassword(Long memberId, String changePassword) {
-        Member member = memberFindService.findById(memberId);
+    public void changePassword(final Long memberId, final String changePassword) {
+        final Member member = memberFindService.findById(memberId);
         member.changePassword(changePassword, passwordEncoder);
     }
 }

@@ -14,17 +14,17 @@ import org.springframework.transaction.annotation.Transactional;
 public class AuctionFindService {
     private final AuctionRepository auctionRepository;
 
-    public Auction findById(Long auctionId) {
+    public Auction findById(final Long auctionId) {
         return auctionRepository.findById(auctionId)
                 .orElseThrow(() -> AnotherArtException.type(AuctionErrorCode.AUCTION_NOT_FOUND));
     }
 
-    public Auction findByIdWithPessimisticLock(Long auctionId) {
+    public Auction findByIdWithPessimisticLock(final Long auctionId) {
         return auctionRepository.findByIdWithPessimisticLock(auctionId)
                 .orElseThrow(() -> AnotherArtException.type(AuctionErrorCode.AUCTION_NOT_FOUND));
     }
 
-    public Auction findByArtId(Long artId) {
+    public Auction findByArtId(final Long artId) {
         return auctionRepository.findByArtId(artId)
                 .orElseThrow(() -> AnotherArtException.type(AuctionErrorCode.AUCTION_NOT_FOUND));
     }

@@ -34,8 +34,8 @@ public class ArtSingleQueryRepositoryImpl implements ArtSingleQueryRepository {
     private static final QMember highestBidder = new QMember("highestBidder");
 
     @Override
-    public AuctionArt getAuctionArt(Long artId) {
-        AuctionArt result = query
+    public AuctionArt getAuctionArt(final Long artId) {
+        final AuctionArt result = query
                 .select(assembleAuctionArtProjections())
                 .from(art)
                 .innerJoin(art.owner, owner)
@@ -55,8 +55,8 @@ public class ArtSingleQueryRepositoryImpl implements ArtSingleQueryRepository {
     }
 
     @Override
-    public GeneralArt getGeneralArt(Long artId) {
-        GeneralArt result = query
+    public GeneralArt getGeneralArt(final Long artId) {
+        final GeneralArt result = query
                 .select(assembleGeneralArtProjections())
                 .from(art)
                 .innerJoin(art.owner, owner)
@@ -75,8 +75,8 @@ public class ArtSingleQueryRepositoryImpl implements ArtSingleQueryRepository {
         return result;
     }
 
-    private void applyHashtagAndLikeCountAndBidcount(AuctionArt result, Long artId) {
-        List<String> hashtags = getHashtags(artId);
+    private void applyHashtagAndLikeCountAndBidcount(final AuctionArt result, final Long artId) {
+        final List<String> hashtags = getHashtags(artId);
         if (!CollectionUtils.isEmpty(hashtags)) {
             result.applyHashtags(hashtags);
         }
@@ -84,15 +84,15 @@ public class ArtSingleQueryRepositoryImpl implements ArtSingleQueryRepository {
         result.applyBidCount(getBidCount(artId));
     }
 
-    private void applyHashtagAndLikeCount(GeneralArt result, Long artId) {
-        List<String> hashtags = getHashtags(artId);
+    private void applyHashtagAndLikeCount(final GeneralArt result, final Long artId) {
+        final List<String> hashtags = getHashtags(artId);
         if (!CollectionUtils.isEmpty(hashtags)) {
             result.applyHashtags(hashtags);
         }
         result.applyLikeMembers(collectLikeMemberIds(artId));
     }
 
-    private List<String> getHashtags(Long artId) {
+    private List<String> getHashtags(final Long artId) {
         return query
                 .select(hashtag.name)
                 .from(hashtag)
@@ -100,7 +100,7 @@ public class ArtSingleQueryRepositoryImpl implements ArtSingleQueryRepository {
                 .fetch();
     }
 
-    private List<Long> collectLikeMemberIds(Long artId) {
+    private List<Long> collectLikeMemberIds(final Long artId) {
         return query
                 .select(favorite.memberId)
                 .from(favorite)
@@ -108,7 +108,7 @@ public class ArtSingleQueryRepositoryImpl implements ArtSingleQueryRepository {
                 .fetch();
     }
 
-    private int getBidCount(Long artId) {
+    private int getBidCount(final Long artId) {
         return query
                 .select(auctionRecord.count().intValue())
                 .from(auctionRecord)
@@ -135,11 +135,11 @@ public class ArtSingleQueryRepositoryImpl implements ArtSingleQueryRepository {
         );
     }
 
-    private BooleanExpression artIdEq(Long artId) {
+    private BooleanExpression artIdEq(final Long artId) {
         return (artId != null) ? art.id.eq(artId) : null;
     }
 
-    private BooleanExpression artTypeEq(ArtType type) {
+    private BooleanExpression artTypeEq(final ArtType type) {
         return (type != null) ? art.type.eq(type) : null;
     }
 }

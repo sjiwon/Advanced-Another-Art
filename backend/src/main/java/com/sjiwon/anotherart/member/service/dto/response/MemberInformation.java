@@ -15,7 +15,7 @@ public record MemberInformation(
         int totalPoint,
         int availablePoint
 ) {
-    public MemberInformation(Member member) {
+    public MemberInformation(final Member member) {
         this(
                 member.getId(),
                 member.getName(),

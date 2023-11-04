@@ -25,7 +25,7 @@ class AjaxAuthenticationFailureHandlerTest extends SecurityTest {
     void throwExceptionByInvalidAuthData() throws Exception {
         // when
         final LoginRequest request = new LoginRequest("", "");
-        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+        final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .post(BASE_URL)
                 .contentType(APPLICATION_JSON)
                 .content(convertObjectToJson(request));
@@ -61,7 +61,7 @@ class AjaxAuthenticationFailureHandlerTest extends SecurityTest {
     void throwExceptionByMemberNotFound() throws Exception {
         // when
         final LoginRequest request = new LoginRequest("anonymous", "1234");
-        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+        final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .post(BASE_URL)
                 .contentType(APPLICATION_JSON)
                 .content(convertObjectToJson(request));
@@ -97,7 +97,7 @@ class AjaxAuthenticationFailureHandlerTest extends SecurityTest {
     void throwExceptionByInvalidPassword() throws Exception {
         // when
         final LoginRequest request = new LoginRequest("user", "1234");
-        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+        final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .post(BASE_URL)
                 .contentType(APPLICATION_JSON)
                 .content(convertObjectToJson(request));

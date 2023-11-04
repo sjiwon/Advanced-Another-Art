@@ -22,7 +22,7 @@ class PasswordTest {
     @ParameterizedTest(name = "{index}: {0}")
     @ValueSource(strings = {"", "123", "abc", "!@#", "Tabc12!", "aaabbbcccdddeeeAAABBBCCCDDDEEE123123123!@#$@!#%!@%!@#$!@#"})
     @DisplayName("형식에 맞지 않는 패스워드면 예외가 발생한다")
-    void throwExceptionByInalidPasswordPattern(String value){
+    void throwExceptionByInalidPasswordPattern(final String value){
         assertThatThrownBy(() -> Password.encrypt(value, ENCODER))
                 .isInstanceOf(AnotherArtException.class)
                 .hasMessage(MemberErrorCode.INVALID_PASSWORD_PATTERN.getMessage());
@@ -31,7 +31,7 @@ class PasswordTest {
     @Test
     @DisplayName("Password를 생성한다")
     void construct() {
-        Password password = Password.encrypt("abcABC123!@#", ENCODER);
+        final Password password = Password.encrypt("abcABC123!@#", ENCODER);
 
         assertAll(
                 () -> assertThat(password.getValue()).isNotEqualTo("abcABC123!@#"),
@@ -46,7 +46,7 @@ class PasswordTest {
         @DisplayName("이전과 동일한 Password로 수정하려고 하면 예외가 발생한다")
         void throwExceptionByPasswordSameAsBefore() {
             // given
-            Password password = Password.encrypt("abcABC123!@#", ENCODER);
+            final Password password = Password.encrypt("abcABC123!@#", ENCODER);
 
             // when - then
             Assertions.assertThatThrownBy(() -> password.update("abcABC123!@#", ENCODER))
@@ -58,10 +58,10 @@ class PasswordTest {
         @DisplayName("Password 수정에 성공한다")
         void success() {
             // given
-            Password password = Password.encrypt("abcABC123!@#", ENCODER);
+            final Password password = Password.encrypt("abcABC123!@#", ENCODER);
 
             // when
-            Password updatePassword = password.update("abcABC123!@#123", ENCODER);
+            final Password updatePassword = password.update("abcABC123!@#123", ENCODER);
 
             // then
             assertAll(

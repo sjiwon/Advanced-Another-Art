@@ -20,7 +20,9 @@ import java.time.LocalDateTime;
 
 import static com.sjiwon.anotherart.fixture.ArtFixture.AUCTION_1;
 import static com.sjiwon.anotherart.fixture.AuctionFixture.AUCTION_OPEN_NOW;
-import static com.sjiwon.anotherart.fixture.MemberFixture.*;
+import static com.sjiwon.anotherart.fixture.MemberFixture.MEMBER_A;
+import static com.sjiwon.anotherart.fixture.MemberFixture.MEMBER_B;
+import static com.sjiwon.anotherart.fixture.MemberFixture.MEMBER_C;
 import static com.sjiwon.anotherart.member.domain.point.PointType.CHARGE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -44,12 +46,12 @@ class BidServiceTest extends ServiceTest {
         bidderA = createMember(MEMBER_B);
         bidderB = createMember(MEMBER_C);
 
-        Art art = artRepository.save(AUCTION_1.toArt(owner));
+        final Art art = artRepository.save(AUCTION_1.toArt(owner));
         auction = auctionRepository.save(AUCTION_OPEN_NOW.toAuction(art));
     }
 
-    private Member createMember(MemberFixture fixture) {
-        Member member = fixture.toMember();
+    private Member createMember(final MemberFixture fixture) {
+        final Member member = fixture.toMember();
         member.addPointRecords(CHARGE, MEMBER_INIT_POINT);
 
         return memberRepository.save(member);
@@ -131,7 +133,7 @@ class BidServiceTest extends ServiceTest {
             bidService.bid(auction.getId(), bidderA.getId(), auction.getHighestBidPrice());
 
             // then
-            Auction findAuction = auctionRepository.findById(auction.getId()).orElseThrow();
+            final Auction findAuction = auctionRepository.findById(auction.getId()).orElseThrow();
             assertAll(
                     // Bid Info
                     () -> assertThat(findAuction.getAuctionRecords()).hasSize(1),
@@ -162,7 +164,7 @@ class BidServiceTest extends ServiceTest {
             bidService.bid(auction.getId(), bidderB.getId(), newBidPrice);
 
             // then
-            Auction findAuction = auctionRepository.findById(auction.getId()).orElseThrow();
+            final Auction findAuction = auctionRepository.findById(auction.getId()).orElseThrow();
             assertAll(
                     // Bid Info
                     () -> assertThat(findAuction.getAuctionRecords()).hasSize(2),

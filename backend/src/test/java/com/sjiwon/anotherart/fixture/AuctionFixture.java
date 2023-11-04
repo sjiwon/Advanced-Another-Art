@@ -5,7 +5,11 @@ import com.sjiwon.anotherart.auction.domain.Auction;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-import static com.sjiwon.anotherart.fixture.PeriodFixture.*;
+import static com.sjiwon.anotherart.fixture.PeriodFixture.CLOSED_WEEK_1_AGO;
+import static com.sjiwon.anotherart.fixture.PeriodFixture.CLOSED_WEEK_2_AGO;
+import static com.sjiwon.anotherart.fixture.PeriodFixture.OPEN_NOW;
+import static com.sjiwon.anotherart.fixture.PeriodFixture.OPEN_WEEK_1_LATER;
+import static com.sjiwon.anotherart.fixture.PeriodFixture.OPEN_WEEK_2_LATER;
 
 @Getter
 @RequiredArgsConstructor
@@ -19,7 +23,7 @@ public enum AuctionFixture {
 
     private final PeriodFixture period;
 
-    public Auction toAuction(Art art) {
+    public Auction toAuction(final Art art) {
         return Auction.createAuction(art, period.toPeriod());
     }
 }

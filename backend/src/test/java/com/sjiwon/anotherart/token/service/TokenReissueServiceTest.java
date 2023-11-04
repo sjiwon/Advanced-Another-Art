@@ -50,7 +50,7 @@ class TokenReissueServiceTest extends ServiceTest {
             tokenRepository.save(Token.issueRefreshToken(member.getId(), refreshToken));
 
             // when
-            TokenResponse response = tokenReissueService.reissueTokens(member.getId(), refreshToken);
+            final TokenResponse response = tokenReissueService.reissueTokens(member.getId(), refreshToken);
 
             // then
             assertAll(

@@ -33,7 +33,7 @@ class DescriptionTest {
     void construct() {
         final String value = "a".repeat(999);
 
-        Description description = Description.from(value);
+        final Description description = Description.from(value);
         assertThat(description.getValue()).isEqualTo(value);
     }
 }

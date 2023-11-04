@@ -23,37 +23,37 @@ public class FileUploader {
     private final AmazonS3 amazonS3;
     private final String bucket;
 
-    public FileUploader(AmazonS3 amazonS3,
-                        @Value("${cloud.ncp.storage.bucket}") String bucket) {
+    public FileUploader(final AmazonS3 amazonS3,
+                        @Value("${cloud.ncp.storage.bucket}") final String bucket) {
         this.amazonS3 = amazonS3;
         this.bucket = bucket;
     }
 
     // 작품 이미지 업로드
-    public String uploadArtImage(MultipartFile file) {
+    public String uploadArtImage(final MultipartFile file) {
         validateFileExists(file);
         return uploadFile(file);
     }
 
-    private void validateFileExists(MultipartFile file) {
+    private void validateFileExists(final MultipartFile file) {
         if (file == null || file.isEmpty()) {
             throw AnotherArtException.type(UploadErrorCode.FILE_IS_EMPTY);
         }
     }
 
-    private String uploadFile(MultipartFile file) {
-        String fileName = createFileName(file.getOriginalFilename());
+    private String uploadFile(final MultipartFile file) {
+        final String fileName = createFileName(file.getOriginalFilename());
 
-        ObjectMetadata objectMetadata = new ObjectMetadata();
+        final ObjectMetadata objectMetadata = new ObjectMetadata();
         objectMetadata.setContentType(file.getContentType());
         objectMetadata.setContentLength(file.getSize());
 
-        try (InputStream inputStream = file.getInputStream()) {
+        try (final InputStream inputStream = file.getInputStream()) {
             amazonS3.putObject(
                     new PutObjectRequest(bucket, fileName, inputStream, objectMetadata)
                             .withCannedAcl(CannedAccessControlList.PublicRead)
             );
-        } catch (IOException e) {
+        } catch (final IOException e) {
             log.error("S3 파일 업로드에 실패했습니다. {}", e.getMessage());
             throw AnotherArtException.type(UploadErrorCode.S3_UPLOAD_FAILURE);
         }
@@ -61,8 +61,8 @@ public class FileUploader {
         return amazonS3.getUrl(bucket, fileName).toString();
     }
 
-    private String createFileName(String originalFileName) {
-        String fileName = UUID.randomUUID() + "-" + originalFileName;
+    private String createFileName(final String originalFileName) {
+        final String fileName = UUID.randomUUID() + "-" + originalFileName;
         return String.format(ART_IMAGES, fileName);
     }
 }

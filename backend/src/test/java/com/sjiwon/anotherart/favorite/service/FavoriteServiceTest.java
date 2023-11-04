@@ -31,7 +31,7 @@ class FavoriteServiceTest extends ServiceTest {
     void setUp() {
         member = memberRepository.save(MEMBER_A.toMember());
 
-        Member owner = memberRepository.save(MEMBER_B.toMember());
+        final Member owner = memberRepository.save(MEMBER_B.toMember());
         art = artRepository.save(AUCTION_1.toArt(owner));
     }
 
@@ -54,10 +54,10 @@ class FavoriteServiceTest extends ServiceTest {
         @DisplayName("찜 등록에 성공한다")
         void success() {
             // when
-            Long favoriteId = favoriteService.like(art.getId(), member.getId());
+            final Long favoriteId = favoriteService.like(art.getId(), member.getId());
 
             // then
-            Favorite favorite = favoriteRepository.findById(favoriteId).orElseThrow();
+            final Favorite favorite = favoriteRepository.findById(favoriteId).orElseThrow();
             assertAll(
                     () -> assertThat(favorite.getArtId()).isEqualTo(art.getId()),
                     () -> assertThat(favorite.getMemberId()).isEqualTo(member.getId())
@@ -80,7 +80,7 @@ class FavoriteServiceTest extends ServiceTest {
         @DisplayName("찜 취소에 성공한다")
         void success() {
             // given
-            Favorite favorite = favoriteRepository.save(Favorite.favoriteMarking(art.getId(), member.getId()));
+            final Favorite favorite = favoriteRepository.save(Favorite.favoriteMarking(art.getId(), member.getId()));
 
             // when
             favoriteService.cancel(art.getId(), member.getId());

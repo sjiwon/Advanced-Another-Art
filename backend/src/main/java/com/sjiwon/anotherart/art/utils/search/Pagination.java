@@ -17,7 +17,7 @@ public class Pagination {
     private boolean prevExists; // 이전 range 존재 여부
     private boolean nextExists; // 다음 range 존재 여부
 
-    private Pagination(Long totalElements, int totalPages, int currentPage) {
+    private Pagination(final Long totalElements, final int totalPages, final int currentPage) {
         this.totalElements = totalElements;
         this.totalPages = totalPages;
         this.currentPage = currentPage;
@@ -36,11 +36,11 @@ public class Pagination {
         this.nextExists = this.rangeEndNumber + 1 <= totalPages;
     }
 
-    public static Pagination of(Long totalElements, int totalPages, int currentPage) {
+    public static Pagination of(final Long totalElements, final int totalPages, final int currentPage) {
         return new Pagination(totalElements, totalPages, currentPage);
     }
 
-    public static Pagination getEmptyPage(int currentPage) {
+    public static Pagination getEmptyPage(final int currentPage) {
         return new Pagination(0L, 0, currentPage);
     }
 }

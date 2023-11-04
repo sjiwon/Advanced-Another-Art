@@ -26,7 +26,9 @@ import java.util.List;
 import static com.sjiwon.anotherart.art.domain.ArtType.AUCTION;
 import static com.sjiwon.anotherart.art.domain.ArtType.GENERAL;
 import static com.sjiwon.anotherart.fixture.AuctionFixture.AUCTION_OPEN_NOW;
-import static com.sjiwon.anotherart.fixture.MemberFixture.*;
+import static com.sjiwon.anotherart.fixture.MemberFixture.MEMBER_A;
+import static com.sjiwon.anotherart.fixture.MemberFixture.MEMBER_B;
+import static com.sjiwon.anotherart.fixture.MemberFixture.MEMBER_C;
 import static com.sjiwon.anotherart.member.domain.point.PointType.CHARGE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -64,17 +66,17 @@ class ArtSingleQueryRepositoryTest extends RepositoryTest {
         initArtsAndAuctions();
     }
 
-    private Member createMember(MemberFixture fixture) {
-        Member member = fixture.toMember();
+    private Member createMember(final MemberFixture fixture) {
+        final Member member = fixture.toMember();
         member.addPointRecords(CHARGE, 100_000_000);
         return memberRepository.save(member);
     }
 
     private void initArtsAndAuctions() {
-        List<ArtFixture> generalArtFixtures = Arrays.stream(ArtFixture.values())
+        final List<ArtFixture> generalArtFixtures = Arrays.stream(ArtFixture.values())
                 .filter(art -> art.getType() == GENERAL)
                 .toList();
-        List<ArtFixture> auctionArtFixtures = Arrays.stream(ArtFixture.values())
+        final List<ArtFixture> auctionArtFixtures = Arrays.stream(ArtFixture.values())
                 .filter(art -> art.getType() == AUCTION)
                 .toList();
         Arrays.setAll(generalArts, i -> artRepository.save(generalArtFixtures.get(i).toArt(owner)));
@@ -88,8 +90,8 @@ class ArtSingleQueryRepositoryTest extends RepositoryTest {
         // auctions[1] -> auctionArts[1] 입찰
         bid();
 
-        AuctionArt result1 = artRepository.getAuctionArt(auctionArts[0].getId());
-        AuctionArt result2 = artRepository.getAuctionArt(auctionArts[1].getId());
+        final AuctionArt result1 = artRepository.getAuctionArt(auctionArts[0].getId());
+        final AuctionArt result2 = artRepository.getAuctionArt(auctionArts[1].getId());
         assertThatAuctionArtMatch(
                 List.of(result1, result2),
                 List.of(0, 1)
@@ -102,8 +104,8 @@ class ArtSingleQueryRepositoryTest extends RepositoryTest {
         // generalArt[1] 구매
         purchase();
 
-        GeneralArt result1 = artRepository.getGeneralArt(generalArts[0].getId());
-        GeneralArt result2 = artRepository.getGeneralArt(generalArts[1].getId());
+        final GeneralArt result1 = artRepository.getGeneralArt(generalArts[0].getId());
+        final GeneralArt result2 = artRepository.getGeneralArt(generalArts[1].getId());
         assertThatGeneralArtMatch(List.of(result1, result2));
     }
 
@@ -117,13 +119,13 @@ class ArtSingleQueryRepositoryTest extends RepositoryTest {
         favoriteRepository.save(Favorite.favoriteMarking(generalArts[1].getId(), buyer.getId()));
     }
 
-    private void assertThatAuctionArtMatch(List<AuctionArt> arts, List<Integer> bidCounts) {
+    private void assertThatAuctionArtMatch(final List<AuctionArt> arts, final List<Integer> bidCounts) {
         for (int i = 0; i < arts.size(); i++) {
-            AuctionArt auctionArt = arts.get(i);
-            int bidCount = bidCounts.get(i);
+            final AuctionArt auctionArt = arts.get(i);
+            final int bidCount = bidCounts.get(i);
 
-            Auction auction = auctions[i];
-            Art art = auctionArts[i];
+            final Auction auction = auctions[i];
+            final Art art = auctionArts[i];
 
             assertAll(
                     () -> assertThat(auctionArt.getAuction().getId()).isEqualTo(auction.getId()),
@@ -159,10 +161,10 @@ class ArtSingleQueryRepositoryTest extends RepositoryTest {
         }
     }
 
-    private void assertThatGeneralArtMatch(List<GeneralArt> arts) {
+    private void assertThatGeneralArtMatch(final List<GeneralArt> arts) {
         for (int i = 0; i < arts.size(); i++) {
-            GeneralArt generalArt = arts.get(i);
-            Art art = generalArts[i];
+            final GeneralArt generalArt = arts.get(i);
+            final Art art = generalArts[i];
 
             assertAll(
                     () -> assertThat(generalArt.getArt().getId()).isEqualTo(art.getId()),

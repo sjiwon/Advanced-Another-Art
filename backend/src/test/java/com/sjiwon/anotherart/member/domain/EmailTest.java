@@ -18,7 +18,7 @@ class EmailTest {
     @ParameterizedTest(name = "{index}: {0}")
     @ValueSource(strings = {"", "abc", "@gmail.com", "abc@gmail", "abc@gmail."})
     @DisplayName("형식에 맞지 않는 Email이면 예외가 발생한다")
-    void throwExceptionByInvalidEmailPattern(String value){
+    void throwExceptionByInvalidEmailPattern(final String value){
         assertThatThrownBy(() -> Email.from(value))
                 .isInstanceOf(AnotherArtException.class)
                 .hasMessage(MemberErrorCode.INVALID_EMAIL_PATTERN.getMessage());
@@ -27,8 +27,8 @@ class EmailTest {
     @ParameterizedTest(name = "{index}: {0}")
     @ValueSource(strings = {"sjiwon4491@gmail.com", "sjiwon4491@naver.com", "sjiwon@kyonggi.ac.kr"})
     @DisplayName("Email을 생성한다")
-    void construct(String value){
-        Email email = Email.from(value);
+    void construct(final String value){
+        final Email email = Email.from(value);
 
         assertThat(email.getValue()).isEqualTo(value);
     }
@@ -36,7 +36,7 @@ class EmailTest {
     @ParameterizedTest
     @MethodSource("provideForIsSameEmail")
     @DisplayName("동일한 이메일인지 확인한다")
-    void isSameEmail(Email email, Email target, boolean expected) {
+    void isSameEmail(final Email email, final Email target, final boolean expected) {
         assertThat(email.isSameEmail(target)).isEqualTo(expected);
     }
 

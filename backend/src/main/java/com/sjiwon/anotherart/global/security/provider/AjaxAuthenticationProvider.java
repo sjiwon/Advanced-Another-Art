@@ -17,28 +17,28 @@ public class AjaxAuthenticationProvider implements AuthenticationProvider {
     private final PasswordEncoder passwordEncoder;
 
     @Override
-    public Authentication authenticate(Authentication authentication) throws AuthenticationException {
-        String username = (String) authentication.getPrincipal();
-        String password = (String) authentication.getCredentials();
+    public Authentication authenticate(final Authentication authentication) throws AuthenticationException {
+        final String username = (String) authentication.getPrincipal();
+        final String password = (String) authentication.getCredentials();
 
-        UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+        final UserDetails userDetails = userDetailsService.loadUserByUsername(username);
         validatePassword(password, userDetails);
 
         return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
     }
 
-    private void validatePassword(String rawPassword, UserDetails userDetails) {
+    private void validatePassword(final String rawPassword, final UserDetails userDetails) {
         if (isNotCorrectPassword(rawPassword, userDetails)) {
             throw new BadCredentialsException(MemberErrorCode.INVALID_PASSWORD.getMessage());
         }
     }
 
-    private boolean isNotCorrectPassword(String rawPassword, UserDetails userDetails) {
+    private boolean isNotCorrectPassword(final String rawPassword, final UserDetails userDetails) {
         return userDetails == null || !passwordEncoder.matches(rawPassword, userDetails.getPassword());
     }
 
     @Override
-    public boolean supports(Class<?> authentication) {
+    public boolean supports(final Class<?> authentication) {
         return authentication.isAssignableFrom(UsernamePasswordAuthenticationToken.class);
     }
 }

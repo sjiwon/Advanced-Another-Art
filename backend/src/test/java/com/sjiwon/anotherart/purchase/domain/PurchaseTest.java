@@ -40,8 +40,8 @@ class PurchaseTest {
         auctionArt = AUCTION_1.toArt(owner);
     }
 
-    private Member createMember(MemberFixture fixture, Long id) {
-        Member member = fixture.toMember();
+    private Member createMember(final MemberFixture fixture, final Long id) {
+        final Member member = fixture.toMember();
         member.addPointRecords(CHARGE, MEMBER_INIT_POINT);
         ReflectionTestUtils.setField(member, "id", id);
 
@@ -87,7 +87,7 @@ class PurchaseTest {
         @DisplayName("일반 작품을 구매한다")
         void success() {
             // when
-            Purchase purchase = Purchase.purchaseGeneralArt(generalArt, member);
+            final Purchase purchase = Purchase.purchaseGeneralArt(generalArt, member);
 
             // then
             assertAll(
@@ -145,7 +145,7 @@ class PurchaseTest {
         @DisplayName("경매 작품을 구매한다")
         void success() {
             // when
-            Purchase purchase = Purchase.purchaseAuctionArt(auctionArt, member, auction.getHighestBidPrice());
+            final Purchase purchase = Purchase.purchaseAuctionArt(auctionArt, member, auction.getHighestBidPrice());
 
             // then
             assertAll(

@@ -16,13 +16,13 @@ import com.sjiwon.anotherart.member.infra.query.dto.response.MemberPointRecord;
 import com.sjiwon.anotherart.member.infra.query.dto.response.TradedArt;
 import com.sjiwon.anotherart.purchase.domain.Purchase;
 import com.sjiwon.anotherart.purchase.domain.PurchaseRepository;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
@@ -30,8 +30,13 @@ import java.util.List;
 import static com.sjiwon.anotherart.art.domain.ArtType.AUCTION;
 import static com.sjiwon.anotherart.art.domain.ArtType.GENERAL;
 import static com.sjiwon.anotherart.fixture.AuctionFixture.AUCTION_OPEN_NOW;
-import static com.sjiwon.anotherart.fixture.MemberFixture.*;
-import static com.sjiwon.anotherart.member.domain.point.PointType.*;
+import static com.sjiwon.anotherart.fixture.MemberFixture.MEMBER_A;
+import static com.sjiwon.anotherart.fixture.MemberFixture.MEMBER_B;
+import static com.sjiwon.anotherart.fixture.MemberFixture.MEMBER_C;
+import static com.sjiwon.anotherart.member.domain.point.PointType.CHARGE;
+import static com.sjiwon.anotherart.member.domain.point.PointType.PURCHASE;
+import static com.sjiwon.anotherart.member.domain.point.PointType.REFUND;
+import static com.sjiwon.anotherart.member.domain.point.PointType.SOLD;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
@@ -73,24 +78,24 @@ class MemberInformationQueryRepositoryTest extends RepositoryTest {
         initArtsAndAuctions();
     }
 
-    private Member createMember(MemberFixture fixture) {
-        Member member = fixture.toMember();
+    private Member createMember(final MemberFixture fixture) {
+        final Member member = fixture.toMember();
         member.addPointRecords(CHARGE, 100_000_000);
         return memberRepository.save(member);
     }
 
     private void initDummyBidders() {
-        List<MemberFixture> dummyFixtures = Arrays.stream(MemberFixture.values())
+        final List<MemberFixture> dummyFixtures = Arrays.stream(MemberFixture.values())
                 .filter(member -> member.getLoginId().startsWith("dummy"))
                 .toList();
         Arrays.setAll(bidders, i -> createMember(dummyFixtures.get(i)));
     }
 
     private void initArtsAndAuctions() {
-        List<ArtFixture> generalArtFixtures = Arrays.stream(ArtFixture.values())
+        final List<ArtFixture> generalArtFixtures = Arrays.stream(ArtFixture.values())
                 .filter(art -> art.getType() == GENERAL)
                 .toList();
-        List<ArtFixture> auctionArtFixtures = Arrays.stream(ArtFixture.values())
+        final List<ArtFixture> auctionArtFixtures = Arrays.stream(ArtFixture.values())
                 .filter(art -> art.getType() == AUCTION)
                 .toList();
         Arrays.setAll(generalArts, i -> artRepository.save(generalArtFixtures.get(i).toArt(owner)));
@@ -111,7 +116,7 @@ class MemberInformationQueryRepositoryTest extends RepositoryTest {
         member.addPointRecords(CHARGE, 500_000);
 
         // when
-        List<MemberPointRecord> result = memberRepository.findPointRecordByMemberId(member.getId());
+        final List<MemberPointRecord> result = memberRepository.findPointRecordByMemberId(member.getId());
 
         // then
         assertAll(
@@ -154,7 +159,7 @@ class MemberInformationQueryRepositoryTest extends RepositoryTest {
         );
         makeAuctionEnd(auctions[0], auctions[2], auctions[3], auctions[5], auctions[6], auctions[8], auctions[9]);
 
-        List<AuctionArt> result1 = memberRepository.findWinningAuctionArtByMemberId(bidders[0].getId());
+        final List<AuctionArt> result1 = memberRepository.findWinningAuctionArtByMemberId(bidders[0].getId());
         assertThatWinningAuctionMatch(
                 result1,
                 List.of(8, 6, 0),
@@ -169,7 +174,7 @@ class MemberInformationQueryRepositoryTest extends RepositoryTest {
         );
         makeAuctionEnd(auctions[1], auctions[4], auctions[7]);
 
-        List<AuctionArt> result2 = memberRepository.findWinningAuctionArtByMemberId(bidders[0].getId());
+        final List<AuctionArt> result2 = memberRepository.findWinningAuctionArtByMemberId(bidders[0].getId());
         assertThatWinningAuctionMatch(
                 result2,
                 List.of(8, 7, 6, 1, 0),
@@ -184,8 +189,8 @@ class MemberInformationQueryRepositoryTest extends RepositoryTest {
         purchaseAuctionArt(auctionArts[0], auctionArts[5], auctionArts[8]);
         purchaseGeneralArt(generalArts[0], generalArts[1], generalArts[3], generalArts[6], generalArts[9]);
 
-        List<TradedArt> auctionResult1 = memberRepository.findSoldArtByMemberIdAndType(owner.getId(), AUCTION);
-        List<TradedArt> generalResult1 = memberRepository.findSoldArtByMemberIdAndType(owner.getId(), GENERAL);
+        final List<TradedArt> auctionResult1 = memberRepository.findSoldArtByMemberIdAndType(owner.getId(), AUCTION);
+        final List<TradedArt> generalResult1 = memberRepository.findSoldArtByMemberIdAndType(owner.getId(), GENERAL);
         assertThatTradedArtMatch(
                 auctionResult1,
                 List.of(8, 5, 0),
@@ -197,8 +202,8 @@ class MemberInformationQueryRepositoryTest extends RepositoryTest {
         purchaseAuctionArt(auctionArts[1], auctionArts[2], auctionArts[4], auctionArts[9]);
         purchaseGeneralArt(generalArts[5]);
 
-        List<TradedArt> auctionResult2 = memberRepository.findSoldArtByMemberIdAndType(owner.getId(), AUCTION);
-        List<TradedArt> generalResult2 = memberRepository.findSoldArtByMemberIdAndType(owner.getId(), GENERAL);
+        final List<TradedArt> auctionResult2 = memberRepository.findSoldArtByMemberIdAndType(owner.getId(), AUCTION);
+        final List<TradedArt> generalResult2 = memberRepository.findSoldArtByMemberIdAndType(owner.getId(), GENERAL);
         assertThatTradedArtMatch(
                 auctionResult2,
                 List.of(9, 8, 5, 4, 2, 1, 0),
@@ -214,8 +219,8 @@ class MemberInformationQueryRepositoryTest extends RepositoryTest {
         purchaseAuctionArt(auctionArts[0], auctionArts[5], auctionArts[8]);
         purchaseGeneralArt(generalArts[0], generalArts[1], generalArts[3], generalArts[6], generalArts[9]);
 
-        List<TradedArt> auctionResult1 = memberRepository.findPurchaseArtByMemberIdAndType(buyer.getId(), AUCTION);
-        List<TradedArt> generalResult1 = memberRepository.findPurchaseArtByMemberIdAndType(buyer.getId(), GENERAL);
+        final List<TradedArt> auctionResult1 = memberRepository.findPurchaseArtByMemberIdAndType(buyer.getId(), AUCTION);
+        final List<TradedArt> generalResult1 = memberRepository.findPurchaseArtByMemberIdAndType(buyer.getId(), GENERAL);
         assertThatTradedArtMatch(
                 auctionResult1,
                 List.of(8, 5, 0),
@@ -227,8 +232,8 @@ class MemberInformationQueryRepositoryTest extends RepositoryTest {
         purchaseAuctionArt(auctionArts[1], auctionArts[2], auctionArts[4], auctionArts[9]);
         purchaseGeneralArt(generalArts[5]);
 
-        List<TradedArt> auctionResult2 = memberRepository.findPurchaseArtByMemberIdAndType(buyer.getId(), AUCTION);
-        List<TradedArt> generalResult2 = memberRepository.findPurchaseArtByMemberIdAndType(buyer.getId(), GENERAL);
+        final List<TradedArt> auctionResult2 = memberRepository.findPurchaseArtByMemberIdAndType(buyer.getId(), AUCTION);
+        final List<TradedArt> generalResult2 = memberRepository.findPurchaseArtByMemberIdAndType(buyer.getId(), GENERAL);
         assertThatTradedArtMatch(
                 auctionResult2,
                 List.of(9, 8, 5, 4, 2, 1, 0),
@@ -237,14 +242,14 @@ class MemberInformationQueryRepositoryTest extends RepositoryTest {
         );
     }
 
-    private void bid(List<Integer> bidCounts, List<Integer> likeCounts, List<Auction> auctions) {
+    private void bid(final List<Integer> bidCounts, final List<Integer> likeCounts, final List<Auction> auctions) {
         for (int i = 0; i < bidCounts.size(); i++) {
-            int bidCount = bidCounts.get(i);
-            int likeCount = likeCounts.get(i);
-            Auction auction = auctions.get(i);
+            final int bidCount = bidCounts.get(i);
+            final int likeCount = likeCounts.get(i);
+            final Auction auction = auctions.get(i);
 
             for (int index = bidders.length - 1; index >= bidders.length - bidCount; index--) {
-                Member bidder = bidders[index];
+                final Member bidder = bidders[index];
                 auction.applyNewBid(bidder, auction.getHighestBidPrice() + 50_000);
             }
 
@@ -254,8 +259,8 @@ class MemberInformationQueryRepositoryTest extends RepositoryTest {
         }
     }
 
-    private void makeAuctionEnd(Auction... auctions) {
-        List<Long> auctionIds = Arrays.stream(auctions)
+    private void makeAuctionEnd(final Auction... auctions) {
+        final List<Long> auctionIds = Arrays.stream(auctions)
                 .map(Auction::getId)
                 .toList();
 
@@ -267,31 +272,31 @@ class MemberInformationQueryRepositoryTest extends RepositoryTest {
                 .executeUpdate();
     }
 
-    private void purchaseAuctionArt(Art... arts) {
-        for (Art art : arts) {
+    private void purchaseAuctionArt(final Art... arts) {
+        for (final Art art : arts) {
             purchaseRepository.save(Purchase.purchaseAuctionArt(art, buyer, art.getPrice()));
             favoriteRepository.save(Favorite.favoriteMarking(art.getId(), 1L));
         }
     }
 
-    private void purchaseGeneralArt(Art... arts) {
-        for (Art art : arts) {
+    private void purchaseGeneralArt(final Art... arts) {
+        for (final Art art : arts) {
             purchaseRepository.save(Purchase.purchaseGeneralArt(art, buyer));
             favoriteRepository.save(Favorite.favoriteMarking(art.getId(), 1L));
         }
     }
 
-    private void assertThatWinningAuctionMatch(List<AuctionArt> result, List<Integer> indices, List<Integer> likeCounts) {
-        int totalSize = indices.size();
+    private void assertThatWinningAuctionMatch(final List<AuctionArt> result, final List<Integer> indices, final List<Integer> likeCounts) {
+        final int totalSize = indices.size();
         assertThat(result).hasSize(totalSize);
 
         for (int i = 0; i < totalSize; i++) {
-            AuctionArt auctionArt = result.get(i);
-            int index = indices.get(i);
-            int likeCount = likeCounts.get(i);
+            final AuctionArt auctionArt = result.get(i);
+            final int index = indices.get(i);
+            final int likeCount = likeCounts.get(i);
 
-            Auction auction = auctions[index];
-            Art art = auctionArts[index];
+            final Auction auction = auctions[index];
+            final Art art = auctionArts[index];
 
             assertAll(
                     () -> assertThat(auctionArt.getAuction().getId()).isEqualTo(auction.getId()),
@@ -318,18 +323,18 @@ class MemberInformationQueryRepositoryTest extends RepositoryTest {
         }
     }
 
-    private void assertThatTradedArtMatch(List<TradedArt> auctionResult, List<Integer> auctionIndices,
-                                          List<TradedArt> generalResult, List<Integer> generalIndices) {
-        int auctionTotalSize = auctionIndices.size();
-        int generalTotalSize = generalIndices.size();
+    private void assertThatTradedArtMatch(final List<TradedArt> auctionResult, final List<Integer> auctionIndices,
+                                          final List<TradedArt> generalResult, final List<Integer> generalIndices) {
+        final int auctionTotalSize = auctionIndices.size();
+        final int generalTotalSize = generalIndices.size();
         assertThat(auctionResult).hasSize(auctionTotalSize);
         assertThat(generalResult).hasSize(generalTotalSize);
 
         for (int i = 0; i < auctionTotalSize; i++) {
-            TradedArt tradedArt = auctionResult.get(i);
-            int index = auctionIndices.get(i);
+            final TradedArt tradedArt = auctionResult.get(i);
+            final int index = auctionIndices.get(i);
 
-            Art art = auctionArts[index];
+            final Art art = auctionArts[index];
 
             assertAll(
                     () -> assertThat(tradedArt.getArt().getId()).isEqualTo(art.getId()),
@@ -352,10 +357,10 @@ class MemberInformationQueryRepositoryTest extends RepositoryTest {
         }
 
         for (int i = 0; i < generalTotalSize; i++) {
-            TradedArt tradedArt = generalResult.get(i);
-            int index = generalIndices.get(i);
+            final TradedArt tradedArt = generalResult.get(i);
+            final int index = generalIndices.get(i);
 
-            Art art = generalArts[index];
+            final Art art = generalArts[index];
 
             assertAll(
                     () -> assertThat(tradedArt.getArt().getId()).isEqualTo(art.getId()),

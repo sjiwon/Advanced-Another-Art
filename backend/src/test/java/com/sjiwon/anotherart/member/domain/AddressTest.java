@@ -22,7 +22,7 @@ class AddressTest {
     @ParameterizedTest(name = "{index}: 우편번호={0}, 주소={1}, 상세주소={2}")
     @MethodSource("postcodeDoNotMatch")
     @DisplayName("주소의 우편번호(postcode)는 반드시 5자리 숫자여야 합니다")
-    void throwExceptionByInvalidPostCode(int postcode, String defaultAddress, String detailAddress) {
+    void throwExceptionByInvalidPostCode(final int postcode, final String defaultAddress, final String detailAddress) {
         assertThatThrownBy(() -> Address.of(postcode, defaultAddress, detailAddress))
                 .isInstanceOf(AnotherArtException.class)
                 .hasMessage(MemberErrorCode.INVALID_POST_CODE.getMessage());
@@ -40,7 +40,7 @@ class AddressTest {
     @ParameterizedTest(name = "{index}: 우편번호={0}, 주소={1}, 상세주소={2}")
     @MethodSource("defaultOrDetailAddressDoNotMatch")
     @DisplayName("주소 또는 상세주소는 반드시 null이나 빈 값이 아니여야 합니다")
-    void throwExceptionByInvalidAddress(int postcode, String defaultAddress, String detailAddress) {
+    void throwExceptionByInvalidAddress(final int postcode, final String defaultAddress, final String detailAddress) {
         assertThatThrownBy(() -> Address.of(postcode, defaultAddress, detailAddress))
                 .isInstanceOf(AnotherArtException.class)
                 .hasMessage(MemberErrorCode.INVALID_ADDRESS.getMessage());
@@ -60,7 +60,7 @@ class AddressTest {
     @Test
     @DisplayName("Address를 생성한다")
     void construct() {
-        Address address = Address.of(12345, DEFAULT_ADDRESS, DETAIL_ADDRESS);
+        final Address address = Address.of(12345, DEFAULT_ADDRESS, DETAIL_ADDRESS);
 
         assertAll(
                 () -> assertThat(address.getPostcode()).isEqualTo(12345),
@@ -72,12 +72,12 @@ class AddressTest {
     @ParameterizedTest(name = "{index}: 우편번호={0}, 주소={1}, 상세주소={2}")
     @MethodSource("successAddressUpdate")
     @DisplayName("Address를 수정한다")
-    void update(int postcode, String defaultAddress, String detailAddress) {
+    void update(final int postcode, final String defaultAddress, final String detailAddress) {
         // given
-        Address address = Address.of(12345, DEFAULT_ADDRESS, DETAIL_ADDRESS);
+        final Address address = Address.of(12345, DEFAULT_ADDRESS, DETAIL_ADDRESS);
 
         // when
-        Address updateAddress = address.update(postcode, defaultAddress, detailAddress);
+        final Address updateAddress = address.update(postcode, defaultAddress, detailAddress);
 
         // then
         assertAll(

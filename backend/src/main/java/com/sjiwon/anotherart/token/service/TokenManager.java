@@ -13,7 +13,7 @@ public class TokenManager {
     private final TokenRepository tokenRepository;
 
     @Transactional
-    public void synchronizeRefreshToken(Long memberId, String refreshToken) {
+    public void synchronizeRefreshToken(final Long memberId, final String refreshToken) {
         tokenRepository.findByMemberId(memberId)
                 .ifPresentOrElse(
                         token -> token.updateRefreshToken(refreshToken),
@@ -22,16 +22,16 @@ public class TokenManager {
     }
 
     @Transactional
-    public void reissueRefreshTokenByRtrPolicy(Long memberId, String newRefreshToken) {
+    public void reissueRefreshTokenByRtrPolicy(final Long memberId, final String newRefreshToken) {
         tokenRepository.reissueRefreshTokenByRtrPolicy(memberId, newRefreshToken);
     }
 
     @Transactional
-    public void deleteRefreshTokenByMemberId(Long memberId) {
+    public void deleteRefreshTokenByMemberId(final Long memberId) {
         tokenRepository.deleteByMemberId(memberId);
     }
 
-    public boolean isRefreshTokenExists(Long memberId, String refreshToken) {
+    public boolean isRefreshTokenExists(final Long memberId, final String refreshToken) {
         return tokenRepository.existsByMemberIdAndRefreshToken(memberId, refreshToken);
     }
 }

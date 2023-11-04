@@ -9,7 +9,10 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import static com.sjiwon.anotherart.fixture.MemberFixture.MEMBER_A;
-import static com.sjiwon.anotherart.member.domain.point.PointType.*;
+import static com.sjiwon.anotherart.member.domain.point.PointType.CHARGE;
+import static com.sjiwon.anotherart.member.domain.point.PointType.PURCHASE;
+import static com.sjiwon.anotherart.member.domain.point.PointType.REFUND;
+import static com.sjiwon.anotherart.member.domain.point.PointType.SOLD;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -26,8 +29,8 @@ class PointTest {
     @Test
     @DisplayName("Point를 생성한다")
     void construct() {
-        Point init = Point.init();
-        Point point = Point.of(100_000, 100_000);
+        final Point init = Point.init();
+        final Point point = Point.of(100_000, 100_000);
 
         assertAll(
                 () -> assertThat(init.getPointRecords()).hasSize(0),
@@ -48,7 +51,7 @@ class PointTest {
     @DisplayName("포인트 활용 내역을 기록한다")
     void addPointRecords() {
         // given
-        Point point = Point.init();
+        final Point point = Point.init();
 
         /* 포인트 충전 */
         point.addPointRecords(member, CHARGE, 100_000);
@@ -99,10 +102,10 @@ class PointTest {
     @DisplayName("사용 가능한 포인트를 증가시킨다 [경매 작품 최고 입찰자에서 물러났을 경우]")
     void increaseAvailablePoint() {
         // given
-        Point point = Point.of(100_000, 0);
+        final Point point = Point.of(100_000, 0);
 
         // when
-        Point increasePoint = point.increaseAvailablePoint(50_000);
+        final Point increasePoint = point.increaseAvailablePoint(50_000);
 
         // then
         assertAll(
@@ -118,23 +121,23 @@ class PointTest {
         @DisplayName("사용 가능한 포인트가 충분하지 않음에 따라 감소시킬 수 없다")
         void throwExceptionByPointIsNotEnough() {
             // given
-            Point point = Point.of(100_000, 0);
+            final Point point = Point.of(100_000, 0);
 
-            
+
             // when - then
             assertThatThrownBy(() -> point.decreaseAvailablePoint(50_000))
                     .isInstanceOf(AnotherArtException.class)
                     .hasMessage(MemberErrorCode.POINT_IS_NOT_ENOUGH.getMessage());
         }
-        
+
         @Test
         @DisplayName("사용 가능한 포인트를 감소시킨다 [경매 작품 입찰]")
         void success() {
             // given
-            Point point = Point.of(100_000, 100_000);
-            
+            final Point point = Point.of(100_000, 100_000);
+
             // when
-            Point decreasePoint = point.decreaseAvailablePoint(99_999);
+            final Point decreasePoint = point.decreaseAvailablePoint(99_999);
 
             // then
             assertAll(
