@@ -6,7 +6,7 @@ import com.sjiwon.anotherart.auction.domain.Auction;
 import com.sjiwon.anotherart.common.ServiceTest;
 import com.sjiwon.anotherart.global.exception.AnotherArtException;
 import com.sjiwon.anotherart.member.domain.Member;
-import com.sjiwon.anotherart.upload.utils.FileUploader;
+import com.sjiwon.anotherart.upload.utils.S3FileUploader;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -43,7 +43,7 @@ class ArtServiceTest extends ServiceTest {
     private ArtService artService;
 
     @MockBean
-    private FileUploader fileUploader;
+    private S3FileUploader s3FileUploader;
 
     private Member owner;
 
@@ -62,7 +62,7 @@ class ArtServiceTest extends ServiceTest {
             final Set<String> hashtags = Set.of("A", "B", "C", "D");
             final MultipartFile file = createSingleMockMultipartFile("1.png", "image/png");
             final String uploadLink = "https://kr.object.ncloudstorage.com/bucket/arts/uuid.png";
-            given(fileUploader.uploadArtImage(file)).willReturn(uploadLink);
+            given(s3FileUploader.uploadFile(file)).willReturn(uploadLink);
 
             artService.registerArt(owner.getId(), createGeneralArtRegisterRequest(GENERAL_1, file, hashtags));
 
@@ -79,7 +79,7 @@ class ArtServiceTest extends ServiceTest {
             final Set<String> hashtags = Set.of("A", "B", "C", "D");
             final MultipartFile file = createSingleMockMultipartFile("1.png", "image/png");
             final String uploadLink = "https://kr.object.ncloudstorage.com/bucket/arts/uuid.png";
-            given(fileUploader.uploadArtImage(file)).willReturn(uploadLink);
+            given(s3FileUploader.uploadFile(file)).willReturn(uploadLink);
 
             // when
             final Long artId = artService.registerArt(owner.getId(), createGeneralArtRegisterRequest(GENERAL_1, file, hashtags));
@@ -105,7 +105,7 @@ class ArtServiceTest extends ServiceTest {
             final Set<String> hashtags = Set.of("A", "B", "C", "D");
             final MultipartFile file = createSingleMockMultipartFile("1.png", "image/png");
             final String uploadLink = "https://kr.object.ncloudstorage.com/bucket/arts/uuid.png";
-            given(fileUploader.uploadArtImage(file)).willReturn(uploadLink);
+            given(s3FileUploader.uploadFile(file)).willReturn(uploadLink);
 
             // when
             final Long artId = artService.registerArt(owner.getId(), createAuctionArtRegisterRequest(AUCTION_1, file, hashtags));
@@ -205,7 +205,7 @@ class ArtServiceTest extends ServiceTest {
                     .isInstanceOf(AnotherArtException.class)
                     .hasMessage(ArtErrorCode.CANNOT_DELETE_SOLD_ART.getMessage());
         }
-        
+
         @Test
         @DisplayName("입찰 기록이 존재하는 경매 작품은 삭제할 수 없다")
         void throwExceptionByCannotDeleteIfBidExists() {
@@ -217,13 +217,13 @@ class ArtServiceTest extends ServiceTest {
                     .isInstanceOf(AnotherArtException.class)
                     .hasMessage(ArtErrorCode.CANNOT_DELETE_IF_BID_EXISTS.getMessage());
         }
-        
+
         @Test
         @DisplayName("삭제에 성공한다")
         void success() {
             // when
             artService.delete(art.getId());
-            
+
             // then
             final Optional<Art> findArt = artRepository.findById(art.getId());
             assertThat(findArt).isEmpty();
