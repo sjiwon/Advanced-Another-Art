@@ -14,14 +14,14 @@ public class BasicAuction {
     private final LocalDateTime endDate;
     private int bidCount;
 
-    public BasicAuction(Long id, int highestBidPrice, LocalDateTime startDate, LocalDateTime endDate) {
+    public BasicAuction(final Long id, final int highestBidPrice, final LocalDateTime startDate, final LocalDateTime endDate) {
         this.id = id;
         this.highestBidPrice = highestBidPrice;
         this.startDate = startDate;
         this.endDate = endDate;
     }
 
-    public void applyBidCount(int bidCount) {
+    public void applyBidCount(final int bidCount) {
         this.bidCount = bidCount;
     }
 }

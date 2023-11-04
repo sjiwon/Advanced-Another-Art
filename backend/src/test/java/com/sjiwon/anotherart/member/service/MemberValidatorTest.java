@@ -43,7 +43,7 @@ class MemberValidatorTest extends ServiceTest {
     @Test
     @DisplayName("닉네임 중복에 대한 검증을 진행한다 [타인이 사용하고 있는지 여부]")
     void checkUniqueNicknameIfOtherUses() {
-        Member compare = memberRepository.save(MEMBER_B.toMember());
+        final Member compare = memberRepository.save(MEMBER_B.toMember());
 
         assertThatThrownBy(() -> memberValidator.validateNicknameForModify(member.getId(), compare.getNickname()))
                 .isInstanceOf(AnotherArtException.class)

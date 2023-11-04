@@ -1,11 +1,11 @@
 package com.sjiwon.anotherart.art.utils.validator;
 
+import jakarta.validation.ConstraintValidatorContext;
+import jakarta.validation.Payload;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import javax.validation.ConstraintValidatorContext;
-import javax.validation.Payload;
 import java.lang.annotation.Annotation;
 import java.util.Set;
 
@@ -25,7 +25,7 @@ class ValidHashtagCountValidatorTest {
     void setUp() {
         validator = new ValidHashtagCountValidator();
 
-        ValidHashtagCount validHashtagCount = new ValidHashtagCount() {
+        final ValidHashtagCount validHashtagCount = new ValidHashtagCount() {
             @Override
             public String message() {
                 return "";
@@ -72,7 +72,7 @@ class ValidHashtagCountValidatorTest {
         given(builder.addConstraintViolation()).willReturn(context);
 
         // when
-        boolean actual = validator.isValid(hashtags, context);
+        final boolean actual = validator.isValid(hashtags, context);
 
         // then
         verify(context).disableDefaultConstraintViolation();
@@ -91,7 +91,7 @@ class ValidHashtagCountValidatorTest {
         given(builder.addConstraintViolation()).willReturn(context);
 
         // when
-        boolean actual = validator.isValid(hashtags, context);
+        final boolean actual = validator.isValid(hashtags, context);
 
         // then
         verify(context).disableDefaultConstraintViolation();
@@ -107,7 +107,7 @@ class ValidHashtagCountValidatorTest {
         final Set<String> hashtags = Set.of("A", "B", "C", "D", "E");
 
         // when
-        boolean actual = validator.isValid(hashtags, context);
+        final boolean actual = validator.isValid(hashtags, context);
 
         // then
         assertThat(actual).isTrue();

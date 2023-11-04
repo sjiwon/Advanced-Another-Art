@@ -1,10 +1,13 @@
 package com.sjiwon.anotherart.member.controller.dto.request;
 
-import com.sjiwon.anotherart.member.domain.*;
+import com.sjiwon.anotherart.member.domain.Address;
+import com.sjiwon.anotherart.member.domain.Email;
+import com.sjiwon.anotherart.member.domain.Member;
+import com.sjiwon.anotherart.member.domain.Nickname;
+import com.sjiwon.anotherart.member.domain.Password;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 
 public record SignUpRequest(
         @NotBlank(message = "이름은 필수입니다.")

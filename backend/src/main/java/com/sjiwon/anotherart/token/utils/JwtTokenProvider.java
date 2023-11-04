@@ -1,6 +1,12 @@
 package com.sjiwon.anotherart.token.utils;
 
-import io.jsonwebtoken.*;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.Jws;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SecurityException;
 import lombok.extern.slf4j.Slf4j;
@@ -27,22 +33,22 @@ public class JwtTokenProvider {
         this.refreshTokenValidityInMilliseconds = refreshTokenValidityInMilliseconds;
     }
 
-    public String createAccessToken(Long memberId) {
+    public String createAccessToken(final Long memberId) {
         return createToken(memberId, accessTokenValidityInMilliseconds);
     }
 
-    public String createRefreshToken(Long memberId) {
+    public String createRefreshToken(final Long memberId) {
         return createToken(memberId, refreshTokenValidityInMilliseconds);
     }
 
-    private String createToken(Long memberId, long validityInMilliseconds) {
+    private String createToken(final Long memberId, final long validityInMilliseconds) {
         // Payload
-        Claims claims = Jwts.claims();
+        final Claims claims = Jwts.claims();
         claims.put("id", memberId);
 
         // Expires At
-        ZonedDateTime now = ZonedDateTime.now();
-        ZonedDateTime tokenValidity = now.plusSeconds(validityInMilliseconds);
+        final ZonedDateTime now = ZonedDateTime.now();
+        final ZonedDateTime tokenValidity = now.plusSeconds(validityInMilliseconds);
 
         return Jwts.builder()
                 .setClaims(claims)
@@ -52,28 +58,28 @@ public class JwtTokenProvider {
                 .compact();
     }
 
-    public Long getId(String token) {
+    public Long getId(final String token) {
         return getClaims(token)
                 .getBody()
                 .get("id", Long.class);
     }
 
-    public boolean isTokenValid(String token) {
+    public boolean isTokenValid(final String token) {
         try {
-            Jws<Claims> claims = getClaims(token);
-            Date expiredDate = claims.getBody().getExpiration();
-            Date now = new Date();
+            final Jws<Claims> claims = getClaims(token);
+            final Date expiredDate = claims.getBody().getExpiration();
+            final Date now = new Date();
             return expiredDate.after(now);
-        } catch (ExpiredJwtException |
-                 SecurityException |
-                 MalformedJwtException |
-                 UnsupportedJwtException |
-                 IllegalArgumentException e) {
+        } catch (final ExpiredJwtException |
+                       SecurityException |
+                       MalformedJwtException |
+                       UnsupportedJwtException |
+                       IllegalArgumentException e) {
             return false;
         }
     }
 
-    private Jws<Claims> getClaims(String token) {
+    private Jws<Claims> getClaims(final String token) {
         return Jwts.parserBuilder()
                 .setSigningKey(secretKey)
                 .build()

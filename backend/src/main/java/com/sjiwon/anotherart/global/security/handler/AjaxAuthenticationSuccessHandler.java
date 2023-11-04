@@ -5,14 +5,14 @@ import com.sjiwon.anotherart.global.security.LoginResponse;
 import com.sjiwon.anotherart.global.security.principal.MemberPrincipal;
 import com.sjiwon.anotherart.token.service.TokenManager;
 import com.sjiwon.anotherart.token.utils.JwtTokenProvider;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @RequiredArgsConstructor
@@ -22,25 +22,25 @@ public class AjaxAuthenticationSuccessHandler implements AuthenticationSuccessHa
     private final ObjectMapper objectMapper;
 
     @Override
-    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
-        MemberPrincipal member = extractMemberPrincipal(authentication);
-        String accessToken = jwtTokenProvider.createAccessToken(member.id());
-        String refreshToken = jwtTokenProvider.createRefreshToken(member.id());
+    public void onAuthenticationSuccess(final HttpServletRequest request, final HttpServletResponse response, final Authentication authentication) throws IOException {
+        final MemberPrincipal member = extractMemberPrincipal(authentication);
+        final String accessToken = jwtTokenProvider.createAccessToken(member.id());
+        final String refreshToken = jwtTokenProvider.createRefreshToken(member.id());
 
         tokenManager.synchronizeRefreshToken(member.id(), refreshToken);
         sendAccessTokenAndRefreshToken(response, member, accessToken, refreshToken);
     }
 
-    private MemberPrincipal extractMemberPrincipal(Authentication authentication) {
+    private MemberPrincipal extractMemberPrincipal(final Authentication authentication) {
         return ((MemberPrincipal) authentication.getPrincipal());
     }
 
-    private void sendAccessTokenAndRefreshToken(HttpServletResponse response, MemberPrincipal member, String accessToken, String refreshToken) throws IOException {
+    private void sendAccessTokenAndRefreshToken(final HttpServletResponse response, final MemberPrincipal member, final String accessToken, final String refreshToken) throws IOException {
         response.setStatus(HttpStatus.OK.value());
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setCharacterEncoding("UTF-8");
 
-        LoginResponse tokenResponse = new LoginResponse(
+        final LoginResponse tokenResponse = new LoginResponse(
                 member.id(),
                 member.nickname(),
                 accessToken,

@@ -43,7 +43,7 @@ class PurchaseApiControllerTest extends ControllerTest {
                         .purchaseArt(any(), any());
 
                 // when
-                MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
+                final MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
                         .post(BASE_URL, ART_ID)
                         .header(AUTHORIZATION, String.join(" ", BEARER_TOKEN, ACCESS_TOKEN));
 
@@ -83,7 +83,7 @@ class PurchaseApiControllerTest extends ControllerTest {
                         .purchaseArt(any(), any());
 
                 // when
-                MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
+                final MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
                         .post(BASE_URL, ART_ID)
                         .header(AUTHORIZATION, String.join(" ", BEARER_TOKEN, ACCESS_TOKEN));
 
@@ -121,7 +121,7 @@ class PurchaseApiControllerTest extends ControllerTest {
                 given(purchaseService.purchaseArt(any(), any())).willReturn(1L);
 
                 // when
-                MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
+                final MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
                         .post(BASE_URL, ART_ID)
                         .header(AUTHORIZATION, String.join(" ", BEARER_TOKEN, ACCESS_TOKEN));
 
@@ -155,7 +155,7 @@ class PurchaseApiControllerTest extends ControllerTest {
                         .purchaseArt(any(), any());
 
                 // when
-                MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
+                final MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
                         .post(BASE_URL, ART_ID)
                         .header(AUTHORIZATION, String.join(" ", BEARER_TOKEN, ACCESS_TOKEN));
 
@@ -195,7 +195,7 @@ class PurchaseApiControllerTest extends ControllerTest {
                         .purchaseArt(any(), any());
 
                 // when
-                MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
+                final MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
                         .post(BASE_URL, ART_ID)
                         .header(AUTHORIZATION, String.join(" ", BEARER_TOKEN, ACCESS_TOKEN));
 
@@ -235,7 +235,7 @@ class PurchaseApiControllerTest extends ControllerTest {
                         .purchaseArt(any(), any());
 
                 // when
-                MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
+                final MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
                         .post(BASE_URL, ART_ID)
                         .header(AUTHORIZATION, String.join(" ", BEARER_TOKEN, ACCESS_TOKEN));
 
@@ -273,7 +273,7 @@ class PurchaseApiControllerTest extends ControllerTest {
                 given(purchaseService.purchaseArt(any(), any())).willReturn(1L);
 
                 // when
-                MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
+                final MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
                         .post(BASE_URL, ART_ID)
                         .header(AUTHORIZATION, String.join(" ", BEARER_TOKEN, ACCESS_TOKEN));
 

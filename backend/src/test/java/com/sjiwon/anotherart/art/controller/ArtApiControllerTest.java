@@ -34,7 +34,10 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
-import static org.springframework.restdocs.request.RequestDocumentation.*;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.partWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.queryParameters;
+import static org.springframework.restdocs.request.RequestDocumentation.requestParts;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -63,15 +66,15 @@ class ArtApiControllerTest extends ControllerTest {
 
             // when
             final ArtRegisterRequest request = createGeneralArtRegisterRequest(GENERAL_1, file, Set.of("A", "B", "C", "D", "E"));
-            MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
+            final MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
                     .multipart(BASE_URL)
                     .file((MockMultipartFile) file)
                     .header(AUTHORIZATION, String.join(" ", BEARER_TOKEN, ACCESS_TOKEN))
-                    .param("name", request.name())
-                    .param("description", request.description())
-                    .param("type", request.type())
-                    .param("price", String.valueOf(request.price()))
-                    .params(createHashtagParams(request.hashtags()));
+                    .queryParam("name", request.name())
+                    .queryParam("description", request.description())
+                    .queryParam("type", request.type())
+                    .queryParam("price", String.valueOf(request.price()))
+                    .queryParams(createHashtagParams(request.hashtags()));
 
             // then
             final ArtErrorCode expectedError = ArtErrorCode.DUPLICATE_NAME;
@@ -94,7 +97,7 @@ class ArtApiControllerTest extends ControllerTest {
                                     requestParts(
                                             partWithName("file").description("작품 이미지")
                                     ),
-                                    requestParameters(
+                                    queryParameters(
                                             parameterWithName("name").description("작품명"),
                                             parameterWithName("description").description("작품 설명"),
                                             parameterWithName("type").description("작품 타입")
@@ -122,15 +125,15 @@ class ArtApiControllerTest extends ControllerTest {
 
             // when
             final ArtRegisterRequest request = createGeneralArtRegisterRequest(GENERAL_1, file, Set.of("A", "B", "C", "D", "E"));
-            MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
+            final MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
                     .multipart(BASE_URL)
                     .file((MockMultipartFile) file)
                     .header(AUTHORIZATION, String.join(" ", BEARER_TOKEN, ACCESS_TOKEN))
-                    .param("name", request.name())
-                    .param("description", request.description())
-                    .param("type", request.type())
-                    .param("price", String.valueOf(request.price()))
-                    .params(createHashtagParams(request.hashtags()));
+                    .queryParam("name", request.name())
+                    .queryParam("description", request.description())
+                    .queryParam("type", request.type())
+                    .queryParam("price", String.valueOf(request.price()))
+                    .queryParams(createHashtagParams(request.hashtags()));
 
             // then
             mockMvc.perform(requestBuilder)
@@ -144,7 +147,7 @@ class ArtApiControllerTest extends ControllerTest {
                                     requestParts(
                                             partWithName("file").description("작품 이미지")
                                     ),
-                                    requestParameters(
+                                    queryParameters(
                                             parameterWithName("name").description("작품명"),
                                             parameterWithName("description").description("작품 설명"),
                                             parameterWithName("type").description("작품 타입")
@@ -171,17 +174,17 @@ class ArtApiControllerTest extends ControllerTest {
 
             // when
             final ArtRegisterRequest request = createAuctionArtRegisterRequest(AUCTION_1, file, Set.of("A", "B", "C", "D", "E"));
-            MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
+            final MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
                     .multipart(BASE_URL)
                     .file((MockMultipartFile) file)
                     .header(AUTHORIZATION, String.join(" ", BEARER_TOKEN, ACCESS_TOKEN))
-                    .param("name", request.name())
-                    .param("description", request.description())
-                    .param("type", request.type())
-                    .param("price", String.valueOf(request.price()))
-                    .param("auctionStartDate", request.auctionStartDate().format(DATE_TIME_FORMATTER))
-                    .param("auctionEndDate", request.auctionEndDate().format(DATE_TIME_FORMATTER))
-                    .params(createHashtagParams(request.hashtags()));
+                    .queryParam("name", request.name())
+                    .queryParam("description", request.description())
+                    .queryParam("type", request.type())
+                    .queryParam("price", String.valueOf(request.price()))
+                    .queryParam("auctionStartDate", request.auctionStartDate().format(DATE_TIME_FORMATTER))
+                    .queryParam("auctionEndDate", request.auctionEndDate().format(DATE_TIME_FORMATTER))
+                    .queryParams(createHashtagParams(request.hashtags()));
 
             // then
             mockMvc.perform(requestBuilder)
@@ -195,7 +198,7 @@ class ArtApiControllerTest extends ControllerTest {
                                     requestParts(
                                             partWithName("file").description("작품 이미지")
                                     ),
-                                    requestParameters(
+                                    queryParameters(
                                             parameterWithName("name").description("작품명"),
                                             parameterWithName("description").description("작품 설명"),
                                             parameterWithName("type").description("작품 타입")
@@ -229,7 +232,7 @@ class ArtApiControllerTest extends ControllerTest {
                     .duplicateCheck(any(), any());
 
             // when
-            MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+            final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                     .get(BASE_URL)
                     .param("resource", "name")
                     .param("value", "중복체크작품명");
@@ -251,7 +254,7 @@ class ArtApiControllerTest extends ControllerTest {
                                     "ArtApi/Register/DuplicateCheck/Failure",
                                     getDocumentRequest(),
                                     getDocumentResponse(),
-                                    requestParameters(
+                                    queryParameters(
                                             parameterWithName("resource").description("중복 체크 타입")
                                                     .attributes(constraint("name")),
                                             parameterWithName("value").description("중복 체크 값")
@@ -270,7 +273,7 @@ class ArtApiControllerTest extends ControllerTest {
                     .duplicateCheck(any(), any());
 
             // when
-            MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+            final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                     .get(BASE_URL)
                     .param("resource", "name")
                     .param("value", "중복체크작품명");
@@ -283,7 +286,7 @@ class ArtApiControllerTest extends ControllerTest {
                                     "ArtApi/Register/DuplicateCheck/Success",
                                     getDocumentRequest(),
                                     getDocumentResponse(),
-                                    requestParameters(
+                                    queryParameters(
                                             parameterWithName("resource").description("중복 체크 타입")
                                                     .attributes(constraint("name")),
                                             parameterWithName("value").description("중복 체크 값")
@@ -293,8 +296,8 @@ class ArtApiControllerTest extends ControllerTest {
         }
     }
 
-    private MultiValueMap<String, String> createHashtagParams(Set<String> hashtags) {
-        MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
+    private MultiValueMap<String, String> createHashtagParams(final Set<String> hashtags) {
+        final MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
         map.addAll("hashtags", new ArrayList<>(hashtags));
         return map;
     }

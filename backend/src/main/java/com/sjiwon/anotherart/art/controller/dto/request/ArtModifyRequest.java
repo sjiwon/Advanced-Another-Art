@@ -1,8 +1,8 @@
 package com.sjiwon.anotherart.art.controller.dto.request;
 
 import com.sjiwon.anotherart.art.utils.validator.ValidHashtagCount;
+import jakarta.validation.constraints.NotBlank;
 
-import javax.validation.constraints.NotBlank;
 import java.util.Set;
 
 public record ArtModifyRequest(

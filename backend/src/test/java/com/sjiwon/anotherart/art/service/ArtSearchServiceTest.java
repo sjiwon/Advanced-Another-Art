@@ -31,7 +31,9 @@ import static com.sjiwon.anotherart.art.domain.ArtType.AUCTION;
 import static com.sjiwon.anotherart.art.domain.ArtType.GENERAL;
 import static com.sjiwon.anotherart.art.utils.search.PagingConstants.getPageRequest;
 import static com.sjiwon.anotherart.art.utils.search.SortType.DATE_ASC;
-import static com.sjiwon.anotherart.fixture.MemberFixture.*;
+import static com.sjiwon.anotherart.fixture.MemberFixture.MEMBER_A;
+import static com.sjiwon.anotherart.fixture.MemberFixture.MEMBER_B;
+import static com.sjiwon.anotherart.fixture.MemberFixture.MEMBER_C;
 import static com.sjiwon.anotherart.fixture.PeriodFixture.OPEN_NOW;
 import static com.sjiwon.anotherart.member.domain.point.PointType.CHARGE;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -68,17 +70,17 @@ class ArtSearchServiceTest extends ServiceTest {
         initArtsAndAuctions();
     }
 
-    private Member createMember(MemberFixture fixture) {
-        Member member = fixture.toMember();
+    private Member createMember(final MemberFixture fixture) {
+        final Member member = fixture.toMember();
         member.addPointRecords(CHARGE, 100_000_000);
         return memberRepository.save(member);
     }
 
     private void initArtsAndAuctions() {
-        List<ArtFixture> generalArtFixtures = Arrays.stream(ArtFixture.values())
+        final List<ArtFixture> generalArtFixtures = Arrays.stream(ArtFixture.values())
                 .filter(art -> art.getType() == GENERAL)
                 .toList();
-        List<ArtFixture> auctionArtFixtures = Arrays.stream(ArtFixture.values())
+        final List<ArtFixture> auctionArtFixtures = Arrays.stream(ArtFixture.values())
                 .filter(art -> art.getType() == AUCTION)
                 .toList();
 
@@ -117,8 +119,8 @@ class ArtSearchServiceTest extends ServiceTest {
             // auctions[1] -> auctionArts[1] 입찰
             bid();
 
-            AuctionArt result1 = (AuctionArt) artSearchService.getArt(auctionArts[0].getId());
-            AuctionArt result2 = (AuctionArt) artSearchService.getArt(auctionArts[1].getId());
+            final AuctionArt result1 = (AuctionArt) artSearchService.getArt(auctionArts[0].getId());
+            final AuctionArt result2 = (AuctionArt) artSearchService.getArt(auctionArts[1].getId());
             assertThatAuctionArtMatch(
                     List.of(result1, result2),
                     List.of(0, 1)
@@ -131,8 +133,8 @@ class ArtSearchServiceTest extends ServiceTest {
             // generalArt[1] 구매
             purchase();
 
-            GeneralArt result1 = (GeneralArt) artSearchService.getArt(generalArts[0].getId());
-            GeneralArt result2 = (GeneralArt) artSearchService.getArt(generalArts[1].getId());
+            final GeneralArt result1 = (GeneralArt) artSearchService.getArt(generalArts[0].getId());
+            final GeneralArt result2 = (GeneralArt) artSearchService.getArt(generalArts[1].getId());
             assertThatGeneralArtMatch(List.of(result1, result2));
         }
 
@@ -146,13 +148,13 @@ class ArtSearchServiceTest extends ServiceTest {
             favoriteRepository.save(Favorite.favoriteMarking(generalArts[1].getId(), buyer.getId()));
         }
 
-        private void assertThatAuctionArtMatch(List<AuctionArt> arts, List<Integer> bidCounts) {
+        private void assertThatAuctionArtMatch(final List<AuctionArt> arts, final List<Integer> bidCounts) {
             for (int i = 0; i < arts.size(); i++) {
-                AuctionArt auctionArt = arts.get(i);
-                int bidCount = bidCounts.get(i);
+                final AuctionArt auctionArt = arts.get(i);
+                final int bidCount = bidCounts.get(i);
 
-                Auction auction = auctions[i];
-                Art art = auctionArts[i];
+                final Auction auction = auctions[i];
+                final Art art = auctionArts[i];
 
                 assertAll(
                         () -> assertThat(auctionArt.getAuction().getId()).isEqualTo(auction.getId()),
@@ -188,10 +190,10 @@ class ArtSearchServiceTest extends ServiceTest {
             }
         }
 
-        private void assertThatGeneralArtMatch(List<GeneralArt> arts) {
+        private void assertThatGeneralArtMatch(final List<GeneralArt> arts) {
             for (int i = 0; i < arts.size(); i++) {
-                GeneralArt generalArt = arts.get(i);
-                Art art = generalArts[i];
+                final GeneralArt generalArt = arts.get(i);
+                final Art art = generalArts[i];
 
                 assertAll(
                         () -> assertThat(generalArt.getArt().getId()).isEqualTo(art.getId()),
@@ -227,11 +229,11 @@ class ArtSearchServiceTest extends ServiceTest {
     @Test
     @DisplayName("현재 경매가 진행중인 작품을 조회한다 [등록날짜 ASC]")
     void getActiveAuctionArts() {
-        ArtAssembler assembler1 = artSearchService.getActiveAuctionArts(DATE_ASC.getValue(), PAGE_REQUEST_1); // 2건
-        ArtAssembler assembler2 = artSearchService.getActiveAuctionArts(DATE_ASC.getValue(), PAGE_REQUEST_2); // 0건
+        final ArtAssembler assembler1 = artSearchService.getActiveAuctionArts(DATE_ASC.getValue(), PAGE_REQUEST_1); // 2건
+        final ArtAssembler assembler2 = artSearchService.getActiveAuctionArts(DATE_ASC.getValue(), PAGE_REQUEST_2); // 0건
 
-        Pagination pagination1 = assembler1.pagination();
-        Pagination pagination2 = assembler2.pagination();
+        final Pagination pagination1 = assembler1.pagination();
+        final Pagination pagination2 = assembler2.pagination();
         assertAll(
                 () -> assertThat(pagination1.getCurrentPage()).isEqualTo(1),
                 () -> assertThat(pagination1.getTotalPages()).isEqualTo(1),
@@ -261,11 +263,11 @@ class ArtSearchServiceTest extends ServiceTest {
         @Test
         @DisplayName("Hello 키워드를 포함한 경매 작품을 조회한다 [등록날짜 ASC]")
         void getAuctionArtsByKeyword() {
-            ArtAssembler assembler1 = artSearchService.getArtsByKeyword(auctionCondition, PAGE_REQUEST_1); // 1건
-            ArtAssembler assembler2 = artSearchService.getArtsByKeyword(auctionCondition, PAGE_REQUEST_2); // 0건
+            final ArtAssembler assembler1 = artSearchService.getArtsByKeyword(auctionCondition, PAGE_REQUEST_1); // 1건
+            final ArtAssembler assembler2 = artSearchService.getArtsByKeyword(auctionCondition, PAGE_REQUEST_2); // 0건
 
-            Pagination pagination1 = assembler1.pagination();
-            Pagination pagination2 = assembler2.pagination();
+            final Pagination pagination1 = assembler1.pagination();
+            final Pagination pagination2 = assembler2.pagination();
             assertAll(
                     () -> assertThat(pagination1.getCurrentPage()).isEqualTo(1),
                     () -> assertThat(pagination1.getTotalPages()).isEqualTo(1),
@@ -287,11 +289,11 @@ class ArtSearchServiceTest extends ServiceTest {
         @Test
         @DisplayName("Hello 키워드를 포함한 일반 작품을 조회한다 [등록날짜 ASC]")
         void getGeneralArtsByKeyword() {
-            ArtAssembler assembler1 = artSearchService.getArtsByKeyword(generalCondition, PAGE_REQUEST_1); // 1건
-            ArtAssembler assembler2 = artSearchService.getArtsByKeyword(generalCondition, PAGE_REQUEST_2); // 0건
+            final ArtAssembler assembler1 = artSearchService.getArtsByKeyword(generalCondition, PAGE_REQUEST_1); // 1건
+            final ArtAssembler assembler2 = artSearchService.getArtsByKeyword(generalCondition, PAGE_REQUEST_2); // 0건
 
-            Pagination pagination1 = assembler1.pagination();
-            Pagination pagination2 = assembler2.pagination();
+            final Pagination pagination1 = assembler1.pagination();
+            final Pagination pagination2 = assembler2.pagination();
             assertAll(
                     () -> assertThat(pagination1.getCurrentPage()).isEqualTo(1),
                     () -> assertThat(pagination1.getTotalPages()).isEqualTo(1),
@@ -322,11 +324,11 @@ class ArtSearchServiceTest extends ServiceTest {
         @Test
         @DisplayName("해시태그 A를 포함한 경매 작품을 조회한다 [등록날짜 ASC]")
         void getAuctionArtsByKeyword() {
-            ArtAssembler assembler1 = artSearchService.getArtsByHashtag(auctionCondition, PAGE_REQUEST_1); // 1건
-            ArtAssembler assembler2 = artSearchService.getArtsByHashtag(auctionCondition, PAGE_REQUEST_2); // 0건
+            final ArtAssembler assembler1 = artSearchService.getArtsByHashtag(auctionCondition, PAGE_REQUEST_1); // 1건
+            final ArtAssembler assembler2 = artSearchService.getArtsByHashtag(auctionCondition, PAGE_REQUEST_2); // 0건
 
-            Pagination pagination1 = assembler1.pagination();
-            Pagination pagination2 = assembler2.pagination();
+            final Pagination pagination1 = assembler1.pagination();
+            final Pagination pagination2 = assembler2.pagination();
             assertAll(
                     () -> assertThat(pagination1.getCurrentPage()).isEqualTo(1),
                     () -> assertThat(pagination1.getTotalPages()).isEqualTo(1),
@@ -348,11 +350,11 @@ class ArtSearchServiceTest extends ServiceTest {
         @Test
         @DisplayName("해시태그 A를 포함한 일반 작품을 조회한다 [등록날짜 ASC]")
         void getGeneralArtsByKeyword() {
-            ArtAssembler assembler1 = artSearchService.getArtsByHashtag(generalCondition, PAGE_REQUEST_1); // 1건
-            ArtAssembler assembler2 = artSearchService.getArtsByHashtag(generalCondition, PAGE_REQUEST_2); // 0건
+            final ArtAssembler assembler1 = artSearchService.getArtsByHashtag(generalCondition, PAGE_REQUEST_1); // 1건
+            final ArtAssembler assembler2 = artSearchService.getArtsByHashtag(generalCondition, PAGE_REQUEST_2); // 0건
 
-            Pagination pagination1 = assembler1.pagination();
-            Pagination pagination2 = assembler2.pagination();
+            final Pagination pagination1 = assembler1.pagination();
+            final Pagination pagination2 = assembler2.pagination();
             assertAll(
                     () -> assertThat(pagination1.getCurrentPage()).isEqualTo(1),
                     () -> assertThat(pagination1.getTotalPages()).isEqualTo(1),
@@ -372,24 +374,24 @@ class ArtSearchServiceTest extends ServiceTest {
         }
     }
 
-    private void asssertThatAuctionArtMatch(List<ArtDetails> result, List<Auction> auctions) {
-        int totalSize = auctions.size();
+    private void asssertThatAuctionArtMatch(final List<ArtDetails> result, final List<Auction> auctions) {
+        final int totalSize = auctions.size();
         assertThat(result).hasSize(totalSize);
 
         for (int i = 0; i < totalSize; i++) {
-            AuctionArt auctionArt = (AuctionArt) result.get(i);
-            Auction auction = auctions.get(i);
+            final AuctionArt auctionArt = (AuctionArt) result.get(i);
+            final Auction auction = auctions.get(i);
             assertThat(auctionArt.getAuction().getId()).isEqualTo(auction.getId());
         }
     }
 
-    private void asssertThatGeneralArtMatch(List<ArtDetails> result, List<Art> arts) {
-        int totalSize = arts.size();
+    private void asssertThatGeneralArtMatch(final List<ArtDetails> result, final List<Art> arts) {
+        final int totalSize = arts.size();
         assertThat(result).hasSize(totalSize);
 
         for (int i = 0; i < totalSize; i++) {
-            GeneralArt generalArt = (GeneralArt) result.get(i);
-            Art art = arts.get(i);
+            final GeneralArt generalArt = (GeneralArt) result.get(i);
+            final Art art = arts.get(i);
             assertThat(generalArt.getArt().getId()).isEqualTo(art.getId());
         }
     }

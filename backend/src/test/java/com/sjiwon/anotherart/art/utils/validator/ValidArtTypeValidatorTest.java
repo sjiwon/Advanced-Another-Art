@@ -1,10 +1,9 @@
 package com.sjiwon.anotherart.art.utils.validator;
 
+import jakarta.validation.ConstraintValidatorContext;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
-import javax.validation.ConstraintValidatorContext;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -28,7 +27,7 @@ class ValidArtTypeValidatorTest {
         final String unknown = "unknown";
 
         // when
-        boolean actual = validator.isValid(unknown, context);
+        final boolean actual = validator.isValid(unknown, context);
 
         // then
         assertThat(actual).isFalse();
@@ -42,8 +41,8 @@ class ValidArtTypeValidatorTest {
         final String auction = "auction";
 
         // when
-        boolean actual1 = validator.isValid(general, context);
-        boolean actual2 = validator.isValid(auction, context);
+        final boolean actual1 = validator.isValid(general, context);
+        final boolean actual2 = validator.isValid(auction, context);
 
         // then
         assertAll(

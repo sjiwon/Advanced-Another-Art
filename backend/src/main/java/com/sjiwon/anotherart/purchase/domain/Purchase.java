@@ -5,11 +5,19 @@ import com.sjiwon.anotherart.global.BaseEntity;
 import com.sjiwon.anotherart.global.exception.AnotherArtException;
 import com.sjiwon.anotherart.member.domain.Member;
 import com.sjiwon.anotherart.purchase.exception.PurchaseErrorCode;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import javax.persistence.*;
 
 import static com.sjiwon.anotherart.member.domain.point.PointType.PURCHASE;
 import static com.sjiwon.anotherart.member.domain.point.PointType.SOLD;
@@ -34,38 +42,38 @@ public class Purchase extends BaseEntity {
     @JoinColumn(name = "art_id", referencedColumnName = "id", nullable = false, updatable = false, unique = true)
     private Art art;
 
-    private Purchase(Art art, Member buyer, int price) {
+    private Purchase(final Art art, final Member buyer, final int price) {
         this.art = art;
         this.buyer = buyer;
         this.price = price;
     }
 
-    public static Purchase purchaseGeneralArt(Art art, Member buyer) {
+    public static Purchase purchaseGeneralArt(final Art art, final Member buyer) {
         validateBuyerIsArtOwner(art, buyer);
         validateArtIsOnSale(art);
         return proceedToPurchaseGeneralArt(art, buyer);
     }
 
-    public static Purchase purchaseAuctionArt(Art art, Member buyer, int bidPrice) {
+    public static Purchase purchaseAuctionArt(final Art art, final Member buyer, final int bidPrice) {
         validateArtIsOnSale(art);
         return proceedToPurchaseAuctionArt(art, buyer, bidPrice);
     }
 
-    private static void validateBuyerIsArtOwner(Art art, Member buyer) {
+    private static void validateBuyerIsArtOwner(final Art art, final Member buyer) {
         if (art.isArtOwner(buyer)) {
             throw AnotherArtException.type(PurchaseErrorCode.ART_OWNER_CANNOT_PURCHASE_OWN);
         }
     }
 
-    private static void validateArtIsOnSale(Art art) {
+    private static void validateArtIsOnSale(final Art art) {
         if (art.isSold()) {
             throw AnotherArtException.type(PurchaseErrorCode.ALREADY_SOLD);
         }
     }
 
-    private static Purchase proceedToPurchaseGeneralArt(Art art, Member buyer) {
-        Member owner = art.getOwner();
-        int purchasePrice = art.getPrice();
+    private static Purchase proceedToPurchaseGeneralArt(final Art art, final Member buyer) {
+        final Member owner = art.getOwner();
+        final int purchasePrice = art.getPrice();
 
         owner.addPointRecords(SOLD, purchasePrice);
         buyer.addPointRecords(PURCHASE, purchasePrice);
@@ -74,8 +82,8 @@ public class Purchase extends BaseEntity {
         return new Purchase(art, buyer, purchasePrice);
     }
 
-    private static Purchase proceedToPurchaseAuctionArt(Art art, Member buyer, int bidPrice) {
-        Member owner = art.getOwner();
+    private static Purchase proceedToPurchaseAuctionArt(final Art art, final Member buyer, final int bidPrice) {
+        final Member owner = art.getOwner();
 
         owner.addPointRecords(SOLD, bidPrice);
         buyer.addPointRecords(PURCHASE, bidPrice);

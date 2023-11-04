@@ -46,7 +46,7 @@ class MemberPointApiControllerTest extends ControllerTest {
 
             // when
             final PointChargeRequest request = new PointChargeRequest(50_000);
-            MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
+            final MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
                     .post(BASE_URL, MEMBER_ID)
                     .header(AUTHORIZATION, String.join(" ", BEARER_TOKEN, ACCESS_TOKEN))
                     .contentType(APPLICATION_JSON)
@@ -89,7 +89,7 @@ class MemberPointApiControllerTest extends ControllerTest {
 
             // when
             final PointRefundRequest request = new PointRefundRequest(50_000);
-            MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
+            final MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
                     .post(BASE_URL, MEMBER_ID)
                     .header(AUTHORIZATION, String.join(" ", BEARER_TOKEN, ACCESS_TOKEN))
                     .contentType(APPLICATION_JSON)
@@ -135,7 +135,7 @@ class MemberPointApiControllerTest extends ControllerTest {
 
             // when
             final PointRefundRequest request = new PointRefundRequest(50_000);
-            MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
+            final MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
                     .post(BASE_URL, MEMBER_ID)
                     .header(AUTHORIZATION, String.join(" ", BEARER_TOKEN, ACCESS_TOKEN))
                     .contentType(APPLICATION_JSON)

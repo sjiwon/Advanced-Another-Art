@@ -31,8 +31,8 @@ class BidServiceConcurrencyTest extends ConcurrencyTest {
 
     @BeforeEach
     void setUp() {
-        Member owner = memberRepository.save(MEMBER_A.toMember());
-        Art art = artRepository.save(AUCTION_1.toArt(owner));
+        final Member owner = memberRepository.save(MEMBER_A.toMember());
+        final Art art = artRepository.save(AUCTION_1.toArt(owner));
         auction = auctionRepository.save(AUCTION_OPEN_NOW.toAuction(art));
 
         createMembers(THREAD_COUNT); // 10명의 입찰자 생성
@@ -42,16 +42,16 @@ class BidServiceConcurrencyTest extends ConcurrencyTest {
     @DisplayName("10명의 입찰자가 동시에 동일한 가격으로 입찰을 진행한다면 1명만 입찰에 성공해야 한다")
     void concurrencyBid() throws InterruptedException {
         // given
-        ExecutorService executorService = Executors.newFixedThreadPool(THREAD_COUNT);
-        CountDownLatch countDownLatch = new CountDownLatch(THREAD_COUNT);
+        final ExecutorService executorService = Executors.newFixedThreadPool(THREAD_COUNT);
+        final CountDownLatch countDownLatch = new CountDownLatch(THREAD_COUNT);
 
         // when
         final int bidAmount = auction.getHighestBidPrice() + 50_000;
-        for (Long bidderId : memberIds) {
+        for (final Long bidderId : memberIds) {
             executorService.submit(() -> {
                 try {
                     bidFacade.bid(auction.getId(), bidderId, bidAmount);
-                } catch (Exception e) {
+                } catch (final Exception e) {
                     log.error(e.getMessage());
                 } finally {
                     countDownLatch.countDown();

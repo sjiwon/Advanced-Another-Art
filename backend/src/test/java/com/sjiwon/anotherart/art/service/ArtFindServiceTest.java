@@ -41,8 +41,8 @@ class ArtFindServiceTest extends ServiceTest {
                 .isInstanceOf(AnotherArtException.class)
                 .hasMessage(ArtErrorCode.ART_NOT_FOUND.getMessage());
 
-        Art findArt1 = artFindService.findById(art.getId());
-        Art findArt2 = artFindService.findByIdWithOwner(art.getId());
+        final Art findArt1 = artFindService.findById(art.getId());
+        final Art findArt2 = artFindService.findByIdWithOwner(art.getId());
 
         // then
         assertAll(

@@ -33,7 +33,7 @@ class MemberFindServiceTest extends ServiceTest {
                 .isInstanceOf(AnotherArtException.class)
                 .hasMessage(MemberErrorCode.MEMBER_NOT_FOUND.getMessage());
 
-        Member findMember = memberFindService.findById(member.getId());
+        final Member findMember = memberFindService.findById(member.getId());
 
         // then
         assertThat(findMember).isEqualTo(member);
@@ -47,7 +47,7 @@ class MemberFindServiceTest extends ServiceTest {
                 .isInstanceOf(AnotherArtException.class)
                 .hasMessage(MemberErrorCode.MEMBER_NOT_FOUND.getMessage());
 
-        Member findMember = memberFindService.findByLoginId(member.getLoginId());
+        final Member findMember = memberFindService.findByLoginId(member.getLoginId());
 
         // then
         assertThat(findMember).isEqualTo(member);

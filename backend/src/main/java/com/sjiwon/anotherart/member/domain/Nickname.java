@@ -2,12 +2,12 @@ package com.sjiwon.anotherart.member.domain;
 
 import com.sjiwon.anotherart.global.exception.AnotherArtException;
 import com.sjiwon.anotherart.member.exception.MemberErrorCode;
+import jakarta.persistence.Column;
+import jakarta.persistence.Embeddable;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Column;
-import javax.persistence.Embeddable;
 import java.util.regex.Pattern;
 
 @Getter
@@ -23,34 +23,34 @@ public class Nickname {
     @Column(name = "nickname", nullable = false, unique = true)
     private String value;
 
-    private Nickname(String value) {
+    private Nickname(final String value) {
         this.value = value;
     }
 
-    public static Nickname from(String value) {
+    public static Nickname from(final String value) {
         validateNicknamePattern(value);
         return new Nickname(value);
     }
 
-    public Nickname update(String value) {
+    public Nickname update(final String value) {
         validateNicknamePattern(value);
         validateNicknameSameAsBefore(value);
         return new Nickname(value);
     }
 
-    private static void validateNicknamePattern(String value) {
+    private static void validateNicknamePattern(final String value) {
         if (isInvalidPattern(value)) {
             throw AnotherArtException.type(MemberErrorCode.INVALID_NICKNAME_FORMAT);
         }
     }
 
-    private void validateNicknameSameAsBefore(String value) {
+    private void validateNicknameSameAsBefore(final String value) {
         if (this.value.equals(value)) {
             throw AnotherArtException.type(MemberErrorCode.NICKNAME_SAME_AS_BEFORE);
         }
     }
 
-    private static boolean isInvalidPattern(String nickname) {
+    private static boolean isInvalidPattern(final String nickname) {
         return !NICKNAME_MATCHER.matcher(nickname).matches();
     }
 }

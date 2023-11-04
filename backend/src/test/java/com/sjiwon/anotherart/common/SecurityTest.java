@@ -3,7 +3,7 @@ package com.sjiwon.anotherart.common;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sjiwon.anotherart.common.config.ObjectMapperConfiguration;
-import com.sjiwon.anotherart.common.config.TestContainerConfiguration;
+import com.sjiwon.anotherart.common.config.RedisTestContainersExtension;
 import com.sjiwon.anotherart.fixture.MemberFixture;
 import com.sjiwon.anotherart.global.security.SecurityConfiguration;
 import com.sjiwon.anotherart.member.domain.Member;
@@ -31,12 +31,14 @@ import static com.sjiwon.anotherart.fixture.MemberFixture.MEMBER_A;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doThrow;
-import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 
 @SpringBootTest(classes = {SecurityConfiguration.class, ObjectMapperConfiguration.class})
-@ExtendWith(TestContainerConfiguration.class)
+@ExtendWith(RedisTestContainersExtension.class)
 @AutoConfigureMockMvc
 @AutoConfigureRestDocs
 public class SecurityTest {
@@ -66,8 +68,8 @@ public class SecurityTest {
                 .findByLoginId(argThat(arg -> !arg.equals(MEMBER_A.getLoginId())));
     }
 
-    private void createMember(MemberFixture fixture, Long memberId) {
-        Member member = fixture.toMember();
+    private void createMember(final MemberFixture fixture, final Long memberId) {
+        final Member member = fixture.toMember();
         ReflectionTestUtils.setField(member, "id", memberId);
 
         given(memberRepository.findById(memberId)).willReturn(Optional.of(member));
@@ -90,7 +92,7 @@ public class SecurityTest {
         );
     }
 
-    protected String convertObjectToJson(Object data) throws JsonProcessingException {
+    protected String convertObjectToJson(final Object data) throws JsonProcessingException {
         return objectMapper.writeValueAsString(data);
     }
 }

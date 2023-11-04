@@ -20,7 +20,9 @@ import java.util.UUID;
 import static com.sjiwon.anotherart.common.utils.FileMockingUtils.createSingleMockMultipartFile;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -45,8 +47,8 @@ class FileUploaderTest extends InfraTest {
         @DisplayName("파일을 전송하지 않았거나 파일의 사이즈가 0이면 업로드가 불가능하다")
         void throwExceptionByFileIsEmpty() {
             // given
-            MultipartFile nullFile = null;
-            MultipartFile emptyFile = new MockMultipartFile("file", "hello.png", "image/png", new byte[]{});
+            final MultipartFile nullFile = null;
+            final MultipartFile emptyFile = new MockMultipartFile("file", "hello.png", "image/png", new byte[]{});
 
             // when - then
             assertThatThrownBy(() -> uploader.uploadArtImage(nullFile))
@@ -61,16 +63,16 @@ class FileUploaderTest extends InfraTest {
         @DisplayName("이미지 업로드를 성공한다")
         void success() throws Exception {
             // given
-            MultipartFile file = createSingleMockMultipartFile("1.png", "image/png");
+            final MultipartFile file = createSingleMockMultipartFile("1.png", "image/png");
 
-            PutObjectResult putObjectResult = new PutObjectResult();
+            final PutObjectResult putObjectResult = new PutObjectResult();
             given(amazonS3.putObject(any(PutObjectRequest.class))).willReturn(putObjectResult);
 
-            URL mockUrl = new URL(createUploadLink("hello4.png"));
+            final URL mockUrl = new URL(createUploadLink("hello4.png"));
             given(amazonS3.getUrl(eq(BUCKET), anyString())).willReturn(mockUrl);
 
             // when
-            String uploadUrl = uploader.uploadArtImage(file);
+            final String uploadUrl = uploader.uploadArtImage(file);
 
             // then
             verify(amazonS3, times(1)).putObject(any(PutObjectRequest.class));
@@ -79,7 +81,7 @@ class FileUploaderTest extends InfraTest {
         }
     }
 
-    private String createUploadLink(String originalFileName) {
+    private String createUploadLink(final String originalFileName) {
         return String.format(
                 "https://kr.object.ncloudstorage.com/bucket/arts/%s-%s",
                 UUID.randomUUID(),

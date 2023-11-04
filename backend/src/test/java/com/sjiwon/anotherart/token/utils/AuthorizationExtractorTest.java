@@ -1,10 +1,10 @@
 package com.sjiwon.anotherart.token.utils;
 
+import jakarta.servlet.http.HttpServletRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.Optional;
 
 import static com.sjiwon.anotherart.common.utils.TokenUtils.ACCESS_TOKEN;
@@ -30,7 +30,7 @@ class AuthorizationExtractorTest {
         given(request.getHeader(AUTHORIZATION)).willReturn(null);
 
         // when
-        Optional<String> token = AuthorizationExtractor.extractToken(request);
+        final Optional<String> token = AuthorizationExtractor.extractToken(request);
 
         // then
         assertThat(token).isEmpty();
@@ -43,7 +43,7 @@ class AuthorizationExtractorTest {
         given(request.getHeader(AUTHORIZATION)).willReturn(BEARER_TOKEN);
 
         // when
-        Optional<String> token = AuthorizationExtractor.extractToken(request);
+        final Optional<String> token = AuthorizationExtractor.extractToken(request);
 
         // then
         assertThat(token).isEmpty();
@@ -56,7 +56,7 @@ class AuthorizationExtractorTest {
         given(request.getHeader(AUTHORIZATION)).willReturn(String.join(" ", BEARER_TOKEN, ACCESS_TOKEN));
 
         // when
-        String token = AuthorizationExtractor.extractToken(request).orElseThrow();
+        final String token = AuthorizationExtractor.extractToken(request).orElseThrow();
 
         // then
         assertThat(token).isEqualTo(ACCESS_TOKEN);

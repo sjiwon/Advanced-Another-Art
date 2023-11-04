@@ -14,13 +14,13 @@ import static com.sjiwon.anotherart.member.domain.point.PointType.REFUND;
 public class MemberPointService {
     private final MemberFindService memberFindService;
 
-    public void chargePoint(Long memberId, Integer amount) {
-        Member member = memberFindService.findById(memberId);
+    public void chargePoint(final Long memberId, final Integer amount) {
+        final Member member = memberFindService.findById(memberId);
         member.addPointRecords(CHARGE, amount);
     }
 
-    public void refundPoint(Long memberId, Integer amount) {
-        Member member = memberFindService.findById(memberId);
+    public void refundPoint(final Long memberId, final Integer amount) {
+        final Member member = memberFindService.findById(memberId);
         member.addPointRecords(REFUND, amount);
     }
 }

@@ -9,11 +9,15 @@ import com.sjiwon.anotherart.art.service.dto.response.ArtAssembler;
 import com.sjiwon.anotherart.art.utils.search.ArtDetailSearchCondition;
 import com.sjiwon.anotherart.art.utils.search.Pagination;
 import com.sjiwon.anotherart.global.dto.SimpleReponseWrapper;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import javax.validation.Valid;
 import java.util.List;
 
 import static com.sjiwon.anotherart.art.utils.search.PagingConstants.getPageRequest;
@@ -26,40 +30,40 @@ public class ArtSearchApiController {
     private final ArtSearchService artSearchService;
 
     @GetMapping("/{artId}")
-    public ResponseEntity<SimpleReponseWrapper<ArtDetails>> getArt(@PathVariable Long artId) {
-        ArtDetails response = artSearchService.getArt(artId);
+    public ResponseEntity<SimpleReponseWrapper<ArtDetails>> getArt(@PathVariable final Long artId) {
+        final ArtDetails response = artSearchService.getArt(artId);
         return ResponseEntity.ok(new SimpleReponseWrapper<>(response));
     }
 
     @GetMapping
-    public ResponseEntity<ArtAssembler> getActiveAuctionArts(@ModelAttribute @Valid ArtBasicSearchRequest request) {
+    public ResponseEntity<ArtAssembler> getActiveAuctionArts(@ModelAttribute @Valid final ArtBasicSearchRequest request) {
         if (isNotSupportedSortType(request.sortType())) {
             return ResponseEntity.ok(new ArtAssembler(List.of(), Pagination.getEmptyPage(request.page())));
         }
 
-        ArtAssembler response = artSearchService.getActiveAuctionArts(request.sortType(), getPageRequest(request.page() - 1));
+        final ArtAssembler response = artSearchService.getActiveAuctionArts(request.sortType(), getPageRequest(request.page() - 1));
         return ResponseEntity.ok(response);
     }
 
     @GetMapping("/keyword")
-    public ResponseEntity<ArtAssembler> getArtsByKeyword(@ModelAttribute @Valid ArtKeywordSearchRequest request) {
+    public ResponseEntity<ArtAssembler> getArtsByKeyword(@ModelAttribute @Valid final ArtKeywordSearchRequest request) {
         if (isNotSupportedSortType(request.sortType())) {
             return ResponseEntity.ok(new ArtAssembler(List.of(), Pagination.getEmptyPage(request.page())));
         }
 
-        ArtDetailSearchCondition condition = new ArtDetailSearchCondition(request.sortType(), request.artType(), request.keyword());
-        ArtAssembler response = artSearchService.getArtsByKeyword(condition, getPageRequest(request.page() - 1));
+        final ArtDetailSearchCondition condition = new ArtDetailSearchCondition(request.sortType(), request.artType(), request.keyword());
+        final ArtAssembler response = artSearchService.getArtsByKeyword(condition, getPageRequest(request.page() - 1));
         return ResponseEntity.ok(response);
     }
 
     @GetMapping("/hashtag")
-    public ResponseEntity<ArtAssembler> getArtsByHashtag(@ModelAttribute @Valid ArtHashtagSearchRequest request) {
+    public ResponseEntity<ArtAssembler> getArtsByHashtag(@ModelAttribute @Valid final ArtHashtagSearchRequest request) {
         if (isNotSupportedSortType(request.sortType())) {
             return ResponseEntity.ok(new ArtAssembler(List.of(), Pagination.getEmptyPage(request.page())));
         }
 
-        ArtDetailSearchCondition condition = new ArtDetailSearchCondition(request.sortType(), request.artType(), request.hashtag());
-        ArtAssembler response = artSearchService.getArtsByHashtag(condition, getPageRequest(request.page() - 1));
+        final ArtDetailSearchCondition condition = new ArtDetailSearchCondition(request.sortType(), request.artType(), request.hashtag());
+        final ArtAssembler response = artSearchService.getArtsByHashtag(condition, getPageRequest(request.page() - 1));
         return ResponseEntity.ok(response);
     }
 }

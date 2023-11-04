@@ -39,7 +39,7 @@ class ArtSimpleQueryRepositoryTest extends RepositoryTest {
         bidder = memberRepository.save(MEMBER_A.toMember());
         bidder.addPointRecords(CHARGE, 100_000_000);
 
-        Member owner = memberRepository.save(MEMBER_B.toMember());
+        final Member owner = memberRepository.save(MEMBER_B.toMember());
         art = artRepository.save(AUCTION_1.toArt(owner));
         auction = auctionRepository.save(Auction.createAuction(art, OPEN_NOW.toPeriod()));
     }

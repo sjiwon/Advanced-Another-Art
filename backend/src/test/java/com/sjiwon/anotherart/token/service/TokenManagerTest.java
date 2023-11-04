@@ -34,7 +34,7 @@ class TokenManagerTest extends ServiceTest {
             tokenManager.synchronizeRefreshToken(MEMBER_ID, refreshToken);
 
             // then
-            Token findToken = tokenRepository.findByMemberId(MEMBER_ID).orElseThrow();
+            final Token findToken = tokenRepository.findByMemberId(MEMBER_ID).orElseThrow();
             assertThat(findToken.getRefreshToken()).isEqualTo(refreshToken);
         }
 
@@ -49,7 +49,7 @@ class TokenManagerTest extends ServiceTest {
             tokenManager.synchronizeRefreshToken(MEMBER_ID, newRefreshToken);
 
             // then
-            Token findToken = tokenRepository.findByMemberId(MEMBER_ID).orElseThrow();
+            final Token findToken = tokenRepository.findByMemberId(MEMBER_ID).orElseThrow();
             assertThat(findToken.getRefreshToken()).isEqualTo(newRefreshToken);
         }
     }
@@ -65,7 +65,7 @@ class TokenManagerTest extends ServiceTest {
         tokenManager.reissueRefreshTokenByRtrPolicy(MEMBER_ID, newRefreshToken);
 
         // then
-        Token findToken = tokenRepository.findByMemberId(MEMBER_ID).orElseThrow();
+        final Token findToken = tokenRepository.findByMemberId(MEMBER_ID).orElseThrow();
         assertThat(findToken.getRefreshToken()).isEqualTo(newRefreshToken);
     }
 
@@ -89,8 +89,8 @@ class TokenManagerTest extends ServiceTest {
         tokenRepository.save(Token.issueRefreshToken(MEMBER_ID, refreshToken));
 
         // when
-        boolean actual1 = tokenManager.isRefreshTokenExists(MEMBER_ID, refreshToken);
-        boolean actual2 = tokenManager.isRefreshTokenExists(MEMBER_ID, refreshToken + "fake");
+        final boolean actual1 = tokenManager.isRefreshTokenExists(MEMBER_ID, refreshToken);
+        final boolean actual2 = tokenManager.isRefreshTokenExists(MEMBER_ID, refreshToken + "fake");
 
         // then
         assertAll(

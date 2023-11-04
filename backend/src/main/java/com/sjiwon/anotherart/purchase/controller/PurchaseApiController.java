@@ -18,7 +18,7 @@ public class PurchaseApiController {
 
     @PreAuthorize("hasRole('USER')")
     @PostMapping
-    public ResponseEntity<Void> purchaseArt(@ExtractPayload Long memberId, @PathVariable Long artId) {
+    public ResponseEntity<Void> purchaseArt(@ExtractPayload final Long memberId, @PathVariable final Long artId) {
         purchaseService.purchaseArt(artId, memberId);
         return ResponseEntity.noContent().build();
     }

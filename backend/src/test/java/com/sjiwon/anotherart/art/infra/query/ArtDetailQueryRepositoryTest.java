@@ -14,6 +14,8 @@ import com.sjiwon.anotherart.fixture.ArtFixture;
 import com.sjiwon.anotherart.fixture.MemberFixture;
 import com.sjiwon.anotherart.member.domain.Member;
 import com.sjiwon.anotherart.member.domain.MemberRepository;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -22,8 +24,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
@@ -32,7 +32,14 @@ import java.util.Set;
 import static com.sjiwon.anotherart.art.domain.ArtType.AUCTION;
 import static com.sjiwon.anotherart.art.domain.ArtType.GENERAL;
 import static com.sjiwon.anotherart.art.utils.search.PagingConstants.getPageRequest;
-import static com.sjiwon.anotherart.art.utils.search.SortType.*;
+import static com.sjiwon.anotherart.art.utils.search.SortType.BID_COUNT_ASC;
+import static com.sjiwon.anotherart.art.utils.search.SortType.BID_COUNT_DESC;
+import static com.sjiwon.anotherart.art.utils.search.SortType.DATE_ASC;
+import static com.sjiwon.anotherart.art.utils.search.SortType.DATE_DESC;
+import static com.sjiwon.anotherart.art.utils.search.SortType.LIKE_ASC;
+import static com.sjiwon.anotherart.art.utils.search.SortType.LIKE_DESC;
+import static com.sjiwon.anotherart.art.utils.search.SortType.PRICE_ASC;
+import static com.sjiwon.anotherart.art.utils.search.SortType.PRICE_DESC;
 import static com.sjiwon.anotherart.fixture.AuctionFixture.AUCTION_OPEN_NOW;
 import static com.sjiwon.anotherart.fixture.MemberFixture.MEMBER_A;
 import static com.sjiwon.anotherart.member.domain.point.PointType.CHARGE;
@@ -70,14 +77,14 @@ class ArtDetailQueryRepositoryTest extends RepositoryTest {
     }
 
     private void initDummyBidders() {
-        List<MemberFixture> dummyFixtures = Arrays.stream(MemberFixture.values())
+        final List<MemberFixture> dummyFixtures = Arrays.stream(MemberFixture.values())
                 .filter(member -> member.getLoginId().startsWith("dummy"))
                 .toList();
         Arrays.setAll(bidders, i -> createMember(dummyFixtures.get(i)));
     }
 
-    private Member createMember(MemberFixture fixture) {
-        Member member = fixture.toMember();
+    private Member createMember(final MemberFixture fixture) {
+        final Member member = fixture.toMember();
         member.addPointRecords(CHARGE, 100_000_000);
         return memberRepository.save(member);
     }
@@ -94,7 +101,7 @@ class ArtDetailQueryRepositoryTest extends RepositoryTest {
         }
 
         private void initArts() {
-            List<ArtFixture> auctionArtFixtures = Arrays.stream(ArtFixture.values())
+            final List<ArtFixture> auctionArtFixtures = Arrays.stream(ArtFixture.values())
                     .filter(art -> art.getType() == AUCTION)
                     .toList();
 
@@ -117,13 +124,13 @@ class ArtDetailQueryRepositoryTest extends RepositoryTest {
             }
         }
 
-        private void applyLikeMarking(Art art, int count) {
+        private void applyLikeMarking(final Art art, final int count) {
             for (int i = 0; i < count; i++) {
                 favoriteRepository.save(Favorite.favoriteMarking(art.getId(), bidders[i].getId()));
             }
         }
 
-        private void applyBid(Auction auction, int count) {
+        private void applyBid(final Auction auction, final int count) {
             for (int i = 0; i < count; i++) {
                 auction.applyNewBid(bidders[i], auction.getHighestBidPrice() + 100);
             }
@@ -133,7 +140,7 @@ class ArtDetailQueryRepositoryTest extends RepositoryTest {
         @DisplayName("등록 날짜 오름차순")
         void dateAsc() {
             /* 20건 active */
-            Page<AuctionArt> result1 = artRepository.findActiveAuctionArts(DATE_ASC, PAGE_REQUEST_1);
+            final Page<AuctionArt> result1 = artRepository.findActiveAuctionArts(DATE_ASC, PAGE_REQUEST_1);
             assertAll(
                     () -> assertThat(result1.hasPrevious()).isFalse(),
                     () -> assertThat(result1.hasNext()).isTrue()
@@ -150,7 +157,7 @@ class ArtDetailQueryRepositoryTest extends RepositoryTest {
                     )
             );
 
-            Page<AuctionArt> result2 = artRepository.findActiveAuctionArts(DATE_ASC, PAGE_REQUEST_2);
+            final Page<AuctionArt> result2 = artRepository.findActiveAuctionArts(DATE_ASC, PAGE_REQUEST_2);
             assertAll(
                     () -> assertThat(result2.hasPrevious()).isTrue(),
                     () -> assertThat(result2.hasNext()).isTrue()
@@ -167,7 +174,7 @@ class ArtDetailQueryRepositoryTest extends RepositoryTest {
                     )
             );
 
-            Page<AuctionArt> result3 = artRepository.findActiveAuctionArts(DATE_ASC, PAGE_REQUEST_3);
+            final Page<AuctionArt> result3 = artRepository.findActiveAuctionArts(DATE_ASC, PAGE_REQUEST_3);
             assertAll(
                     () -> assertThat(result3.hasPrevious()).isTrue(),
                     () -> assertThat(result3.hasNext()).isFalse()
@@ -181,7 +188,7 @@ class ArtDetailQueryRepositoryTest extends RepositoryTest {
             /* 15건 active */
             makeAuctionEnd(auctions[3], auctions[8], auctions[11], auctions[14], auctions[19]);
 
-            Page<AuctionArt> result4 = artRepository.findActiveAuctionArts(DATE_ASC, PAGE_REQUEST_1);
+            final Page<AuctionArt> result4 = artRepository.findActiveAuctionArts(DATE_ASC, PAGE_REQUEST_1);
             assertAll(
                     () -> assertThat(result4.hasPrevious()).isFalse(),
                     () -> assertThat(result4.hasNext()).isTrue()
@@ -198,7 +205,7 @@ class ArtDetailQueryRepositoryTest extends RepositoryTest {
                     )
             );
 
-            Page<AuctionArt> result5 = artRepository.findActiveAuctionArts(DATE_ASC, PAGE_REQUEST_2);
+            final Page<AuctionArt> result5 = artRepository.findActiveAuctionArts(DATE_ASC, PAGE_REQUEST_2);
             assertAll(
                     () -> assertThat(result5.hasPrevious()).isTrue(),
                     () -> assertThat(result5.hasNext()).isFalse()
@@ -220,7 +227,7 @@ class ArtDetailQueryRepositoryTest extends RepositoryTest {
         @DisplayName("등록 날짜 내림차순")
         void dateDesc() {
             /* 20건 active */
-            Page<AuctionArt> result1 = artRepository.findActiveAuctionArts(DATE_DESC, PAGE_REQUEST_1);
+            final Page<AuctionArt> result1 = artRepository.findActiveAuctionArts(DATE_DESC, PAGE_REQUEST_1);
             assertAll(
                     () -> assertThat(result1.hasPrevious()).isFalse(),
                     () -> assertThat(result1.hasNext()).isTrue()
@@ -237,7 +244,7 @@ class ArtDetailQueryRepositoryTest extends RepositoryTest {
                     )
             );
 
-            Page<AuctionArt> result2 = artRepository.findActiveAuctionArts(DATE_DESC, PAGE_REQUEST_2);
+            final Page<AuctionArt> result2 = artRepository.findActiveAuctionArts(DATE_DESC, PAGE_REQUEST_2);
             assertAll(
                     () -> assertThat(result2.hasPrevious()).isTrue(),
                     () -> assertThat(result2.hasNext()).isTrue()
@@ -254,7 +261,7 @@ class ArtDetailQueryRepositoryTest extends RepositoryTest {
                     )
             );
 
-            Page<AuctionArt> result3 = artRepository.findActiveAuctionArts(DATE_DESC, PAGE_REQUEST_3);
+            final Page<AuctionArt> result3 = artRepository.findActiveAuctionArts(DATE_DESC, PAGE_REQUEST_3);
             assertAll(
                     () -> assertThat(result3.hasPrevious()).isTrue(),
                     () -> assertThat(result3.hasNext()).isFalse()
@@ -268,7 +275,7 @@ class ArtDetailQueryRepositoryTest extends RepositoryTest {
             /* 15건 active */
             makeAuctionEnd(auctions[3], auctions[8], auctions[11], auctions[14], auctions[19]);
 
-            Page<AuctionArt> result4 = artRepository.findActiveAuctionArts(DATE_DESC, PAGE_REQUEST_1);
+            final Page<AuctionArt> result4 = artRepository.findActiveAuctionArts(DATE_DESC, PAGE_REQUEST_1);
             assertAll(
                     () -> assertThat(result4.hasPrevious()).isFalse(),
                     () -> assertThat(result4.hasNext()).isTrue()
@@ -285,7 +292,7 @@ class ArtDetailQueryRepositoryTest extends RepositoryTest {
                     )
             );
 
-            Page<AuctionArt> result5 = artRepository.findActiveAuctionArts(DATE_DESC, PAGE_REQUEST_2);
+            final Page<AuctionArt> result5 = artRepository.findActiveAuctionArts(DATE_DESC, PAGE_REQUEST_2);
             assertAll(
                     () -> assertThat(result5.hasPrevious()).isTrue(),
                     () -> assertThat(result5.hasNext()).isFalse()
@@ -307,7 +314,7 @@ class ArtDetailQueryRepositoryTest extends RepositoryTest {
         @DisplayName("입찰가 오름차순")
         void priceAsc() {
             /* 20건 active */
-            Page<AuctionArt> result1 = artRepository.findActiveAuctionArts(PRICE_ASC, PAGE_REQUEST_1);
+            final Page<AuctionArt> result1 = artRepository.findActiveAuctionArts(PRICE_ASC, PAGE_REQUEST_1);
             assertAll(
                     () -> assertThat(result1.hasPrevious()).isFalse(),
                     () -> assertThat(result1.hasNext()).isTrue()
@@ -324,7 +331,7 @@ class ArtDetailQueryRepositoryTest extends RepositoryTest {
                     )
             );
 
-            Page<AuctionArt> result2 = artRepository.findActiveAuctionArts(PRICE_ASC, PAGE_REQUEST_2);
+            final Page<AuctionArt> result2 = artRepository.findActiveAuctionArts(PRICE_ASC, PAGE_REQUEST_2);
             assertAll(
                     () -> assertThat(result2.hasPrevious()).isTrue(),
                     () -> assertThat(result2.hasNext()).isTrue()
@@ -341,7 +348,7 @@ class ArtDetailQueryRepositoryTest extends RepositoryTest {
                     )
             );
 
-            Page<AuctionArt> result3 = artRepository.findActiveAuctionArts(PRICE_ASC, PAGE_REQUEST_3);
+            final Page<AuctionArt> result3 = artRepository.findActiveAuctionArts(PRICE_ASC, PAGE_REQUEST_3);
             assertAll(
                     () -> assertThat(result3.hasPrevious()).isTrue(),
                     () -> assertThat(result3.hasNext()).isFalse()
@@ -355,7 +362,7 @@ class ArtDetailQueryRepositoryTest extends RepositoryTest {
             /* 15건 active */
             makeAuctionEnd(auctions[3], auctions[8], auctions[11], auctions[14], auctions[19]);
 
-            Page<AuctionArt> result4 = artRepository.findActiveAuctionArts(PRICE_ASC, PAGE_REQUEST_1);
+            final Page<AuctionArt> result4 = artRepository.findActiveAuctionArts(PRICE_ASC, PAGE_REQUEST_1);
             assertAll(
                     () -> assertThat(result4.hasPrevious()).isFalse(),
                     () -> assertThat(result4.hasNext()).isTrue()
@@ -372,7 +379,7 @@ class ArtDetailQueryRepositoryTest extends RepositoryTest {
                     )
             );
 
-            Page<AuctionArt> result5 = artRepository.findActiveAuctionArts(PRICE_ASC, PAGE_REQUEST_2);
+            final Page<AuctionArt> result5 = artRepository.findActiveAuctionArts(PRICE_ASC, PAGE_REQUEST_2);
             assertAll(
                     () -> assertThat(result5.hasPrevious()).isTrue(),
                     () -> assertThat(result5.hasNext()).isFalse()
@@ -394,7 +401,7 @@ class ArtDetailQueryRepositoryTest extends RepositoryTest {
         @DisplayName("입찰가 내림차순")
         void priceDesc() {
             /* 20건 active */
-            Page<AuctionArt> result1 = artRepository.findActiveAuctionArts(PRICE_DESC, PAGE_REQUEST_1);
+            final Page<AuctionArt> result1 = artRepository.findActiveAuctionArts(PRICE_DESC, PAGE_REQUEST_1);
             assertAll(
                     () -> assertThat(result1.hasPrevious()).isFalse(),
                     () -> assertThat(result1.hasNext()).isTrue()
@@ -411,7 +418,7 @@ class ArtDetailQueryRepositoryTest extends RepositoryTest {
                     )
             );
 
-            Page<AuctionArt> result2 = artRepository.findActiveAuctionArts(PRICE_DESC, PAGE_REQUEST_2);
+            final Page<AuctionArt> result2 = artRepository.findActiveAuctionArts(PRICE_DESC, PAGE_REQUEST_2);
             assertAll(
                     () -> assertThat(result2.hasPrevious()).isTrue(),
                     () -> assertThat(result2.hasNext()).isTrue()
@@ -428,7 +435,7 @@ class ArtDetailQueryRepositoryTest extends RepositoryTest {
                     )
             );
 
-            Page<AuctionArt> result3 = artRepository.findActiveAuctionArts(PRICE_DESC, PAGE_REQUEST_3);
+            final Page<AuctionArt> result3 = artRepository.findActiveAuctionArts(PRICE_DESC, PAGE_REQUEST_3);
             assertAll(
                     () -> assertThat(result3.hasPrevious()).isTrue(),
                     () -> assertThat(result3.hasNext()).isFalse()
@@ -442,7 +449,7 @@ class ArtDetailQueryRepositoryTest extends RepositoryTest {
             /* 15건 active */
             makeAuctionEnd(auctions[3], auctions[8], auctions[11], auctions[14], auctions[19]);
 
-            Page<AuctionArt> result4 = artRepository.findActiveAuctionArts(PRICE_DESC, PAGE_REQUEST_1);
+            final Page<AuctionArt> result4 = artRepository.findActiveAuctionArts(PRICE_DESC, PAGE_REQUEST_1);
             assertAll(
                     () -> assertThat(result4.hasPrevious()).isFalse(),
                     () -> assertThat(result4.hasNext()).isTrue()
@@ -459,7 +466,7 @@ class ArtDetailQueryRepositoryTest extends RepositoryTest {
                     )
             );
 
-            Page<AuctionArt> result5 = artRepository.findActiveAuctionArts(PRICE_DESC, PAGE_REQUEST_2);
+            final Page<AuctionArt> result5 = artRepository.findActiveAuctionArts(PRICE_DESC, PAGE_REQUEST_2);
             assertAll(
                     () -> assertThat(result5.hasPrevious()).isTrue(),
                     () -> assertThat(result5.hasNext()).isFalse()
@@ -481,7 +488,7 @@ class ArtDetailQueryRepositoryTest extends RepositoryTest {
         @DisplayName("찜 횟수 오름차순")
         void likeAsc() {
             /* 20건 active */
-            Page<AuctionArt> result1 = artRepository.findActiveAuctionArts(LIKE_ASC, PAGE_REQUEST_1);
+            final Page<AuctionArt> result1 = artRepository.findActiveAuctionArts(LIKE_ASC, PAGE_REQUEST_1);
             assertAll(
                     () -> assertThat(result1.hasPrevious()).isFalse(),
                     () -> assertThat(result1.hasNext()).isTrue()
@@ -498,7 +505,7 @@ class ArtDetailQueryRepositoryTest extends RepositoryTest {
                     )
             );
 
-            Page<AuctionArt> result2 = artRepository.findActiveAuctionArts(LIKE_ASC, PAGE_REQUEST_2);
+            final Page<AuctionArt> result2 = artRepository.findActiveAuctionArts(LIKE_ASC, PAGE_REQUEST_2);
             assertAll(
                     () -> assertThat(result2.hasPrevious()).isTrue(),
                     () -> assertThat(result2.hasNext()).isTrue()
@@ -515,7 +522,7 @@ class ArtDetailQueryRepositoryTest extends RepositoryTest {
                     )
             );
 
-            Page<AuctionArt> result3 = artRepository.findActiveAuctionArts(LIKE_ASC, PAGE_REQUEST_3);
+            final Page<AuctionArt> result3 = artRepository.findActiveAuctionArts(LIKE_ASC, PAGE_REQUEST_3);
             assertAll(
                     () -> assertThat(result3.hasPrevious()).isTrue(),
                     () -> assertThat(result3.hasNext()).isFalse()
@@ -529,7 +536,7 @@ class ArtDetailQueryRepositoryTest extends RepositoryTest {
             /* 15건 active */
             makeAuctionEnd(auctions[3], auctions[8], auctions[11], auctions[14], auctions[19]);
 
-            Page<AuctionArt> result4 = artRepository.findActiveAuctionArts(LIKE_ASC, PAGE_REQUEST_1);
+            final Page<AuctionArt> result4 = artRepository.findActiveAuctionArts(LIKE_ASC, PAGE_REQUEST_1);
             assertAll(
                     () -> assertThat(result4.hasPrevious()).isFalse(),
                     () -> assertThat(result4.hasNext()).isTrue()
@@ -546,7 +553,7 @@ class ArtDetailQueryRepositoryTest extends RepositoryTest {
                     )
             );
 
-            Page<AuctionArt> result5 = artRepository.findActiveAuctionArts(LIKE_ASC, PAGE_REQUEST_2);
+            final Page<AuctionArt> result5 = artRepository.findActiveAuctionArts(LIKE_ASC, PAGE_REQUEST_2);
             assertAll(
                     () -> assertThat(result5.hasPrevious()).isTrue(),
                     () -> assertThat(result5.hasNext()).isFalse()
@@ -568,7 +575,7 @@ class ArtDetailQueryRepositoryTest extends RepositoryTest {
         @DisplayName("찜 횟수 내림차순")
         void likeDesc() {
             /* 20건 active */
-            Page<AuctionArt> result1 = artRepository.findActiveAuctionArts(LIKE_DESC, PAGE_REQUEST_1);
+            final Page<AuctionArt> result1 = artRepository.findActiveAuctionArts(LIKE_DESC, PAGE_REQUEST_1);
             assertAll(
                     () -> assertThat(result1.hasPrevious()).isFalse(),
                     () -> assertThat(result1.hasNext()).isTrue()
@@ -585,7 +592,7 @@ class ArtDetailQueryRepositoryTest extends RepositoryTest {
                     )
             );
 
-            Page<AuctionArt> result2 = artRepository.findActiveAuctionArts(LIKE_DESC, PAGE_REQUEST_2);
+            final Page<AuctionArt> result2 = artRepository.findActiveAuctionArts(LIKE_DESC, PAGE_REQUEST_2);
             assertAll(
                     () -> assertThat(result2.hasPrevious()).isTrue(),
                     () -> assertThat(result2.hasNext()).isTrue()
@@ -602,7 +609,7 @@ class ArtDetailQueryRepositoryTest extends RepositoryTest {
                     )
             );
 
-            Page<AuctionArt> result3 = artRepository.findActiveAuctionArts(LIKE_DESC, PAGE_REQUEST_3);
+            final Page<AuctionArt> result3 = artRepository.findActiveAuctionArts(LIKE_DESC, PAGE_REQUEST_3);
             assertAll(
                     () -> assertThat(result3.hasPrevious()).isTrue(),
                     () -> assertThat(result3.hasNext()).isFalse()
@@ -616,7 +623,7 @@ class ArtDetailQueryRepositoryTest extends RepositoryTest {
             /* 15건 active */
             makeAuctionEnd(auctions[3], auctions[8], auctions[11], auctions[14], auctions[19]);
 
-            Page<AuctionArt> result4 = artRepository.findActiveAuctionArts(LIKE_DESC, PAGE_REQUEST_1);
+            final Page<AuctionArt> result4 = artRepository.findActiveAuctionArts(LIKE_DESC, PAGE_REQUEST_1);
             assertAll(
                     () -> assertThat(result4.hasPrevious()).isFalse(),
                     () -> assertThat(result4.hasNext()).isTrue()
@@ -633,7 +640,7 @@ class ArtDetailQueryRepositoryTest extends RepositoryTest {
                     )
             );
 
-            Page<AuctionArt> result5 = artRepository.findActiveAuctionArts(LIKE_DESC, PAGE_REQUEST_2);
+            final Page<AuctionArt> result5 = artRepository.findActiveAuctionArts(LIKE_DESC, PAGE_REQUEST_2);
             assertAll(
                     () -> assertThat(result5.hasPrevious()).isTrue(),
                     () -> assertThat(result5.hasNext()).isFalse()
@@ -655,7 +662,7 @@ class ArtDetailQueryRepositoryTest extends RepositoryTest {
         @DisplayName("입찰 횟수 오름차순")
         void bidCountAsc() {
             /* 20건 active */
-            Page<AuctionArt> result1 = artRepository.findActiveAuctionArts(BID_COUNT_ASC, PAGE_REQUEST_1);
+            final Page<AuctionArt> result1 = artRepository.findActiveAuctionArts(BID_COUNT_ASC, PAGE_REQUEST_1);
             assertAll(
                     () -> assertThat(result1.hasPrevious()).isFalse(),
                     () -> assertThat(result1.hasNext()).isTrue()
@@ -672,7 +679,7 @@ class ArtDetailQueryRepositoryTest extends RepositoryTest {
                     )
             );
 
-            Page<AuctionArt> result2 = artRepository.findActiveAuctionArts(BID_COUNT_ASC, PAGE_REQUEST_2);
+            final Page<AuctionArt> result2 = artRepository.findActiveAuctionArts(BID_COUNT_ASC, PAGE_REQUEST_2);
             assertAll(
                     () -> assertThat(result2.hasPrevious()).isTrue(),
                     () -> assertThat(result2.hasNext()).isTrue()
@@ -689,7 +696,7 @@ class ArtDetailQueryRepositoryTest extends RepositoryTest {
                     )
             );
 
-            Page<AuctionArt> result3 = artRepository.findActiveAuctionArts(BID_COUNT_ASC, PAGE_REQUEST_3);
+            final Page<AuctionArt> result3 = artRepository.findActiveAuctionArts(BID_COUNT_ASC, PAGE_REQUEST_3);
             assertAll(
                     () -> assertThat(result3.hasPrevious()).isTrue(),
                     () -> assertThat(result3.hasNext()).isFalse()
@@ -703,7 +710,7 @@ class ArtDetailQueryRepositoryTest extends RepositoryTest {
             /* 15건 active */
             makeAuctionEnd(auctions[3], auctions[8], auctions[11], auctions[14], auctions[19]);
 
-            Page<AuctionArt> result4 = artRepository.findActiveAuctionArts(BID_COUNT_ASC, PAGE_REQUEST_1);
+            final Page<AuctionArt> result4 = artRepository.findActiveAuctionArts(BID_COUNT_ASC, PAGE_REQUEST_1);
             assertAll(
                     () -> assertThat(result4.hasPrevious()).isFalse(),
                     () -> assertThat(result4.hasNext()).isTrue()
@@ -720,7 +727,7 @@ class ArtDetailQueryRepositoryTest extends RepositoryTest {
                     )
             );
 
-            Page<AuctionArt> result5 = artRepository.findActiveAuctionArts(BID_COUNT_ASC, PAGE_REQUEST_2);
+            final Page<AuctionArt> result5 = artRepository.findActiveAuctionArts(BID_COUNT_ASC, PAGE_REQUEST_2);
             assertAll(
                     () -> assertThat(result5.hasPrevious()).isTrue(),
                     () -> assertThat(result5.hasNext()).isFalse()
@@ -742,7 +749,7 @@ class ArtDetailQueryRepositoryTest extends RepositoryTest {
         @DisplayName("입찰 횟수 내림차순")
         void bidCountDesc() {
             /* 20건 active */
-            Page<AuctionArt> result1 = artRepository.findActiveAuctionArts(BID_COUNT_DESC, PAGE_REQUEST_1);
+            final Page<AuctionArt> result1 = artRepository.findActiveAuctionArts(BID_COUNT_DESC, PAGE_REQUEST_1);
             assertAll(
                     () -> assertThat(result1.hasPrevious()).isFalse(),
                     () -> assertThat(result1.hasNext()).isTrue()
@@ -759,7 +766,7 @@ class ArtDetailQueryRepositoryTest extends RepositoryTest {
                     )
             );
 
-            Page<AuctionArt> result2 = artRepository.findActiveAuctionArts(BID_COUNT_DESC, PAGE_REQUEST_2);
+            final Page<AuctionArt> result2 = artRepository.findActiveAuctionArts(BID_COUNT_DESC, PAGE_REQUEST_2);
             assertAll(
                     () -> assertThat(result2.hasPrevious()).isTrue(),
                     () -> assertThat(result2.hasNext()).isTrue()
@@ -776,7 +783,7 @@ class ArtDetailQueryRepositoryTest extends RepositoryTest {
                     )
             );
 
-            Page<AuctionArt> result3 = artRepository.findActiveAuctionArts(BID_COUNT_DESC, PAGE_REQUEST_3);
+            final Page<AuctionArt> result3 = artRepository.findActiveAuctionArts(BID_COUNT_DESC, PAGE_REQUEST_3);
             assertAll(
                     () -> assertThat(result3.hasPrevious()).isTrue(),
                     () -> assertThat(result3.hasNext()).isFalse()
@@ -790,7 +797,7 @@ class ArtDetailQueryRepositoryTest extends RepositoryTest {
             /* 15건 active */
             makeAuctionEnd(auctions[3], auctions[8], auctions[11], auctions[14], auctions[19]);
 
-            Page<AuctionArt> result4 = artRepository.findActiveAuctionArts(BID_COUNT_DESC, PAGE_REQUEST_1);
+            final Page<AuctionArt> result4 = artRepository.findActiveAuctionArts(BID_COUNT_DESC, PAGE_REQUEST_1);
             assertAll(
                     () -> assertThat(result4.hasPrevious()).isFalse(),
                     () -> assertThat(result4.hasNext()).isTrue()
@@ -807,7 +814,7 @@ class ArtDetailQueryRepositoryTest extends RepositoryTest {
                     )
             );
 
-            Page<AuctionArt> result5 = artRepository.findActiveAuctionArts(BID_COUNT_DESC, PAGE_REQUEST_2);
+            final Page<AuctionArt> result5 = artRepository.findActiveAuctionArts(BID_COUNT_DESC, PAGE_REQUEST_2);
             assertAll(
                     () -> assertThat(result5.hasPrevious()).isTrue(),
                     () -> assertThat(result5.hasNext()).isFalse()
@@ -825,8 +832,8 @@ class ArtDetailQueryRepositoryTest extends RepositoryTest {
             );
         }
 
-        private void makeAuctionEnd(Auction... auctions) {
-            List<Long> auctionIds = Arrays.stream(auctions)
+        private void makeAuctionEnd(final Auction... auctions) {
+            final List<Long> auctionIds = Arrays.stream(auctions)
                     .map(Auction::getId)
                     .toList();
 
@@ -856,10 +863,10 @@ class ArtDetailQueryRepositoryTest extends RepositoryTest {
         }
 
         private void initArts() {
-            List<ArtFixture> auctionArtFixtures = Arrays.stream(ArtFixture.values())
+            final List<ArtFixture> auctionArtFixtures = Arrays.stream(ArtFixture.values())
                     .filter(art -> art.getType() == AUCTION)
                     .toList();
-            List<ArtFixture> generalArtFixtures = Arrays.stream(ArtFixture.values())
+            final List<ArtFixture> generalArtFixtures = Arrays.stream(ArtFixture.values())
                     .filter(art -> art.getType() == GENERAL)
                     .toList();
 
@@ -886,13 +893,13 @@ class ArtDetailQueryRepositoryTest extends RepositoryTest {
             }
         }
 
-        private void applyLikeMarking(Art art, int count) {
+        private void applyLikeMarking(final Art art, final int count) {
             for (int i = 0; i < count; i++) {
                 favoriteRepository.save(Favorite.favoriteMarking(art.getId(), bidders[i].getId()));
             }
         }
 
-        private void applyBid(Auction auction, int count) {
+        private void applyBid(final Auction auction, final int count) {
             for (int i = 0; i < count; i++) {
                 auction.applyNewBid(bidders[i], auction.getHighestBidPrice() + 100);
             }
@@ -904,7 +911,7 @@ class ArtDetailQueryRepositoryTest extends RepositoryTest {
             final ArtDetailSearchCondition condition = new ArtDetailSearchCondition(DATE_ASC, AUCTION, KEYWORD_HELLO);
 
             /* 1. 경매 작품 8건 fetching */
-            Page<AuctionArt> result1 = artRepository.findAuctionArtsByKeyword(condition, PAGE_REQUEST_1);
+            final Page<AuctionArt> result1 = artRepository.findAuctionArtsByKeyword(condition, PAGE_REQUEST_1);
             assertAll(
                     () -> assertThat(result1.hasPrevious()).isFalse(),
                     () -> assertThat(result1.hasNext()).isTrue()
@@ -922,7 +929,7 @@ class ArtDetailQueryRepositoryTest extends RepositoryTest {
             );
 
             /* 2. 경매 작품 2건 fetching */
-            Page<AuctionArt> result2 = artRepository.findAuctionArtsByKeyword(condition, PAGE_REQUEST_2);
+            final Page<AuctionArt> result2 = artRepository.findAuctionArtsByKeyword(condition, PAGE_REQUEST_2);
             assertAll(
                     () -> assertThat(result2.hasPrevious()).isTrue(),
                     () -> assertThat(result2.hasNext()).isFalse()
@@ -940,7 +947,7 @@ class ArtDetailQueryRepositoryTest extends RepositoryTest {
             final ArtDetailSearchCondition condition = new ArtDetailSearchCondition(DATE_ASC, GENERAL, KEYWORD_HELLO);
 
             /* 1. 일반 작품 8건 fetching */
-            Page<GeneralArt> result1 = artRepository.findGeneralArtsByKeyword(condition, PAGE_REQUEST_1);
+            final Page<GeneralArt> result1 = artRepository.findGeneralArtsByKeyword(condition, PAGE_REQUEST_1);
             assertAll(
                     () -> assertThat(result1.hasPrevious()).isFalse(),
                     () -> assertThat(result1.hasNext()).isTrue()
@@ -958,7 +965,7 @@ class ArtDetailQueryRepositoryTest extends RepositoryTest {
             );
 
             /* 2. 일반o 작품 2건 fetching */
-            Page<GeneralArt> result2 = artRepository.findGeneralArtsByKeyword(condition, PAGE_REQUEST_2);
+            final Page<GeneralArt> result2 = artRepository.findGeneralArtsByKeyword(condition, PAGE_REQUEST_2);
             assertAll(
                     () -> assertThat(result2.hasPrevious()).isTrue(),
                     () -> assertThat(result2.hasNext()).isFalse()
@@ -990,10 +997,10 @@ class ArtDetailQueryRepositoryTest extends RepositoryTest {
         }
 
         private void initArts() {
-            List<ArtFixture> auctionArtFixtures = Arrays.stream(ArtFixture.values())
+            final List<ArtFixture> auctionArtFixtures = Arrays.stream(ArtFixture.values())
                     .filter(art -> art.getType() == AUCTION)
                     .toList();
-            List<ArtFixture> generalArtFixtures = Arrays.stream(ArtFixture.values())
+            final List<ArtFixture> generalArtFixtures = Arrays.stream(ArtFixture.values())
                     .filter(art -> art.getType() == GENERAL)
                     .toList();
 
@@ -1020,13 +1027,13 @@ class ArtDetailQueryRepositoryTest extends RepositoryTest {
             }
         }
 
-        private void applyLikeMarking(Art art, int count) {
+        private void applyLikeMarking(final Art art, final int count) {
             for (int i = 0; i < count; i++) {
                 favoriteRepository.save(Favorite.favoriteMarking(art.getId(), bidders[i].getId()));
             }
         }
 
-        private void applyBid(Auction auction, int count) {
+        private void applyBid(final Auction auction, final int count) {
             for (int i = 0; i < count; i++) {
                 auction.applyNewBid(bidders[i], auction.getHighestBidPrice() + 100);
             }
@@ -1038,7 +1045,7 @@ class ArtDetailQueryRepositoryTest extends RepositoryTest {
             final ArtDetailSearchCondition condition = new ArtDetailSearchCondition(DATE_ASC, AUCTION, HASHTAG_A);
 
             /* 1. 경매 작품 8건 fetching */
-            Page<AuctionArt> result1 = artRepository.findAuctionArtsByHashtag(condition, PAGE_REQUEST_1);
+            final Page<AuctionArt> result1 = artRepository.findAuctionArtsByHashtag(condition, PAGE_REQUEST_1);
             assertAll(
                     () -> assertThat(result1.hasPrevious()).isFalse(),
                     () -> assertThat(result1.hasNext()).isTrue()
@@ -1056,7 +1063,7 @@ class ArtDetailQueryRepositoryTest extends RepositoryTest {
             );
 
             /* 2. 경매 작품 2건 fetching */
-            Page<AuctionArt> result2 = artRepository.findAuctionArtsByHashtag(condition, PAGE_REQUEST_2);
+            final Page<AuctionArt> result2 = artRepository.findAuctionArtsByHashtag(condition, PAGE_REQUEST_2);
             assertAll(
                     () -> assertThat(result2.hasPrevious()).isTrue(),
                     () -> assertThat(result2.hasNext()).isFalse()
@@ -1074,7 +1081,7 @@ class ArtDetailQueryRepositoryTest extends RepositoryTest {
             final ArtDetailSearchCondition condition = new ArtDetailSearchCondition(DATE_ASC, GENERAL, HASHTAG_A);
 
             /* 1. 일반 작품 8건 fetching */
-            Page<GeneralArt> result1 = artRepository.findGeneralArtsByHashtag(condition, PAGE_REQUEST_1);
+            final Page<GeneralArt> result1 = artRepository.findGeneralArtsByHashtag(condition, PAGE_REQUEST_1);
             assertAll(
                     () -> assertThat(result1.hasPrevious()).isFalse(),
                     () -> assertThat(result1.hasNext()).isTrue()
@@ -1092,7 +1099,7 @@ class ArtDetailQueryRepositoryTest extends RepositoryTest {
             );
 
             /* 2. 일반o 작품 2건 fetching */
-            Page<GeneralArt> result2 = artRepository.findGeneralArtsByHashtag(condition, PAGE_REQUEST_2);
+            final Page<GeneralArt> result2 = artRepository.findGeneralArtsByHashtag(condition, PAGE_REQUEST_2);
             assertAll(
                     () -> assertThat(result2.hasPrevious()).isTrue(),
                     () -> assertThat(result2.hasNext()).isFalse()
@@ -1105,14 +1112,14 @@ class ArtDetailQueryRepositoryTest extends RepositoryTest {
         }
     }
 
-    private void assertThatPagingAuctionArtMatch(List<AuctionArt> content, List<Auction> auctions, List<Integer> counts) {
-        int totalSize = auctions.size();
+    private void assertThatPagingAuctionArtMatch(final List<AuctionArt> content, final List<Auction> auctions, final List<Integer> counts) {
+        final int totalSize = auctions.size();
         assertThat(content).hasSize(totalSize);
 
         for (int i = 0; i < totalSize; i++) {
-            AuctionArt auctionArt = content.get(i);
-            Auction auction = auctions.get(i);
-            Integer count = counts.get(i);
+            final AuctionArt auctionArt = content.get(i);
+            final Auction auction = auctions.get(i);
+            final Integer count = counts.get(i);
 
             assertAll(
                     () -> assertThat(auctionArt.getAuction().getId()).isEqualTo(auction.getId()),
@@ -1123,14 +1130,14 @@ class ArtDetailQueryRepositoryTest extends RepositoryTest {
         }
     }
 
-    private void assertThatPagingGeneralArtMatch(List<GeneralArt> content, List<Art> arts, List<Integer> counts) {
-        int totalSize = arts.size();
+    private void assertThatPagingGeneralArtMatch(final List<GeneralArt> content, final List<Art> arts, final List<Integer> counts) {
+        final int totalSize = arts.size();
         assertThat(content).hasSize(totalSize);
 
         for (int i = 0; i < totalSize; i++) {
-            GeneralArt auctionArt = content.get(i);
-            Art art = arts.get(i);
-            Integer count = counts.get(i);
+            final GeneralArt auctionArt = content.get(i);
+            final Art art = arts.get(i);
+            final Integer count = counts.get(i);
 
             assertAll(
                     () -> assertThat(auctionArt.getArt().getId()).isEqualTo(art.getId()),

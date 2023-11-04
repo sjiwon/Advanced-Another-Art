@@ -17,8 +17,8 @@ public class TokenReissueApiController {
     private final TokenReissueService tokenReissueService;
 
     @PostMapping
-    public ResponseEntity<TokenResponse> reissueTokens(@ExtractPayload Long memberId, @ExtractToken String refreshToken) {
-        TokenResponse tokenResponse = tokenReissueService.reissueTokens(memberId, refreshToken);
+    public ResponseEntity<TokenResponse> reissueTokens(@ExtractPayload final Long memberId, @ExtractToken final String refreshToken) {
+        final TokenResponse tokenResponse = tokenReissueService.reissueTokens(memberId, refreshToken);
         return ResponseEntity.ok(tokenResponse);
     }
 }

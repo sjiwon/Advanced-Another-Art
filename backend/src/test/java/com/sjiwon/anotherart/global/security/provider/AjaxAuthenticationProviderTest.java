@@ -77,11 +77,11 @@ class AjaxAuthenticationProviderTest extends ServiceTest {
         );
 
         // when
-        Authentication authenticate = authenticationProvider.authenticate(authentication);
+        final Authentication authenticate = authenticationProvider.authenticate(authentication);
 
         // then
-        MemberPrincipal principal = (MemberPrincipal) authenticate.getPrincipal();
-        List<String> authorities = authenticate.getAuthorities()
+        final MemberPrincipal principal = (MemberPrincipal) authenticate.getPrincipal();
+        final List<String> authorities = authenticate.getAuthorities()
                 .stream()
                 .map(GrantedAuthority::getAuthority)
                 .toList();

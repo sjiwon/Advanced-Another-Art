@@ -47,7 +47,7 @@ class ArtValidatorTest extends ServiceTest {
     @DisplayName("작품명 중복에 대한 검증을 진행한다 [스터디 수정 과정]")
     void validateUniqueNameForUpdate() {
         // given
-        Art another = artRepository.save(AUCTION_2.toArt(owner));
+        final Art another = artRepository.save(AUCTION_2.toArt(owner));
 
         // when - then
         final ArtName otherName = another.getName();

@@ -15,26 +15,26 @@ public class FavoriteService {
     private final FavoriteRepository favoriteRepository;
 
     @Transactional
-    public Long like(Long artId, Long memberId) {
+    public Long like(final Long artId, final Long memberId) {
         validateLike(artId, memberId);
 
-        Favorite favoriteArt = Favorite.favoriteMarking(artId, memberId);
+        final Favorite favoriteArt = Favorite.favoriteMarking(artId, memberId);
         return favoriteRepository.save(favoriteArt).getId();
     }
 
-    private void validateLike(Long artId, Long memberId) {
+    private void validateLike(final Long artId, final Long memberId) {
         if (favoriteRepository.existsByArtIdAndMemberId(artId, memberId)) {
             throw AnotherArtException.type(FavoriteErrorCode.ALREADY_FAVORITE_MARKED);
         }
     }
 
     @Transactional
-    public void cancel(Long artId, Long memberId) {
+    public void cancel(final Long artId, final Long memberId) {
         validateCancel(artId, memberId);
         favoriteRepository.deleteFavoriteMarking(artId, memberId);
     }
 
-    private void validateCancel(Long artId, Long memberId) {
+    private void validateCancel(final Long artId, final Long memberId) {
         if (!favoriteRepository.existsByArtIdAndMemberId(artId, memberId)) {
             throw AnotherArtException.type(FavoriteErrorCode.NOT_FAVORITE_MARKED);
         }

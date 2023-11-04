@@ -17,8 +17,8 @@ class TokenPayloadCheckerTest extends ServiceTest {
     @DisplayName("Token PayloadId와 PathVariable memberId가 동일한지 확인한다")
     void isTrustworthyMember() {
         // when
-        boolean actual1 = tokenPayloadChecker.isTrustworthyMember(1L, 1L);
-        boolean actual2 = tokenPayloadChecker.isTrustworthyMember(1L, 2L);
+        final boolean actual1 = tokenPayloadChecker.isTrustworthyMember(1L, 1L);
+        final boolean actual2 = tokenPayloadChecker.isTrustworthyMember(1L, 2L);
 
         // then
         assertAll(

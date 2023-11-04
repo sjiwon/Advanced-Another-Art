@@ -22,9 +22,9 @@ public class TradedArt implements ArtDetails {
 
     @QueryProjection
     public TradedArt(
-            Long artId, ArtName artName, Description artDescription, int price, ArtStatus status, String storageName, LocalDateTime registrationDate,
-            Long ownerId, Nickname ownerNickname, String ownerSchool,
-            Long buyerId, Nickname buyerNickname, String buyerSchool
+            final Long artId, final ArtName artName, final Description artDescription, final int price, final ArtStatus status, final String storageName, final LocalDateTime registrationDate,
+            final Long ownerId, final Nickname ownerNickname, final String ownerSchool,
+            final Long buyerId, final Nickname buyerNickname, final String buyerSchool
     ) {
         this.art = new BasicArt(
                 artId,
@@ -47,11 +47,11 @@ public class TradedArt implements ArtDetails {
         );
     }
 
-    public void applyHashtags(List<String> hashtags) {
+    public void applyHashtags(final List<String> hashtags) {
         this.art.applyHashtags(hashtags);
     }
 
-    public void applyLikeCount(List<Long> likeMembers) {
+    public void applyLikeCount(final List<Long> likeMembers) {
         this.art.applyLikeMembers(likeMembers);
     }
 }

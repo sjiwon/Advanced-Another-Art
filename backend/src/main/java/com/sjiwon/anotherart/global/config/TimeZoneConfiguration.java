@@ -1,8 +1,8 @@
 package com.sjiwon.anotherart.global.config;
 
+import jakarta.annotation.PostConstruct;
 import org.springframework.context.annotation.Configuration;
 
-import javax.annotation.PostConstruct;
 import java.util.TimeZone;
 
 @Configuration

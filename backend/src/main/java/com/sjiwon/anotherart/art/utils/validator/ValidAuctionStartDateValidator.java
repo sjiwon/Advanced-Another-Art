@@ -1,12 +1,13 @@
 package com.sjiwon.anotherart.art.utils.validator;
 
-import javax.validation.ConstraintValidator;
-import javax.validation.ConstraintValidatorContext;
+import jakarta.validation.ConstraintValidator;
+import jakarta.validation.ConstraintValidatorContext;
+
 import java.time.LocalDateTime;
 
 public class ValidAuctionStartDateValidator implements ConstraintValidator<ValidAuctionStartDate, LocalDateTime> {
     @Override
-    public boolean isValid(LocalDateTime startDate, ConstraintValidatorContext context) {
+    public boolean isValid(final LocalDateTime startDate, final ConstraintValidatorContext context) {
         if (startDate == null) { // 일반 작품 -> Validation X
             return true;
         }

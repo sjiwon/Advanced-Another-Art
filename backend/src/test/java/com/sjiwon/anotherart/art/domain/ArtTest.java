@@ -31,8 +31,8 @@ class ArtTest {
         member = createMember(MEMBER_B, 2L);
     }
 
-    private Member createMember(MemberFixture fixture, Long id) {
-        Member member = fixture.toMember();
+    private Member createMember(final MemberFixture fixture, final Long id) {
+        final Member member = fixture.toMember();
         ReflectionTestUtils.setField(member, "id", id);
 
         return member;
@@ -40,9 +40,9 @@ class ArtTest {
 
     @Test
     @DisplayName("Art를 생성한다")
-    void construct(){
-        Art auctionArt = AUCTION_1.toArt(owner);
-        Art generalArt = GENERAL_1.toArt(owner);
+    void construct() {
+        final Art auctionArt = AUCTION_1.toArt(owner);
+        final Art generalArt = GENERAL_1.toArt(owner);
 
         assertAll(
                 () -> assertThat(auctionArt.getNameValue()).isEqualTo(AUCTION_1.getName()),
@@ -71,9 +71,9 @@ class ArtTest {
 
     @Test
     @DisplayName("작품을 수정한다 [이름 & 설명 & 해시태그]")
-    void update(){
+    void update() {
         // given
-        Art art = AUCTION_1.toArt(owner);
+        final Art art = AUCTION_1.toArt(owner);
 
         // when
         final ArtName updateName = ArtName.from("HELLO ART");
@@ -91,9 +91,9 @@ class ArtTest {
 
     @Test
     @DisplayName("작품 판매를 종료한다")
-    void closeSale(){
+    void closeSale() {
         // given
-        Art art = AUCTION_1.toArt(owner);
+        final Art art = AUCTION_1.toArt(owner);
         assertThat(art.getStatus()).isEqualTo(ON_SALE);
 
         // when
@@ -110,12 +110,12 @@ class ArtTest {
     @DisplayName("경매 작품인지 확인한다")
     void isAuctionType() {
         // given
-        Art auctionArt = AUCTION_1.toArt(owner);
-        Art generalArt = GENERAL_1.toArt(owner);
+        final Art auctionArt = AUCTION_1.toArt(owner);
+        final Art generalArt = GENERAL_1.toArt(owner);
 
         // when
-        boolean actual1 = auctionArt.isAuctionType();
-        boolean actual2 = generalArt.isAuctionType();
+        final boolean actual1 = auctionArt.isAuctionType();
+        final boolean actual2 = generalArt.isAuctionType();
 
         // then
         assertAll(
@@ -128,11 +128,11 @@ class ArtTest {
     @DisplayName("작품 소유자인지 확인한다")
     void isArtOwner() {
         // given
-        Art art = AUCTION_1.toArt(owner);
+        final Art art = AUCTION_1.toArt(owner);
 
         // when
-        boolean actual1 = art.isArtOwner(owner);
-        boolean actual2 = art.isArtOwner(member);
+        final boolean actual1 = art.isArtOwner(owner);
+        final boolean actual2 = art.isArtOwner(member);
 
         // then
         assertAll(

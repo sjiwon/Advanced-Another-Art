@@ -1,7 +1,8 @@
 package com.sjiwon.anotherart.art.utils.validator;
 
-import javax.validation.ConstraintValidator;
-import javax.validation.ConstraintValidatorContext;
+import jakarta.validation.ConstraintValidator;
+import jakarta.validation.ConstraintValidatorContext;
+
 import java.util.Set;
 
 public class ValidHashtagCountValidator implements ConstraintValidator<ValidHashtagCount, Set<String>> {
@@ -12,13 +13,13 @@ public class ValidHashtagCountValidator implements ConstraintValidator<ValidHash
     private int max;
 
     @Override
-    public void initialize(ValidHashtagCount constraintAnnotation) {
+    public void initialize(final ValidHashtagCount constraintAnnotation) {
         min = constraintAnnotation.min();
         max = constraintAnnotation.max();
     }
 
     @Override
-    public boolean isValid(Set<String> hashtags, ConstraintValidatorContext context) {
+    public boolean isValid(final Set<String> hashtags, final ConstraintValidatorContext context) {
         if (hashtags.size() < min) {
             context.disableDefaultConstraintViolation();
             context.buildConstraintViolationWithTemplate(String.format(ART_HASHTAG_LIST_MIN, min))

@@ -17,8 +17,8 @@ class JwtTokenProviderTest {
     @DisplayName("AccessToken과 RefreshToken을 발급한다")
     void issueAccessTokenAndRefreshToken() {
         // when
-        String accessToken = VALID_PROVIDER.createAccessToken(MEMBER_ID);
-        String refreshToken = VALID_PROVIDER.createRefreshToken(MEMBER_ID);
+        final String accessToken = VALID_PROVIDER.createAccessToken(MEMBER_ID);
+        final String refreshToken = VALID_PROVIDER.createRefreshToken(MEMBER_ID);
 
         // then
         assertAll(
@@ -31,7 +31,7 @@ class JwtTokenProviderTest {
     @DisplayName("Token의 Payload를 추출한다")
     void extractTokenPayload() {
         // when
-        String accessToken = VALID_PROVIDER.createAccessToken(MEMBER_ID);
+        final String accessToken = VALID_PROVIDER.createAccessToken(MEMBER_ID);
 
         // then
         assertThat(VALID_PROVIDER.getId(accessToken)).isEqualTo(MEMBER_ID);
@@ -41,12 +41,12 @@ class JwtTokenProviderTest {
     @DisplayName("Token 만료에 대한 유효성을 검증한다")
     void validateTokenExpire() {
         // given
-        String validToken = VALID_PROVIDER.createAccessToken(MEMBER_ID);
-        String invalidToken = INVALID_PROVIDER.createAccessToken(MEMBER_ID);
+        final String validToken = VALID_PROVIDER.createAccessToken(MEMBER_ID);
+        final String invalidToken = INVALID_PROVIDER.createAccessToken(MEMBER_ID);
 
         // when
-        boolean actual1 = VALID_PROVIDER.isTokenValid(validToken);
-        boolean actual2 = INVALID_PROVIDER.isTokenValid(invalidToken);
+        final boolean actual1 = VALID_PROVIDER.isTokenValid(validToken);
+        final boolean actual2 = INVALID_PROVIDER.isTokenValid(invalidToken);
 
         // then
         assertAll(
@@ -59,10 +59,10 @@ class JwtTokenProviderTest {
     @DisplayName("Token 조작에 대한 유효성을 검증한다")
     void validateTokenManipulation() {
         // given
-        String forgedToken = VALID_PROVIDER.createAccessToken(MEMBER_ID) + "hacked";
+        final String forgedToken = VALID_PROVIDER.createAccessToken(MEMBER_ID) + "hacked";
 
         // when
-        boolean actual = VALID_PROVIDER.isTokenValid(forgedToken);
+        final boolean actual = VALID_PROVIDER.isTokenValid(forgedToken);
 
         // then
         assertThat(actual).isFalse();

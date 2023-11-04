@@ -12,9 +12,16 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import static com.sjiwon.anotherart.fixture.ArtFixture.*;
-import static com.sjiwon.anotherart.fixture.MemberFixture.*;
-import static com.sjiwon.anotherart.fixture.PeriodFixture.*;
+import static com.sjiwon.anotherart.fixture.ArtFixture.AUCTION_1;
+import static com.sjiwon.anotherart.fixture.ArtFixture.AUCTION_2;
+import static com.sjiwon.anotherart.fixture.ArtFixture.GENERAL_1;
+import static com.sjiwon.anotherart.fixture.MemberFixture.MEMBER_A;
+import static com.sjiwon.anotherart.fixture.MemberFixture.MEMBER_B;
+import static com.sjiwon.anotherart.fixture.MemberFixture.MEMBER_C;
+import static com.sjiwon.anotherart.fixture.PeriodFixture.CLOSED_WEEK_1_AGO;
+import static com.sjiwon.anotherart.fixture.PeriodFixture.CLOSED_WEEK_2_AGO;
+import static com.sjiwon.anotherart.fixture.PeriodFixture.OPEN_NOW;
+import static com.sjiwon.anotherart.fixture.PeriodFixture.OPEN_WEEK_1_LATER;
 import static com.sjiwon.anotherart.member.domain.point.PointType.CHARGE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -35,8 +42,8 @@ class AuctionTest {
         memberB = createMember(MEMBER_C, 3L);
     }
 
-    private Member createMember(MemberFixture fixture, Long id) {
-        Member member = fixture.toMember();
+    private Member createMember(final MemberFixture fixture, final Long id) {
+        final Member member = fixture.toMember();
         member.addPointRecords(CHARGE, MEMBER_INIT_POINT);
         ReflectionTestUtils.setField(member, "id", id);
 
@@ -50,7 +57,7 @@ class AuctionTest {
         @DisplayName("경매 작품이 아니면 Auction을 생성할 수 없다")
         void throwExceptionByInvalidArtType() {
             // given
-            Art generalArt = GENERAL_1.toArt(owner);
+            final Art generalArt = GENERAL_1.toArt(owner);
 
             // when - then
             assertThatThrownBy(() -> Auction.createAuction(generalArt, OPEN_WEEK_1_LATER.toPeriod()))
@@ -62,10 +69,10 @@ class AuctionTest {
         @DisplayName("경매 작품에 대한 Auction을 생성한다")
         void success() {
             // given
-            Art auctionArt = AUCTION_1.toArt(owner);
+            final Art auctionArt = AUCTION_1.toArt(owner);
 
             // when
-            Auction auction = Auction.createAuction(auctionArt, OPEN_WEEK_1_LATER.toPeriod());
+            final Auction auction = Auction.createAuction(auctionArt, OPEN_WEEK_1_LATER.toPeriod());
 
             // then
             assertAll(
@@ -97,8 +104,8 @@ class AuctionTest {
         @DisplayName("경매가 진행되고 있지 않으면 입찰을 진행할 수 없다")
         void throwExceptionByAuctionIsNotInProgess() {
             // given
-            Auction auctionA = Auction.createAuction(art, CLOSED_WEEK_2_AGO.toPeriod());
-            Auction auctionB = Auction.createAuction(art, OPEN_WEEK_1_LATER.toPeriod());
+            final Auction auctionA = Auction.createAuction(art, CLOSED_WEEK_2_AGO.toPeriod());
+            final Auction auctionB = Auction.createAuction(art, OPEN_WEEK_1_LATER.toPeriod());
 
             // when - then
             assertThatThrownBy(() -> auctionA.applyNewBid(memberA, initBidPrice))
@@ -205,14 +212,14 @@ class AuctionTest {
     @DisplayName("최고 입찰자인지 판별한다")
     void isHighestBidder() {
         // given
-        Art art = AUCTION_1.toArt(owner);
-        Auction auction = Auction.createAuction(art, OPEN_NOW.toPeriod());
+        final Art art = AUCTION_1.toArt(owner);
+        final Auction auction = Auction.createAuction(art, OPEN_NOW.toPeriod());
         auction.applyNewBid(memberA, art.getPrice());
 
         // when
-        boolean actual1 = auction.isHighestBidder(owner);
-        boolean actual2 = auction.isHighestBidder(memberA);
-        boolean actual3 = auction.isHighestBidder(memberB);
+        final boolean actual1 = auction.isHighestBidder(owner);
+        final boolean actual2 = auction.isHighestBidder(memberA);
+        final boolean actual3 = auction.isHighestBidder(memberB);
 
         // then
         assertAll(
@@ -226,15 +233,15 @@ class AuctionTest {
     @DisplayName("경매가 종료되었는지 확인한다")
     void isAuctionFinished() {
         // given
-        Art artA = AUCTION_1.toArt(owner);
-        Art artB = AUCTION_2.toArt(owner);
+        final Art artA = AUCTION_1.toArt(owner);
+        final Art artB = AUCTION_2.toArt(owner);
 
-        Auction auctionA = Auction.createAuction(artA, CLOSED_WEEK_1_AGO.toPeriod());
-        Auction auctionB = Auction.createAuction(artB, OPEN_NOW.toPeriod());
+        final Auction auctionA = Auction.createAuction(artA, CLOSED_WEEK_1_AGO.toPeriod());
+        final Auction auctionB = Auction.createAuction(artB, OPEN_NOW.toPeriod());
 
         // when
-        boolean actual1 = auctionA.isFinished();
-        boolean actual2 = auctionB.isFinished();
+        final boolean actual1 = auctionA.isFinished();
+        final boolean actual2 = auctionB.isFinished();
 
         // then
         assertAll(

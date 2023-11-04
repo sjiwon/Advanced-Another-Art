@@ -37,14 +37,14 @@ public enum SortType {
 
     private final String value;
 
-    public static SortType from(String value) {
+    public static SortType from(final String value) {
         return Arrays.stream(values())
                 .filter(sortType -> sortType.value.equals(value))
                 .findFirst()
                 .orElseThrow(() -> AnotherArtException.type(ArtErrorCode.SORT_TYPE_NOT_PROVIED));
     }
 
-    public static boolean isNotSupportedSortType(String value) {
+    public static boolean isNotSupportedSortType(final String value) {
         return Arrays.stream(values())
                 .noneMatch(sortType -> sortType.value.equals(value));
     }

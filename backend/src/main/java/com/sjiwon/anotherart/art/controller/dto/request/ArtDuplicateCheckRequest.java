@@ -1,8 +1,7 @@
 package com.sjiwon.anotherart.art.controller.dto.request;
 
 import com.sjiwon.anotherart.art.utils.validator.ValidArtDuplicateResource;
-
-import javax.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotBlank;
 
 public record ArtDuplicateCheckRequest(
         @ValidArtDuplicateResource

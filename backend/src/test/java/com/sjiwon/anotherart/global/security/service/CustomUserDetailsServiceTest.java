@@ -42,7 +42,7 @@ class CustomUserDetailsServiceTest extends ServiceTest {
     @DisplayName("로그인 아이디에 해당하는 사용자를 찾아온다 [UserDetails]")
     void success() {
         // when
-        MemberPrincipal userDetails = (MemberPrincipal) userDetailsService.loadUserByUsername(member.getLoginId());
+        final MemberPrincipal userDetails = (MemberPrincipal) userDetailsService.loadUserByUsername(member.getLoginId());
 
         // then
         assertAll(

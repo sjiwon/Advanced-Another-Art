@@ -1,113 +1,147 @@
-plugins {
-	id 'java'
-	id 'org.springframework.boot' version '2.7.7'
-	id 'io.spring.dependency-management' version '1.1.0'
-	id "org.asciidoctor.jvm.convert" version "3.3.2"
+buildscript {
+    ext {
+        queryDslVersion = "5.0.0"
+    }
 }
 
-group = 'com.sjiwon'
-version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '17'
+plugins {
+    id "java"
+    id "org.springframework.boot" version "3.1.5"
+    id "io.spring.dependency-management" version "1.1.3"
+    id "org.asciidoctor.jvm.convert" version "3.3.2"
+}
+
+group = "com.sjiwon"
+version = "0.0.1-SNAPSHOT"
+
+java {
+    sourceCompatibility = "17"
+}
 
 configurations {
-	compileOnly {
-		extendsFrom annotationProcessor
-	}
-	asciidoctorExt
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+    asciidoctorExt
 }
 
 repositories {
-	mavenCentral()
+    mavenCentral()
 }
 
 ext {
-	set('snippetsDir', file("build/generated-snippets"))
+    set("snippetsDir", file("build/generated-snippets"))
 }
 
 dependencies {
-	// JPA & DB
-	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-	runtimeOnly 'com.mysql:mysql-connector-j' // dev
-	runtimeOnly 'com.h2database:h2' // test
+    // Spring Web
+    implementation "org.springframework.boot:spring-boot-starter-web"
+    implementation "org.springframework.boot:spring-boot-starter-validation"
 
-	// Querydsl
-	implementation 'com.querydsl:querydsl-jpa'
-	annotationProcessor "com.querydsl:querydsl-apt:5.0.0:jpa"
-	annotationProcessor "jakarta.annotation:jakarta.annotation-api"
-	annotationProcessor "jakarta.persistence:jakarta.persistence-api"
+    // Spring Security
+    implementation "org.springframework.boot:spring-boot-starter-security"
 
-	// Spring Web
-	implementation 'org.springframework.boot:spring-boot-starter-web'
-	implementation 'org.springframework.boot:spring-boot-starter-validation'
+    // JPA & DB
+    implementation "org.springframework.boot:spring-boot-starter-data-jpa"
+    runtimeOnly "com.mysql:mysql-connector-j" // dev
+    runtimeOnly "com.h2database:h2" // test
 
-	// Spring Security
-	implementation 'org.springframework.boot:spring-boot-starter-security'
+    // Querydsl
+    implementation "com.querydsl:querydsl-jpa:${queryDslVersion}:jakarta"
+    annotationProcessor "com.querydsl:querydsl-apt:${queryDslVersion}:jakarta"
+    annotationProcessor "jakarta.annotation:jakarta.annotation-api"
+    annotationProcessor "jakarta.persistence:jakarta.persistence-api"
 
-	// Amazon S3 (NCP Object Storage)
-	implementation 'com.amazonaws:aws-java-sdk-s3:1.12.450'
+    // Amazon S3 (NCP Object Storage)
+    implementation "com.amazonaws:aws-java-sdk-s3:1.12.450"
 
-	// JWT
-	implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
-	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
-	runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
+    // Redis & Redisson Client
+    implementation "org.springframework.boot:spring-boot-starter-data-redis"
+    implementation "org.redisson:redisson-spring-boot-starter:3.21.3"
 
-	// Redis & Redisson Client
-	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
-	implementation 'org.redisson:redisson-spring-boot-starter:3.21.3'
+    // JWT
+    implementation "io.jsonwebtoken:jjwt-api:0.11.5"
+    runtimeOnly "io.jsonwebtoken:jjwt-impl:0.11.5"
+    runtimeOnly "io.jsonwebtoken:jjwt-jackson:0.11.5"
 
-	// Lombok
-	compileOnly 'org.projectlombok:lombok'
-	annotationProcessor 'org.projectlombok:lombok'
-	testCompileOnly 'org.projectlombok:lombok'
-	testAnnotationProcessor 'org.projectlombok:lombok'
+    // Lombok
+    compileOnly "org.projectlombok:lombok"
+    annotationProcessor "org.projectlombok:lombok"
+    testCompileOnly "org.projectlombok:lombok"
+    testAnnotationProcessor "org.projectlombok:lombok"
 
-	// Slack API
-	implementation 'com.slack.api:slack-api-client:1.29.2'
+    // Slack API
+    implementation "com.slack.api:slack-api-client:1.29.2"
 
-	// test
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	testImplementation 'org.springframework.security:spring-security-test'
+    // Guava
+    implementation "com.google.guava:guava:32.1.1-jre"
 
-	// TestContainers
-	testImplementation "org.junit.jupiter:junit-jupiter:5.8.1"
-	testImplementation "org.testcontainers:testcontainers:1.18.1"
-	testImplementation "org.testcontainers:junit-jupiter:1.18.1"
+    // p6spy
+    implementation "com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.9.0"
 
-	// Spring Rest Docs (With MockMvc)
-	asciidoctorExt 'org.springframework.restdocs:spring-restdocs-asciidoctor'
-	testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
+    // Test
+    testImplementation "org.springframework.boot:spring-boot-starter-test"
+    testImplementation "org.springframework.security:spring-security-test"
+
+    // Spring Rest Docs (With MockMvc)
+    asciidoctorExt "org.springframework.restdocs:spring-restdocs-asciidoctor"
+    testImplementation "org.springframework.restdocs:spring-restdocs-mockmvc"
+
+    // TestContainers
+    testImplementation "org.junit.jupiter:junit-jupiter:5.8.1"
+    testImplementation "org.testcontainers:testcontainers:1.18.1"
+    testImplementation "org.testcontainers:junit-jupiter:1.18.1"
 }
 
-tasks.named('test') {
-	outputs.dir snippetsDir
-	useJUnitPlatform()
+// QueryDsl QClass Generated Position
+def qTypeGeneratedPosition = "src/main/generated"
+
+tasks.withType(JavaCompile).configureEach {
+    options.getGeneratedSourceOutputDirectory().set(file(qTypeGeneratedPosition))
+}
+
+// add QueryDsl QClass to Java Source Set
+sourceSets {
+    main.java.srcDirs += [qTypeGeneratedPosition]
+}
+
+// delete QueryDsl QClass
+clean {
+    delete file(qTypeGeneratedPosition)
+}
+
+tasks.named("test") {
+    useJUnitPlatform()
+    outputs.dir snippetsDir
 }
 
 asciidoctor {
-	inputs.dir snippetsDir
-	configurations 'asciidoctorExt'
-	dependsOn test
-	baseDirFollowsSourceFile()
+    configurations "asciidoctorExt"
+    baseDirFollowsSourceFile()
+    inputs.dir snippetsDir
+    dependsOn test
 }
 
 asciidoctor.doFirst {
-	delete file('src/main/resources/static/docs/*')
+    delete file("src/main/resources/static/docs/*")
+}
+
+tasks.register("copyDocument", Copy) {
+    dependsOn asciidoctor
+    from file("build/docs/asciidoc")
+    into file("src/main/resources/static/docs")
+}
+
+build {
+    dependsOn copyDocument
+}
+
+jar {
+    enabled = false
 }
 
 bootJar {
-	dependsOn asciidoctor
-
-	copy {
-		from "${asciidoctor.outputDir}"
-		into file("src/main/resources/static/docs")
-	}
-
-	copy {
-		from file("src/main/resources/static")
-		into file("build/resources/main/static")
-	}
-
-	archivesBaseName = 'AnotherArt'
-	archiveFileName = 'AnotherArt.jar'
-	archiveVersion = "0.0.1"
+    archivesBaseName = "AnotherArt"
+    archiveFileName = "AnotherArt.jar"
+    archiveVersion = "0.0.1"
 }

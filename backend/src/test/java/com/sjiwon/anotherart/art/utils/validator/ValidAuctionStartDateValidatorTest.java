@@ -1,10 +1,10 @@
 package com.sjiwon.anotherart.art.utils.validator;
 
+import jakarta.validation.ConstraintValidatorContext;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import javax.validation.ConstraintValidatorContext;
 import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -25,7 +25,7 @@ class ValidAuctionStartDateValidatorTest {
     @DisplayName("일반 작품[auctionStartDate == null]일 경우 validator를 검증없이 통과한다")
     void allowAllGeneralArt() {
         // when
-        boolean actual = validator.isValid(null, context);
+        final boolean actual = validator.isValid(null, context);
 
         // then
         assertThat(actual).isTrue();
@@ -38,7 +38,7 @@ class ValidAuctionStartDateValidatorTest {
         final LocalDateTime auctionStartDate = LocalDateTime.now().minusHours(1);
 
         // when
-        boolean actual = validator.isValid(auctionStartDate, context);
+        final boolean actual = validator.isValid(auctionStartDate, context);
 
         // then
         assertThat(actual).isFalse();
@@ -51,7 +51,7 @@ class ValidAuctionStartDateValidatorTest {
         final LocalDateTime auctionStartDate = LocalDateTime.now().plusHours(1);
 
         // when
-        boolean actual = validator.isValid(auctionStartDate, context);
+        final boolean actual = validator.isValid(auctionStartDate, context);
 
         // then
         assertThat(actual).isTrue();

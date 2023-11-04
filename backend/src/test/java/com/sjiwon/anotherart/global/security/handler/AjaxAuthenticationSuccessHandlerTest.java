@@ -14,7 +14,9 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
-import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
+import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -31,7 +33,7 @@ class AjaxAuthenticationSuccessHandlerTest extends SecurityTest {
 
         // when
         final LoginRequest request = new LoginRequest(MEMBER_A.getLoginId(), MEMBER_A.getPassword());
-        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+        final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .post(BASE_URL)
                 .contentType(APPLICATION_JSON)
                 .content(convertObjectToJson(request));

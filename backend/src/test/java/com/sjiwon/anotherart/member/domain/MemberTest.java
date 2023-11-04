@@ -15,7 +15,10 @@ import org.springframework.test.util.ReflectionTestUtils;
 import static com.sjiwon.anotherart.fixture.MemberFixture.MEMBER_A;
 import static com.sjiwon.anotherart.fixture.MemberFixture.MEMBER_B;
 import static com.sjiwon.anotherart.member.domain.Role.USER;
-import static com.sjiwon.anotherart.member.domain.point.PointType.*;
+import static com.sjiwon.anotherart.member.domain.point.PointType.CHARGE;
+import static com.sjiwon.anotherart.member.domain.point.PointType.PURCHASE;
+import static com.sjiwon.anotherart.member.domain.point.PointType.REFUND;
+import static com.sjiwon.anotherart.member.domain.point.PointType.SOLD;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -27,7 +30,7 @@ class MemberTest {
     @Test
     @DisplayName("멤버를 생성한다")
     void construct() {
-        Member member = MEMBER_A.toMember();
+        final Member member = MEMBER_A.toMember();
 
         assertAll(
                 () -> assertThat(member.getName()).isEqualTo(MEMBER_A.getName()),
@@ -108,7 +111,7 @@ class MemberTest {
     @DisplayName("주소를 변경한다")
     void changeAddress() {
         // given
-        Member member = MEMBER_A.toMember();
+        final Member member = MEMBER_A.toMember();
 
         // when
         final int changePostcode = 98765;
@@ -136,8 +139,8 @@ class MemberTest {
             other = createMember(MEMBER_B, 2L);
         }
 
-        private Member createMember(MemberFixture fixture, Long id) {
-            Member member = fixture.toMember();
+        private Member createMember(final MemberFixture fixture, final Long id) {
+            final Member member = fixture.toMember();
             ReflectionTestUtils.setField(member, "id", id);
 
             return member;
@@ -147,8 +150,8 @@ class MemberTest {
         @DisplayName("ID(PK)를 통해서 동일 사용자인지 검증한다")
         void isSameMember() {
             // when
-            boolean actual1 = member.isSameMember(member);
-            boolean actual2 = member.isSameMember(other);
+            final boolean actual1 = member.isSameMember(member);
+            final boolean actual2 = member.isSameMember(other);
 
             // then
             assertAll(
@@ -162,7 +165,7 @@ class MemberTest {
     @DisplayName("포인트 활용 내역을 기록한다")
     void addPointRecords() {
         // given
-        Member member = MEMBER_A.toMember();
+        final Member member = MEMBER_A.toMember();
         final int INCREASE_AMOUNT = 100_000;
         final int DECREASE_AMOUNT = 50_000;
 
@@ -222,7 +225,7 @@ class MemberTest {
         @DisplayName("경매 작품에 입찰을 진행함에 따라 입찰가만큼 사용 가능한 포인트가 감소한다")
         void becomeTopBidder() {
             // given
-            Member member = MEMBER_A.toMember();
+            final Member member = MEMBER_A.toMember();
             member.addPointRecords(CHARGE, 100_000);
 
             // when
@@ -239,7 +242,7 @@ class MemberTest {
         @DisplayName("최고 입찰자에서 물러남에 따라 이전에 입찰한 금액을 다시 사용 가능한 포인트에 누적시킨다")
         void withdrawFromAuctionAsTopBidder() {
             // given
-            Member member = MEMBER_A.toMember();
+            final Member member = MEMBER_A.toMember();
             member.addPointRecords(CHARGE, 100_000);
 
             // when

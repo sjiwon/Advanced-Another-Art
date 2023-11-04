@@ -36,7 +36,7 @@ class FavoriteRepositoryTest extends RepositoryTest {
     void setUp() {
         member = memberRepository.save(MEMBER_A.toMember());
 
-        Member owner = memberRepository.save(MEMBER_B.toMember());
+        final Member owner = memberRepository.save(MEMBER_B.toMember());
         art1 = artRepository.save(AUCTION_1.toArt(owner));
         art2 = artRepository.save(AUCTION_2.toArt(owner));
     }
@@ -61,8 +61,8 @@ class FavoriteRepositoryTest extends RepositoryTest {
         favoriteRepository.save(Favorite.favoriteMarking(art1.getId(), member.getId()));
 
         // when
-        boolean actual1 = favoriteRepository.existsByArtIdAndMemberId(art1.getId(), member.getId());
-        boolean actual2 = favoriteRepository.existsByArtIdAndMemberId(art2.getId(), member.getId());
+        final boolean actual1 = favoriteRepository.existsByArtIdAndMemberId(art1.getId(), member.getId());
+        final boolean actual2 = favoriteRepository.existsByArtIdAndMemberId(art2.getId(), member.getId());
 
         // then
         assertAll(

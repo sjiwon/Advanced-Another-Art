@@ -18,16 +18,16 @@ public class TokenReissueService {
     private final MemberFindService memberFindService;
 
     @Transactional
-    public TokenResponse reissueTokens(Long memberId, String refreshToken) {
+    public TokenResponse reissueTokens(final Long memberId, final String refreshToken) {
         // 사용자가 보유하고 있는 Refresh Token인지
         if (!tokenManager.isRefreshTokenExists(memberId, refreshToken)) {
             throw AnotherArtException.type(TokenErrorCode.AUTH_INVALID_TOKEN);
         }
 
         // Access Token & Refresh Token 발급
-        Member member = memberFindService.findById(memberId);
-        String newAccessToken = jwtTokenProvider.createAccessToken(member.getId());
-        String newRefreshToken = jwtTokenProvider.createRefreshToken(member.getId());
+        final Member member = memberFindService.findById(memberId);
+        final String newAccessToken = jwtTokenProvider.createAccessToken(member.getId());
+        final String newRefreshToken = jwtTokenProvider.createRefreshToken(member.getId());
 
         // RTR Policy
         tokenManager.reissueRefreshTokenByRtrPolicy(memberId, newRefreshToken);

@@ -13,7 +13,7 @@ public class MemberPointRecord {
     private final LocalDateTime recordDate;
 
     @QueryProjection
-    public MemberPointRecord(PointType pointType, int amount, LocalDateTime recordDate) {
+    public MemberPointRecord(final PointType pointType, final int amount, final LocalDateTime recordDate) {
         this.pointType = pointType.getDescription();
         this.amount = amount;
         this.recordDate = recordDate;

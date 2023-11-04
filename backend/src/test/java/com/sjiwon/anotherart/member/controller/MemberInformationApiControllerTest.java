@@ -29,9 +29,14 @@ import static com.sjiwon.anotherart.art.domain.ArtStatus.ON_SALE;
 import static com.sjiwon.anotherart.art.domain.ArtStatus.SOLD;
 import static com.sjiwon.anotherart.common.utils.TokenUtils.ACCESS_TOKEN;
 import static com.sjiwon.anotherart.common.utils.TokenUtils.BEARER_TOKEN;
-import static com.sjiwon.anotherart.fixture.ArtFixture.*;
+import static com.sjiwon.anotherart.fixture.ArtFixture.AUCTION_1;
+import static com.sjiwon.anotherart.fixture.ArtFixture.AUCTION_2;
+import static com.sjiwon.anotherart.fixture.ArtFixture.AUCTION_3;
+import static com.sjiwon.anotherart.fixture.ArtFixture.GENERAL_1;
 import static com.sjiwon.anotherart.fixture.MemberFixture.MEMBER_A;
-import static com.sjiwon.anotherart.member.domain.point.PointType.*;
+import static com.sjiwon.anotherart.member.domain.point.PointType.CHARGE;
+import static com.sjiwon.anotherart.member.domain.point.PointType.PURCHASE;
+import static com.sjiwon.anotherart.member.domain.point.PointType.REFUND;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
@@ -54,11 +59,11 @@ class MemberInformationApiControllerTest extends ControllerTest {
         @DisplayName("사용자 기본 정보를 조회한다")
         void success() throws Exception {
             // given
-            MemberInformation response = generateMemberInformationResponse();
+            final MemberInformation response = generateMemberInformationResponse();
             given(memberInformationService.getInformation(MEMBER_ID)).willReturn(response);
 
             // when
-            MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
+            final MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
                     .get(BASE_URL, MEMBER_ID)
                     .header(AUTHORIZATION, String.join(" ", BEARER_TOKEN, ACCESS_TOKEN));
 
@@ -104,11 +109,11 @@ class MemberInformationApiControllerTest extends ControllerTest {
         @DisplayName("포인트 활용 내역을 조회한다")
         void success() throws Exception {
             // given
-            PointRecordAssembler response = generatePointRecords();
+            final PointRecordAssembler response = generatePointRecords();
             given(memberInformationService.getPointRecords(MEMBER_ID)).willReturn(response);
 
             // when
-            MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
+            final MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
                     .get(BASE_URL, MEMBER_ID)
                     .header(AUTHORIZATION, String.join(" ", BEARER_TOKEN, ACCESS_TOKEN));
 
@@ -145,11 +150,11 @@ class MemberInformationApiControllerTest extends ControllerTest {
         @DisplayName("낙찰된 경매 작품을 조회한다")
         void success() throws Exception {
             // given
-            WinningAuctionArtAssembler response = generateWinningAuctionArts();
+            final WinningAuctionArtAssembler response = generateWinningAuctionArts();
             given(memberInformationService.getWinningAuctionArts(MEMBER_ID)).willReturn(response);
 
             // when
-            MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
+            final MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
                     .get(BASE_URL, MEMBER_ID)
                     .header(AUTHORIZATION, String.join(" ", BEARER_TOKEN, ACCESS_TOKEN));
 
@@ -203,11 +208,11 @@ class MemberInformationApiControllerTest extends ControllerTest {
         @DisplayName("판매한 작품을 조회한다")
         void success() throws Exception {
             // given
-            TradedArtAssembler response = generateTradedArts();
+            final TradedArtAssembler response = generateTradedArts();
             given(memberInformationService.getSoldArts(MEMBER_ID)).willReturn(response);
 
             // when
-            MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
+            final MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
                     .get(BASE_URL, MEMBER_ID)
                     .header(AUTHORIZATION, String.join(" ", BEARER_TOKEN, ACCESS_TOKEN));
 
@@ -272,11 +277,11 @@ class MemberInformationApiControllerTest extends ControllerTest {
         @DisplayName("구매한 작품을 조회한다")
         void success() throws Exception {
             // given
-            TradedArtAssembler response = generateTradedArts();
+            final TradedArtAssembler response = generateTradedArts();
             given(memberInformationService.getPurchaseArts(MEMBER_ID)).willReturn(response);
 
             // when
-            MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
+            final MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
                     .get(BASE_URL, MEMBER_ID)
                     .header(AUTHORIZATION, String.join(" ", BEARER_TOKEN, ACCESS_TOKEN));
 
@@ -331,12 +336,12 @@ class MemberInformationApiControllerTest extends ControllerTest {
     }
 
     private MemberInformation generateMemberInformationResponse() {
-        Member member = createMember(MEMBER_A, 1L);
+        final Member member = createMember(MEMBER_A, 1L);
         return new MemberInformation(member);
     }
 
-    private Member createMember(MemberFixture fixture, Long id) {
-        Member member = fixture.toMember();
+    private Member createMember(final MemberFixture fixture, final Long id) {
+        final Member member = fixture.toMember();
         ReflectionTestUtils.setField(member, "id", id);
 
         member.addPointRecords(CHARGE, 100_000);
@@ -346,7 +351,7 @@ class MemberInformationApiControllerTest extends ControllerTest {
     }
 
     private PointRecordAssembler generatePointRecords() {
-        List<MemberPointRecord> result = List.of(
+        final List<MemberPointRecord> result = List.of(
                 new MemberPointRecord(PURCHASE, 100_000, LocalDateTime.now().minusDays(1)),
                 new MemberPointRecord(PURCHASE, 50_000, LocalDateTime.now().minusDays(2)),
                 new MemberPointRecord(PointType.SOLD, 35_000, LocalDateTime.now().minusDays(3)),
@@ -359,7 +364,7 @@ class MemberInformationApiControllerTest extends ControllerTest {
     }
 
     private WinningAuctionArtAssembler generateWinningAuctionArts() {
-        List<AuctionArt> result = List.of(
+        final List<AuctionArt> result = List.of(
                 new AuctionArt(
                         new BasicAuction(
                                 3L,
@@ -432,7 +437,7 @@ class MemberInformationApiControllerTest extends ControllerTest {
     }
 
     private TradedArtAssembler generateTradedArts() {
-        List<TradedArt> tradedAuctions = List.of(
+        final List<TradedArt> tradedAuctions = List.of(
                 new TradedArt(
                         new BasicArt(
                                 2L,
@@ -465,7 +470,7 @@ class MemberInformationApiControllerTest extends ControllerTest {
                 )
         );
 
-        List<TradedArt> tradedGenerals = List.of(
+        final List<TradedArt> tradedGenerals = List.of(
                 new TradedArt(
                         new BasicArt(
                                 1L,

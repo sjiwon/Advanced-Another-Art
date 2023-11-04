@@ -39,7 +39,7 @@ class MemberPointServiceTest extends ServiceTest {
         memberPointService.chargePoint(member.getId(), CHARGE_AMOUNT);
 
         // then
-        Member findMember = memberRepository.findById(member.getId()).orElseThrow();
+        final Member findMember = memberRepository.findById(member.getId()).orElseThrow();
         assertAll(
                 () -> assertThat(findMember.getPointRecords()).hasSize(1),
                 () -> assertThat(findMember.getPointRecords())
@@ -74,7 +74,7 @@ class MemberPointServiceTest extends ServiceTest {
             memberPointService.refundPoint(member.getId(), REFUND_AMOUNT);
 
             // then
-            Member findMember = memberRepository.findById(member.getId()).orElseThrow();
+            final Member findMember = memberRepository.findById(member.getId()).orElseThrow();
             assertAll(
                     () -> assertThat(findMember.getPointRecords()).hasSize(2),
                     () -> assertThat(findMember.getPointRecords())

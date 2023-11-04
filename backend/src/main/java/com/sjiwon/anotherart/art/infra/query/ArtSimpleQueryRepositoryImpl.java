@@ -13,8 +13,8 @@ public class ArtSimpleQueryRepositoryImpl implements ArtSimpleQueryRepository {
     private final JPAQueryFactory query;
 
     @Override
-    public boolean isAuctionRecordExists(Long artId) {
-        Integer count = query
+    public boolean isAuctionRecordExists(final Long artId) {
+        final Integer count = query
                 .selectOne()
                 .from(auctionRecord)
                 .innerJoin(auctionRecord.auction, auction)

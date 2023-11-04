@@ -11,7 +11,9 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import static com.sjiwon.anotherart.common.utils.TokenUtils.*;
+import static com.sjiwon.anotherart.common.utils.TokenUtils.ACCESS_TOKEN;
+import static com.sjiwon.anotherart.common.utils.TokenUtils.BEARER_TOKEN;
+import static com.sjiwon.anotherart.common.utils.TokenUtils.REFRESH_TOKEN;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doThrow;
@@ -39,7 +41,7 @@ class TokenReissueApiControllerTest extends ControllerTest {
                     .reissueTokens(any(), any());
 
             // when
-            MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+            final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                     .post(BASE_URL)
                     .header(AUTHORIZATION, String.join(" ", BEARER_TOKEN, REFRESH_TOKEN));
 
@@ -76,7 +78,7 @@ class TokenReissueApiControllerTest extends ControllerTest {
                     .reissueTokens(any(), any());
 
             // when
-            MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+            final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                     .post(BASE_URL)
                     .header(AUTHORIZATION, String.join(" ", BEARER_TOKEN, REFRESH_TOKEN));
 
@@ -108,11 +110,11 @@ class TokenReissueApiControllerTest extends ControllerTest {
         @DisplayName("RefreshToken으로 AccessToken과 RefreshToken을 재발급받는다")
         void success() throws Exception {
             // given
-            TokenResponse response = new TokenResponse(ACCESS_TOKEN, REFRESH_TOKEN);
+            final TokenResponse response = new TokenResponse(ACCESS_TOKEN, REFRESH_TOKEN);
             given(tokenReissueService.reissueTokens(any(), any())).willReturn(response);
 
             // when
-            MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+            final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                     .post(BASE_URL)
                     .header(AUTHORIZATION, String.join(" ", BEARER_TOKEN, REFRESH_TOKEN));
 

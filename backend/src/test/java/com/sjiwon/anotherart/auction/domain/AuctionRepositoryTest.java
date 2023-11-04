@@ -44,8 +44,8 @@ class AuctionRepositoryTest extends RepositoryTest {
     @DisplayName("ID(PK)로 경매 정보를 조회한다")
     void findByIdWithPessimisticLock() {
         // when
-        Optional<Auction> emptyAuction = auctionRepository.findByIdWithPessimisticLock(auction.getId() + 10000L);
-        Optional<Auction> existsAuction = auctionRepository.findByIdWithPessimisticLock(auction.getId());
+        final Optional<Auction> emptyAuction = auctionRepository.findByIdWithPessimisticLock(auction.getId() + 10000L);
+        final Optional<Auction> existsAuction = auctionRepository.findByIdWithPessimisticLock(auction.getId());
 
         // then
         assertAll(
@@ -59,8 +59,8 @@ class AuctionRepositoryTest extends RepositoryTest {
     @DisplayName("작품 ID로 경매 정보를 조회한다")
     void findByArtId() {
         // when
-        Optional<Auction> emptyAuction = auctionRepository.findByArtId(art.getId() + 10000L);
-        Optional<Auction> existsAuction = auctionRepository.findByArtId(art.getId());
+        final Optional<Auction> emptyAuction = auctionRepository.findByArtId(art.getId() + 10000L);
+        final Optional<Auction> existsAuction = auctionRepository.findByArtId(art.getId());
 
         // then
         assertAll(

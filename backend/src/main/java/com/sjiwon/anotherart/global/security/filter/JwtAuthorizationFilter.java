@@ -9,6 +9,10 @@ import com.sjiwon.anotherart.member.domain.Role;
 import com.sjiwon.anotherart.token.exception.TokenErrorCode;
 import com.sjiwon.anotherart.token.utils.AuthorizationExtractor;
 import com.sjiwon.anotherart.token.utils.JwtTokenProvider;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
@@ -16,10 +20,6 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -31,16 +31,16 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     private final MemberRepository memberRepository;
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        Optional<String> token = AuthorizationExtractor.extractToken(request);
+    protected void doFilterInternal(final HttpServletRequest request, final HttpServletResponse response, final FilterChain filterChain) throws ServletException, IOException {
+        final Optional<String> token = AuthorizationExtractor.extractToken(request);
 
         if (token.isPresent()) {
             if (jwtTokenProvider.isTokenValid(token.get())) {
-                Long memberId = jwtTokenProvider.getId(token.get());
-                Member member = getMember(memberId);
-                MemberPrincipal principal = buildMemberPrincipal(member);
+                final Long memberId = jwtTokenProvider.getId(token.get());
+                final Member member = getMember(memberId);
+                final MemberPrincipal principal = buildMemberPrincipal(member);
 
-                UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
+                final UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
                         principal, "", translateMemberRole(member.getRole())
                 );
                 SecurityContextHolder.getContext().setAuthentication(authenticationToken);
@@ -52,12 +52,12 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 
-    public Member getMember(Long memberId) {
+    public Member getMember(final Long memberId) {
         return memberRepository.findById(memberId)
                 .orElseThrow(() -> AnotherArtAccessDeniedException.type(AuthErrorCode.INVALID_PERMISSION));
     }
 
-    private MemberPrincipal buildMemberPrincipal(Member member) {
+    private MemberPrincipal buildMemberPrincipal(final Member member) {
         return new MemberPrincipal(
                 member.getId(),
                 member.getName(),
@@ -68,8 +68,8 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         );
     }
 
-    private Collection<GrantedAuthority> translateMemberRole(Role role) {
-        Collection<GrantedAuthority> authorities = new ArrayList<>();
+    private Collection<GrantedAuthority> translateMemberRole(final Role role) {
+        final Collection<GrantedAuthority> authorities = new ArrayList<>();
         authorities.add(new SimpleGrantedAuthority(role.getAuthority()));
         return authorities;
     }

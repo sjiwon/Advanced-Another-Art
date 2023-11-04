@@ -13,17 +13,17 @@ public class ErrorResponse {
     private String errorCode;
     private String message;
 
-    private ErrorResponse(ErrorCode code) {
+    private ErrorResponse(final ErrorCode code) {
         this.status = code.getStatus().value();
         this.errorCode = code.getErrorCode();
         this.message = code.getMessage();
     }
 
-    public static ErrorResponse from(ErrorCode errorCode) {
+    public static ErrorResponse from(final ErrorCode errorCode) {
         return new ErrorResponse(errorCode);
     }
 
-    public static ErrorResponse of(ErrorCode errorCode, String message) {
+    public static ErrorResponse of(final ErrorCode errorCode, final String message) {
         return new ErrorResponse(errorCode.getStatus().value(), errorCode.getErrorCode(), message);
     }
 }

@@ -14,7 +14,9 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import static com.sjiwon.anotherart.fixture.ArtFixture.AUCTION_1;
 import static com.sjiwon.anotherart.fixture.AuctionFixture.AUCTION_OPEN_NOW;
-import static com.sjiwon.anotherart.fixture.MemberFixture.*;
+import static com.sjiwon.anotherart.fixture.MemberFixture.MEMBER_A;
+import static com.sjiwon.anotherart.fixture.MemberFixture.MEMBER_B;
+import static com.sjiwon.anotherart.fixture.MemberFixture.MEMBER_C;
 import static com.sjiwon.anotherart.member.domain.point.PointType.CHARGE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -34,12 +36,12 @@ class BiddersTest {
         memberA = createMember(MEMBER_A, 1L);
         memberB = createMember(MEMBER_B, 2L);
 
-        Member owner = MEMBER_C.toMember();
+        final Member owner = MEMBER_C.toMember();
         art = AUCTION_1.toArt(owner);
     }
 
-    private Member createMember(MemberFixture fixture, Long id) {
-        Member member = fixture.toMember();
+    private Member createMember(final MemberFixture fixture, final Long id) {
+        final Member member = fixture.toMember();
         member.addPointRecords(CHARGE, MEMBER_INIT_POINT);
         ReflectionTestUtils.setField(member, "id", id);
 
@@ -49,7 +51,7 @@ class BiddersTest {
     @Test
     @DisplayName("Bidders를 생성한다")
     void construct() {
-        Bidders bidders = Bidders.init(AUCTION_INIT_PRICE);
+        final Bidders bidders = Bidders.init(AUCTION_INIT_PRICE);
 
         assertAll(
                 () -> assertThat(bidders.getAuctionRecords()).hasSize(0),

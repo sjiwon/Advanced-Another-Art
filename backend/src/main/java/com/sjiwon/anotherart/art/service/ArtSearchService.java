@@ -26,59 +26,59 @@ import static com.sjiwon.anotherart.art.domain.ArtType.AUCTION;
 public class ArtSearchService {
     private final ArtRepository artRepository;
 
-    public ArtDetails getArt(Long artId) {
-        ArtDetails response = isAuctionType(artId) ? artRepository.getAuctionArt(artId) : artRepository.getGeneralArt(artId);
+    public ArtDetails getArt(final Long artId) {
+        final ArtDetails response = isAuctionType(artId) ? artRepository.getAuctionArt(artId) : artRepository.getGeneralArt(artId);
         validateResponseExists(response);
         return response;
     }
 
-    private boolean isAuctionType(Long artId) {
+    private boolean isAuctionType(final Long artId) {
         return artRepository.getArtTypeById(artId) == AUCTION;
     }
 
-    private void validateResponseExists(ArtDetails response) {
+    private void validateResponseExists(final ArtDetails response) {
         if (response == null) {
             throw AnotherArtException.type(ArtErrorCode.ART_NOT_FOUND);
         }
     }
 
-    public ArtAssembler getActiveAuctionArts(String sortType, Pageable pageable) {
-        Page<AuctionArt> result = artRepository.findActiveAuctionArts(SortType.from(sortType), pageable);
+    public ArtAssembler getActiveAuctionArts(final String sortType, final Pageable pageable) {
+        final Page<AuctionArt> result = artRepository.findActiveAuctionArts(SortType.from(sortType), pageable);
         return assemblingResult(result, pageable.getPageNumber() + 1);
     }
 
-    public ArtAssembler getArtsByKeyword(ArtDetailSearchCondition condition, Pageable pageable) {
-        Page<? extends ArtDetails> result = condition.isAuctionType()
+    public ArtAssembler getArtsByKeyword(final ArtDetailSearchCondition condition, final Pageable pageable) {
+        final Page<? extends ArtDetails> result = condition.isAuctionType()
                 ? getAuctionArtsByKeyword(condition, pageable)
                 : getGeneralArtsByKeyword(condition, pageable);
         return assemblingResult(result, pageable.getPageNumber() + 1);
     }
 
-    private Page<AuctionArt> getAuctionArtsByKeyword(ArtDetailSearchCondition condition, Pageable pageable) {
+    private Page<AuctionArt> getAuctionArtsByKeyword(final ArtDetailSearchCondition condition, final Pageable pageable) {
         return artRepository.findAuctionArtsByKeyword(condition, pageable);
     }
 
-    private Page<GeneralArt> getGeneralArtsByKeyword(ArtDetailSearchCondition condition, Pageable pageable) {
+    private Page<GeneralArt> getGeneralArtsByKeyword(final ArtDetailSearchCondition condition, final Pageable pageable) {
         return artRepository.findGeneralArtsByKeyword(condition, pageable);
     }
 
-    public ArtAssembler getArtsByHashtag(ArtDetailSearchCondition condition, Pageable pageable) {
-        Page<? extends ArtDetails> result = condition.isAuctionType()
+    public ArtAssembler getArtsByHashtag(final ArtDetailSearchCondition condition, final Pageable pageable) {
+        final Page<? extends ArtDetails> result = condition.isAuctionType()
                 ? getAuctionArtsByHashtag(condition, pageable)
                 : getGeneralArtsByHashtag(condition, pageable);
         return assemblingResult(result, pageable.getPageNumber() + 1);
     }
 
-    private Page<AuctionArt> getAuctionArtsByHashtag(ArtDetailSearchCondition condition, Pageable pageable) {
+    private Page<AuctionArt> getAuctionArtsByHashtag(final ArtDetailSearchCondition condition, final Pageable pageable) {
         return artRepository.findAuctionArtsByHashtag(condition, pageable);
     }
 
-    private Page<GeneralArt> getGeneralArtsByHashtag(ArtDetailSearchCondition condition, Pageable pageable) {
+    private Page<GeneralArt> getGeneralArtsByHashtag(final ArtDetailSearchCondition condition, final Pageable pageable) {
         return artRepository.findGeneralArtsByHashtag(condition, pageable);
     }
 
-    private ArtAssembler assemblingResult(Page<? extends ArtDetails> result, int page) {
-        Pagination pagination = Pagination.of(result.getTotalElements(), result.getTotalPages(), page);
+    private ArtAssembler assemblingResult(final Page<? extends ArtDetails> result, final int page) {
+        final Pagination pagination = Pagination.of(result.getTotalElements(), result.getTotalPages(), page);
         return new ArtAssembler((List<ArtDetails>) result.getContent(), pagination);
     }
 }

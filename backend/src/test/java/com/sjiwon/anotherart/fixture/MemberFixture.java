@@ -1,7 +1,11 @@
 package com.sjiwon.anotherart.fixture;
 
 import com.sjiwon.anotherart.common.utils.PasswordEncoderUtils;
-import com.sjiwon.anotherart.member.domain.*;
+import com.sjiwon.anotherart.member.domain.Address;
+import com.sjiwon.anotherart.member.domain.Email;
+import com.sjiwon.anotherart.member.domain.Member;
+import com.sjiwon.anotherart.member.domain.Nickname;
+import com.sjiwon.anotherart.member.domain.Password;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -82,9 +86,9 @@ public enum MemberFixture {
     }
 
     private static String generateRandomPhoneNumber() {
-        String first = "010";
-        String second = String.valueOf((int) (Math.random() * 9000 + 1000));
-        String third = String.valueOf((int) (Math.random() * 9000 + 1000));
+        final String first = "010";
+        final String second = String.valueOf((int) (Math.random() * 9000 + 1000));
+        final String third = String.valueOf((int) (Math.random() * 9000 + 1000));
 
         return first + second + third;
     }

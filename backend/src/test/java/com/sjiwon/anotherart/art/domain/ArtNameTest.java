@@ -33,8 +33,8 @@ class ArtNameTest {
     @ParameterizedTest(name = "{index}: {0}")
     @ValueSource(strings = {"a", "aaaaaaaaaaaaaaaaaaaa"})
     @DisplayName("ArtName을 생성한다")
-    void construct(String value) {
-        ArtName name = ArtName.from(value);
+    void construct(final String value) {
+        final ArtName name = ArtName.from(value);
         assertThat(name.getValue()).isEqualTo(value);
     }
 }

@@ -20,7 +20,7 @@ import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.docu
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
-import static org.springframework.restdocs.request.RequestDocumentation.requestParameters;
+import static org.springframework.restdocs.request.RequestDocumentation.queryParameters;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -41,7 +41,7 @@ class MemberApiControllerTest extends ControllerTest {
 
             // when
             final SignUpRequest request = createSignUpRequest();
-            MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+            final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                     .post(BASE_URL)
                     .contentType(APPLICATION_JSON)
                     .content(convertObjectToJson(request));
@@ -88,7 +88,7 @@ class MemberApiControllerTest extends ControllerTest {
 
             // when
             final SignUpRequest request = createSignUpRequest();
-            MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+            final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                     .post(BASE_URL)
                     .contentType(APPLICATION_JSON)
                     .content(convertObjectToJson(request));
@@ -135,7 +135,7 @@ class MemberApiControllerTest extends ControllerTest {
                     .duplicateCheck(any(), any());
 
             // when
-            MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+            final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                     .get(BASE_URL)
                     .param("resource", "nickname")
                     .param("value", "중복체크닉네임");
@@ -157,7 +157,7 @@ class MemberApiControllerTest extends ControllerTest {
                                     "MemberApi/SignUp/DuplicateCheck/Failure",
                                     getDocumentRequest(),
                                     getDocumentResponse(),
-                                    requestParameters(
+                                    queryParameters(
                                             parameterWithName("resource").description("중복 체크 타입")
                                                     .attributes(constraint("nickname / loginId / phone / email")),
                                             parameterWithName("value").description("중복 체크 값")
@@ -176,7 +176,7 @@ class MemberApiControllerTest extends ControllerTest {
                     .duplicateCheck(any(), any());
 
             // when
-            MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+            final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                     .get(BASE_URL)
                     .param("resource", "nickname")
                     .param("value", "중복체크닉네임");
@@ -189,7 +189,7 @@ class MemberApiControllerTest extends ControllerTest {
                                     "MemberApi/SignUp/DuplicateCheck/Success",
                                     getDocumentRequest(),
                                     getDocumentResponse(),
-                                    requestParameters(
+                                    queryParameters(
                                             parameterWithName("resource").description("중복 체크 타입")
                                                     .attributes(constraint("nickname / loginId / phone / email")),
                                             parameterWithName("value").description("중복 체크 값")

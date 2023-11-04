@@ -10,7 +10,7 @@ public record ArtDetailSearchCondition(
         ArtType artType,
         String value
 ) {
-    public ArtDetailSearchCondition(String sortType, String artType, String value) {
+    public ArtDetailSearchCondition(final String sortType, final String artType, final String value) {
         this(
                 SortType.from(sortType),
                 artType.equals("general") ? GENERAL : AUCTION,

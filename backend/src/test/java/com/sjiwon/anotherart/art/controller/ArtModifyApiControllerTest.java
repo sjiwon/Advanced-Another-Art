@@ -47,7 +47,7 @@ class ArtModifyApiControllerTest extends ControllerTest {
 
             // when
             final ArtModifyRequest request = new ArtModifyRequest("수정할 작품명", "수정할 작품 설명", Set.of("hello", "world"));
-            MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
+            final MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
                     .patch(BASE_URL, ART_ID)
                     .header(AUTHORIZATION, String.join(" ", BEARER_TOKEN, ACCESS_TOKEN))
                     .contentType(APPLICATION_JSON)
@@ -96,7 +96,7 @@ class ArtModifyApiControllerTest extends ControllerTest {
 
             // when
             final ArtModifyRequest request = new ArtModifyRequest("수정할 작품명", "수정할 작품 설명", Set.of("hello", "world"));
-            MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
+            final MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
                     .patch(BASE_URL, ART_ID)
                     .header(AUTHORIZATION, String.join(" ", BEARER_TOKEN, ACCESS_TOKEN))
                     .contentType(APPLICATION_JSON)
@@ -140,7 +140,7 @@ class ArtModifyApiControllerTest extends ControllerTest {
                     .delete(any());
 
             // when
-            MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
+            final MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
                     .delete(BASE_URL, ART_ID)
                     .header(AUTHORIZATION, String.join(" ", BEARER_TOKEN, ACCESS_TOKEN));
 
@@ -179,7 +179,7 @@ class ArtModifyApiControllerTest extends ControllerTest {
                     .delete(any());
 
             // when
-            MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
+            final MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
                     .delete(BASE_URL, ART_ID)
                     .header(AUTHORIZATION, String.join(" ", BEARER_TOKEN, ACCESS_TOKEN));
 
@@ -218,7 +218,7 @@ class ArtModifyApiControllerTest extends ControllerTest {
                     .delete(any());
 
             // when
-            MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
+            final MockHttpServletRequestBuilder requestBuilder = RestDocumentationRequestBuilders
                     .delete(BASE_URL, ART_ID)
                     .header(AUTHORIZATION, String.join(" ", BEARER_TOKEN, ACCESS_TOKEN));
 

@@ -2,13 +2,12 @@ package com.sjiwon.anotherart.member.domain;
 
 import com.sjiwon.anotherart.global.exception.AnotherArtException;
 import com.sjiwon.anotherart.member.exception.MemberErrorCode;
+import jakarta.persistence.Column;
+import jakarta.persistence.Embeddable;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.util.StringUtils;
-
-import javax.persistence.Column;
-import javax.persistence.Embeddable;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -25,45 +24,45 @@ public class Address {
     @Column(name = "detail_address", nullable = false)
     private String detailAddress;
 
-    private Address(int postcode, String defaultAddress, String detailAddress) {
+    private Address(final int postcode, final String defaultAddress, final String detailAddress) {
         this.postcode = postcode;
         this.defaultAddress = defaultAddress;
         this.detailAddress = detailAddress;
     }
 
-    public static Address of(int postcode, String defaultAddress, String detailAddress) {
+    public static Address of(final int postcode, final String defaultAddress, final String detailAddress) {
         validatePostcodeLength(postcode);
         validateAddressIsNotBlank(defaultAddress, detailAddress);
         return new Address(postcode, defaultAddress, detailAddress);
     }
 
-    public Address update(int postcode, String defaultAddress, String detailAddress) {
+    public Address update(final int postcode, final String defaultAddress, final String detailAddress) {
         validatePostcodeLength(postcode);
         validateAddressIsNotBlank(defaultAddress, detailAddress);
         return new Address(postcode, defaultAddress, detailAddress);
     }
 
-    private static void validatePostcodeLength(int postcode) {
+    private static void validatePostcodeLength(final int postcode) {
         if (isInvalidPostcodeLength(postcode)) {
             throw AnotherArtException.type(MemberErrorCode.INVALID_POST_CODE);
         }
     }
 
-    private static boolean isInvalidPostcodeLength(int postcode) {
+    private static boolean isInvalidPostcodeLength(final int postcode) {
         return String.valueOf(postcode).length() != POSTCODE_LENGTH;
     }
 
-    private static void validateAddressIsNotBlank(String defaultAddress, String detailAddress) {
+    private static void validateAddressIsNotBlank(final String defaultAddress, final String detailAddress) {
         if (isAddressEmpty(defaultAddress, detailAddress)) {
             throw AnotherArtException.type(MemberErrorCode.INVALID_ADDRESS);
         }
     }
 
-    private static boolean isAddressEmpty(String defaultAddress, String detailAddress) {
+    private static boolean isAddressEmpty(final String defaultAddress, final String detailAddress) {
         return isEmpty(defaultAddress) || isEmpty(detailAddress);
     }
 
-    private static boolean isEmpty(String str) {
+    private static boolean isEmpty(final String str) {
         return !StringUtils.hasText(str);
     }
 }

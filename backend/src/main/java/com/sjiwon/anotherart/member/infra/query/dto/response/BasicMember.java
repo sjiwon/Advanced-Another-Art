@@ -7,7 +7,7 @@ public record BasicMember(
         String nickname,
         String school
 ) {
-    public BasicMember(Long id, Nickname nickname, String school) {
+    public BasicMember(final Long id, final Nickname nickname, final String school) {
         this(id, nickname.getValue(), school);
     }
 }

@@ -9,7 +9,7 @@ import java.util.Set;
 import static com.sjiwon.anotherart.fixture.PeriodFixture.OPEN_WEEK_1_LATER;
 
 public class ArtRegisterRequestUtils {
-    public static ArtRegisterRequest createArtRegisterRequestWithInsufficientPrice(ArtFixture fixture, MultipartFile file, Set<String> hashtags) {
+    public static ArtRegisterRequest createArtRegisterRequestWithInsufficientPrice(final ArtFixture fixture, final MultipartFile file, final Set<String> hashtags) {
         return new ArtRegisterRequest(
                 fixture.getName(),
                 fixture.getDescription(),
@@ -22,7 +22,7 @@ public class ArtRegisterRequestUtils {
         );
     }
 
-    public static ArtRegisterRequest createGeneralArtRegisterRequest(ArtFixture fixture, MultipartFile file, Set<String> hashtags) {
+    public static ArtRegisterRequest createGeneralArtRegisterRequest(final ArtFixture fixture, final MultipartFile file, final Set<String> hashtags) {
         return new ArtRegisterRequest(
                 fixture.getName(),
                 fixture.getDescription(),
@@ -35,7 +35,7 @@ public class ArtRegisterRequestUtils {
         );
     }
 
-    public static ArtRegisterRequest createAuctionArtRegisterRequest(ArtFixture fixture, MultipartFile file, Set<String> hashtags) {
+    public static ArtRegisterRequest createAuctionArtRegisterRequest(final ArtFixture fixture, final MultipartFile file, final Set<String> hashtags) {
         return new ArtRegisterRequest(
                 fixture.getName(),
                 fixture.getDescription(),

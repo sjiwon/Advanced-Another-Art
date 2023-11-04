@@ -1,10 +1,14 @@
 package com.sjiwon.anotherart.token.domain;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import javax.persistence.*;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -21,16 +25,16 @@ public class Token {
     @Column(name = "refresh_token", nullable = false, unique = true)
     private String refreshToken;
 
-    private Token(Long memberId, String refreshToken) {
+    private Token(final Long memberId, final String refreshToken) {
         this.memberId = memberId;
         this.refreshToken = refreshToken;
     }
 
-    public static Token issueRefreshToken(Long memberId, String refreshToken) {
+    public static Token issueRefreshToken(final Long memberId, final String refreshToken) {
         return new Token(memberId, refreshToken);
     }
 
-    public void updateRefreshToken(String refreshToken) {
+    public void updateRefreshToken(final String refreshToken) {
         this.refreshToken = refreshToken;
     }
 }

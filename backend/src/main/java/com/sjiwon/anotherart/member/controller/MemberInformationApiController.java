@@ -22,36 +22,36 @@ public class MemberInformationApiController {
 
     @PreAuthorize("hasRole('USER') AND @tokenPayloadChecker.isTrustworthyMember(#payloadId, #memberId)")
     @GetMapping
-    public ResponseEntity<MemberInformation> getInformation(@ExtractPayload Long payloadId, @PathVariable Long memberId) {
-        MemberInformation response = memberInformationService.getInformation(memberId);
+    public ResponseEntity<MemberInformation> getInformation(@ExtractPayload final Long payloadId, @PathVariable final Long memberId) {
+        final MemberInformation response = memberInformationService.getInformation(memberId);
         return ResponseEntity.ok(response);
     }
 
     @PreAuthorize("hasRole('USER') AND @tokenPayloadChecker.isTrustworthyMember(#payloadId, #memberId)")
     @GetMapping("/points")
-    public ResponseEntity<PointRecordAssembler> getPointRecords(@ExtractPayload Long payloadId, @PathVariable Long memberId) {
-        PointRecordAssembler response = memberInformationService.getPointRecords(memberId);
+    public ResponseEntity<PointRecordAssembler> getPointRecords(@ExtractPayload final Long payloadId, @PathVariable final Long memberId) {
+        final PointRecordAssembler response = memberInformationService.getPointRecords(memberId);
         return ResponseEntity.ok(response);
     }
 
     @PreAuthorize("hasRole('USER') AND @tokenPayloadChecker.isTrustworthyMember(#payloadId, #memberId)")
     @GetMapping("/winning-auctions")
-    public ResponseEntity<WinningAuctionArtAssembler> getWinningAuctionArts(@ExtractPayload Long payloadId, @PathVariable Long memberId) {
-        WinningAuctionArtAssembler response = memberInformationService.getWinningAuctionArts(memberId);
+    public ResponseEntity<WinningAuctionArtAssembler> getWinningAuctionArts(@ExtractPayload final Long payloadId, @PathVariable final Long memberId) {
+        final WinningAuctionArtAssembler response = memberInformationService.getWinningAuctionArts(memberId);
         return ResponseEntity.ok(response);
     }
 
     @PreAuthorize("hasRole('USER') AND @tokenPayloadChecker.isTrustworthyMember(#payloadId, #memberId)")
     @GetMapping("/arts/sold")
-    public ResponseEntity<TradedArtAssembler> getSoldArts(@ExtractPayload Long payloadId, @PathVariable Long memberId) {
-        TradedArtAssembler response = memberInformationService.getSoldArts(memberId);
+    public ResponseEntity<TradedArtAssembler> getSoldArts(@ExtractPayload final Long payloadId, @PathVariable final Long memberId) {
+        final TradedArtAssembler response = memberInformationService.getSoldArts(memberId);
         return ResponseEntity.ok(response);
     }
 
     @PreAuthorize("hasRole('USER') AND @tokenPayloadChecker.isTrustworthyMember(#payloadId, #memberId)")
     @GetMapping("/arts/purchase")
-    public ResponseEntity<TradedArtAssembler> getPurchaseArts(@ExtractPayload Long payloadId, @PathVariable Long memberId) {
-        TradedArtAssembler response = memberInformationService.getPurchaseArts(memberId);
+    public ResponseEntity<TradedArtAssembler> getPurchaseArts(@ExtractPayload final Long payloadId, @PathVariable final Long memberId) {
+        final TradedArtAssembler response = memberInformationService.getPurchaseArts(memberId);
         return ResponseEntity.ok(response);
     }
 }

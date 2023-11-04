@@ -29,7 +29,7 @@ class JwtLogoutSuccessHandlerTest extends SecurityTest {
         given(jwtTokenProvider.getId(anyString())).willReturn(1L);
 
         // when
-        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+        final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .post(BASE_URL)
                 .header(AUTHORIZATION, String.join(" ", BEARER_TOKEN, ACCESS_TOKEN));
 

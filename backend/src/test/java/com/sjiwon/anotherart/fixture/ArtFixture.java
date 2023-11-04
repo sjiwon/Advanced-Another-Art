@@ -67,7 +67,7 @@ public enum ArtFixture {
     private final String storageName;
     private final Set<String> hashtags;
 
-    public Art toArt(Member owner) {
+    public Art toArt(final Member owner) {
         return Art.createArt(
                 owner,
                 ArtName.from(name),
@@ -79,7 +79,7 @@ public enum ArtFixture {
         );
     }
 
-    public Art toArt(Member owner, int price) {
+    public Art toArt(final Member owner, final int price) {
         return Art.createArt(
                 owner,
                 ArtName.from(name),
@@ -91,7 +91,7 @@ public enum ArtFixture {
         );
     }
 
-    public Art toArt(Member owner, String keyword, Set<String> hashtags) {
+    public Art toArt(final Member owner, final String keyword, final Set<String> hashtags) {
         return Art.createArt(
                 owner,
                 ArtName.from(keyword),

@@ -11,7 +11,11 @@ import com.sjiwon.anotherart.auction.controller.BidApiController;
 import com.sjiwon.anotherart.auction.facade.BidFacade;
 import com.sjiwon.anotherart.favorite.controller.FavoriteApiController;
 import com.sjiwon.anotherart.favorite.service.FavoriteService;
-import com.sjiwon.anotherart.member.controller.*;
+import com.sjiwon.anotherart.member.controller.MemberApiController;
+import com.sjiwon.anotherart.member.controller.MemberInformationApiController;
+import com.sjiwon.anotherart.member.controller.MemberModifyApiController;
+import com.sjiwon.anotherart.member.controller.MemberPointApiController;
+import com.sjiwon.anotherart.member.controller.MemberPrivacyInformationApiController;
 import com.sjiwon.anotherart.member.service.MemberInformationService;
 import com.sjiwon.anotherart.member.service.MemberPointService;
 import com.sjiwon.anotherart.member.service.MemberService;
@@ -41,7 +45,9 @@ import org.springframework.web.filter.CharacterEncodingFilter;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
-import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.log;
@@ -115,7 +121,7 @@ public abstract class ControllerTest {
     protected TokenReissueService tokenReissueService;
 
     @BeforeEach
-    void setUp(WebApplicationContext context, RestDocumentationContextProvider provider) {
+    void setUp(final WebApplicationContext context, final RestDocumentationContextProvider provider) {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(context)
                 .apply(MockMvcRestDocumentation.documentationConfiguration(provider))
                 .alwaysDo(print())
@@ -152,11 +158,11 @@ public abstract class ControllerTest {
         );
     }
 
-    protected Attributes.Attribute constraint(String value) {
+    protected Attributes.Attribute constraint(final String value) {
         return new Attributes.Attribute("constraints", value);
     }
 
-    protected String convertObjectToJson(Object data) throws JsonProcessingException {
+    protected String convertObjectToJson(final Object data) throws JsonProcessingException {
         return objectMapper.writeValueAsString(data);
     }
 }

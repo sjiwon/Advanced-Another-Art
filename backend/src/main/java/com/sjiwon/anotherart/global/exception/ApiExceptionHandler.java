@@ -6,6 +6,7 @@ import com.sjiwon.anotherart.global.security.exception.AuthErrorCode;
 import com.slack.api.Slack;
 import com.slack.api.model.Attachment;
 import com.slack.api.model.Field;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -22,7 +23,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.NoHandlerFoundException;
 
-import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -30,7 +30,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.sjiwon.anotherart.global.slack.SlackMetadata.*;
+import static com.sjiwon.anotherart.global.slack.SlackMetadata.DATETIME_FORMAT;
+import static com.sjiwon.anotherart.global.slack.SlackMetadata.LOG_COLOR;
+import static com.sjiwon.anotherart.global.slack.SlackMetadata.TITLE_ERROR_MESSAGE;
+import static com.sjiwon.anotherart.global.slack.SlackMetadata.TITLE_REQUEST_IP;
+import static com.sjiwon.anotherart.global.slack.SlackMetadata.TITLE_REQUEST_URL;
+import static com.sjiwon.anotherart.global.slack.SlackMetadata.XFF_HEADER;
 import static com.slack.api.webhook.WebhookPayloads.payload;
 
 @Slf4j
@@ -41,15 +46,15 @@ public class ApiExceptionHandler {
     private final ObjectMapper objectMapper;
     private final String slackWebhookUrl;
 
-    public ApiExceptionHandler(ObjectMapper objectMapper,
-                               @Value("${slack.webhook.url}") String slackWebhookUrl) {
+    public ApiExceptionHandler(final ObjectMapper objectMapper,
+                               @Value("${slack.webhook.url}") final String slackWebhookUrl) {
         this.objectMapper = objectMapper;
         this.slackWebhookUrl = slackWebhookUrl;
     }
 
     @ExceptionHandler(AnotherArtException.class)
-    public ResponseEntity<ErrorResponse> anotherArtException(AnotherArtException exception) {
-        ErrorCode code = exception.getCode();
+    public ResponseEntity<ErrorResponse> anotherArtException(final AnotherArtException exception) {
+        final ErrorCode code = exception.getCode();
         logging(code);
 
         return ResponseEntity
@@ -66,7 +71,7 @@ public class ApiExceptionHandler {
      * 요청 파라미터 Validation 전용 ExceptionHandler
      */
     @ExceptionHandler(UnsatisfiedServletRequestParameterException.class)
-    public ResponseEntity<ErrorResponse> unsatisfiedServletRequestParameterException(UnsatisfiedServletRequestParameterException e) {
+    public ResponseEntity<ErrorResponse> unsatisfiedServletRequestParameterException(final UnsatisfiedServletRequestParameterException e) {
         return convert(GlobalErrorCode.VALIDATION_ERROR);
     }
 
@@ -74,8 +79,8 @@ public class ApiExceptionHandler {
      * 요청 데이터 Validation 전용 ExceptionHandler (@RequestBody)
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ErrorResponse> methodArgumentNotValidException(MethodArgumentNotValidException e) throws JsonProcessingException {
-        List<FieldError> fieldErrors = e.getBindingResult().getFieldErrors();
+    public ResponseEntity<ErrorResponse> methodArgumentNotValidException(final MethodArgumentNotValidException e) throws JsonProcessingException {
+        final List<FieldError> fieldErrors = e.getBindingResult().getFieldErrors();
         return convert(GlobalErrorCode.VALIDATION_ERROR, extractErrorMessage(fieldErrors));
     }
 
@@ -83,18 +88,18 @@ public class ApiExceptionHandler {
      * 요청 데이터 Validation 전용 ExceptionHandler (@ModelAttribute)
      */
     @ExceptionHandler(BindException.class)
-    public ResponseEntity<ErrorResponse> bindException(BindException e) throws JsonProcessingException {
-        List<FieldError> fieldErrors = e.getBindingResult().getFieldErrors();
+    public ResponseEntity<ErrorResponse> bindException(final BindException e) throws JsonProcessingException {
+        final List<FieldError> fieldErrors = e.getBindingResult().getFieldErrors();
         return convert(GlobalErrorCode.VALIDATION_ERROR, extractErrorMessage(fieldErrors));
     }
 
-    private String extractErrorMessage(List<FieldError> fieldErrors) throws JsonProcessingException {
+    private String extractErrorMessage(final List<FieldError> fieldErrors) throws JsonProcessingException {
         if (fieldErrors.size() == 1) {
             return fieldErrors.get(0).getDefaultMessage();
         }
 
-        Map<String, String> errors = new HashMap<>();
-        for (FieldError error : fieldErrors) {
+        final Map<String, String> errors = new HashMap<>();
+        for (final FieldError error : fieldErrors) {
             errors.put(error.getField(), error.getDefaultMessage());
         }
         return objectMapper.writeValueAsString(errors);
@@ -128,7 +133,7 @@ public class ApiExceptionHandler {
      * 내부 서버 오류 전용 ExceptionHandler
      */
     @ExceptionHandler(RuntimeException.class)
-    public ResponseEntity<ErrorResponse> runtimeException(RuntimeException e, HttpServletRequest request) {
+    public ResponseEntity<ErrorResponse> runtimeException(final RuntimeException e, final HttpServletRequest request) {
         sendSlackAlertErrorLog(e, request);
         return convert(GlobalErrorCode.INTERNAL_SERVER_ERROR);
     }
@@ -137,10 +142,10 @@ public class ApiExceptionHandler {
      * Exception
      */
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorResponse> exception(Exception e, HttpServletRequest request) {
+    public ResponseEntity<ErrorResponse> exception(final Exception e, final HttpServletRequest request) {
         sendSlackAlertErrorLog(e, request);
 
-        ErrorCode code = GlobalErrorCode.INTERNAL_SERVER_ERROR;
+        final ErrorCode code = GlobalErrorCode.INTERNAL_SERVER_ERROR;
         logging(code, e.getMessage());
 
         return ResponseEntity
@@ -148,21 +153,21 @@ public class ApiExceptionHandler {
                 .body(ErrorResponse.from(code));
     }
 
-    private ResponseEntity<ErrorResponse> convert(ErrorCode code) {
+    private ResponseEntity<ErrorResponse> convert(final ErrorCode code) {
         logging(code);
         return ResponseEntity
                 .status(code.getStatus())
                 .body(ErrorResponse.from(code));
     }
 
-    private ResponseEntity<ErrorResponse> convert(ErrorCode code, String message) {
+    private ResponseEntity<ErrorResponse> convert(final ErrorCode code, final String message) {
         logging(code, message);
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
                 .body(ErrorResponse.of(code, message));
     }
 
-    private void logging(ErrorCode code) {
+    private void logging(final ErrorCode code) {
         log.info(
                 "statusCode={} || errorCode={} || message={}",
                 code.getStatus().value(),
@@ -171,7 +176,7 @@ public class ApiExceptionHandler {
         );
     }
 
-    private void logging(ErrorCode code, String message) {
+    private void logging(final ErrorCode code, final String message) {
         log.info(
                 "statusCode={} || errorCode={} || message={}",
                 code.getStatus().value(),
@@ -180,7 +185,7 @@ public class ApiExceptionHandler {
         );
     }
 
-    public void sendSlackAlertErrorLog(Exception e, HttpServletRequest request) {
+    public void sendSlackAlertErrorLog(final Exception e, final HttpServletRequest request) {
         try {
             SLACK_CLIENT.send(
                     slackWebhookUrl,
@@ -190,14 +195,14 @@ public class ApiExceptionHandler {
                                     List.of(generateSlackErrorAttachments(e, request))
                             )
                     ));
-        } catch (IOException slackApiError) {
+        } catch (final IOException slackApiError) {
             log.error("Slack API 통신 간 에러 발생");
         }
     }
 
-    private Attachment generateSlackErrorAttachments(Exception e, HttpServletRequest request) {
-        String requestTime = DateTimeFormatter.ofPattern(DATETIME_FORMAT).format(LocalDateTime.now());
-        String xffHeader = request.getHeader(XFF_HEADER);
+    private Attachment generateSlackErrorAttachments(final Exception e, final HttpServletRequest request) {
+        final String requestTime = DateTimeFormatter.ofPattern(DATETIME_FORMAT).format(LocalDateTime.now());
+        final String xffHeader = request.getHeader(XFF_HEADER);
         return Attachment.builder()
                 .color(LOG_COLOR)
                 .title(requestTime + " 발생 에러 로그")
@@ -211,7 +216,7 @@ public class ApiExceptionHandler {
                 .build();
     }
 
-    private Field generateSlackField(String title, String value) {
+    private Field generateSlackField(final String title, final String value) {
         return Field.builder()
                 .title(title)
                 .value(value)
@@ -219,10 +224,10 @@ public class ApiExceptionHandler {
                 .build();
     }
 
-    private String createRequestFullPath(HttpServletRequest request) {
+    private String createRequestFullPath(final HttpServletRequest request) {
         String fullPath = request.getMethod() + " " + request.getRequestURL();
 
-        String queryString = request.getQueryString();
+        final String queryString = request.getQueryString();
         if (queryString != null) {
             fullPath += "?" + queryString;
         }

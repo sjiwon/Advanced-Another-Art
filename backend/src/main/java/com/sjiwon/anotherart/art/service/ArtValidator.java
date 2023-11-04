@@ -14,13 +14,13 @@ import org.springframework.transaction.annotation.Transactional;
 public class ArtValidator {
     private final ArtRepository artRepository;
 
-    public void validateUniqueNameForCreate(ArtName name) {
+    public void validateUniqueNameForCreate(final ArtName name) {
         if (artRepository.existsByName(name)) {
             throw AnotherArtException.type(ArtErrorCode.DUPLICATE_NAME);
         }
     }
 
-    public void validateUniqueNameForUpdate(ArtName name, Long artId) {
+    public void validateUniqueNameForUpdate(final ArtName name, final Long artId) {
         if (artRepository.existsByNameAndIdNot(name, artId)) {
             throw AnotherArtException.type(ArtErrorCode.DUPLICATE_NAME);
         }
