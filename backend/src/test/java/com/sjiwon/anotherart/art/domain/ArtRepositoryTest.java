@@ -12,10 +12,10 @@ import java.util.Optional;
 
 import static com.sjiwon.anotherart.art.domain.ArtType.AUCTION;
 import static com.sjiwon.anotherart.art.domain.ArtType.GENERAL;
-import static com.sjiwon.anotherart.fixture.ArtFixture.AUCTION_1;
-import static com.sjiwon.anotherart.fixture.ArtFixture.AUCTION_2;
-import static com.sjiwon.anotherart.fixture.ArtFixture.GENERAL_1;
-import static com.sjiwon.anotherart.fixture.MemberFixture.MEMBER_A;
+import static com.sjiwon.anotherart.common.fixture.ArtFixture.AUCTION_1;
+import static com.sjiwon.anotherart.common.fixture.ArtFixture.AUCTION_2;
+import static com.sjiwon.anotherart.common.fixture.ArtFixture.GENERAL_1;
+import static com.sjiwon.anotherart.common.fixture.MemberFixture.MEMBER_A;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 

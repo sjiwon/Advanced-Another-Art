@@ -1,7 +1,7 @@
 package com.sjiwon.anotherart.member.domain;
 
+import com.sjiwon.anotherart.common.fixture.MemberFixture;
 import com.sjiwon.anotherart.common.utils.PasswordEncoderUtils;
-import com.sjiwon.anotherart.fixture.MemberFixture;
 import com.sjiwon.anotherart.global.exception.AnotherArtException;
 import com.sjiwon.anotherart.member.domain.point.PointRecord;
 import com.sjiwon.anotherart.member.exception.MemberErrorCode;
@@ -12,8 +12,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import static com.sjiwon.anotherart.fixture.MemberFixture.MEMBER_A;
-import static com.sjiwon.anotherart.fixture.MemberFixture.MEMBER_B;
+import static com.sjiwon.anotherart.common.fixture.MemberFixture.MEMBER_A;
+import static com.sjiwon.anotherart.common.fixture.MemberFixture.MEMBER_B;
 import static com.sjiwon.anotherart.member.domain.Role.USER;
 import static com.sjiwon.anotherart.member.domain.point.PointType.CHARGE;
 import static com.sjiwon.anotherart.member.domain.point.PointType.PURCHASE;

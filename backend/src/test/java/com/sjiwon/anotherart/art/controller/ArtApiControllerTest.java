@@ -23,11 +23,11 @@ import java.util.Set;
 
 import static com.sjiwon.anotherart.art.controller.utils.ArtRegisterRequestUtils.createAuctionArtRegisterRequest;
 import static com.sjiwon.anotherart.art.controller.utils.ArtRegisterRequestUtils.createGeneralArtRegisterRequest;
+import static com.sjiwon.anotherart.common.fixture.ArtFixture.AUCTION_1;
+import static com.sjiwon.anotherart.common.fixture.ArtFixture.GENERAL_1;
 import static com.sjiwon.anotherart.common.utils.FileMockingUtils.createSingleMockMultipartFile;
 import static com.sjiwon.anotherart.common.utils.TokenUtils.ACCESS_TOKEN;
 import static com.sjiwon.anotherart.common.utils.TokenUtils.BEARER_TOKEN;
-import static com.sjiwon.anotherart.fixture.ArtFixture.AUCTION_1;
-import static com.sjiwon.anotherart.fixture.ArtFixture.GENERAL_1;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;

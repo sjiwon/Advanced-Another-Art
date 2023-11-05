@@ -19,12 +19,12 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import static com.sjiwon.anotherart.art.domain.ArtStatus.ON_SALE;
-import static com.sjiwon.anotherart.fixture.ArtFixture.AUCTION_1;
-import static com.sjiwon.anotherart.fixture.ArtFixture.AUCTION_2;
-import static com.sjiwon.anotherart.fixture.ArtFixture.AUCTION_3;
-import static com.sjiwon.anotherart.fixture.ArtFixture.GENERAL_1;
-import static com.sjiwon.anotherart.fixture.ArtFixture.GENERAL_2;
-import static com.sjiwon.anotherart.fixture.ArtFixture.GENERAL_3;
+import static com.sjiwon.anotherart.common.fixture.ArtFixture.AUCTION_1;
+import static com.sjiwon.anotherart.common.fixture.ArtFixture.AUCTION_2;
+import static com.sjiwon.anotherart.common.fixture.ArtFixture.AUCTION_3;
+import static com.sjiwon.anotherart.common.fixture.ArtFixture.GENERAL_1;
+import static com.sjiwon.anotherart.common.fixture.ArtFixture.GENERAL_2;
+import static com.sjiwon.anotherart.common.fixture.ArtFixture.GENERAL_3;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;

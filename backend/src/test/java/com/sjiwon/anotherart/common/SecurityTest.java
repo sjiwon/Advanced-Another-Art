@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sjiwon.anotherart.common.config.ObjectMapperConfiguration;
 import com.sjiwon.anotherart.common.config.RedisTestContainersExtension;
-import com.sjiwon.anotherart.fixture.MemberFixture;
+import com.sjiwon.anotherart.common.fixture.MemberFixture;
 import com.sjiwon.anotherart.global.security.SecurityConfiguration;
 import com.sjiwon.anotherart.member.domain.Member;
 import com.sjiwon.anotherart.member.domain.MemberRepository;
@@ -27,7 +27,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Optional;
 
-import static com.sjiwon.anotherart.fixture.MemberFixture.MEMBER_A;
+import static com.sjiwon.anotherart.common.fixture.MemberFixture.MEMBER_A;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doThrow;

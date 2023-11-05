@@ -24,12 +24,12 @@ import static com.sjiwon.anotherart.art.controller.utils.ArtRegisterRequestUtils
 import static com.sjiwon.anotherart.art.domain.ArtStatus.ON_SALE;
 import static com.sjiwon.anotherart.art.domain.ArtType.AUCTION;
 import static com.sjiwon.anotherart.art.domain.ArtType.GENERAL;
+import static com.sjiwon.anotherart.common.fixture.ArtFixture.AUCTION_1;
+import static com.sjiwon.anotherart.common.fixture.ArtFixture.GENERAL_1;
+import static com.sjiwon.anotherart.common.fixture.MemberFixture.MEMBER_A;
+import static com.sjiwon.anotherart.common.fixture.MemberFixture.MEMBER_B;
+import static com.sjiwon.anotherart.common.fixture.PeriodFixture.OPEN_NOW;
 import static com.sjiwon.anotherart.common.utils.FileMockingUtils.createSingleMockMultipartFile;
-import static com.sjiwon.anotherart.fixture.ArtFixture.AUCTION_1;
-import static com.sjiwon.anotherart.fixture.ArtFixture.GENERAL_1;
-import static com.sjiwon.anotherart.fixture.MemberFixture.MEMBER_A;
-import static com.sjiwon.anotherart.fixture.MemberFixture.MEMBER_B;
-import static com.sjiwon.anotherart.fixture.PeriodFixture.OPEN_NOW;
 import static com.sjiwon.anotherart.member.domain.point.PointType.CHARGE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;

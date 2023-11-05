@@ -8,8 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Optional;
 
-import static com.sjiwon.anotherart.fixture.MemberFixture.MEMBER_A;
-import static com.sjiwon.anotherart.fixture.MemberFixture.MEMBER_B;
+import static com.sjiwon.anotherart.common.fixture.MemberFixture.MEMBER_A;
+import static com.sjiwon.anotherart.common.fixture.MemberFixture.MEMBER_B;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
@@ -27,7 +27,7 @@ class MemberRepositoryTest extends RepositoryTest {
 
     @Test
     @DisplayName("로그인 아이디로 사용자를 조회한다")
-    void findByLoginId(){
+    void findByLoginId() {
         // when
         final Optional<Member> emptyMember = memberRepository.findByLoginId("fake");
         final Member actualMember = memberRepository.findByLoginId(member.getLoginId()).orElseThrow();
@@ -41,7 +41,7 @@ class MemberRepositoryTest extends RepositoryTest {
 
     @Test
     @DisplayName("이름 + 이메일로 사용자를 조회한다")
-    void findByNameAndEmail(){
+    void findByNameAndEmail() {
         // when
         final Optional<Member> emptyMember1 = memberRepository.findByNameAndEmail(
                 "diff" + member.getName(),

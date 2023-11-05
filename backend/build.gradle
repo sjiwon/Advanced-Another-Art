@@ -43,8 +43,7 @@ dependencies {
 
     // JPA & DB
     implementation "org.springframework.boot:spring-boot-starter-data-jpa"
-    runtimeOnly "com.mysql:mysql-connector-j" // dev
-    runtimeOnly "com.h2database:h2" // test
+    runtimeOnly "com.mysql:mysql-connector-j"
 
     // Flyway
     implementation "org.flywaydb:flyway-core"

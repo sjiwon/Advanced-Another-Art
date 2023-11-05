@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import static com.sjiwon.anotherart.fixture.MemberFixture.MEMBER_A;
+import static com.sjiwon.anotherart.common.fixture.MemberFixture.MEMBER_A;
 import static com.sjiwon.anotherart.member.domain.point.PointType.CHARGE;
 import static com.sjiwon.anotherart.member.domain.point.PointType.REFUND;
 import static org.assertj.core.api.Assertions.assertThat;

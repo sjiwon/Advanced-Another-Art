@@ -7,8 +7,8 @@ import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
 
-import static com.sjiwon.anotherart.fixture.PeriodFixture.CLOSED_WEEK_1_AGO;
-import static com.sjiwon.anotherart.fixture.PeriodFixture.OPEN_NOW;
+import static com.sjiwon.anotherart.common.fixture.PeriodFixture.CLOSED_WEEK_1_AGO;
+import static com.sjiwon.anotherart.common.fixture.PeriodFixture.OPEN_NOW;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;

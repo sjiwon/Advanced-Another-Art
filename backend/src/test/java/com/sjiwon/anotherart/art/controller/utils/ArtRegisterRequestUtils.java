@@ -1,12 +1,12 @@
 package com.sjiwon.anotherart.art.controller.utils;
 
 import com.sjiwon.anotherart.art.controller.dto.request.ArtRegisterRequest;
-import com.sjiwon.anotherart.fixture.ArtFixture;
+import com.sjiwon.anotherart.common.fixture.ArtFixture;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Set;
 
-import static com.sjiwon.anotherart.fixture.PeriodFixture.OPEN_WEEK_1_LATER;
+import static com.sjiwon.anotherart.common.fixture.PeriodFixture.OPEN_WEEK_1_LATER;
 
 public class ArtRegisterRequestUtils {
     public static ArtRegisterRequest createArtRegisterRequestWithInsufficientPrice(final ArtFixture fixture, final MultipartFile file, final Set<String> hashtags) {
