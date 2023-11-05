@@ -6,10 +6,10 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class ArtOwnerChecker {
+public class ArtOwnerValidator {
     private final ArtRepository artRepository;
 
-    public boolean isArtOwner(final Long memberId, final Long artId) {
+    public boolean isArtOwner(final Long artId, final Long memberId) {
         return artRepository.isOwner(artId, memberId);
     }
 }

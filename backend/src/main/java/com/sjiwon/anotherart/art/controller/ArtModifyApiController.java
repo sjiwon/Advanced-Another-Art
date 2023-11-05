@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class ArtModifyApiController {
     private final ArtService artService;
 
-    @PreAuthorize("hasRole('USER') AND @artOwnerChecker.isArtOwner(#memberId, #artId)")
+    @PreAuthorize("hasRole('USER') AND @artOwnerValidator.isArtOwner(#artId, #memberId)")
     @PatchMapping
     public ResponseEntity<Void> update(@ExtractPayload final Long memberId,
                                        @PathVariable final Long artId,
@@ -29,7 +29,7 @@ public class ArtModifyApiController {
         return ResponseEntity.noContent().build();
     }
 
-    @PreAuthorize("hasRole('USER') AND @artOwnerChecker.isArtOwner(#memberId, #artId)")
+    @PreAuthorize("hasRole('USER') AND @artOwnerValidator.isArtOwner(#artId, #memberId)")
     @DeleteMapping
     public ResponseEntity<Void> delete(@ExtractPayload final Long memberId,
                                        @PathVariable final Long artId) {
