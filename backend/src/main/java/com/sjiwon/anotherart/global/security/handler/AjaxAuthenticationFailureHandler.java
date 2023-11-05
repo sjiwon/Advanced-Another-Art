@@ -2,7 +2,7 @@ package com.sjiwon.anotherart.global.security.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sjiwon.anotherart.global.exception.ErrorCode;
-import com.sjiwon.anotherart.global.exception.ErrorResponse;
+import com.sjiwon.anotherart.global.exception.dto.ErrorResponse;
 import com.sjiwon.anotherart.global.security.exception.AnotherArtAuthenticationException;
 import com.sjiwon.anotherart.member.exception.MemberErrorCode;
 import jakarta.servlet.http.HttpServletRequest;

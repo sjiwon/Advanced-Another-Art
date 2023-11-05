@@ -1,5 +1,6 @@
-package com.sjiwon.anotherart.global.exception;
+package com.sjiwon.anotherart.global.exception.dto;
 
+import com.sjiwon.anotherart.global.exception.ErrorCode;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
