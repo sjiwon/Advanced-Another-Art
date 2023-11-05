@@ -63,6 +63,7 @@ dependencies {
     // AWS
     implementation "io.awspring.cloud:spring-cloud-aws-starter:3.0.1"
     implementation "io.awspring.cloud:spring-cloud-aws-starter-s3:3.0.1"
+    implementation "ca.pjer:logback-awslogs-appender:1.6.0" // CloudWatch Logging with Logback
 
     // JWT
     implementation "io.jsonwebtoken:jjwt-api:0.11.5"
