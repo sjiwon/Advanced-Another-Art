@@ -2,9 +2,9 @@ package com.sjiwon.anotherart.token.service;
 
 import com.sjiwon.anotherart.common.ServiceTest;
 import com.sjiwon.anotherart.global.exception.AnotherArtException;
+import com.sjiwon.anotherart.global.security.exception.AuthErrorCode;
 import com.sjiwon.anotherart.member.domain.Member;
 import com.sjiwon.anotherart.token.domain.Token;
-import com.sjiwon.anotherart.token.exception.TokenErrorCode;
 import com.sjiwon.anotherart.token.service.response.TokenResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -40,7 +40,7 @@ class TokenReissueServiceTest extends ServiceTest {
             // when - then
             assertThatThrownBy(() -> tokenReissueService.reissueTokens(member.getId(), refreshToken))
                     .isInstanceOf(AnotherArtException.class)
-                    .hasMessage(TokenErrorCode.AUTH_INVALID_TOKEN.getMessage());
+                    .hasMessage(AuthErrorCode.INVALID_TOKEN.getMessage());
         }
 
         @Test

@@ -1,7 +1,7 @@
-package com.sjiwon.anotherart.global.security;
+package com.sjiwon.anotherart.global.security.dto;
 
 public record LoginResponse(
-        Long memberId,
+        Long id,
         String nickname,
         String accessToken,
         String refreshToken

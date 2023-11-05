@@ -24,7 +24,7 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
                 contact = @Contact(
                         name = "서지원",
                         url = "https://github.com/sjiwon/Advanced-Another-Art",
-                        email = "sjiwo4491@gmail.com"
+                        email = "sjiwon4491@gmail.com"
                 ),
                 version = "v1"
         ),

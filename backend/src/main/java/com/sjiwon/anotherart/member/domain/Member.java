@@ -56,7 +56,7 @@ public class Member extends BaseEntity<Member> {
     private Role role;
 
     private Member(final String name, final Nickname nickname, final String loginId, final Password password,
-                   final String school, final String phone, final Email email, final Address address) {
+                   final String school, final String phone, final Email email, final Address address, final Role role) {
         this.name = name;
         this.nickname = nickname;
         this.loginId = loginId;
@@ -66,12 +66,12 @@ public class Member extends BaseEntity<Member> {
         this.email = email;
         this.address = address;
         this.point = Point.init();
-        this.role = USER;
+        this.role = role;
     }
 
     public static Member createMember(final String name, final Nickname nickname, final String loginId, final Password password,
                                       final String school, final String phone, final Email email, final Address address) {
-        return new Member(name, nickname, loginId, password, school, phone, email, address);
+        return new Member(name, nickname, loginId, password, school, phone, email, address, USER);
     }
 
     public void addPointRecords(final PointType type, final int amount) {

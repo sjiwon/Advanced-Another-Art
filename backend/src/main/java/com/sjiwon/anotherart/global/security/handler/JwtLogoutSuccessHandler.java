@@ -20,7 +20,11 @@ public class JwtLogoutSuccessHandler implements LogoutSuccessHandler {
     private final TokenManager tokenManager;
 
     @Override
-    public void onLogoutSuccess(final HttpServletRequest request, final HttpServletResponse response, final Authentication authentication) {
+    public void onLogoutSuccess(
+            final HttpServletRequest request,
+            final HttpServletResponse response,
+            final Authentication authentication
+    ) {
         removeRefreshToken(request);
         clearSecurityContextHolder();
 

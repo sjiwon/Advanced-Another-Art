@@ -8,7 +8,7 @@ import org.springframework.security.core.AuthenticationException;
 public class AnotherArtAuthenticationException extends AuthenticationException {
     private final ErrorCode code;
 
-    protected AnotherArtAuthenticationException(final ErrorCode code) {
+    private AnotherArtAuthenticationException(final ErrorCode code) {
         super(code.getMessage());
         this.code = code;
     }

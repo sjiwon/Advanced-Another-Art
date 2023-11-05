@@ -2,17 +2,18 @@ package com.sjiwon.anotherart.global.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sjiwon.anotherart.global.security.filter.AjaxAuthenticationFilter;
+import com.sjiwon.anotherart.global.security.filter.InvalidTokenExceptionTranslationFilter;
 import com.sjiwon.anotherart.global.security.filter.JwtAuthorizationFilter;
 import com.sjiwon.anotherart.global.security.filter.LogoutExceptionTranslationFilter;
 import com.sjiwon.anotherart.global.security.filter.RequestResponseCachingFilter;
-import com.sjiwon.anotherart.global.security.filter.TokenInvalidExceptionTranslationFilter;
 import com.sjiwon.anotherart.global.security.handler.AjaxAuthenticationFailureHandler;
 import com.sjiwon.anotherart.global.security.handler.AjaxAuthenticationSuccessHandler;
 import com.sjiwon.anotherart.global.security.handler.JwtAccessDeniedHandler;
 import com.sjiwon.anotherart.global.security.handler.JwtAuthenticationEntryPoint;
 import com.sjiwon.anotherart.global.security.handler.JwtLogoutSuccessHandler;
+import com.sjiwon.anotherart.global.security.properties.CorsProperties;
 import com.sjiwon.anotherart.global.security.provider.AjaxAuthenticationProvider;
-import com.sjiwon.anotherart.global.security.service.CustomUserDetailsService;
+import com.sjiwon.anotherart.global.security.provider.CustomUserDetailsService;
 import com.sjiwon.anotherart.member.domain.MemberRepository;
 import com.sjiwon.anotherart.token.service.TokenManager;
 import com.sjiwon.anotherart.token.utils.TokenProvider;
@@ -29,7 +30,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
@@ -55,17 +56,18 @@ public class SecurityConfiguration {
     private final MemberRepository memberRepository;
     private final TokenProvider tokenProvider;
     private final TokenManager tokenManager;
+    private final CorsProperties corsProperties;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
+        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         final CorsConfiguration corsConfiguration = new CorsConfiguration();
         corsConfiguration.setAllowCredentials(true);
-        corsConfiguration.setAllowedOriginPatterns(List.of("*"));
+        corsConfiguration.setAllowedOriginPatterns(corsProperties.getAllowedOriginPatterns());
         corsConfiguration.setAllowedMethods(List.of("GET", "POST", "PATCH", "PUT", "DELETE", "HEAD", "OPTIONS"));
         corsConfiguration.setAllowedHeaders(List.of("*"));
 
@@ -126,8 +128,8 @@ public class SecurityConfiguration {
     }
 
     @Bean
-    public TokenInvalidExceptionTranslationFilter tokenInvalidExceptionTranslationFilter() {
-        return new TokenInvalidExceptionTranslationFilter(jwtAccessDeniedHandler());
+    public InvalidTokenExceptionTranslationFilter tokenInvalidExceptionTranslationFilter() {
+        return new InvalidTokenExceptionTranslationFilter(jwtAccessDeniedHandler());
     }
 
     @Bean
