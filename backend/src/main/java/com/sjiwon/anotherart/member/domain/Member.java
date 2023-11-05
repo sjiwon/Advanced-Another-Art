@@ -8,9 +8,6 @@ import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -26,11 +23,7 @@ import static com.sjiwon.anotherart.member.domain.Role.USER;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Table(name = "member")
-public class Member extends BaseEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
+public class Member extends BaseEntity<Member> {
     @Column(name = "name", nullable = false, updatable = false)
     private String name;
 
@@ -106,7 +99,7 @@ public class Member extends BaseEntity {
     }
 
     public boolean isSameMember(final Member other) {
-        return Objects.equals(this.id, other.getId());
+        return Objects.equals(this.getId(), other.getId());
     }
 
     // Add Getter

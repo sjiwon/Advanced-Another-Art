@@ -8,9 +8,6 @@ import com.sjiwon.anotherart.purchase.exception.PurchaseErrorCode;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
@@ -26,11 +23,7 @@ import static com.sjiwon.anotherart.member.domain.point.PointType.SOLD;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Table(name = "art_purchase")
-public class Purchase extends BaseEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
+public class Purchase extends BaseEntity<Purchase> {
     @Column(name = "purchase_price", nullable = false, updatable = false)
     private int price;
 
