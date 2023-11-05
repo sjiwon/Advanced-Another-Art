@@ -1,4 +1,4 @@
-package com.sjiwon.anotherart.global.security.etc;
+package com.sjiwon.anotherart.global.security.properties;
 
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;

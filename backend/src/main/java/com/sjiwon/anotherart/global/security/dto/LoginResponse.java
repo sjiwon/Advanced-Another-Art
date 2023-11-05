@@ -1,4 +1,4 @@
-package com.sjiwon.anotherart.global.security;
+package com.sjiwon.anotherart.global.security.dto;
 
 public record LoginResponse(
         Long id,

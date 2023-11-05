@@ -1,7 +1,7 @@
 package com.sjiwon.anotherart.global.security.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sjiwon.anotherart.global.security.LoginResponse;
+import com.sjiwon.anotherart.global.security.dto.LoginResponse;
 import com.sjiwon.anotherart.global.security.principal.MemberPrincipal;
 import com.sjiwon.anotherart.token.service.TokenManager;
 import com.sjiwon.anotherart.token.utils.TokenProvider;

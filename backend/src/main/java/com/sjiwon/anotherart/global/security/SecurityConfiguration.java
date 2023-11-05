@@ -1,7 +1,6 @@
 package com.sjiwon.anotherart.global.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sjiwon.anotherart.global.security.etc.CorsProperties;
 import com.sjiwon.anotherart.global.security.filter.AjaxAuthenticationFilter;
 import com.sjiwon.anotherart.global.security.filter.InvalidTokenExceptionTranslationFilter;
 import com.sjiwon.anotherart.global.security.filter.JwtAuthorizationFilter;
@@ -12,6 +11,7 @@ import com.sjiwon.anotherart.global.security.handler.AjaxAuthenticationSuccessHa
 import com.sjiwon.anotherart.global.security.handler.JwtAccessDeniedHandler;
 import com.sjiwon.anotherart.global.security.handler.JwtAuthenticationEntryPoint;
 import com.sjiwon.anotherart.global.security.handler.JwtLogoutSuccessHandler;
+import com.sjiwon.anotherart.global.security.properties.CorsProperties;
 import com.sjiwon.anotherart.global.security.provider.AjaxAuthenticationProvider;
 import com.sjiwon.anotherart.global.security.provider.CustomUserDetailsService;
 import com.sjiwon.anotherart.member.domain.MemberRepository;

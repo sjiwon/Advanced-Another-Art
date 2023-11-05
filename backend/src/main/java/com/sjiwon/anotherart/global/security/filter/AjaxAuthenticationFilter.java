@@ -1,7 +1,7 @@
 package com.sjiwon.anotherart.global.security.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sjiwon.anotherart.global.security.LoginRequest;
+import com.sjiwon.anotherart.global.security.dto.LoginRequest;
 import com.sjiwon.anotherart.global.security.exception.AnotherArtAuthenticationException;
 import com.sjiwon.anotherart.global.security.exception.AuthErrorCode;
 import jakarta.servlet.http.HttpServletRequest;
