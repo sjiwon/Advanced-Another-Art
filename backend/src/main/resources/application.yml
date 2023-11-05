@@ -1,9 +1,57 @@
-spring:
-  config:
-    import:
-      - security/application-external.yml
-      - security/application-local-datasource.yml
-      - application-logging.yml
-
 server:
   port: 7777
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:13306/another_art?autoReconnect=true&characterEncoding=utf8&serverTimeZone=Asia/Seoul
+    username: root
+    password: 1234
+
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        show_sql: false
+        format_sql: false
+        default_batch_fetch_size: 50
+
+  flyway:
+    enabled: false
+
+  data:
+    redis:
+      host: localhost
+      port: 6379
+
+  cloud:
+    aws:
+      region:
+        static: ap-northeast-2
+      s3:
+        bucket: ${S3_BUCKET}
+      cloudfront:
+        url: ${CLOUD_FRONT_URL}
+
+jwt:
+  secret-key: 2da7acad220ffe59e6943c826ec1fcf879a4339521ff5837fa92aab485e94bcb # 테스트용 Secret Key
+  access-token-validity: 7200
+  refresh-token-validity: 1209600
+
+springdoc:
+  swagger-ui:
+    path: /swagger
+    display-request-duration: true
+    operations-sorter: alpha
+    tags-sorter: alpha
+
+decorator:
+  datasource:
+    p6spy:
+      enable-logging: true
+
+slack:
+  webhook:
+    url: ${SLACK_WEBHOOK_URL}

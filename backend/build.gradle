@@ -46,6 +46,10 @@ dependencies {
     runtimeOnly "com.mysql:mysql-connector-j" // dev
     runtimeOnly "com.h2database:h2" // test
 
+    // Flyway
+    implementation "org.flywaydb:flyway-core"
+    implementation "org.flywaydb:flyway-mysql"
+
     // Querydsl
     implementation "com.querydsl:querydsl-jpa:${queryDslVersion}:jakarta"
     annotationProcessor "com.querydsl:querydsl-apt:${queryDslVersion}:jakarta"
@@ -64,6 +68,13 @@ dependencies {
     implementation "io.jsonwebtoken:jjwt-api:0.11.5"
     runtimeOnly "io.jsonwebtoken:jjwt-impl:0.11.5"
     runtimeOnly "io.jsonwebtoken:jjwt-jackson:0.11.5"
+
+    // Monitoring
+    implementation "org.springframework.boot:spring-boot-starter-actuator"
+    runtimeOnly "io.micrometer:micrometer-registry-prometheus"
+
+    // Swagger
+    implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:2.1.0"
 
     // Lombok
     compileOnly "org.projectlombok:lombok"
@@ -89,9 +100,10 @@ dependencies {
     testImplementation "org.springframework.restdocs:spring-restdocs-mockmvc"
 
     // TestContainers
-    testImplementation "org.junit.jupiter:junit-jupiter:5.8.1"
-    testImplementation "org.testcontainers:testcontainers:1.18.1"
-    testImplementation "org.testcontainers:junit-jupiter:1.18.1"
+    testImplementation "org.springframework.boot:spring-boot-testcontainers"
+    testImplementation "org.testcontainers:junit-jupiter"
+    testImplementation "org.testcontainers:mysql:1.18.3"
+    testImplementation "org.flywaydb.flyway-test-extensions:flyway-spring-test:9.5.0"
 }
 
 // QueryDsl QClass Generated Position
@@ -131,6 +143,18 @@ tasks.register("copyDocument", Copy) {
     dependsOn asciidoctor
     from file("build/docs/asciidoc")
     into file("src/main/resources/static/docs")
+}
+
+tasks.named('compileJava') {
+    inputs.files(tasks.named('processResources'))
+}
+
+processResources.dependsOn('copySecret')
+
+tasks.register('copySecret', Copy) {
+    from './another-art-secret'
+    include 'application*.yml'
+    into './src/main/resources'
 }
 
 build {

@@ -13,7 +13,7 @@ import com.sjiwon.anotherart.auction.domain.Period;
 import com.sjiwon.anotherart.global.exception.AnotherArtException;
 import com.sjiwon.anotherart.member.domain.Member;
 import com.sjiwon.anotherart.member.service.MemberFindService;
-import com.sjiwon.anotherart.upload.utils.FileUploader;
+import com.sjiwon.anotherart.upload.utils.S3FileUploader;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,7 +29,7 @@ import static com.sjiwon.anotherart.art.domain.ArtType.GENERAL;
 public class ArtService {
     private final ArtFindService artFindService;
     private final MemberFindService memberFindService;
-    private final FileUploader fileUploader;
+    private final S3FileUploader s3FileUploader;
     private final ArtValidator artValidator;
     private final ArtRepository artRepository;
     private final HashtagRepository hashtagRepository;
@@ -40,7 +40,7 @@ public class ArtService {
         validateUniqueNameForCreate(request.name());
 
         final Member owner = memberFindService.findById(ownerId);
-        final String storageName = fileUploader.uploadArtImage(request.file());
+        final String storageName = s3FileUploader.uploadFile(request.file());
         return buildArt(owner, storageName, request);
     }
 
