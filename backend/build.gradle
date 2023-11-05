@@ -145,6 +145,18 @@ tasks.register("copyDocument", Copy) {
     into file("src/main/resources/static/docs")
 }
 
+tasks.named('compileJava') {
+    inputs.files(tasks.named('processResources'))
+}
+
+processResources.dependsOn('copySecret')
+
+tasks.register('copySecret', Copy) {
+    from './another-art-secret'
+    include 'application*.yml'
+    into './src/main/resources'
+}
+
 build {
     dependsOn copyDocument
 }
