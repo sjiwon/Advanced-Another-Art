@@ -28,12 +28,12 @@ public class AjaxAuthenticationProvider implements AuthenticationProvider {
     }
 
     private void validatePassword(final String rawPassword, final UserDetails userDetails) {
-        if (isNotCorrectPassword(rawPassword, userDetails)) {
+        if (isInvalidPassword(rawPassword, userDetails)) {
             throw new BadCredentialsException(MemberErrorCode.INVALID_PASSWORD.getMessage());
         }
     }
 
-    private boolean isNotCorrectPassword(final String rawPassword, final UserDetails userDetails) {
+    private boolean isInvalidPassword(final String rawPassword, final UserDetails userDetails) {
         return userDetails == null || !passwordEncoder.matches(rawPassword, userDetails.getPassword());
     }
 

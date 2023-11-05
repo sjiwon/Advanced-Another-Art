@@ -1,4 +1,4 @@
-package com.sjiwon.anotherart.global.security.service;
+package com.sjiwon.anotherart.global.security.provider;
 
 import com.sjiwon.anotherart.global.security.principal.MemberPrincipal;
 import com.sjiwon.anotherart.member.domain.Member;
@@ -21,9 +21,9 @@ public class CustomUserDetailsService implements UserDetailsService {
         return new MemberPrincipal(
                 member.getId(),
                 member.getName(),
-                member.getNicknameValue(),
+                member.getNickname().getValue(),
                 member.getLoginId(),
-                member.getPasswordValue(),
+                member.getPassword().getValue(),
                 member.getRole().getAuthority()
         );
     }
