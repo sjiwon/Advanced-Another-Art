@@ -12,7 +12,7 @@ import com.sjiwon.anotherart.global.security.handler.JwtAccessDeniedHandler;
 import com.sjiwon.anotherart.global.security.handler.JwtAuthenticationEntryPoint;
 import com.sjiwon.anotherart.global.security.handler.JwtLogoutSuccessHandler;
 import com.sjiwon.anotherart.global.security.provider.AjaxAuthenticationProvider;
-import com.sjiwon.anotherart.global.security.service.CustomUserDetailsService;
+import com.sjiwon.anotherart.global.security.provider.CustomUserDetailsService;
 import com.sjiwon.anotherart.member.domain.MemberRepository;
 import com.sjiwon.anotherart.token.service.TokenManager;
 import com.sjiwon.anotherart.token.utils.TokenProvider;
