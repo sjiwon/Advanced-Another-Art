@@ -2,6 +2,7 @@ package com.sjiwon.anotherart.common;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sjiwon.anotherart.common.config.MySqlTestContainersExtension;
 import com.sjiwon.anotherart.common.config.ObjectMapperConfiguration;
 import com.sjiwon.anotherart.common.config.RedisTestContainersExtension;
 import com.sjiwon.anotherart.common.fixture.MemberFixture;
@@ -22,7 +23,6 @@ import org.springframework.restdocs.operation.preprocess.OperationRequestPreproc
 import org.springframework.restdocs.operation.preprocess.OperationResponsePreprocessor;
 import org.springframework.restdocs.snippet.Snippet;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Optional;
@@ -38,10 +38,13 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWit
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 
 @SpringBootTest(classes = {SecurityConfiguration.class, ObjectMapperConfiguration.class})
-@ExtendWith(RedisTestContainersExtension.class)
+@ExtendWith({
+        MySqlTestContainersExtension.class,
+        RedisTestContainersExtension.class
+})
 @AutoConfigureMockMvc
 @AutoConfigureRestDocs
-public class SecurityTest {
+public abstract class SecurityTest {
     @Autowired
     protected MockMvc mockMvc;
 
@@ -69,8 +72,7 @@ public class SecurityTest {
     }
 
     private void createMember(final MemberFixture fixture, final Long memberId) {
-        final Member member = fixture.toMember();
-        ReflectionTestUtils.setField(member, "id", memberId);
+        final Member member = fixture.toMember().apply(memberId);
 
         given(memberRepository.findById(memberId)).willReturn(Optional.of(member));
         given(memberRepository.findByLoginId(member.getLoginId())).willReturn(Optional.of(member));

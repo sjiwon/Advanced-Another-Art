@@ -9,8 +9,10 @@ import com.sjiwon.anotherart.art.service.ArtSearchService;
 import com.sjiwon.anotherart.art.service.ArtService;
 import com.sjiwon.anotherart.auction.controller.BidApiController;
 import com.sjiwon.anotherart.auction.facade.BidFacade;
+import com.sjiwon.anotherart.common.config.TestAopConfiguration;
 import com.sjiwon.anotherart.favorite.controller.FavoriteApiController;
 import com.sjiwon.anotherart.favorite.service.FavoriteService;
+import com.sjiwon.anotherart.global.exception.slack.SlackAlertManager;
 import com.sjiwon.anotherart.member.controller.MemberApiController;
 import com.sjiwon.anotherart.member.controller.MemberInformationApiController;
 import com.sjiwon.anotherart.member.controller.MemberModifyApiController;
@@ -23,13 +25,14 @@ import com.sjiwon.anotherart.purchase.controller.PurchaseApiController;
 import com.sjiwon.anotherart.purchase.service.PurchaseService;
 import com.sjiwon.anotherart.token.controller.TokenReissueApiController;
 import com.sjiwon.anotherart.token.service.TokenReissueService;
-import com.sjiwon.anotherart.token.utils.JwtTokenProvider;
+import com.sjiwon.anotherart.token.utils.TokenProvider;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation;
@@ -74,22 +77,25 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
         TokenReissueApiController.class
 })
 @ExtendWith(RestDocumentationExtension.class)
+@Import(TestAopConfiguration.class)
 @AutoConfigureRestDocs
 public abstract class ControllerTest {
-    // common
+    // common & external
     @Autowired
     protected MockMvc mockMvc;
 
     @MockBean
-    protected JwtTokenProvider jwtTokenProvider;
+    protected TokenProvider tokenProvider;
 
     @Autowired
     private ObjectMapper objectMapper;
 
+    @MockBean
+    private SlackAlertManager slackAlertManager;
+
     // art
     @MockBean
     protected ArtService artService;
-
 
     @MockBean
     protected ArtSearchService artSearchService;

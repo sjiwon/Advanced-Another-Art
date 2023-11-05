@@ -1,4 +1,4 @@
-package com.sjiwon.anotherart.common;
+package com.sjiwon.anotherart.common.utils;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Table;
