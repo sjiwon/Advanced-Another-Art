@@ -8,7 +8,7 @@ import com.sjiwon.anotherart.art.service.ArtSearchService;
 import com.sjiwon.anotherart.art.service.dto.response.ArtAssembler;
 import com.sjiwon.anotherart.art.utils.search.ArtDetailSearchCondition;
 import com.sjiwon.anotherart.art.utils.search.Pagination;
-import com.sjiwon.anotherart.global.dto.SimpleReponseWrapper;
+import com.sjiwon.anotherart.global.dto.ResponseWrapper;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -30,9 +30,9 @@ public class ArtSearchApiController {
     private final ArtSearchService artSearchService;
 
     @GetMapping("/{artId}")
-    public ResponseEntity<SimpleReponseWrapper<ArtDetails>> getArt(@PathVariable final Long artId) {
+    public ResponseEntity<ResponseWrapper<ArtDetails>> getArt(@PathVariable final Long artId) {
         final ArtDetails response = artSearchService.getArt(artId);
-        return ResponseEntity.ok(new SimpleReponseWrapper<>(response));
+        return ResponseEntity.ok(ResponseWrapper.from(response));
     }
 
     @GetMapping

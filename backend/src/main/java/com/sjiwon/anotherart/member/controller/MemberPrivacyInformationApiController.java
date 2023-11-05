@@ -1,6 +1,6 @@
 package com.sjiwon.anotherart.member.controller;
 
-import com.sjiwon.anotherart.global.dto.SimpleReponseWrapper;
+import com.sjiwon.anotherart.global.dto.ResponseWrapper;
 import com.sjiwon.anotherart.global.resolver.ExtractPayload;
 import com.sjiwon.anotherart.member.controller.dto.request.AuthForResetPasswordRequest;
 import com.sjiwon.anotherart.member.controller.dto.request.ChangePasswordRequest;
@@ -26,9 +26,9 @@ public class MemberPrivacyInformationApiController {
     private final MemberService memberService;
 
     @GetMapping("/login-id")
-    public ResponseEntity<SimpleReponseWrapper<String>> findLoginId(@ModelAttribute @Valid final FindLoginIdRequest request) {
+    public ResponseEntity<ResponseWrapper<String>> findLoginId(@ModelAttribute @Valid final FindLoginIdRequest request) {
         final String loginId = memberService.findLoginId(request.name(), Email.from(request.email()));
-        return ResponseEntity.ok(new SimpleReponseWrapper<>(loginId));
+        return ResponseEntity.ok(ResponseWrapper.from(loginId));
     }
 
     @PostMapping("/reset-password/auth")
