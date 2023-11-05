@@ -35,6 +35,9 @@ spring:
       cloudfront:
         url: ${CLOUD_FRONT_URL}
 
+cors:
+  allowed-origin-patterns: http://localhost:8080 # Vue.js
+
 jwt:
   secret-key: 2da7acad220ffe59e6943c826ec1fcf879a4339521ff5837fa92aab485e94bcb # 테스트용 Secret Key
   access-token-validity: 7200

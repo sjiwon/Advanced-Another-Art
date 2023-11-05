@@ -1,6 +1,7 @@
 package com.sjiwon.anotherart.global.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sjiwon.anotherart.global.security.etc.CorsProperties;
 import com.sjiwon.anotherart.global.security.filter.AjaxAuthenticationFilter;
 import com.sjiwon.anotherart.global.security.filter.InvalidTokenExceptionTranslationFilter;
 import com.sjiwon.anotherart.global.security.filter.JwtAuthorizationFilter;
@@ -29,7 +30,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
@@ -55,17 +56,18 @@ public class SecurityConfiguration {
     private final MemberRepository memberRepository;
     private final TokenProvider tokenProvider;
     private final TokenManager tokenManager;
+    private final CorsProperties corsProperties;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
+        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         final CorsConfiguration corsConfiguration = new CorsConfiguration();
         corsConfiguration.setAllowCredentials(true);
-        corsConfiguration.setAllowedOriginPatterns(List.of("*"));
+        corsConfiguration.setAllowedOriginPatterns(corsProperties.getAllowedOriginPatterns());
         corsConfiguration.setAllowedMethods(List.of("GET", "POST", "PATCH", "PUT", "DELETE", "HEAD", "OPTIONS"));
         corsConfiguration.setAllowedHeaders(List.of("*"));
 
