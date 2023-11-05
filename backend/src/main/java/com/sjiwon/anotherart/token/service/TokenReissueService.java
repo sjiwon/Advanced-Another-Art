@@ -1,9 +1,9 @@
 package com.sjiwon.anotherart.token.service;
 
 import com.sjiwon.anotherart.global.exception.AnotherArtException;
+import com.sjiwon.anotherart.global.security.exception.AuthErrorCode;
 import com.sjiwon.anotherart.member.domain.Member;
 import com.sjiwon.anotherart.member.service.MemberFindService;
-import com.sjiwon.anotherart.token.exception.TokenErrorCode;
 import com.sjiwon.anotherart.token.service.response.TokenResponse;
 import com.sjiwon.anotherart.token.utils.TokenProvider;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +21,7 @@ public class TokenReissueService {
     public TokenResponse reissueTokens(final Long memberId, final String refreshToken) {
         // 사용자가 보유하고 있는 Refresh Token인지
         if (!tokenManager.isRefreshTokenExists(memberId, refreshToken)) {
-            throw AnotherArtException.type(TokenErrorCode.AUTH_INVALID_TOKEN);
+            throw AnotherArtException.type(AuthErrorCode.INVALID_TOKEN);
         }
 
         // Access Token & Refresh Token 발급
