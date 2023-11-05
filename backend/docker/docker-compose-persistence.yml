@@ -18,3 +18,11 @@ services:
     volumes:
       - "./mysql_data:/var/lib/mysql" # .idb = Table Data / .frm = Table Definition / ...
       - "../src/main/resources/sql/init.sql:/docker-entrypoint-initdb.d/init.sql:ro" # Init Script
+
+  redis: # redis-cli
+    image: redis:latest
+    container_name: redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - "./redis_data/data:/data"
