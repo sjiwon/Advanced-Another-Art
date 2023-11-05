@@ -25,11 +25,11 @@ public interface ArtRepository extends JpaRepository<Art, Long>,
 
     @Query("SELECT a.owner.id" +
             " FROM Art a" +
-            " WHERE a.id = :studyId")
-    Long getOwnerId(@Param("studyId") final Long studyId);
+            " WHERE a.id = :artId")
+    Long getOwnerId(@Param("artId") final Long artId);
 
-    default boolean isOwner(final Long studyId, final Long memberId) {
-        return getOwnerId(studyId).equals(memberId);
+    default boolean isOwner(final Long artId, final Long memberId) {
+        return getOwnerId(artId).equals(memberId);
     }
 
     // Query Method
