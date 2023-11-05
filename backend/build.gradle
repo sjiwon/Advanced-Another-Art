@@ -46,6 +46,10 @@ dependencies {
     runtimeOnly "com.mysql:mysql-connector-j" // dev
     runtimeOnly "com.h2database:h2" // test
 
+    // Flyway
+    implementation "org.flywaydb:flyway-core"
+    implementation "org.flywaydb:flyway-mysql"
+
     // Querydsl
     implementation "com.querydsl:querydsl-jpa:${queryDslVersion}:jakarta"
     annotationProcessor "com.querydsl:querydsl-apt:${queryDslVersion}:jakarta"
@@ -96,9 +100,10 @@ dependencies {
     testImplementation "org.springframework.restdocs:spring-restdocs-mockmvc"
 
     // TestContainers
-    testImplementation "org.junit.jupiter:junit-jupiter:5.8.1"
-    testImplementation "org.testcontainers:testcontainers:1.18.1"
-    testImplementation "org.testcontainers:junit-jupiter:1.18.1"
+    testImplementation "org.springframework.boot:spring-boot-testcontainers"
+    testImplementation "org.testcontainers:junit-jupiter"
+    testImplementation "org.testcontainers:mysql:1.18.3"
+    testImplementation "org.flywaydb.flyway-test-extensions:flyway-spring-test:9.5.0"
 }
 
 // QueryDsl QClass Generated Position
