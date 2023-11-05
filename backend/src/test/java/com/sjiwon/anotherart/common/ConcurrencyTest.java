@@ -3,6 +3,7 @@ package com.sjiwon.anotherart.common;
 import com.sjiwon.anotherart.art.domain.ArtRepository;
 import com.sjiwon.anotherart.auction.domain.AuctionRepository;
 import com.sjiwon.anotherart.common.config.DatabaseCleanerEachCallbackExtension;
+import com.sjiwon.anotherart.common.config.MySqlTestContainersExtension;
 import com.sjiwon.anotherart.common.config.RedisTestContainersExtension;
 import com.sjiwon.anotherart.common.utils.PasswordEncoderUtils;
 import com.sjiwon.anotherart.member.domain.Address;
@@ -29,12 +30,10 @@ import static com.sjiwon.anotherart.member.domain.point.PointType.CHARGE;
 @SpringBootTest
 @ExtendWith({
         DatabaseCleanerEachCallbackExtension.class,
+        MySqlTestContainersExtension.class,
         RedisTestContainersExtension.class
 })
-public class ConcurrencyTest {
-    @Autowired
-    private DatabaseCleaner databaseCleaner;
-
+public abstract class ConcurrencyTest {
     @PersistenceContext
     protected EntityManager em;
 
@@ -96,7 +95,6 @@ public class ConcurrencyTest {
 
     @AfterEach
     void clearDatabase() {
-        databaseCleaner.cleanUpDatabase();
         memberIds.clear();
     }
 }

@@ -55,7 +55,6 @@ public class SecurityConfiguration {
     private final MemberRepository memberRepository;
     private final TokenProvider tokenProvider;
     private final TokenManager tokenManager;
-    private final RequestResponseCachingFilter requestResponseCachingFilter;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -142,6 +141,11 @@ public class SecurityConfiguration {
     }
 
     @Bean
+    public RequestResponseCachingFilter requestResponseCachingFilter() {
+        return new RequestResponseCachingFilter();
+    }
+
+    @Bean
     public SecurityFilterChain securityFilterChain(final HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable);
         http.cors(cors -> cors.configurationSource(corsConfigurationSource()));
@@ -157,7 +161,7 @@ public class SecurityConfiguration {
         http.addFilterBefore(jwtAuthorizationFilter(), LogoutExceptionTranslationFilter.class);
         http.addFilterBefore(tokenInvalidExceptionTranslationFilter(), JwtAuthorizationFilter.class);
         http.addFilterAt(ajaxAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
-        http.addFilterAfter(requestResponseCachingFilter, AuthorizationFilter.class);
+        http.addFilterAfter(requestResponseCachingFilter(), AuthorizationFilter.class);
 
         http.logout(logout ->
                 logout.logoutUrl("/api/logout")

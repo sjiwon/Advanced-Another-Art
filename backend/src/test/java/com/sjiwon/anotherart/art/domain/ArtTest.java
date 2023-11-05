@@ -1,11 +1,8 @@
 package com.sjiwon.anotherart.art.domain;
 
-import com.sjiwon.anotherart.fixture.MemberFixture;
 import com.sjiwon.anotherart.member.domain.Member;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.Set;
 
@@ -13,30 +10,17 @@ import static com.sjiwon.anotherart.art.domain.ArtStatus.ON_SALE;
 import static com.sjiwon.anotherart.art.domain.ArtStatus.SOLD;
 import static com.sjiwon.anotherart.art.domain.ArtType.AUCTION;
 import static com.sjiwon.anotherart.art.domain.ArtType.GENERAL;
-import static com.sjiwon.anotherart.fixture.ArtFixture.AUCTION_1;
-import static com.sjiwon.anotherart.fixture.ArtFixture.GENERAL_1;
-import static com.sjiwon.anotherart.fixture.MemberFixture.MEMBER_A;
-import static com.sjiwon.anotherart.fixture.MemberFixture.MEMBER_B;
+import static com.sjiwon.anotherart.common.fixture.ArtFixture.AUCTION_1;
+import static com.sjiwon.anotherart.common.fixture.ArtFixture.GENERAL_1;
+import static com.sjiwon.anotherart.common.fixture.MemberFixture.MEMBER_A;
+import static com.sjiwon.anotherart.common.fixture.MemberFixture.MEMBER_B;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 @DisplayName("Art 도메인 테스트")
 class ArtTest {
-    private Member owner;
-    private Member member;
-
-    @BeforeEach
-    void setUp() {
-        owner = createMember(MEMBER_A, 1L);
-        member = createMember(MEMBER_B, 2L);
-    }
-
-    private Member createMember(final MemberFixture fixture, final Long id) {
-        final Member member = fixture.toMember();
-        ReflectionTestUtils.setField(member, "id", id);
-
-        return member;
-    }
+    private final Member owner = MEMBER_A.toMember().apply(1L);
+    private final Member member = MEMBER_B.toMember().apply(2L);
 
     @Test
     @DisplayName("Art를 생성한다")

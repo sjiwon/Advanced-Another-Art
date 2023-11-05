@@ -8,7 +8,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import static com.sjiwon.anotherart.fixture.MemberFixture.MEMBER_A;
+import static com.sjiwon.anotherart.common.fixture.MemberFixture.MEMBER_A;
 import static com.sjiwon.anotherart.member.domain.point.PointType.CHARGE;
 import static com.sjiwon.anotherart.member.domain.point.PointType.PURCHASE;
 import static com.sjiwon.anotherart.member.domain.point.PointType.REFUND;

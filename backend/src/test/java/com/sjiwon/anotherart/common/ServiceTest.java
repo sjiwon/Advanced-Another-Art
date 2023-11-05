@@ -3,6 +3,7 @@ package com.sjiwon.anotherart.common;
 import com.sjiwon.anotherart.art.domain.ArtRepository;
 import com.sjiwon.anotherart.auction.domain.AuctionRepository;
 import com.sjiwon.anotherart.common.config.DatabaseCleanerEachCallbackExtension;
+import com.sjiwon.anotherart.common.config.MySqlTestContainersExtension;
 import com.sjiwon.anotherart.common.config.RedisTestContainersExtension;
 import com.sjiwon.anotherart.favorite.domain.FavoriteRepository;
 import com.sjiwon.anotherart.member.domain.MemberRepository;
@@ -19,9 +20,10 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 @ExtendWith({
         DatabaseCleanerEachCallbackExtension.class,
+        MySqlTestContainersExtension.class,
         RedisTestContainersExtension.class
 })
-public class ServiceTest {
+public abstract class ServiceTest {
     @Autowired
     protected EntityManager em;
 

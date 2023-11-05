@@ -2,9 +2,10 @@ package com.sjiwon.anotherart.common;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sjiwon.anotherart.common.config.MySqlTestContainersExtension;
 import com.sjiwon.anotherart.common.config.ObjectMapperConfiguration;
 import com.sjiwon.anotherart.common.config.RedisTestContainersExtension;
-import com.sjiwon.anotherart.fixture.MemberFixture;
+import com.sjiwon.anotherart.common.fixture.MemberFixture;
 import com.sjiwon.anotherart.global.security.SecurityConfiguration;
 import com.sjiwon.anotherart.member.domain.Member;
 import com.sjiwon.anotherart.member.domain.MemberRepository;
@@ -18,30 +19,24 @@ import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDoc
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.restdocs.operation.preprocess.OperationRequestPreprocessor;
-import org.springframework.restdocs.operation.preprocess.OperationResponsePreprocessor;
-import org.springframework.restdocs.snippet.Snippet;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Optional;
 
-import static com.sjiwon.anotherart.fixture.MemberFixture.MEMBER_A;
+import static com.sjiwon.anotherart.common.fixture.MemberFixture.MEMBER_A;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doThrow;
-import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest;
-import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse;
-import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
-import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
-import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 
 @SpringBootTest(classes = {SecurityConfiguration.class, ObjectMapperConfiguration.class})
-@ExtendWith(RedisTestContainersExtension.class)
+@ExtendWith({
+        MySqlTestContainersExtension.class,
+        RedisTestContainersExtension.class
+})
 @AutoConfigureMockMvc
 @AutoConfigureRestDocs
-public class SecurityTest {
+public abstract class SecurityTest {
     @Autowired
     protected MockMvc mockMvc;
 
@@ -69,27 +64,10 @@ public class SecurityTest {
     }
 
     private void createMember(final MemberFixture fixture, final Long memberId) {
-        final Member member = fixture.toMember();
-        ReflectionTestUtils.setField(member, "id", memberId);
+        final Member member = fixture.toMember().apply(memberId);
 
         given(memberRepository.findById(memberId)).willReturn(Optional.of(member));
         given(memberRepository.findByLoginId(member.getLoginId())).willReturn(Optional.of(member));
-    }
-
-    protected OperationRequestPreprocessor getDocumentRequest() {
-        return preprocessRequest(prettyPrint());
-    }
-
-    protected OperationResponsePreprocessor getDocumentResponse() {
-        return preprocessResponse(prettyPrint());
-    }
-
-    protected Snippet getExceptionResponseFiels() {
-        return responseFields(
-                fieldWithPath("status").description("HTTP 상태 코드"),
-                fieldWithPath("errorCode").description("커스텀 예외 코드"),
-                fieldWithPath("message").description("예외 메시지")
-        );
     }
 
     protected String convertObjectToJson(final Object data) throws JsonProcessingException {

@@ -3,20 +3,19 @@ package com.sjiwon.anotherart.auction.domain;
 import com.sjiwon.anotherart.art.domain.Art;
 import com.sjiwon.anotherart.auction.domain.record.AuctionRecord;
 import com.sjiwon.anotherart.auction.exception.AuctionErrorCode;
-import com.sjiwon.anotherart.fixture.MemberFixture;
+import com.sjiwon.anotherart.common.fixture.MemberFixture;
 import com.sjiwon.anotherart.global.exception.AnotherArtException;
 import com.sjiwon.anotherart.member.domain.Member;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.springframework.test.util.ReflectionTestUtils;
 
-import static com.sjiwon.anotherart.fixture.ArtFixture.AUCTION_1;
-import static com.sjiwon.anotherart.fixture.AuctionFixture.AUCTION_OPEN_NOW;
-import static com.sjiwon.anotherart.fixture.MemberFixture.MEMBER_A;
-import static com.sjiwon.anotherart.fixture.MemberFixture.MEMBER_B;
-import static com.sjiwon.anotherart.fixture.MemberFixture.MEMBER_C;
+import static com.sjiwon.anotherart.common.fixture.ArtFixture.AUCTION_1;
+import static com.sjiwon.anotherart.common.fixture.AuctionFixture.AUCTION_OPEN_NOW;
+import static com.sjiwon.anotherart.common.fixture.MemberFixture.MEMBER_A;
+import static com.sjiwon.anotherart.common.fixture.MemberFixture.MEMBER_B;
+import static com.sjiwon.anotherart.common.fixture.MemberFixture.MEMBER_C;
 import static com.sjiwon.anotherart.member.domain.point.PointType.CHARGE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -41,10 +40,8 @@ class BiddersTest {
     }
 
     private Member createMember(final MemberFixture fixture, final Long id) {
-        final Member member = fixture.toMember();
+        final Member member = fixture.toMember().apply(id);
         member.addPointRecords(CHARGE, MEMBER_INIT_POINT);
-        ReflectionTestUtils.setField(member, "id", id);
-
         return member;
     }
 

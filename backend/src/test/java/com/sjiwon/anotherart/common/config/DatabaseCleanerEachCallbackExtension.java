@@ -1,6 +1,6 @@
 package com.sjiwon.anotherart.common.config;
 
-import com.sjiwon.anotherart.common.DatabaseCleaner;
+import com.sjiwon.anotherart.common.utils.DatabaseCleaner;
 import org.junit.jupiter.api.extension.AfterEachCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
