@@ -1,6 +1,5 @@
 package com.sjiwon.anotherart.member.domain;
 
-import com.sjiwon.anotherart.common.fixture.MemberFixture;
 import com.sjiwon.anotherart.common.utils.PasswordEncoderUtils;
 import com.sjiwon.anotherart.global.exception.AnotherArtException;
 import com.sjiwon.anotherart.member.domain.point.PointRecord;
@@ -10,7 +9,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.test.util.ReflectionTestUtils;
 
 import static com.sjiwon.anotherart.common.fixture.MemberFixture.MEMBER_A;
 import static com.sjiwon.anotherart.common.fixture.MemberFixture.MEMBER_B;
@@ -135,15 +133,8 @@ class MemberTest {
 
         @BeforeEach
         void setUp() {
-            member = createMember(MEMBER_A, 1L);
-            other = createMember(MEMBER_B, 2L);
-        }
-
-        private Member createMember(final MemberFixture fixture, final Long id) {
-            final Member member = fixture.toMember();
-            ReflectionTestUtils.setField(member, "id", id);
-
-            return member;
+            member = MEMBER_A.toMember().apply(1L);
+            other = MEMBER_B.toMember().apply(2L);
         }
 
         @Test

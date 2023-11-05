@@ -3,14 +3,12 @@ package com.sjiwon.anotherart.auction.domain;
 import com.sjiwon.anotherart.art.domain.Art;
 import com.sjiwon.anotherart.auction.domain.record.AuctionRecord;
 import com.sjiwon.anotherart.auction.exception.AuctionErrorCode;
-import com.sjiwon.anotherart.common.fixture.MemberFixture;
 import com.sjiwon.anotherart.global.exception.AnotherArtException;
 import com.sjiwon.anotherart.member.domain.Member;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.springframework.test.util.ReflectionTestUtils;
 
 import static com.sjiwon.anotherart.common.fixture.ArtFixture.AUCTION_1;
 import static com.sjiwon.anotherart.common.fixture.ArtFixture.AUCTION_2;
@@ -37,17 +35,14 @@ class AuctionTest {
 
     @BeforeEach
     void setUp() {
-        owner = createMember(MEMBER_A, 1L);
-        memberA = createMember(MEMBER_B, 2L);
-        memberB = createMember(MEMBER_C, 3L);
-    }
+        owner = MEMBER_A.toMember().apply(1L);
+        owner.addPointRecords(CHARGE, MEMBER_INIT_POINT);
 
-    private Member createMember(final MemberFixture fixture, final Long id) {
-        final Member member = fixture.toMember();
-        member.addPointRecords(CHARGE, MEMBER_INIT_POINT);
-        ReflectionTestUtils.setField(member, "id", id);
+        memberA = MEMBER_B.toMember().apply(2L);
+        memberA.addPointRecords(CHARGE, MEMBER_INIT_POINT);
 
-        return member;
+        memberB = MEMBER_C.toMember().apply(3L);
+        memberB.addPointRecords(CHARGE, MEMBER_INIT_POINT);
     }
 
     @Nested

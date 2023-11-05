@@ -19,7 +19,6 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
 import java.time.LocalDateTime;
@@ -341,12 +340,9 @@ class MemberInformationApiControllerTest extends ControllerTest {
     }
 
     private Member createMember(final MemberFixture fixture, final Long id) {
-        final Member member = fixture.toMember();
-        ReflectionTestUtils.setField(member, "id", id);
-
+        final Member member = fixture.toMember().apply(id);
         member.addPointRecords(CHARGE, 100_000);
         member.decreaseAvailablePoint(12_000);
-
         return member;
     }
 

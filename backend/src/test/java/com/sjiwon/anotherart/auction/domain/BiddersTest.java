@@ -10,7 +10,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.springframework.test.util.ReflectionTestUtils;
 
 import static com.sjiwon.anotherart.common.fixture.ArtFixture.AUCTION_1;
 import static com.sjiwon.anotherart.common.fixture.AuctionFixture.AUCTION_OPEN_NOW;
@@ -41,10 +40,8 @@ class BiddersTest {
     }
 
     private Member createMember(final MemberFixture fixture, final Long id) {
-        final Member member = fixture.toMember();
+        final Member member = fixture.toMember().apply(id);
         member.addPointRecords(CHARGE, MEMBER_INIT_POINT);
-        ReflectionTestUtils.setField(member, "id", id);
-
         return member;
     }
 

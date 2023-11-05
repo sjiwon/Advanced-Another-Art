@@ -2,7 +2,6 @@ package com.sjiwon.anotherart.purchase.domain;
 
 import com.sjiwon.anotherart.art.domain.Art;
 import com.sjiwon.anotherart.auction.domain.Auction;
-import com.sjiwon.anotherart.common.fixture.MemberFixture;
 import com.sjiwon.anotherart.global.exception.AnotherArtException;
 import com.sjiwon.anotherart.member.domain.Member;
 import com.sjiwon.anotherart.member.exception.MemberErrorCode;
@@ -34,18 +33,13 @@ class PurchaseTest {
 
     @BeforeEach
     void setUp() {
-        owner = createMember(MEMBER_A, 1L);
-        member = createMember(MEMBER_B, 2L);
-        generalArt = GENERAL_1.toArt(owner);
-        auctionArt = AUCTION_1.toArt(owner);
-    }
-
-    private Member createMember(final MemberFixture fixture, final Long id) {
-        final Member member = fixture.toMember();
+        owner = MEMBER_A.toMember().apply(1L);
+        owner.addPointRecords(CHARGE, MEMBER_INIT_POINT);
+        member = MEMBER_B.toMember().apply(2L);
         member.addPointRecords(CHARGE, MEMBER_INIT_POINT);
-        ReflectionTestUtils.setField(member, "id", id);
 
-        return member;
+        generalArt = GENERAL_1.toArt(owner).apply(1L);
+        auctionArt = AUCTION_1.toArt(owner).apply(2L);
     }
 
     @Nested
