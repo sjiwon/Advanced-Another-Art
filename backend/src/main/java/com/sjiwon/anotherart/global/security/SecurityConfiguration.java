@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sjiwon.anotherart.global.security.filter.AjaxAuthenticationFilter;
 import com.sjiwon.anotherart.global.security.filter.JwtAuthorizationFilter;
 import com.sjiwon.anotherart.global.security.filter.LogoutExceptionTranslationFilter;
+import com.sjiwon.anotherart.global.security.filter.RequestResponseCachingFilter;
 import com.sjiwon.anotherart.global.security.filter.TokenInvalidExceptionTranslationFilter;
 import com.sjiwon.anotherart.global.security.handler.AjaxAuthenticationFailureHandler;
 import com.sjiwon.anotherart.global.security.handler.AjaxAuthenticationSuccessHandler;
@@ -14,7 +15,7 @@ import com.sjiwon.anotherart.global.security.provider.AjaxAuthenticationProvider
 import com.sjiwon.anotherart.global.security.service.CustomUserDetailsService;
 import com.sjiwon.anotherart.member.domain.MemberRepository;
 import com.sjiwon.anotherart.token.service.TokenManager;
-import com.sjiwon.anotherart.token.utils.JwtTokenProvider;
+import com.sjiwon.anotherart.token.utils.TokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -33,6 +34,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
+import org.springframework.security.web.access.intercept.AuthorizationFilter;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -51,16 +53,17 @@ public class SecurityConfiguration {
     private final AuthenticationConfiguration authenticationConfiguration;
     private final ObjectMapper objectMapper;
     private final MemberRepository memberRepository;
-    private final JwtTokenProvider jwtTokenProvider;
+    private final TokenProvider tokenProvider;
     private final TokenManager tokenManager;
+    private final RequestResponseCachingFilter requestResponseCachingFilter;
 
     @Bean
-    PasswordEncoder passwordEncoder() {
+    public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
     @Bean
-    CorsConfigurationSource corsConfigurationSource() {
+    public CorsConfigurationSource corsConfigurationSource() {
         final CorsConfiguration corsConfiguration = new CorsConfiguration();
         corsConfiguration.setAllowCredentials(true);
         corsConfiguration.setAllowedOriginPatterns(List.of("*"));
@@ -73,34 +76,34 @@ public class SecurityConfiguration {
     }
 
     @Bean
-    UserDetailsService userDetailsService() {
+    public UserDetailsService userDetailsService() {
         return new CustomUserDetailsService(memberRepository);
     }
 
     @Bean
-    AuthenticationProvider ajaxAuthenticationProvider() {
+    public AuthenticationProvider ajaxAuthenticationProvider() {
         return new AjaxAuthenticationProvider(userDetailsService(), passwordEncoder());
     }
 
     @Bean
-    AuthenticationManager ajaxAuthenticationManager() throws Exception {
+    public AuthenticationManager ajaxAuthenticationManager() throws Exception {
         final ProviderManager authenticationManager = (ProviderManager) authenticationConfiguration.getAuthenticationManager();
         authenticationManager.getProviders().add(ajaxAuthenticationProvider());
         return authenticationManager;
     }
 
     @Bean
-    AuthenticationSuccessHandler ajaxAuthenticationSuccessHandler() {
-        return new AjaxAuthenticationSuccessHandler(jwtTokenProvider, tokenManager, objectMapper);
+    public AuthenticationSuccessHandler ajaxAuthenticationSuccessHandler() {
+        return new AjaxAuthenticationSuccessHandler(tokenProvider, tokenManager, objectMapper);
     }
 
     @Bean
-    AuthenticationFailureHandler ajaxAuthenticationFailureHandler() {
+    public AuthenticationFailureHandler ajaxAuthenticationFailureHandler() {
         return new AjaxAuthenticationFailureHandler(objectMapper);
     }
 
     @Bean
-    AjaxAuthenticationFilter ajaxAuthenticationFilter() throws Exception {
+    public AjaxAuthenticationFilter ajaxAuthenticationFilter() throws Exception {
         final AjaxAuthenticationFilter authenticationFilter = new AjaxAuthenticationFilter(objectMapper);
         authenticationFilter.setAuthenticationManager(ajaxAuthenticationManager());
         authenticationFilter.setAuthenticationSuccessHandler(ajaxAuthenticationSuccessHandler());
@@ -109,37 +112,37 @@ public class SecurityConfiguration {
     }
 
     @Bean
-    JwtAuthorizationFilter jwtAuthorizationFilter() {
-        return new JwtAuthorizationFilter(jwtTokenProvider, memberRepository);
+    public JwtAuthorizationFilter jwtAuthorizationFilter() {
+        return new JwtAuthorizationFilter(tokenProvider, memberRepository);
     }
 
     @Bean
-    AuthenticationEntryPoint jwtAuthenticationEntryPoint() {
+    public AuthenticationEntryPoint jwtAuthenticationEntryPoint() {
         return new JwtAuthenticationEntryPoint(objectMapper);
     }
 
     @Bean
-    AccessDeniedHandler jwtAccessDeniedHandler() {
+    public AccessDeniedHandler jwtAccessDeniedHandler() {
         return new JwtAccessDeniedHandler(objectMapper);
     }
 
     @Bean
-    TokenInvalidExceptionTranslationFilter tokenInvalidExceptionTranslationFilter() {
+    public TokenInvalidExceptionTranslationFilter tokenInvalidExceptionTranslationFilter() {
         return new TokenInvalidExceptionTranslationFilter(jwtAccessDeniedHandler());
     }
 
     @Bean
-    JwtLogoutSuccessHandler jwtLogoutSuccessHandler() {
-        return new JwtLogoutSuccessHandler(jwtTokenProvider, tokenManager);
+    public JwtLogoutSuccessHandler jwtLogoutSuccessHandler() {
+        return new JwtLogoutSuccessHandler(tokenProvider, tokenManager);
     }
 
     @Bean
-    LogoutExceptionTranslationFilter logoutExceptionTranslationFilter() {
+    public LogoutExceptionTranslationFilter logoutExceptionTranslationFilter() {
         return new LogoutExceptionTranslationFilter(jwtAccessDeniedHandler());
     }
 
     @Bean
-    SecurityFilterChain securityFilterChain(final HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(final HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable);
         http.cors(cors -> cors.configurationSource(corsConfigurationSource()));
 
@@ -154,6 +157,7 @@ public class SecurityConfiguration {
         http.addFilterBefore(jwtAuthorizationFilter(), LogoutExceptionTranslationFilter.class);
         http.addFilterBefore(tokenInvalidExceptionTranslationFilter(), JwtAuthorizationFilter.class);
         http.addFilterAt(ajaxAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterAfter(requestResponseCachingFilter, AuthorizationFilter.class);
 
         http.logout(logout ->
                 logout.logoutUrl("/api/logout")

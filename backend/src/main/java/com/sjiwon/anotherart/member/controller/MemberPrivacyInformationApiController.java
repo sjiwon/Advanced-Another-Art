@@ -1,13 +1,13 @@
 package com.sjiwon.anotherart.member.controller;
 
 import com.sjiwon.anotherart.global.dto.SimpleReponseWrapper;
+import com.sjiwon.anotherart.global.resolver.ExtractPayload;
 import com.sjiwon.anotherart.member.controller.dto.request.AuthForResetPasswordRequest;
 import com.sjiwon.anotherart.member.controller.dto.request.ChangePasswordRequest;
 import com.sjiwon.anotherart.member.controller.dto.request.FindLoginIdRequest;
 import com.sjiwon.anotherart.member.controller.dto.request.ResetPasswordRequest;
 import com.sjiwon.anotherart.member.domain.Email;
 import com.sjiwon.anotherart.member.service.MemberService;
-import com.sjiwon.anotherart.token.utils.ExtractPayload;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

@@ -5,7 +5,7 @@ import com.sjiwon.anotherart.member.domain.Member;
 import com.sjiwon.anotherart.member.service.MemberFindService;
 import com.sjiwon.anotherart.token.exception.TokenErrorCode;
 import com.sjiwon.anotherart.token.service.response.TokenResponse;
-import com.sjiwon.anotherart.token.utils.JwtTokenProvider;
+import com.sjiwon.anotherart.token.utils.TokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,7 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class TokenReissueService {
     private final TokenManager tokenManager;
-    private final JwtTokenProvider jwtTokenProvider;
+    private final TokenProvider tokenProvider;
     private final MemberFindService memberFindService;
 
     @Transactional
@@ -26,8 +26,8 @@ public class TokenReissueService {
 
         // Access Token & Refresh Token 발급
         final Member member = memberFindService.findById(memberId);
-        final String newAccessToken = jwtTokenProvider.createAccessToken(member.getId());
-        final String newRefreshToken = jwtTokenProvider.createRefreshToken(member.getId());
+        final String newAccessToken = tokenProvider.createAccessToken(member.getId());
+        final String newRefreshToken = tokenProvider.createRefreshToken(member.getId());
 
         // RTR Policy
         tokenManager.reissueRefreshTokenByRtrPolicy(memberId, newRefreshToken);

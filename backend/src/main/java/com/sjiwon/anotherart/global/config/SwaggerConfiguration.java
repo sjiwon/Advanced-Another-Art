@@ -1,7 +1,7 @@
 package com.sjiwon.anotherart.global.config;
 
-import com.sjiwon.anotherart.token.utils.ExtractPayload;
-import com.sjiwon.anotherart.token.utils.ExtractToken;
+import com.sjiwon.anotherart.global.resolver.ExtractPayload;
+import com.sjiwon.anotherart.global.resolver.ExtractToken;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.info.Contact;
 import io.swagger.v3.oas.annotations.info.Info;

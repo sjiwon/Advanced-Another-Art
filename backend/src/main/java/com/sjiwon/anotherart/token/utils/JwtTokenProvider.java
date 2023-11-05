@@ -20,7 +20,7 @@ import java.util.Date;
 
 @Slf4j
 @Component
-public class JwtTokenProvider {
+public class JwtTokenProvider implements TokenProvider {
     private final SecretKey secretKey;
     private final long accessTokenValidityInMilliseconds;
     private final long refreshTokenValidityInMilliseconds;
@@ -33,10 +33,12 @@ public class JwtTokenProvider {
         this.refreshTokenValidityInMilliseconds = refreshTokenValidityInMilliseconds;
     }
 
+    @Override
     public String createAccessToken(final Long memberId) {
         return createToken(memberId, accessTokenValidityInMilliseconds);
     }
 
+    @Override
     public String createRefreshToken(final Long memberId) {
         return createToken(memberId, refreshTokenValidityInMilliseconds);
     }
@@ -58,12 +60,14 @@ public class JwtTokenProvider {
                 .compact();
     }
 
+    @Override
     public Long getId(final String token) {
         return getClaims(token)
                 .getBody()
                 .get("id", Long.class);
     }
 
+    @Override
     public boolean isTokenValid(final String token) {
         try {
             final Jws<Claims> claims = getClaims(token);

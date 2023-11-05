@@ -1,7 +1,7 @@
 package com.sjiwon.anotherart.purchase.controller;
 
+import com.sjiwon.anotherart.global.resolver.ExtractPayload;
 import com.sjiwon.anotherart.purchase.service.PurchaseService;
-import com.sjiwon.anotherart.token.utils.ExtractPayload;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;

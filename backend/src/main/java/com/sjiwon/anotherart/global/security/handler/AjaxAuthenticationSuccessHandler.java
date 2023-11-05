@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sjiwon.anotherart.global.security.LoginResponse;
 import com.sjiwon.anotherart.global.security.principal.MemberPrincipal;
 import com.sjiwon.anotherart.token.service.TokenManager;
-import com.sjiwon.anotherart.token.utils.JwtTokenProvider;
+import com.sjiwon.anotherart.token.utils.TokenProvider;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -17,15 +17,15 @@ import java.io.IOException;
 
 @RequiredArgsConstructor
 public class AjaxAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
-    private final JwtTokenProvider jwtTokenProvider;
+    private final TokenProvider tokenProvider;
     private final TokenManager tokenManager;
     private final ObjectMapper objectMapper;
 
     @Override
     public void onAuthenticationSuccess(final HttpServletRequest request, final HttpServletResponse response, final Authentication authentication) throws IOException {
         final MemberPrincipal member = extractMemberPrincipal(authentication);
-        final String accessToken = jwtTokenProvider.createAccessToken(member.id());
-        final String refreshToken = jwtTokenProvider.createRefreshToken(member.id());
+        final String accessToken = tokenProvider.createAccessToken(member.id());
+        final String refreshToken = tokenProvider.createRefreshToken(member.id());
 
         tokenManager.synchronizeRefreshToken(member.id(), refreshToken);
         sendAccessTokenAndRefreshToken(response, member, accessToken, refreshToken);

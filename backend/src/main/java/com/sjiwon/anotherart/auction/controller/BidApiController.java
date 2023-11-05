@@ -2,7 +2,7 @@ package com.sjiwon.anotherart.auction.controller;
 
 import com.sjiwon.anotherart.auction.controller.dto.request.BidRequest;
 import com.sjiwon.anotherart.auction.facade.BidFacade;
-import com.sjiwon.anotherart.token.utils.ExtractPayload;
+import com.sjiwon.anotherart.global.resolver.ExtractPayload;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
