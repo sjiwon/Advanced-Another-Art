@@ -1,3 +1,52 @@
 spring:
-  profiles:
-    active: test
+  datasource:
+    url: jdbc:h2:mem:test;MODE=MYSQL;
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
+
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        show_sql: false
+        format_sql: true
+        default_batch_fetch_size: 50
+
+  data:
+    redis:
+      host: localhost
+      port: 6379
+
+  cloud:
+    aws:
+      region:
+        static: ap-northeast-2
+      credentials:
+        access-key: access-key
+        secret-key: secret-key
+      s3:
+        bucket: s3-bucket
+      cloudfront:
+        url: https://cloudfront-domain
+
+jwt:
+  secret-key: adsfasjdflksajdlkfjasldjflkasdjflasjdlfjasldfjlkasdfasdasd
+  access-token-validity: 1234
+  refresh-token-validity: 1234
+
+slack:
+  webhook:
+    url: slack-webhook-url
+
+logging:
+  level:
+    org.springframework.core:
+      LocalVariableTableParameterNameDiscoverer: error
+
+decorator:
+  datasource:
+    p6spy:
+      enable-logging: true

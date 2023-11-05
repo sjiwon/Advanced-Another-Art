@@ -1,14 +1,4 @@
-DROP TABLE IF EXISTS art_purchase;
-DROP TABLE IF EXISTS auction_record;
-DROP TABLE IF EXISTS auction;
-DROP TABLE IF EXISTS art_favorite;
-DROP TABLE IF EXISTS art_hashtag;
-DROP TABLE IF EXISTS art;
-DROP TABLE IF EXISTS member_point_record;
-DROP TABLE IF EXISTS member_token;
-DROP TABLE IF EXISTS member;
-
-CREATE TABLE member
+CREATE TABLE IF NOT EXISTS member
 (
     id              BIGINT AUTO_INCREMENT,
     name            VARCHAR(30)  NOT NULL COMMENT '사용자 이름',
@@ -31,7 +21,7 @@ CREATE TABLE member
 ) ENGINE = INNODB
   DEFAULT CHARSET = utf8mb4;
 
-CREATE TABLE member_token
+CREATE TABLE IF NOT EXISTS member_token
 (
     id            BIGINT AUTO_INCREMENT,
     member_id     BIGINT       NOT NULL UNIQUE COMMENT '토큰 보유 사용자 ID (FK)',
@@ -41,7 +31,7 @@ CREATE TABLE member_token
 ) ENGINE = INNODB
   DEFAULT CHARSET = utf8mb4;
 
-CREATE TABLE member_point_record
+CREATE TABLE IF NOT EXISTS member_point_record
 (
     id          BIGINT AUTO_INCREMENT,
     member_id   BIGINT      NOT NULL COMMENT '사용자 ID (FK)',
@@ -54,7 +44,7 @@ CREATE TABLE member_point_record
 ) ENGINE = INNODB
   DEFAULT CHARSET = utf8mb4;
 
-CREATE TABLE art
+CREATE TABLE IF NOT EXISTS art
 (
     id           BIGINT AUTO_INCREMENT,
     owner_id     BIGINT       NOT NULL COMMENT '작품 소유자 ID (FK)',
@@ -63,7 +53,7 @@ CREATE TABLE art
     art_type     VARCHAR(10)  NOT NULL COMMENT '작품 타입 -> 일반/경매',
     price        INT          NOT NULL COMMENT '작품 가격',
     art_status   VARCHAR(10)  NOT NULL COMMENT '작품 상태 -> 판매중/판매 완료',
-    storage_name VARCHAR(255)  NOT NULL UNIQUE COMMENT '작품 서버 저장명',
+    storage_name VARCHAR(255) NOT NULL UNIQUE COMMENT '작품 서버 저장명',
     created_at   DATETIME     NOT NULL COMMENT '생성 날짜',
     modified_at  DATETIME     NOT NULL COMMENT '수정 날짜',
 
@@ -71,7 +61,7 @@ CREATE TABLE art
 ) ENGINE = INNODB
   DEFAULT CHARSET = utf8mb4;
 
-CREATE TABLE art_hashtag
+CREATE TABLE IF NOT EXISTS art_hashtag
 (
     id     BIGINT AUTO_INCREMENT,
     art_id BIGINT       NOT NULL COMMENT '작품 ID (FK)',
@@ -81,7 +71,7 @@ CREATE TABLE art_hashtag
 ) ENGINE = INNODB
   DEFAULT CHARSET = utf8mb4;
 
-CREATE TABLE art_favorite
+CREATE TABLE IF NOT EXISTS art_favorite
 (
     id        BIGINT AUTO_INCREMENT,
     art_id    BIGINT NOT NULL COMMENT '작품 ID (FK)',
@@ -91,7 +81,7 @@ CREATE TABLE art_favorite
 ) ENGINE = INNODB
   DEFAULT CHARSET = utf8mb4;
 
-CREATE TABLE auction
+CREATE TABLE IF NOT EXISTS auction
 (
     id                BIGINT AUTO_INCREMENT,
     art_id            BIGINT   NOT NULL COMMENT '경매 작품 ID (FK)',
@@ -106,7 +96,7 @@ CREATE TABLE auction
 ) ENGINE = INNODB
   DEFAULT CHARSET = utf8mb4;
 
-CREATE TABLE auction_record
+CREATE TABLE IF NOT EXISTS auction_record
 (
     id          BIGINT AUTO_INCREMENT,
     auction_id  BIGINT   NOT NULL COMMENT '경매 ID (FK)',
@@ -119,7 +109,7 @@ CREATE TABLE auction_record
 ) ENGINE = INNODB
   DEFAULT CHARSET = utf8mb4;
 
-CREATE TABLE art_purchase
+CREATE TABLE IF NOT EXISTS art_purchase
 (
     id             BIGINT AUTO_INCREMENT,
     buyer_id       BIGINT   NOT NULL COMMENT '구매한 사용자 ID (FK)',

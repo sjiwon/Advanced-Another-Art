@@ -1,0 +1,23 @@
+version: "3"
+services:
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    restart: always
+    ports:
+      - "9090:9090"
+    volumes:
+      - "./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml"
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    restart: always
+    user: "$UID:$GID"
+    ports:
+      - "3000:3000"
+    volumes:
+      - "./monitoring/grafana_data:/var/lib/grafana"
+    depends_on:
+      - prometheus
+    privileged: true

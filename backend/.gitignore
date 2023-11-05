@@ -1,6 +1,5 @@
 .gradle
 build/
-nginx
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
 !**/src/test/**/build/
@@ -20,6 +19,7 @@ bin/
 ### IntelliJ IDEA ###
 **/src/main/generated/
 **/src/main/resources/security/
+**/src/main/resources/application-prod.yml
 .idea
 *.iws
 *.iml
@@ -29,8 +29,18 @@ out/
 !**/src/test/**/out/
 
 ### RestDocs index.html ###
-src/docs/asciidoc/*.html
+src/docs/asciidoc/**/*.html
 src/main/resources/static/docs
+
+### Docker ###
+mysql_data
+redis_data
+grafana_data
+
+### Log ###
+logs
+archive
+spy.log
 
 ### NetBeans ###
 /nbproject/private/

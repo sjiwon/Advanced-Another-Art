@@ -1,0 +1,3 @@
+[submodule "backend/another-art-secret"]
+	path = backend/another-art-secret
+	url = https://github.com/sjiwon/another-art-secret
