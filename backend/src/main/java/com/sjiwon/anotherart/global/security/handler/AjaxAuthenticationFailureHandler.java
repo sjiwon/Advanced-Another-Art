@@ -21,7 +21,11 @@ public class AjaxAuthenticationFailureHandler implements AuthenticationFailureHa
     private final ObjectMapper objectMapper;
 
     @Override
-    public void onAuthenticationFailure(final HttpServletRequest request, final HttpServletResponse response, final AuthenticationException exception) throws IOException {
+    public void onAuthenticationFailure(
+            final HttpServletRequest request,
+            final HttpServletResponse response,
+            final AuthenticationException exception
+    ) throws IOException {
         if (exception instanceof UsernameNotFoundException) {
             buildErrorResponse(response, MemberErrorCode.MEMBER_NOT_FOUND);
         } else if (exception instanceof BadCredentialsException) {
