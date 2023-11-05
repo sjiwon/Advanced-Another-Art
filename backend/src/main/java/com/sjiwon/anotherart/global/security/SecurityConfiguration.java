@@ -2,10 +2,10 @@ package com.sjiwon.anotherart.global.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sjiwon.anotherart.global.security.filter.AjaxAuthenticationFilter;
+import com.sjiwon.anotherart.global.security.filter.InvalidTokenExceptionTranslationFilter;
 import com.sjiwon.anotherart.global.security.filter.JwtAuthorizationFilter;
 import com.sjiwon.anotherart.global.security.filter.LogoutExceptionTranslationFilter;
 import com.sjiwon.anotherart.global.security.filter.RequestResponseCachingFilter;
-import com.sjiwon.anotherart.global.security.filter.TokenInvalidExceptionTranslationFilter;
 import com.sjiwon.anotherart.global.security.handler.AjaxAuthenticationFailureHandler;
 import com.sjiwon.anotherart.global.security.handler.AjaxAuthenticationSuccessHandler;
 import com.sjiwon.anotherart.global.security.handler.JwtAccessDeniedHandler;
@@ -126,8 +126,8 @@ public class SecurityConfiguration {
     }
 
     @Bean
-    public TokenInvalidExceptionTranslationFilter tokenInvalidExceptionTranslationFilter() {
-        return new TokenInvalidExceptionTranslationFilter(jwtAccessDeniedHandler());
+    public InvalidTokenExceptionTranslationFilter tokenInvalidExceptionTranslationFilter() {
+        return new InvalidTokenExceptionTranslationFilter(jwtAccessDeniedHandler());
     }
 
     @Bean

@@ -16,7 +16,11 @@ public class LogoutExceptionTranslationFilter extends OncePerRequestFilter {
     private final AccessDeniedHandler accessDeniedHandler;
 
     @Override
-    protected void doFilterInternal(final HttpServletRequest request, final HttpServletResponse response, final FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(
+            final HttpServletRequest request,
+            final HttpServletResponse response,
+            final FilterChain filterChain
+    ) throws ServletException, IOException {
         try {
             filterChain.doFilter(request, response);
         } catch (final AnotherArtAccessDeniedException ex) {
