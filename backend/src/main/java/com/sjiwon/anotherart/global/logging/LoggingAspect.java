@@ -31,7 +31,11 @@ public class LoggingAspect {
     private void globalConfigPath() {
     }
 
-    @Pointcut("globalInterceptorPath() && globalLoggingPath() && globalConfigPath()")
+    @Pointcut("!execution(public * com.sjiwon.anotherart.global.security..*(..))")
+    private void globalSecurityPath() {
+    }
+
+    @Pointcut("globalInterceptorPath() && globalLoggingPath() && globalConfigPath() && globalSecurityPath()")
     private void excludeComponent() {
     }
 
