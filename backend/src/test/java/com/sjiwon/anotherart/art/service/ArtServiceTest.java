@@ -19,11 +19,11 @@ import java.io.IOException;
 import java.util.Optional;
 import java.util.Set;
 
-import static com.sjiwon.anotherart.art.controller.utils.ArtRegisterRequestUtils.createAuctionArtRegisterRequest;
-import static com.sjiwon.anotherart.art.controller.utils.ArtRegisterRequestUtils.createGeneralArtRegisterRequest;
 import static com.sjiwon.anotherart.art.domain.ArtStatus.ON_SALE;
 import static com.sjiwon.anotherart.art.domain.ArtType.AUCTION;
 import static com.sjiwon.anotherart.art.domain.ArtType.GENERAL;
+import static com.sjiwon.anotherart.art.service.utils.ArtRegisterRequestUtils.createAuctionArtRegisterRequest;
+import static com.sjiwon.anotherart.art.service.utils.ArtRegisterRequestUtils.createGeneralArtRegisterRequest;
 import static com.sjiwon.anotherart.common.fixture.ArtFixture.AUCTION_1;
 import static com.sjiwon.anotherart.common.fixture.ArtFixture.GENERAL_1;
 import static com.sjiwon.anotherart.common.fixture.MemberFixture.MEMBER_A;

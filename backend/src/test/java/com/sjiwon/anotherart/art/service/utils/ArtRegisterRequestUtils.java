@@ -1,4 +1,4 @@
-package com.sjiwon.anotherart.art.controller.utils;
+package com.sjiwon.anotherart.art.service.utils;
 
 import com.sjiwon.anotherart.art.controller.dto.request.ArtRegisterRequest;
 import com.sjiwon.anotherart.common.fixture.ArtFixture;

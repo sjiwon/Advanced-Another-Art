@@ -22,15 +22,10 @@ configurations {
     compileOnly {
         extendsFrom annotationProcessor
     }
-    asciidoctorExt
 }
 
 repositories {
     mavenCentral()
-}
-
-ext {
-    set("snippetsDir", file("build/generated-snippets"))
 }
 
 dependencies {
@@ -95,10 +90,6 @@ dependencies {
     testImplementation "org.springframework.boot:spring-boot-starter-test"
     testImplementation "org.springframework.security:spring-security-test"
 
-    // Spring Rest Docs (With MockMvc)
-    asciidoctorExt "org.springframework.restdocs:spring-restdocs-asciidoctor"
-    testImplementation "org.springframework.restdocs:spring-restdocs-mockmvc"
-
     // TestContainers
     testImplementation "org.springframework.boot:spring-boot-testcontainers"
     testImplementation "org.testcontainers:junit-jupiter"
@@ -125,24 +116,6 @@ clean {
 
 tasks.named("test") {
     useJUnitPlatform()
-    outputs.dir snippetsDir
-}
-
-asciidoctor {
-    configurations "asciidoctorExt"
-    baseDirFollowsSourceFile()
-    inputs.dir snippetsDir
-    dependsOn test
-}
-
-asciidoctor.doFirst {
-    delete file("src/main/resources/static/docs/*")
-}
-
-tasks.register("copyDocument", Copy) {
-    dependsOn asciidoctor
-    from file("build/docs/asciidoc")
-    into file("src/main/resources/static/docs")
 }
 
 tasks.named('compileJava') {
@@ -155,10 +128,6 @@ tasks.register('copySecret', Copy) {
     from './another-art-secret'
     include 'application*.yml'
     into './src/main/resources'
-}
-
-build {
-    dependsOn copyDocument
 }
 
 jar {

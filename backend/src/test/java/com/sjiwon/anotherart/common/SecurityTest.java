@@ -19,9 +19,6 @@ import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDoc
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.restdocs.operation.preprocess.OperationRequestPreprocessor;
-import org.springframework.restdocs.operation.preprocess.OperationResponsePreprocessor;
-import org.springframework.restdocs.snippet.Snippet;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -31,11 +28,6 @@ import static com.sjiwon.anotherart.common.fixture.MemberFixture.MEMBER_A;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doThrow;
-import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest;
-import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse;
-import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
-import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
-import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 
 @SpringBootTest(classes = {SecurityConfiguration.class, ObjectMapperConfiguration.class})
 @ExtendWith({
@@ -76,22 +68,6 @@ public abstract class SecurityTest {
 
         given(memberRepository.findById(memberId)).willReturn(Optional.of(member));
         given(memberRepository.findByLoginId(member.getLoginId())).willReturn(Optional.of(member));
-    }
-
-    protected OperationRequestPreprocessor getDocumentRequest() {
-        return preprocessRequest(prettyPrint());
-    }
-
-    protected OperationResponsePreprocessor getDocumentResponse() {
-        return preprocessResponse(prettyPrint());
-    }
-
-    protected Snippet getExceptionResponseFiels() {
-        return responseFields(
-                fieldWithPath("status").description("HTTP 상태 코드"),
-                fieldWithPath("errorCode").description("커스텀 예외 코드"),
-                fieldWithPath("message").description("예외 메시지")
-        );
     }
 
     protected String convertObjectToJson(final Object data) throws JsonProcessingException {
