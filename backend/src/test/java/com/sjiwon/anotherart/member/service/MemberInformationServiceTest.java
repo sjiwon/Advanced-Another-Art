@@ -249,7 +249,7 @@ class MemberInformationServiceTest extends ServiceTest {
                 final Member bidder = bidders[index];
                 auction.applyNewBid(bidder, auction.getHighestBidPrice() + 50_000);
             }
-            favoriteRepository.save(Favorite.favoriteMarking(auction.getArt().getId(), 1L));
+            favoriteRepository.save(Favorite.favoriteMarking(auction.getArt().getId(), bidders[0].getId()));
         }
     }
 
@@ -269,14 +269,14 @@ class MemberInformationServiceTest extends ServiceTest {
     private void purchaseAuctionArt(final Art... arts) {
         for (final Art art : arts) {
             purchaseRepository.save(Purchase.purchaseAuctionArt(art, buyer, art.getPrice()));
-            favoriteRepository.save(Favorite.favoriteMarking(art.getId(), 1L));
+            favoriteRepository.save(Favorite.favoriteMarking(art.getId(), buyer.getId()));
         }
     }
 
     private void purchaseGeneralArt(final Art... arts) {
         for (final Art art : arts) {
             purchaseRepository.save(Purchase.purchaseGeneralArt(art, buyer));
-            favoriteRepository.save(Favorite.favoriteMarking(art.getId(), 1L));
+            favoriteRepository.save(Favorite.favoriteMarking(art.getId(), buyer.getId()));
         }
     }
 

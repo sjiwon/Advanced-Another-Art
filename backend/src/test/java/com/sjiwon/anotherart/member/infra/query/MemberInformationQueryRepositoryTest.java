@@ -154,7 +154,7 @@ class MemberInformationQueryRepositoryTest extends RepositoryTest {
         /* 7건 입찰 & 3건 낙찰 */
         bid(
                 List.of(10, 4, 7, 6, 10, 10, 3),
-                List.of(15, 20, 13, 3, 4, 8, 9),
+                List.of(7, 9, 6, 1, 2, 4, 5),
                 List.of(auctions[0], auctions[2], auctions[3], auctions[5], auctions[6], auctions[8], auctions[9])
         );
         makeAuctionEnd(auctions[0], auctions[2], auctions[3], auctions[5], auctions[6], auctions[8], auctions[9]);
@@ -163,13 +163,13 @@ class MemberInformationQueryRepositoryTest extends RepositoryTest {
         assertThatWinningAuctionMatch(
                 result1,
                 List.of(8, 6, 0),
-                List.of(8, 4, 15)
+                List.of(4, 2, 7)
         );
 
         /* 추가 3건 입찰 & 2건 낙찰 */
         bid(
                 List.of(10, 3, 10),
-                List.of(10, 8, 23),
+                List.of(5, 4, 9),
                 List.of(auctions[1], auctions[4], auctions[7])
         );
         makeAuctionEnd(auctions[1], auctions[4], auctions[7]);
@@ -178,7 +178,7 @@ class MemberInformationQueryRepositoryTest extends RepositoryTest {
         assertThatWinningAuctionMatch(
                 result2,
                 List.of(8, 7, 6, 1, 0),
-                List.of(8, 23, 4, 10, 15)
+                List.of(4, 9, 2, 5, 7)
         );
     }
 
@@ -253,8 +253,9 @@ class MemberInformationQueryRepositoryTest extends RepositoryTest {
                 auction.applyNewBid(bidder, auction.getHighestBidPrice() + 50_000);
             }
 
-            for (long index = 1; index <= likeCount; index++) {
-                favoriteRepository.save(Favorite.favoriteMarking(auction.getArt().getId(), index));
+            for (int index = 1; index <= likeCount; index++) {
+                final Member bidder = bidders[index];
+                favoriteRepository.save(Favorite.favoriteMarking(auction.getArt().getId(), bidder.getId()));
             }
         }
     }
@@ -275,14 +276,14 @@ class MemberInformationQueryRepositoryTest extends RepositoryTest {
     private void purchaseAuctionArt(final Art... arts) {
         for (final Art art : arts) {
             purchaseRepository.save(Purchase.purchaseAuctionArt(art, buyer, art.getPrice()));
-            favoriteRepository.save(Favorite.favoriteMarking(art.getId(), 1L));
+            favoriteRepository.save(Favorite.favoriteMarking(art.getId(), buyer.getId()));
         }
     }
 
     private void purchaseGeneralArt(final Art... arts) {
         for (final Art art : arts) {
             purchaseRepository.save(Purchase.purchaseGeneralArt(art, buyer));
-            favoriteRepository.save(Favorite.favoriteMarking(art.getId(), 1L));
+            favoriteRepository.save(Favorite.favoriteMarking(art.getId(), buyer.getId()));
         }
     }
 
