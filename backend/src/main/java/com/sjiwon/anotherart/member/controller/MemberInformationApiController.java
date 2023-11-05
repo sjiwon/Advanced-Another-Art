@@ -1,11 +1,11 @@
 package com.sjiwon.anotherart.member.controller;
 
+import com.sjiwon.anotherart.global.resolver.ExtractPayload;
 import com.sjiwon.anotherart.member.service.MemberInformationService;
 import com.sjiwon.anotherart.member.service.dto.response.MemberInformation;
 import com.sjiwon.anotherart.member.service.dto.response.PointRecordAssembler;
 import com.sjiwon.anotherart.member.service.dto.response.TradedArtAssembler;
 import com.sjiwon.anotherart.member.service.dto.response.WinningAuctionArtAssembler;
-import com.sjiwon.anotherart.token.utils.ExtractPayload;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;

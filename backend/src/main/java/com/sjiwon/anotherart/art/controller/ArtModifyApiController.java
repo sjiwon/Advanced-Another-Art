@@ -2,7 +2,7 @@ package com.sjiwon.anotherart.art.controller;
 
 import com.sjiwon.anotherart.art.controller.dto.request.ArtModifyRequest;
 import com.sjiwon.anotherart.art.service.ArtService;
-import com.sjiwon.anotherart.token.utils.ExtractPayload;
+import com.sjiwon.anotherart.global.resolver.ExtractPayload;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

@@ -14,7 +14,7 @@ import com.sjiwon.anotherart.global.security.provider.AjaxAuthenticationProvider
 import com.sjiwon.anotherart.global.security.service.CustomUserDetailsService;
 import com.sjiwon.anotherart.member.domain.MemberRepository;
 import com.sjiwon.anotherart.token.service.TokenManager;
-import com.sjiwon.anotherart.token.utils.JwtTokenProvider;
+import com.sjiwon.anotherart.token.utils.TokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -51,7 +51,7 @@ public class SecurityConfiguration {
     private final AuthenticationConfiguration authenticationConfiguration;
     private final ObjectMapper objectMapper;
     private final MemberRepository memberRepository;
-    private final JwtTokenProvider jwtTokenProvider;
+    private final TokenProvider tokenProvider;
     private final TokenManager tokenManager;
 
     @Bean
@@ -91,7 +91,7 @@ public class SecurityConfiguration {
 
     @Bean
     AuthenticationSuccessHandler ajaxAuthenticationSuccessHandler() {
-        return new AjaxAuthenticationSuccessHandler(jwtTokenProvider, tokenManager, objectMapper);
+        return new AjaxAuthenticationSuccessHandler(tokenProvider, tokenManager, objectMapper);
     }
 
     @Bean
@@ -110,7 +110,7 @@ public class SecurityConfiguration {
 
     @Bean
     JwtAuthorizationFilter jwtAuthorizationFilter() {
-        return new JwtAuthorizationFilter(jwtTokenProvider, memberRepository);
+        return new JwtAuthorizationFilter(tokenProvider, memberRepository);
     }
 
     @Bean
@@ -130,7 +130,7 @@ public class SecurityConfiguration {
 
     @Bean
     JwtLogoutSuccessHandler jwtLogoutSuccessHandler() {
-        return new JwtLogoutSuccessHandler(jwtTokenProvider, tokenManager);
+        return new JwtLogoutSuccessHandler(tokenProvider, tokenManager);
     }
 
     @Bean

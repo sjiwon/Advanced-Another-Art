@@ -1,4 +1,4 @@
-package com.sjiwon.anotherart.token.utils;
+package com.sjiwon.anotherart.global.resolver;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

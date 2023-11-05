@@ -1,10 +1,10 @@
 package com.sjiwon.anotherart.member.controller;
 
 
+import com.sjiwon.anotherart.global.resolver.ExtractPayload;
 import com.sjiwon.anotherart.member.controller.dto.request.PointChargeRequest;
 import com.sjiwon.anotherart.member.controller.dto.request.PointRefundRequest;
 import com.sjiwon.anotherart.member.service.MemberPointService;
-import com.sjiwon.anotherart.token.utils.ExtractPayload;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

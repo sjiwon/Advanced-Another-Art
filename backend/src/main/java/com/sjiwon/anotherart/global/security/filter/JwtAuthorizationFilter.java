@@ -8,7 +8,7 @@ import com.sjiwon.anotherart.member.domain.MemberRepository;
 import com.sjiwon.anotherart.member.domain.Role;
 import com.sjiwon.anotherart.token.exception.TokenErrorCode;
 import com.sjiwon.anotherart.token.utils.AuthorizationExtractor;
-import com.sjiwon.anotherart.token.utils.JwtTokenProvider;
+import com.sjiwon.anotherart.token.utils.TokenProvider;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -27,7 +27,7 @@ import java.util.Optional;
 
 @RequiredArgsConstructor
 public class JwtAuthorizationFilter extends OncePerRequestFilter {
-    private final JwtTokenProvider jwtTokenProvider;
+    private final TokenProvider tokenProvider;
     private final MemberRepository memberRepository;
 
     @Override
@@ -35,8 +35,8 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         final Optional<String> token = AuthorizationExtractor.extractToken(request);
 
         if (token.isPresent()) {
-            if (jwtTokenProvider.isTokenValid(token.get())) {
-                final Long memberId = jwtTokenProvider.getId(token.get());
+            if (tokenProvider.isTokenValid(token.get())) {
+                final Long memberId = tokenProvider.getId(token.get());
                 final Member member = getMember(memberId);
                 final MemberPrincipal principal = buildMemberPrincipal(member);
 
