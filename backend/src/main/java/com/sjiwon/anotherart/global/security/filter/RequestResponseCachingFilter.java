@@ -1,4 +1,4 @@
-package com.sjiwon.anotherart.global.filter;
+package com.sjiwon.anotherart.global.security.filter;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
