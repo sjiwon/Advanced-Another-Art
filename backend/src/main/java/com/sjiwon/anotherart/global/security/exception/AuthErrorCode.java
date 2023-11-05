@@ -16,6 +16,7 @@ public enum AuthErrorCode implements ErrorCode {
     INVALID_AUTH_DATA(UNAUTHORIZED, "AUTH_002", "아이디나 비밀번호를 정확하게 입력해주세요."),
     INVALID_PERMISSION(FORBIDDEN, "AUTH_003", "권한이 없습니다."),
     LOGIN_REQUIRED(FORBIDDEN, "AUTH_004", "로그인이 필요합니다."),
+    INVALID_TOKEN(FORBIDDEN, "AUTH_005", "유효하지 않은 토큰입니다."),
     ;
 
     private final HttpStatus status;
