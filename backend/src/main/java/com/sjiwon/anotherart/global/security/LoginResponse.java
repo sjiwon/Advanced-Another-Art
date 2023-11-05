@@ -1,7 +1,7 @@
 package com.sjiwon.anotherart.global.security;
 
 public record LoginResponse(
-        Long memberId,
+        Long id,
         String nickname,
         String accessToken,
         String refreshToken
