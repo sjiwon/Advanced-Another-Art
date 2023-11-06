@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS member
     postcode         INT          NOT NULL COMMENT '우편번호',
     default_address  VARCHAR(200) NOT NULL COMMENT '기본 주소',
     detail_address   VARCHAR(200) NOT NULL COMMENT '상세 주소',
-    phone            VARCHAR(11)  NOT NULL UNIQUE COMMENT '사용자 핸드폰 번호',
+    phone            VARCHAR(13)  NOT NULL UNIQUE COMMENT '사용자 핸드폰 번호',
     email            VARCHAR(100) NOT NULL UNIQUE COMMENT '사용자 이메일',
     total_point      INT          NOT NULL DEFAULT 0 COMMENT '전체 보유 포인트',
     available_point  INT          NOT NULL DEFAULT 0 COMMENT '사용 가능한 포인트',
