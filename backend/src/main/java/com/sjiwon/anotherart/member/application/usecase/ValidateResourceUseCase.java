@@ -1,6 +1,6 @@
 package com.sjiwon.anotherart.member.application.usecase;
 
-import com.sjiwon.anotherart.member.application.usecase.command.ValidateResouceCommand;
+import com.sjiwon.anotherart.member.application.usecase.command.ValidateResourceCommand;
 import com.sjiwon.anotherart.member.domain.service.MemberResourceValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 public class ValidateResourceUseCase {
     private final MemberResourceValidator memberResourceValidator;
 
-    public void invoke(final ValidateResouceCommand command) {
+    public void invoke(final ValidateResourceCommand command) {
         switch (command.resource()) {
             case LOGIN_ID -> memberResourceValidator.validateLoginIdIsUnique(command.value());
             case EMAIL -> memberResourceValidator.validateEmailIsUnique(command.value());

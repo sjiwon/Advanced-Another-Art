@@ -1,7 +1,7 @@
 package com.sjiwon.anotherart.member.presentation;
 
 import com.sjiwon.anotherart.global.resolver.ExtractPayload;
-import com.sjiwon.anotherart.member.application.usecase.UpdateResouceUseCase;
+import com.sjiwon.anotherart.member.application.usecase.UpdateResourceUseCase;
 import com.sjiwon.anotherart.member.application.usecase.command.UpdateAddressCommand;
 import com.sjiwon.anotherart.member.application.usecase.command.UpdateNicknameCommand;
 import com.sjiwon.anotherart.member.presentation.dto.request.UpdateAddressRequest;
@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RequestMapping("/api/members/me")
 public class MemberModifyApiController {
-    private final UpdateResouceUseCase updateResouceUseCase;
+    private final UpdateResourceUseCase updateResourceUseCase;
 
     @Operation(summary = "닉네임 수정 EndPoint")
     @PatchMapping("/nickname")
@@ -29,7 +29,7 @@ public class MemberModifyApiController {
             @ExtractPayload final Long memberId,
             @RequestBody @Valid final UpdateNicknameRequest request
     ) {
-        updateResouceUseCase.invoke(new UpdateNicknameCommand(memberId, request.value()));
+        updateResourceUseCase.invoke(new UpdateNicknameCommand(memberId, request.value()));
         return ResponseEntity.noContent().build();
     }
 
@@ -39,7 +39,7 @@ public class MemberModifyApiController {
             @ExtractPayload final Long memberId,
             @RequestBody @Valid final UpdateAddressRequest request
     ) {
-        updateResouceUseCase.invoke(new UpdateAddressCommand(
+        updateResourceUseCase.invoke(new UpdateAddressCommand(
                 memberId,
                 request.postcode(),
                 request.defaultAddress(),

@@ -22,11 +22,11 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-@DisplayName("Member -> UpdateResouceUseCase 테스트")
-public class UpdateResouceUseCaseTest extends UseCaseTest {
+@DisplayName("Member -> UpdateResourceUseCase 테스트")
+public class UpdateResourceUseCaseTest extends UseCaseTest {
     private final MemberRepository memberRepository = mock(MemberRepository.class);
     private final MemberResourceValidator memberResourceValidator = new MemberResourceValidator(memberRepository);
-    private final UpdateResouceUseCase sut = new UpdateResouceUseCase(memberResourceValidator, memberRepository);
+    private final UpdateResourceUseCase sut = new UpdateResourceUseCase(memberResourceValidator, memberRepository);
 
     private final Member member = MEMBER_A.toMember().apply(1L);
 
