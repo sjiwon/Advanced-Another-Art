@@ -8,6 +8,7 @@ import com.sjiwon.anotherart.token.domain.model.AuthToken;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -21,10 +22,11 @@ public class TokenReissueApiController {
 
     @Operation(summary = "RefreshToken을 통한 토큰 재발급 EndPoint")
     @PostMapping
-    public AuthToken reissueTokens(
+    public ResponseEntity<AuthToken> reissueTokens(
             @ExtractPayload final Long memberId,
             @ExtractToken final String refreshToken
     ) {
-        return reissueTokenUseCase.reissueTokens(new ReissueTokenCommand(memberId, refreshToken));
+        final AuthToken result = reissueTokenUseCase.reissueTokens(new ReissueTokenCommand(memberId, refreshToken));
+        return ResponseEntity.ok(result);
     }
 }
