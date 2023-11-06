@@ -45,13 +45,27 @@ public class Nickname {
         }
     }
 
+    private static boolean isInvalidPattern(final String nickname) {
+        return !NICKNAME_PATTERN.matcher(nickname).matches();
+    }
+
     private void validateNicknameSameAsBefore(final String value) {
         if (this.value.equals(value)) {
             throw AnotherArtException.type(MemberErrorCode.NICKNAME_SAME_AS_BEFORE);
         }
     }
 
-    private static boolean isInvalidPattern(final String nickname) {
-        return !NICKNAME_MATCHER.matcher(nickname).matches();
+    @Override
+    public boolean equals(final Object object) {
+        if (this == object) return true;
+        if (object == null || getClass() != object.getClass()) return false;
+
+        final Nickname other = (Nickname) object;
+        return value.equals(other.value);
+    }
+
+    @Override
+    public int hashCode() {
+        return value.hashCode();
     }
 }
