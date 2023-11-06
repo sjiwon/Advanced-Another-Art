@@ -4,9 +4,9 @@ import com.sjiwon.anotherart.art.domain.Art;
 import com.sjiwon.anotherart.art.exception.ArtErrorCode;
 import com.sjiwon.anotherart.auction.domain.Auction;
 import com.sjiwon.anotherart.common.ServiceTest;
+import com.sjiwon.anotherart.file.infrastructure.s3.S3FileUploader;
 import com.sjiwon.anotherart.global.exception.AnotherArtException;
 import com.sjiwon.anotherart.member.domain.Member;
-import com.sjiwon.anotherart.upload.utils.S3FileUploader;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -62,7 +62,7 @@ class ArtServiceTest extends ServiceTest {
             final Set<String> hashtags = Set.of("A", "B", "C", "D");
             final MultipartFile file = createSingleMockMultipartFile("1.png", "image/png");
             final String uploadLink = "https://kr.object.ncloudstorage.com/bucket/arts/uuid.png";
-            given(s3FileUploader.uploadFile(file)).willReturn(uploadLink);
+            given(s3FileUploader.uploadFile(null)).willReturn(uploadLink); // TODO command - RawFileData 리팩토링
 
             artService.registerArt(owner.getId(), createGeneralArtRegisterRequest(GENERAL_1, file, hashtags));
 
@@ -79,7 +79,7 @@ class ArtServiceTest extends ServiceTest {
             final Set<String> hashtags = Set.of("A", "B", "C", "D");
             final MultipartFile file = createSingleMockMultipartFile("1.png", "image/png");
             final String uploadLink = "https://kr.object.ncloudstorage.com/bucket/arts/uuid.png";
-            given(s3FileUploader.uploadFile(file)).willReturn(uploadLink);
+            given(s3FileUploader.uploadFile(null)).willReturn(uploadLink); // TODO command - RawFileData 리팩토링
 
             // when
             final Long artId = artService.registerArt(owner.getId(), createGeneralArtRegisterRequest(GENERAL_1, file, hashtags));
@@ -105,7 +105,7 @@ class ArtServiceTest extends ServiceTest {
             final Set<String> hashtags = Set.of("A", "B", "C", "D");
             final MultipartFile file = createSingleMockMultipartFile("1.png", "image/png");
             final String uploadLink = "https://kr.object.ncloudstorage.com/bucket/arts/uuid.png";
-            given(s3FileUploader.uploadFile(file)).willReturn(uploadLink);
+            given(s3FileUploader.uploadFile(null)).willReturn(uploadLink); // TODO command - RawFileData 리팩토링
 
             // when
             final Long artId = artService.registerArt(owner.getId(), createAuctionArtRegisterRequest(AUCTION_1, file, hashtags));

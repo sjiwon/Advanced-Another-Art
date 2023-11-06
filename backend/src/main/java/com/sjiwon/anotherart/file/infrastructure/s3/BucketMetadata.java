@@ -1,4 +1,4 @@
-package com.sjiwon.anotherart.upload.utils;
+package com.sjiwon.anotherart.file.infrastructure.s3;
 
 public interface BucketMetadata {
     /**
