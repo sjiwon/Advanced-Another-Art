@@ -49,4 +49,10 @@ public class MemberResourceValidator {
             throw AnotherArtException.type(MemberErrorCode.DUPLICATE_PHONE);
         }
     }
+
+    public void validateNicknameIsInUseByOther(final Long memberId, final String nickname) {
+        if (memberRepository.isNicknameUsedByOther(memberId, nickname)) {
+            throw AnotherArtException.type(MemberErrorCode.DUPLICATE_NICKNAME);
+        }
+    }
 }

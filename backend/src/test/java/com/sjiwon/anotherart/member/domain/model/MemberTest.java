@@ -41,7 +41,7 @@ class MemberTest {
 
     @Nested
     @DisplayName("닉네임 변경")
-    class ChangeNickname {
+    class UpdateNickname {
         @Test
         @DisplayName("이전과 동일한 닉네임으로 변경할 수 없다")
         void throwExceptionByNicknameSameAsBefore() {
@@ -50,7 +50,7 @@ class MemberTest {
             final String oldNickname = member.getNickname().getValue();
 
             // when - then
-            assertThatThrownBy(() -> member.changeNickname(oldNickname))
+            assertThatThrownBy(() -> member.updateNickname(oldNickname))
                     .isInstanceOf(AnotherArtException.class)
                     .hasMessage(MemberErrorCode.NICKNAME_SAME_AS_BEFORE.getMessage());
         }
@@ -63,7 +63,7 @@ class MemberTest {
             final String newNickname = member.getNickname().getValue() + "diff";
 
             // when
-            member.changeNickname(newNickname);
+            member.updateNickname(newNickname);
 
             // then
             assertThat(member.getNickname().getValue()).isEqualTo(newNickname);
@@ -72,7 +72,7 @@ class MemberTest {
 
     @Nested
     @DisplayName("비밀번호 변경")
-    class ChangePassword {
+    class UpdatePassword {
         @Test
         @DisplayName("이전과 동일한 비밀번호호 변경할 수 없다")
         void throwExceptionByPasswordSameAsBefore() {
@@ -81,7 +81,7 @@ class MemberTest {
             final String oldPassword = MEMBER_A.getPassword();
 
             // when - then
-            assertThatThrownBy(() -> member.changePassword(oldPassword, passwordEncryptor))
+            assertThatThrownBy(() -> member.updatePassword(oldPassword, passwordEncryptor))
                     .isInstanceOf(AnotherArtException.class)
                     .hasMessage(MemberErrorCode.PASSWORD_SAME_AS_BEFORE.getMessage());
         }
@@ -95,7 +95,7 @@ class MemberTest {
             final String newPassword = MEMBER_A.getPassword() + "diff";
 
             // when
-            member.changePassword(newPassword, passwordEncryptor);
+            member.updatePassword(newPassword, passwordEncryptor);
 
             // then
             assertAll(
@@ -107,21 +107,21 @@ class MemberTest {
 
     @Test
     @DisplayName("주소를 변경한다")
-    void changeAddress() {
+    void updateAddress() {
         // given
         final Member member = MEMBER_A.toMember().apply(1L);
-        final int changePostcode = 98765;
-        final String changeDefault = "성남";
-        final String changeDetail = "카카오";
+        final int updatePostcode = 98765;
+        final String updateDefault = "성남";
+        final String updateDetail = "카카오";
 
         // when
-        member.changeAddress(changePostcode, changeDefault, changeDetail);
+        member.updateAddress(updatePostcode, updateDefault, updateDetail);
 
         // then
         assertAll(
-                () -> assertThat(member.getAddress().getPostcode()).isEqualTo(changePostcode),
-                () -> assertThat(member.getAddress().getDefaultAddress()).isEqualTo(changeDefault),
-                () -> assertThat(member.getAddress().getDetailAddress()).isEqualTo(changeDetail)
+                () -> assertThat(member.getAddress().getPostcode()).isEqualTo(updatePostcode),
+                () -> assertThat(member.getAddress().getDefaultAddress()).isEqualTo(updateDefault),
+                () -> assertThat(member.getAddress().getDetailAddress()).isEqualTo(updateDetail)
         );
     }
 

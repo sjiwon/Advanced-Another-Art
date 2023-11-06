@@ -76,4 +76,18 @@ public class MemberResourceValidatorTest extends UseCaseTest {
                 .hasMessage(MemberErrorCode.DUPLICATE_PHONE.getMessage());
         assertDoesNotThrow(() -> sut.validatePhoneIsUnique(member.getPhone().getValue().replaceAll("0", "9")));
     }
+
+    @Test
+    @DisplayName("타인이 해당 닉네임을 사용하고 있는지 검증한다")
+    void validateNicknameIsInUseByOther() {
+        // given
+        given(memberRepository.isNicknameUsedByOther(member.getId(), member.getNickname().getValue())).willReturn(true);
+        given(memberRepository.isNicknameUsedByOther(member.getId(), "diff" + member.getNickname().getValue())).willReturn(false);
+
+        // when - then
+        assertThatThrownBy(() -> sut.validateNicknameIsInUseByOther(member.getId(), member.getNickname().getValue()))
+                .isInstanceOf(AnotherArtException.class)
+                .hasMessage(MemberErrorCode.DUPLICATE_NICKNAME.getMessage());
+        assertDoesNotThrow(() -> sut.validateNicknameIsInUseByOther(member.getId(), "diff" + member.getNickname().getValue()));
+    }
 }

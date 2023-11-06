@@ -45,13 +45,13 @@ public class MemberService {
         memberValidator.validateNicknameForModify(memberId, value);
 
         final Member member = memberRepository.getById(memberId);
-        member.changeNickname(value);
+        member.updateNickname(value);
     }
 
     @Transactional
     public void changeAddress(final Long memberId, final Integer postcode, final String defaultAddress, final String detailAddress) {
         final Member member = memberRepository.getById(memberId);
-        member.changeAddress(postcode, defaultAddress, detailAddress);
+        member.updateAddress(postcode, defaultAddress, detailAddress);
     }
 
     public String findLoginId(final String name, final Email email) {
@@ -68,12 +68,12 @@ public class MemberService {
     @Transactional
     public void resetPassword(final String loginId, final String changePassword) {
         final Member member = memberRepository.getByLoginId(loginId);
-        member.changePassword(changePassword, passwordEncryptor);
+        member.updatePassword(changePassword, passwordEncryptor);
     }
 
     @Transactional
     public void changePassword(final Long memberId, final String changePassword) {
         final Member member = memberRepository.getById(memberId);
-        member.changePassword(changePassword, passwordEncryptor);
+        member.updatePassword(changePassword, passwordEncryptor);
     }
 }

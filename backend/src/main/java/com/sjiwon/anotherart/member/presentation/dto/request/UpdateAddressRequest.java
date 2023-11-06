@@ -3,7 +3,7 @@ package com.sjiwon.anotherart.member.presentation.dto.request;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
-public record ChangeAddressRequest(
+public record UpdateAddressRequest(
         @NotNull(message = "우편번호는 필수입니다.")
         Integer postcode,
 

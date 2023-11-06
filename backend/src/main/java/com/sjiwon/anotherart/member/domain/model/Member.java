@@ -86,15 +86,15 @@ public class Member extends BaseEntity<Member> {
         return new Member(name, nickname, loginId, password, school, phone, email, address, USER);
     }
 
-    public void changeNickname(final String nickname) {
+    public void updateNickname(final String nickname) {
         this.nickname = this.nickname.update(nickname);
     }
 
-    public void changePassword(final String password, final PasswordEncryptor encryptor) {
+    public void updatePassword(final String password, final PasswordEncryptor encryptor) {
         this.password = this.password.update(password, encryptor);
     }
 
-    public void changeAddress(final int postcode, final String defaultAddress, final String detailAddress) {
+    public void updateAddress(final int postcode, final String defaultAddress, final String detailAddress) {
         this.address = this.address.update(postcode, defaultAddress, detailAddress);
     }
 
