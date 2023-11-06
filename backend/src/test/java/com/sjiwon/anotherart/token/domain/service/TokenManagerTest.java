@@ -1,8 +1,8 @@
-package com.sjiwon.anotherart.token.service;
+package com.sjiwon.anotherart.token.domain.service;
 
 import com.sjiwon.anotherart.common.ServiceTest;
 import com.sjiwon.anotherart.member.domain.Member;
-import com.sjiwon.anotherart.token.domain.Token;
+import com.sjiwon.anotherart.token.domain.model.Token;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;

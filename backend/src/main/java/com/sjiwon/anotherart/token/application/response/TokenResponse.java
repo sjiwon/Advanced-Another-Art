@@ -1,4 +1,4 @@
-package com.sjiwon.anotherart.token.service.response;
+package com.sjiwon.anotherart.token.application.response;
 
 public record TokenResponse(
         String accessToken,

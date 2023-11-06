@@ -3,7 +3,7 @@ package com.sjiwon.anotherart.global.security.handler;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sjiwon.anotherart.global.security.dto.LoginResponse;
 import com.sjiwon.anotherart.global.security.principal.MemberPrincipal;
-import com.sjiwon.anotherart.token.service.TokenManager;
+import com.sjiwon.anotherart.token.domain.service.TokenManager;
 import com.sjiwon.anotherart.token.utils.TokenProvider;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

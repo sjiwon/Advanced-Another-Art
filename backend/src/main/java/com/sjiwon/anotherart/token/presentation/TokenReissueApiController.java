@@ -1,9 +1,9 @@
-package com.sjiwon.anotherart.token.controller;
+package com.sjiwon.anotherart.token.presentation;
 
 import com.sjiwon.anotherart.global.resolver.ExtractPayload;
 import com.sjiwon.anotherart.global.resolver.ExtractToken;
-import com.sjiwon.anotherart.token.service.TokenReissueService;
-import com.sjiwon.anotherart.token.service.response.TokenResponse;
+import com.sjiwon.anotherart.token.application.TokenReissueService;
+import com.sjiwon.anotherart.token.application.response.TokenResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;

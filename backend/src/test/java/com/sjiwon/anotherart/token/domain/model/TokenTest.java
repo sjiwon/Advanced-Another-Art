@@ -1,4 +1,4 @@
-package com.sjiwon.anotherart.token.domain;
+package com.sjiwon.anotherart.token.domain.model;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

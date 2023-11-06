@@ -1,5 +1,6 @@
-package com.sjiwon.anotherart.token.domain;
+package com.sjiwon.anotherart.token.domain.repository;
 
+import com.sjiwon.anotherart.token.domain.model.Token;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -22,5 +23,6 @@ public interface TokenRepository extends JpaRepository<Token, Long> {
 
     // Query Method
     Optional<Token> findByMemberId(Long memberId);
+
     boolean existsByMemberIdAndRefreshToken(Long memberId, String refreshToken);
 }

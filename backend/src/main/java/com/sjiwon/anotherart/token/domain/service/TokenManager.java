@@ -1,7 +1,7 @@
-package com.sjiwon.anotherart.token.service;
+package com.sjiwon.anotherart.token.domain.service;
 
-import com.sjiwon.anotherart.token.domain.Token;
-import com.sjiwon.anotherart.token.domain.TokenRepository;
+import com.sjiwon.anotherart.token.domain.model.Token;
+import com.sjiwon.anotherart.token.domain.repository.TokenRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

@@ -2,7 +2,7 @@ package com.sjiwon.anotherart.global.security.handler;
 
 import com.sjiwon.anotherart.global.security.exception.AnotherArtAccessDeniedException;
 import com.sjiwon.anotherart.global.security.exception.AuthErrorCode;
-import com.sjiwon.anotherart.token.service.TokenManager;
+import com.sjiwon.anotherart.token.domain.service.TokenManager;
 import com.sjiwon.anotherart.token.utils.AuthorizationExtractor;
 import com.sjiwon.anotherart.token.utils.TokenProvider;
 import jakarta.servlet.http.HttpServletRequest;

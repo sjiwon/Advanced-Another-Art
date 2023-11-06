@@ -10,7 +10,7 @@ import com.sjiwon.anotherart.global.security.SecurityConfiguration;
 import com.sjiwon.anotherart.member.domain.Member;
 import com.sjiwon.anotherart.member.domain.MemberRepository;
 import com.sjiwon.anotherart.member.exception.MemberErrorCode;
-import com.sjiwon.anotherart.token.service.TokenManager;
+import com.sjiwon.anotherart.token.domain.service.TokenManager;
 import com.sjiwon.anotherart.token.utils.JwtTokenProvider;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;

@@ -1,11 +1,11 @@
-package com.sjiwon.anotherart.token.service;
+package com.sjiwon.anotherart.token.application;
 
 import com.sjiwon.anotherart.common.ServiceTest;
 import com.sjiwon.anotherart.global.exception.AnotherArtException;
 import com.sjiwon.anotherart.global.security.exception.AuthErrorCode;
 import com.sjiwon.anotherart.member.domain.Member;
-import com.sjiwon.anotherart.token.domain.Token;
-import com.sjiwon.anotherart.token.service.response.TokenResponse;
+import com.sjiwon.anotherart.token.application.response.TokenResponse;
+import com.sjiwon.anotherart.token.domain.model.Token;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;

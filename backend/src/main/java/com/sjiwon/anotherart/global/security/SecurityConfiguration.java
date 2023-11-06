@@ -15,7 +15,7 @@ import com.sjiwon.anotherart.global.security.properties.CorsProperties;
 import com.sjiwon.anotherart.global.security.provider.AjaxAuthenticationProvider;
 import com.sjiwon.anotherart.global.security.provider.CustomUserDetailsService;
 import com.sjiwon.anotherart.member.domain.MemberRepository;
-import com.sjiwon.anotherart.token.service.TokenManager;
+import com.sjiwon.anotherart.token.domain.service.TokenManager;
 import com.sjiwon.anotherart.token.utils.TokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;

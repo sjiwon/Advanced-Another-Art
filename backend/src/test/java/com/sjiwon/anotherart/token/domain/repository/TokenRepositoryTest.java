@@ -1,8 +1,9 @@
-package com.sjiwon.anotherart.token.domain;
+package com.sjiwon.anotherart.token.domain.repository;
 
 import com.sjiwon.anotherart.common.RepositoryTest;
 import com.sjiwon.anotherart.member.domain.Member;
 import com.sjiwon.anotherart.member.domain.MemberRepository;
+import com.sjiwon.anotherart.token.domain.model.Token;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
