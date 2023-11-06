@@ -7,6 +7,7 @@ import com.sjiwon.anotherart.global.exception.AnotherArtException;
 import com.sjiwon.anotherart.member.application.usecase.command.SignUpMemberCommand;
 import com.sjiwon.anotherart.member.domain.model.Member;
 import com.sjiwon.anotherart.member.domain.repository.MemberRepository;
+import com.sjiwon.anotherart.member.domain.service.MemberResourceValidator;
 import com.sjiwon.anotherart.member.exception.MemberErrorCode;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -25,7 +26,8 @@ import static org.mockito.Mockito.verify;
 public class SignUpMemberUseCaseTest extends UseCaseTest {
     private final PasswordEncryptor passwordEncryptor = new FakePasswordEncryptor();
     private final MemberRepository memberRepository = mock(MemberRepository.class);
-    private final SignUpMemberUseCase sut = new SignUpMemberUseCase(passwordEncryptor, memberRepository);
+    private final MemberResourceValidator memberResourceValidator = new MemberResourceValidator(memberRepository);
+    private final SignUpMemberUseCase sut = new SignUpMemberUseCase(memberResourceValidator, passwordEncryptor, memberRepository);
 
     private final SignUpMemberCommand command = new SignUpMemberCommand(
             MEMBER_A.getName(),
