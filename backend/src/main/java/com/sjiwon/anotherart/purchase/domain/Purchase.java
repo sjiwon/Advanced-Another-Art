@@ -3,7 +3,7 @@ package com.sjiwon.anotherart.purchase.domain;
 import com.sjiwon.anotherart.art.domain.Art;
 import com.sjiwon.anotherart.global.BaseEntity;
 import com.sjiwon.anotherart.global.exception.AnotherArtException;
-import com.sjiwon.anotherart.member.domain.Member;
+import com.sjiwon.anotherart.member.domain.model.Member;
 import com.sjiwon.anotherart.purchase.exception.PurchaseErrorCode;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -16,8 +16,8 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import static com.sjiwon.anotherart.member.domain.point.PointType.PURCHASE;
-import static com.sjiwon.anotherart.member.domain.point.PointType.SOLD;
+import static com.sjiwon.anotherart.member.domain.model.PointType.PURCHASE;
+import static com.sjiwon.anotherart.member.domain.model.PointType.SOLD;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)

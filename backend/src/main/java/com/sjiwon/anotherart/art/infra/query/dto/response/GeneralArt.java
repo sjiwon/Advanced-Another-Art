@@ -4,8 +4,8 @@ import com.querydsl.core.annotations.QueryProjection;
 import com.sjiwon.anotherart.art.domain.ArtName;
 import com.sjiwon.anotherart.art.domain.ArtStatus;
 import com.sjiwon.anotherart.art.domain.Description;
-import com.sjiwon.anotherart.member.domain.Nickname;
-import com.sjiwon.anotherart.member.infra.query.dto.response.BasicMember;
+import com.sjiwon.anotherart.member.domain.model.Nickname;
+import com.sjiwon.anotherart.member.domain.repository.query.dto.response.BasicMember;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

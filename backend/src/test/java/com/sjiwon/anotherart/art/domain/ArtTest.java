@@ -1,6 +1,6 @@
 package com.sjiwon.anotherart.art.domain;
 
-import com.sjiwon.anotherart.member.domain.Member;
+import com.sjiwon.anotherart.member.domain.model.Member;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

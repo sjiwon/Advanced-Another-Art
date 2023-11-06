@@ -1,16 +1,16 @@
 package com.sjiwon.anotherart.common.fixture;
 
 import com.sjiwon.anotherart.common.utils.PasswordEncoderUtils;
-import com.sjiwon.anotherart.member.domain.Address;
-import com.sjiwon.anotherart.member.domain.Email;
-import com.sjiwon.anotherart.member.domain.Member;
-import com.sjiwon.anotherart.member.domain.Nickname;
-import com.sjiwon.anotherart.member.domain.Password;
+import com.sjiwon.anotherart.member.domain.model.Address;
+import com.sjiwon.anotherart.member.domain.model.Email;
+import com.sjiwon.anotherart.member.domain.model.Member;
+import com.sjiwon.anotherart.member.domain.model.Nickname;
+import com.sjiwon.anotherart.member.domain.model.Password;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import static com.sjiwon.anotherart.member.domain.Role.ADMIN;
+import static com.sjiwon.anotherart.member.domain.model.Role.ADMIN;
 
 @Getter
 @RequiredArgsConstructor

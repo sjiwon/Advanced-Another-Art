@@ -5,7 +5,7 @@ import com.sjiwon.anotherart.auction.domain.Auction;
 import com.sjiwon.anotherart.auction.exception.AuctionErrorCode;
 import com.sjiwon.anotherart.common.ServiceTest;
 import com.sjiwon.anotherart.global.exception.AnotherArtException;
-import com.sjiwon.anotherart.member.domain.Member;
+import com.sjiwon.anotherart.member.domain.model.Member;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

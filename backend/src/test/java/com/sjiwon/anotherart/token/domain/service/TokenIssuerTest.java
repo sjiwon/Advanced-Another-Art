@@ -1,7 +1,7 @@
 package com.sjiwon.anotherart.token.domain.service;
 
 import com.sjiwon.anotherart.common.mock.stub.StubTokenProvider;
-import com.sjiwon.anotherart.member.domain.Member;
+import com.sjiwon.anotherart.member.domain.model.Member;
 import com.sjiwon.anotherart.token.domain.model.AuthToken;
 import com.sjiwon.anotherart.token.utils.TokenProvider;
 import org.junit.jupiter.api.DisplayName;

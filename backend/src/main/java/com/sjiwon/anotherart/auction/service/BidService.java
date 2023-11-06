@@ -1,8 +1,8 @@
 package com.sjiwon.anotherart.auction.service;
 
 import com.sjiwon.anotherart.auction.domain.Auction;
-import com.sjiwon.anotherart.member.domain.Member;
-import com.sjiwon.anotherart.member.service.MemberFindService;
+import com.sjiwon.anotherart.member.application.MemberFindService;
+import com.sjiwon.anotherart.member.domain.model.Member;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

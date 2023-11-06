@@ -6,7 +6,7 @@ import com.sjiwon.anotherart.common.config.DatabaseCleanerEachCallbackExtension;
 import com.sjiwon.anotherart.common.config.MySqlTestContainersExtension;
 import com.sjiwon.anotherart.common.config.RedisTestContainersExtension;
 import com.sjiwon.anotherart.favorite.domain.FavoriteRepository;
-import com.sjiwon.anotherart.member.domain.MemberRepository;
+import com.sjiwon.anotherart.member.domain.repository.MemberRepository;
 import com.sjiwon.anotherart.purchase.domain.PurchaseRepository;
 import com.sjiwon.anotherart.token.domain.repository.TokenRepository;
 import com.sjiwon.anotherart.token.utils.JwtTokenProvider;

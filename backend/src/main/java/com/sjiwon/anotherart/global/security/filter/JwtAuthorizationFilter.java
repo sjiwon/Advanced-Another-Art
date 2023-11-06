@@ -2,9 +2,9 @@ package com.sjiwon.anotherart.global.security.filter;
 
 import com.sjiwon.anotherart.global.security.exception.AnotherArtAccessDeniedException;
 import com.sjiwon.anotherart.global.security.principal.MemberPrincipal;
-import com.sjiwon.anotherart.member.domain.Member;
-import com.sjiwon.anotherart.member.domain.MemberRepository;
-import com.sjiwon.anotherart.member.domain.Role;
+import com.sjiwon.anotherart.member.domain.model.Member;
+import com.sjiwon.anotherart.member.domain.model.Role;
+import com.sjiwon.anotherart.member.domain.repository.MemberRepository;
 import com.sjiwon.anotherart.member.exception.MemberErrorCode;
 import com.sjiwon.anotherart.token.exception.TokenErrorCode;
 import com.sjiwon.anotherart.token.utils.AuthorizationExtractor;

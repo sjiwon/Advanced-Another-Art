@@ -11,8 +11,8 @@ import com.sjiwon.anotherart.common.fixture.ArtFixture;
 import com.sjiwon.anotherart.common.fixture.MemberFixture;
 import com.sjiwon.anotherart.favorite.domain.Favorite;
 import com.sjiwon.anotherart.favorite.domain.FavoriteRepository;
-import com.sjiwon.anotherart.member.domain.Member;
-import com.sjiwon.anotherart.member.domain.MemberRepository;
+import com.sjiwon.anotherart.member.domain.model.Member;
+import com.sjiwon.anotherart.member.domain.repository.MemberRepository;
 import com.sjiwon.anotherart.purchase.domain.Purchase;
 import com.sjiwon.anotherart.purchase.domain.PurchaseRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -29,7 +29,7 @@ import static com.sjiwon.anotherart.common.fixture.AuctionFixture.AUCTION_OPEN_N
 import static com.sjiwon.anotherart.common.fixture.MemberFixture.MEMBER_A;
 import static com.sjiwon.anotherart.common.fixture.MemberFixture.MEMBER_B;
 import static com.sjiwon.anotherart.common.fixture.MemberFixture.MEMBER_C;
-import static com.sjiwon.anotherart.member.domain.point.PointType.CHARGE;
+import static com.sjiwon.anotherart.member.domain.model.PointType.CHARGE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 

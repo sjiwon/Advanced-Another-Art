@@ -2,7 +2,7 @@ package com.sjiwon.anotherart.token.application.usecase;
 
 import com.sjiwon.anotherart.common.UseCaseTest;
 import com.sjiwon.anotherart.global.exception.AnotherArtException;
-import com.sjiwon.anotherart.member.domain.Member;
+import com.sjiwon.anotherart.member.domain.model.Member;
 import com.sjiwon.anotherart.token.application.usecase.command.ReissueTokenCommand;
 import com.sjiwon.anotherart.token.domain.model.AuthToken;
 import com.sjiwon.anotherart.token.domain.service.TokenIssuer;

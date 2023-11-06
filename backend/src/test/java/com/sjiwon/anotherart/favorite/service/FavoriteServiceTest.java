@@ -5,7 +5,7 @@ import com.sjiwon.anotherart.common.ServiceTest;
 import com.sjiwon.anotherart.favorite.domain.Favorite;
 import com.sjiwon.anotherart.favorite.exception.FavoriteErrorCode;
 import com.sjiwon.anotherart.global.exception.AnotherArtException;
-import com.sjiwon.anotherart.member.domain.Member;
+import com.sjiwon.anotherart.member.domain.model.Member;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
