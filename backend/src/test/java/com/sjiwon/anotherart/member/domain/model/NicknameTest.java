@@ -16,7 +16,7 @@ class NicknameTest {
     @Nested
     @DisplayName("Nickname 생성")
     class Construct {
-        @ParameterizedTest(name = "{index}: {0}")
+        @ParameterizedTest
         @ValueSource(strings = {"한", "!@#hello", "Hello World", "일이삼사오육칠팔구십십일"})
         @DisplayName("형식에 맞지 않는 Nickname이면 생성에 실패한다")
         void throwExceptionByInvalidNicknameFormat(final String value) {
@@ -25,7 +25,7 @@ class NicknameTest {
                     .hasMessage(MemberErrorCode.INVALID_NICKNAME_FORMAT.getMessage());
         }
 
-        @ParameterizedTest(name = "{index}: {0}")
+        @ParameterizedTest
         @ValueSource(strings = {"하이", "하이123", "hEllo123"})
         @DisplayName("Nickname을 생성한다")
         void success(final String value) {

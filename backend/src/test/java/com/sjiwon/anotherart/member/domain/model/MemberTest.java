@@ -1,13 +1,13 @@
 package com.sjiwon.anotherart.member.domain.model;
 
-import com.sjiwon.anotherart.common.utils.PasswordEncoderUtils;
+import com.sjiwon.anotherart.common.mock.fake.FakePasswordEncryptor;
+import com.sjiwon.anotherart.global.encrypt.PasswordEncryptor;
 import com.sjiwon.anotherart.global.exception.AnotherArtException;
 import com.sjiwon.anotherart.member.exception.MemberErrorCode;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 import static com.sjiwon.anotherart.common.fixture.MemberFixture.MEMBER_A;
 import static com.sjiwon.anotherart.common.fixture.MemberFixture.MEMBER_B;
@@ -22,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 @DisplayName("Member 도메인 테스트")
 class MemberTest {
-    private static final PasswordEncoder ENCODER = PasswordEncoderUtils.getEncoder();
+    private final PasswordEncryptor passwordEncryptor = new FakePasswordEncryptor();
 
     @Test
     @DisplayName("멤버를 생성한다")
@@ -33,7 +33,7 @@ class MemberTest {
                 () -> assertThat(member.getName()).isEqualTo(MEMBER_A.getName()),
                 () -> assertThat(member.getNicknameValue()).isEqualTo(MEMBER_A.getNickname()),
                 () -> assertThat(member.getLoginId()).isEqualTo(MEMBER_A.getLoginId()),
-                () -> assertThat(ENCODER.matches(MEMBER_A.getPassword(), member.getPasswordValue())).isTrue(),
+                () -> assertThat(passwordEncryptor.matches(MEMBER_A.getPassword(), member.getPasswordValue())).isTrue(),
                 () -> assertThat(member.getEmailValue()).isEqualTo(MEMBER_A.getEmail()),
                 () -> assertThat(member.getAddress().getPostcode()).isEqualTo(MEMBER_A.getPostcode()),
                 () -> assertThat(member.getAddress().getDefaultAddress()).isEqualTo(MEMBER_A.getDefaultAddress()),
@@ -87,7 +87,7 @@ class MemberTest {
         @Test
         @DisplayName("이전과 동일한 비밀번호호 변경할 수 없다")
         void throwExceptionByPasswordSameAsBefore() {
-            assertThatThrownBy(() -> member.changePassword(MEMBER_A.getPassword(), ENCODER))
+            assertThatThrownBy(() -> member.changePassword(MEMBER_A.getPassword(), passwordEncryptor))
                     .isInstanceOf(AnotherArtException.class)
                     .hasMessage(MemberErrorCode.PASSWORD_SAME_AS_BEFORE.getMessage());
         }
@@ -97,10 +97,10 @@ class MemberTest {
         void success() {
             // when
             final String changePassword = "asd!@#032sda02#";
-            member.changePassword(changePassword, ENCODER);
+            member.changePassword(changePassword, passwordEncryptor);
 
             // then
-            assertThat(ENCODER.matches("asd!@#032sda02#", member.getPasswordValue())).isTrue();
+            assertThat(passwordEncryptor.matches("asd!@#032sda02#", member.getPasswordValue())).isTrue();
         }
     }
 

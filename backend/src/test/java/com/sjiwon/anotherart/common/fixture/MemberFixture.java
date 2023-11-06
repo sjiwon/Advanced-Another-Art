@@ -1,6 +1,6 @@
 package com.sjiwon.anotherart.common.fixture;
 
-import com.sjiwon.anotherart.common.utils.PasswordEncoderUtils;
+import com.sjiwon.anotherart.common.mock.fake.FakePasswordEncryptor;
 import com.sjiwon.anotherart.member.domain.model.Address;
 import com.sjiwon.anotherart.member.domain.model.Email;
 import com.sjiwon.anotherart.member.domain.model.Member;
@@ -8,9 +8,6 @@ import com.sjiwon.anotherart.member.domain.model.Nickname;
 import com.sjiwon.anotherart.member.domain.model.Password;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import org.springframework.test.util.ReflectionTestUtils;
-
-import static com.sjiwon.anotherart.member.domain.model.Role.ADMIN;
 
 @Getter
 @RequiredArgsConstructor
@@ -153,17 +150,11 @@ public enum MemberFixture {
                 name,
                 Nickname.from(nickname),
                 loginId,
-                Password.encrypt(password, PasswordEncoderUtils.getEncoder()),
+                Password.encrypt(password, new FakePasswordEncryptor()),
                 "경기대학교",
                 phone,
                 Email.from(email),
                 Address.of(postcode, defaultAddress, detailAddress)
         );
-    }
-
-    public Member toAdmin() {
-        final Member member = toMember();
-        ReflectionTestUtils.setField(member, "role", ADMIN);
-        return member;
     }
 }

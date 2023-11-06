@@ -5,7 +5,7 @@ import com.sjiwon.anotherart.auction.domain.AuctionRepository;
 import com.sjiwon.anotherart.common.config.DatabaseCleanerEachCallbackExtension;
 import com.sjiwon.anotherart.common.config.MySqlTestContainersExtension;
 import com.sjiwon.anotherart.common.config.RedisTestContainersExtension;
-import com.sjiwon.anotherart.common.utils.PasswordEncoderUtils;
+import com.sjiwon.anotherart.common.mock.fake.FakePasswordEncryptor;
 import com.sjiwon.anotherart.member.domain.model.Address;
 import com.sjiwon.anotherart.member.domain.model.Email;
 import com.sjiwon.anotherart.member.domain.model.Member;
@@ -72,7 +72,7 @@ public abstract class ConcurrencyTest {
                 "name" + index,
                 Nickname.from("nick" + index),
                 "loginid" + index,
-                Password.encrypt("abcABC123!@#", PasswordEncoderUtils.getEncoder()),
+                Password.encrypt("abcABC123!@#", new FakePasswordEncryptor()),
                 "경기대학교",
                 generateRandomPhoneNumber(),
                 Email.from("test" + index + "@gmail.com"),

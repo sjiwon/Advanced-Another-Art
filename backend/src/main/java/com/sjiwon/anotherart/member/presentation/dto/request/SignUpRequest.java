@@ -1,5 +1,6 @@
 package com.sjiwon.anotherart.member.presentation.dto.request;
 
+import com.sjiwon.anotherart.global.encrypt.DefaultPasswordEncryptor;
 import com.sjiwon.anotherart.member.domain.model.Address;
 import com.sjiwon.anotherart.member.domain.model.Email;
 import com.sjiwon.anotherart.member.domain.model.Member;
@@ -45,7 +46,7 @@ public record SignUpRequest(
                 name,
                 Nickname.from(nickname),
                 loginId,
-                Password.encrypt(password, new BCryptPasswordEncoder()),
+                Password.encrypt(password, new DefaultPasswordEncryptor(new BCryptPasswordEncoder())),
                 school,
                 phone,
                 Email.from(email),

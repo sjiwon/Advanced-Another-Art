@@ -1,5 +1,6 @@
 package com.sjiwon.anotherart.member.application;
 
+import com.sjiwon.anotherart.global.encrypt.PasswordEncryptor;
 import com.sjiwon.anotherart.global.exception.AnotherArtException;
 import com.sjiwon.anotherart.member.domain.model.Email;
 import com.sjiwon.anotherart.member.domain.model.Member;
@@ -7,7 +8,6 @@ import com.sjiwon.anotherart.member.domain.model.Nickname;
 import com.sjiwon.anotherart.member.domain.repository.MemberRepository;
 import com.sjiwon.anotherart.member.exception.MemberErrorCode;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,7 +18,7 @@ public class MemberService {
     private final MemberValidator memberValidator;
     private final MemberRepository memberRepository;
     private final MemberFindService memberFindService;
-    private final PasswordEncoder passwordEncoder;
+    private final PasswordEncryptor passwordEncryptor;
 
     @Transactional
     public Long signUp(final Member member) {
@@ -70,12 +70,12 @@ public class MemberService {
     @Transactional
     public void resetPassword(final String loginId, final String changePassword) {
         final Member member = memberFindService.findByLoginId(loginId);
-        member.changePassword(changePassword, passwordEncoder);
+        member.changePassword(changePassword, passwordEncryptor);
     }
 
     @Transactional
     public void changePassword(final Long memberId, final String changePassword) {
         final Member member = memberFindService.findById(memberId);
-        member.changePassword(changePassword, passwordEncoder);
+        member.changePassword(changePassword, passwordEncryptor);
     }
 }

@@ -1,6 +1,7 @@
 package com.sjiwon.anotherart.member.domain.model;
 
 import com.sjiwon.anotherart.global.BaseEntity;
+import com.sjiwon.anotherart.global.encrypt.PasswordEncryptor;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
@@ -10,7 +11,6 @@ import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.List;
 import java.util.Objects;
@@ -88,8 +88,8 @@ public class Member extends BaseEntity<Member> {
         this.nickname = this.nickname.update(nickname);
     }
 
-    public void changePassword(final String password, final PasswordEncoder encoder) {
-        this.password = this.password.update(password, encoder);
+    public void changePassword(final String password, final PasswordEncryptor encryptor) {
+        this.password = this.password.update(password, encryptor);
     }
 
     public void changeAddress(final int postcode, final String defaultAddress, final String detailAddress) {

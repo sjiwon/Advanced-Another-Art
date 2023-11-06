@@ -30,7 +30,7 @@ class ArtNameTest {
                 .hasMessage(ArtErrorCode.NAME_LENGTH_OUT_OF_RANGE.getMessage());
     }
 
-    @ParameterizedTest(name = "{index}: {0}")
+    @ParameterizedTest
     @ValueSource(strings = {"a", "aaaaaaaaaaaaaaaaaaaa"})
     @DisplayName("ArtName을 생성한다")
     void construct(final String value) {

@@ -1,7 +1,8 @@
 package com.sjiwon.anotherart.member.application;
 
 import com.sjiwon.anotherart.common.ServiceTest;
-import com.sjiwon.anotherart.common.utils.PasswordEncoderUtils;
+import com.sjiwon.anotherart.common.mock.fake.FakePasswordEncryptor;
+import com.sjiwon.anotherart.global.encrypt.PasswordEncryptor;
 import com.sjiwon.anotherart.global.exception.AnotherArtException;
 import com.sjiwon.anotherart.member.domain.model.Address;
 import com.sjiwon.anotherart.member.domain.model.Email;
@@ -14,8 +15,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.factory.PasswordEncoderFactories;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 import static com.sjiwon.anotherart.common.fixture.MemberFixture.MEMBER_A;
 import static com.sjiwon.anotherart.common.fixture.MemberFixture.MEMBER_B;
@@ -29,7 +28,7 @@ class MemberServiceTest extends ServiceTest {
     @Autowired
     private MemberService memberService;
 
-    private static final PasswordEncoder ENCODER = PasswordEncoderUtils.getEncoder();
+    private final PasswordEncryptor passwordEncryptor = new FakePasswordEncryptor();
 
     @Nested
     @DisplayName("회원가입")
@@ -324,7 +323,7 @@ class MemberServiceTest extends ServiceTest {
 
             // then
             final Member findMember = memberRepository.findById(member.getId()).orElseThrow();
-            assertThat(ENCODER.matches("hello123ABC!@#", findMember.getPasswordValue())).isTrue();
+            assertThat(passwordEncryptor.matches("hello123ABC!@#", findMember.getPasswordValue())).isTrue();
         }
     }
 
@@ -354,7 +353,7 @@ class MemberServiceTest extends ServiceTest {
 
             // then
             final Member findMember = memberRepository.findById(member.getId()).orElseThrow();
-            assertThat(ENCODER.matches("hello123ABC!@#", findMember.getPasswordValue())).isTrue();
+            assertThat(passwordEncryptor.matches("hello123ABC!@#", findMember.getPasswordValue())).isTrue();
         }
     }
 
@@ -363,7 +362,7 @@ class MemberServiceTest extends ServiceTest {
                 MEMBER_A.getName(),
                 Nickname.from(nickname),
                 loginId,
-                Password.encrypt(MEMBER_A.getPassword(), PasswordEncoderFactories.createDelegatingPasswordEncoder()),
+                Password.encrypt(MEMBER_A.getPassword(), passwordEncryptor),
                 "경기대학교",
                 phone,
                 Email.from(email),

@@ -15,7 +15,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @DisplayName("Member 도메인 {Email VO} 테스트")
 class EmailTest {
-    @ParameterizedTest(name = "{index}: {0}")
+    @ParameterizedTest
     @ValueSource(strings = {"", "abc", "@gmail.com", "abc@gmail", "abc@gmail."})
     @DisplayName("형식에 맞지 않는 Email이면 예외가 발생한다")
     void throwExceptionByInvalidEmailPattern(final String value) {
@@ -24,7 +24,7 @@ class EmailTest {
                 .hasMessage(MemberErrorCode.INVALID_EMAIL_PATTERN.getMessage());
     }
 
-    @ParameterizedTest(name = "{index}: {0}")
+    @ParameterizedTest
     @ValueSource(strings = {"sjiwon4491@gmail.com", "sjiwon4491@naver.com", "sjiwon@kyonggi.ac.kr"})
     @DisplayName("Email을 생성한다")
     void construct(final String value) {
