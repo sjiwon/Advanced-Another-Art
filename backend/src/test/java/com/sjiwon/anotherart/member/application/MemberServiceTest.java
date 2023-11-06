@@ -9,6 +9,7 @@ import com.sjiwon.anotherart.member.domain.model.Email;
 import com.sjiwon.anotherart.member.domain.model.Member;
 import com.sjiwon.anotherart.member.domain.model.Nickname;
 import com.sjiwon.anotherart.member.domain.model.Password;
+import com.sjiwon.anotherart.member.domain.model.Phone;
 import com.sjiwon.anotherart.member.exception.MemberErrorCode;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -81,7 +82,7 @@ class MemberServiceTest extends ServiceTest {
             final Member newMember = createDuplicateMember(
                     "fake",
                     "fake",
-                    member.getPhone(),
+                    member.getPhone().getValue(),
                     "fake@gmail.com"
             );
 
@@ -166,7 +167,7 @@ class MemberServiceTest extends ServiceTest {
         @DisplayName("전화번호 중복 체크를 진행한다")
         void checkPhone() {
             // given
-            final String same = member.getPhone();
+            final String same = member.getPhone().getValue();
             final String diff = "fake";
 
             // when - then
@@ -364,7 +365,7 @@ class MemberServiceTest extends ServiceTest {
                 loginId,
                 Password.encrypt(MEMBER_A.getPassword(), passwordEncryptor),
                 "경기대학교",
-                phone,
+                Phone.from(phone),
                 Email.from(email),
                 Address.of(12345, "기본 주소", "상세 주소")
         );

@@ -29,7 +29,7 @@ public class MemberService {
     private void validateUniqueFields(final Member member) {
         memberValidator.validateNickname(member.getNickname());
         memberValidator.validateLoginId(member.getLoginId());
-        memberValidator.validatePhone(member.getPhone());
+        memberValidator.validatePhone(member.getPhone().getValue());
         memberValidator.validateEmail(member.getEmail());
     }
 

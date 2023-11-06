@@ -11,6 +11,7 @@ import com.sjiwon.anotherart.member.domain.model.Email;
 import com.sjiwon.anotherart.member.domain.model.Member;
 import com.sjiwon.anotherart.member.domain.model.Nickname;
 import com.sjiwon.anotherart.member.domain.model.Password;
+import com.sjiwon.anotherart.member.domain.model.Phone;
 import com.sjiwon.anotherart.member.domain.model.PointRecord;
 import com.sjiwon.anotherart.member.domain.repository.MemberRepository;
 import com.sjiwon.anotherart.member.domain.repository.PointRecordRepository;
@@ -74,7 +75,7 @@ public abstract class ConcurrencyTest {
                 "loginid" + index,
                 Password.encrypt("abcABC123!@#", new FakePasswordEncryptor()),
                 "경기대학교",
-                generateRandomPhoneNumber(),
+                Phone.from(generateRandomPhoneNumber()),
                 Email.from("test" + index + "@gmail.com"),
                 Address.of(12345, "기본 주소", "상세 주소")
         );

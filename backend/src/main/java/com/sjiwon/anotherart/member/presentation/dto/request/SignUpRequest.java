@@ -6,6 +6,7 @@ import com.sjiwon.anotherart.member.domain.model.Email;
 import com.sjiwon.anotherart.member.domain.model.Member;
 import com.sjiwon.anotherart.member.domain.model.Nickname;
 import com.sjiwon.anotherart.member.domain.model.Password;
+import com.sjiwon.anotherart.member.domain.model.Phone;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -48,7 +49,7 @@ public record SignUpRequest(
                 loginId,
                 Password.encrypt(password, new DefaultPasswordEncryptor(new BCryptPasswordEncoder())),
                 school,
-                phone,
+                Phone.from(phone),
                 Email.from(email),
                 Address.of(postcode, defaultAddress, detailAddress)
         );

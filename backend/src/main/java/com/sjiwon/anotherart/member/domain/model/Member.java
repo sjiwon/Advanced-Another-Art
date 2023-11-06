@@ -37,8 +37,8 @@ public class Member extends BaseEntity<Member> {
     @Column(name = "school", nullable = false, updatable = false)
     private String school;
 
-    @Column(name = "phone", nullable = false, unique = true, updatable = false)
-    private String phone;
+    @Embedded
+    private Phone phone;
 
     @Embedded
     private Email email;
@@ -53,8 +53,17 @@ public class Member extends BaseEntity<Member> {
     @Column(name = "role", nullable = false)
     private Role role;
 
-    private Member(final String name, final Nickname nickname, final String loginId, final Password password,
-                   final String school, final String phone, final Email email, final Address address, final Role role) {
+    private Member(
+            final String name,
+            final Nickname nickname,
+            final String loginId,
+            final Password password,
+            final String school,
+            final Phone phone,
+            final Email email,
+            final Address address,
+            final Role role
+    ) {
         this.name = name;
         this.nickname = nickname;
         this.loginId = loginId;
@@ -67,8 +76,16 @@ public class Member extends BaseEntity<Member> {
         this.role = role;
     }
 
-    public static Member createMember(final String name, final Nickname nickname, final String loginId, final Password password,
-                                      final String school, final String phone, final Email email, final Address address) {
+    public static Member createMember(
+            final String name,
+            final Nickname nickname,
+            final String loginId,
+            final Password password,
+            final String school,
+            final Phone phone,
+            final Email email,
+            final Address address
+    ) {
         return new Member(name, nickname, loginId, password, school, phone, email, address, USER);
     }
 

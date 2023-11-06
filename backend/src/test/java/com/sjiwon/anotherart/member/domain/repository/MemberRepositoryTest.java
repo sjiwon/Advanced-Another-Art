@@ -121,8 +121,8 @@ class MemberRepositoryTest extends RepositoryTest {
     @DisplayName("전화번호에 해당하는 사용자가 존재하는지 확인한다")
     void existsByPhone() {
         // given
-        final String same = member.getPhone();
-        final String diff = member.getPhone().replaceAll("0", "9");
+        final String same = member.getPhone().getValue();
+        final String diff = member.getPhone().getValue().replaceAll("0", "9");
 
         // when
         final boolean actual1 = memberRepository.existsByPhone(same);

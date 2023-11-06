@@ -6,6 +6,7 @@ import com.sjiwon.anotherart.member.domain.model.Email;
 import com.sjiwon.anotherart.member.domain.model.Member;
 import com.sjiwon.anotherart.member.domain.model.Nickname;
 import com.sjiwon.anotherart.member.domain.model.Password;
+import com.sjiwon.anotherart.member.domain.model.Phone;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -152,7 +153,7 @@ public enum MemberFixture {
                 loginId,
                 Password.encrypt(password, new FakePasswordEncryptor()),
                 "경기대학교",
-                phone,
+                Phone.from(phone),
                 Email.from(email),
                 Address.of(postcode, defaultAddress, detailAddress)
         );

@@ -66,8 +66,8 @@ class MemberValidatorTest extends ServiceTest {
     @Test
     @DisplayName("전화번호 중복에 대한 검증을 진행한다")
     void checkUniquePhone() {
-        final String same = member.getPhone();
-        final String diff = member.getPhone().replaceAll("0", "9");
+        final String same = member.getPhone().getValue();
+        final String diff = member.getPhone().getValue().replaceAll("0", "9");
 
         assertThatThrownBy(() -> memberValidator.validatePhone(same))
                 .isInstanceOf(AnotherArtException.class)

@@ -19,11 +19,11 @@ public record MemberInformation(
         this(
                 member.getId(),
                 member.getName(),
-                member.getNicknameValue(),
+                member.getNickname().getValue(),
                 member.getLoginId(),
                 member.getSchool(),
-                member.getPhone(),
-                member.getEmailValue(),
+                member.getPhone().getValue(),
+                member.getEmail().getValue(),
                 member.getAddress(),
                 member.getTotalPoint(),
                 member.getAvailablePoint()
