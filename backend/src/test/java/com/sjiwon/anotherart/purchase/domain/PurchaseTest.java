@@ -17,7 +17,6 @@ import static com.sjiwon.anotherart.common.fixture.ArtFixture.GENERAL_1;
 import static com.sjiwon.anotherart.common.fixture.MemberFixture.MEMBER_A;
 import static com.sjiwon.anotherart.common.fixture.MemberFixture.MEMBER_B;
 import static com.sjiwon.anotherart.common.fixture.PeriodFixture.OPEN_NOW;
-import static com.sjiwon.anotherart.member.domain.model.PointType.CHARGE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -34,9 +33,10 @@ class PurchaseTest {
     @BeforeEach
     void setUp() {
         owner = MEMBER_A.toMember().apply(1L);
-        owner.addPointRecords(CHARGE, MEMBER_INIT_POINT);
+        // TODO Point 도메인 분리 후 리팩토링
+//        owner.addPointRecords(CHARGE, MEMBER_INIT_POINT);
         member = MEMBER_B.toMember().apply(2L);
-        member.addPointRecords(CHARGE, MEMBER_INIT_POINT);
+//        member.addPointRecords(CHARGE, MEMBER_INIT_POINT);
 
         generalArt = GENERAL_1.toArt(owner).apply(1L);
         auctionArt = AUCTION_1.toArt(owner).apply(2L);

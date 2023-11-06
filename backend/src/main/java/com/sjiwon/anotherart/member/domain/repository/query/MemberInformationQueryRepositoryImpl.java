@@ -29,7 +29,7 @@ import static com.sjiwon.anotherart.art.domain.hashtag.QHashtag.hashtag;
 import static com.sjiwon.anotherart.auction.domain.QAuction.auction;
 import static com.sjiwon.anotherart.auction.domain.record.QAuctionRecord.auctionRecord;
 import static com.sjiwon.anotherart.favorite.domain.QFavorite.favorite;
-import static com.sjiwon.anotherart.member.domain.model.QPointRecord.pointRecord;
+import static com.sjiwon.anotherart.point.domain.model.QPointRecord.pointRecord;
 import static com.sjiwon.anotherart.purchase.domain.QPurchase.purchase;
 
 @Transactional(readOnly = true)

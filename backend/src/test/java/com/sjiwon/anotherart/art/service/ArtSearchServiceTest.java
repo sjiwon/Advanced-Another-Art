@@ -35,7 +35,6 @@ import static com.sjiwon.anotherart.common.fixture.MemberFixture.MEMBER_A;
 import static com.sjiwon.anotherart.common.fixture.MemberFixture.MEMBER_B;
 import static com.sjiwon.anotherart.common.fixture.MemberFixture.MEMBER_C;
 import static com.sjiwon.anotherart.common.fixture.PeriodFixture.OPEN_NOW;
-import static com.sjiwon.anotherart.member.domain.model.PointType.CHARGE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -72,7 +71,8 @@ class ArtSearchServiceTest extends ServiceTest {
 
     private Member createMember(final MemberFixture fixture) {
         final Member member = fixture.toMember();
-        member.addPointRecords(CHARGE, 100_000_000);
+        // TODO Point 도메인 분리 후 리팩토링
+//        member.addPointRecords(CHARGE, 100_000_000);
         return memberRepository.save(member);
     }
 
@@ -170,7 +170,7 @@ class ArtSearchServiceTest extends ServiceTest {
                         () -> assertThat(auctionArt.getArt().getHashtags()).containsExactlyInAnyOrderElementsOf(art.getHashtags()),
 
                         () -> assertThat(auctionArt.getOwner().id()).isEqualTo(owner.getId()),
-                        () -> assertThat(auctionArt.getOwner().nickname()).isEqualTo(owner.getNicknameValue()),
+                        () -> assertThat(auctionArt.getOwner().nickname()).isEqualTo(owner.getNickname().getValue()),
                         () -> assertThat(auctionArt.getOwner().school()).isEqualTo(owner.getSchool())
                 );
 
@@ -183,7 +183,7 @@ class ArtSearchServiceTest extends ServiceTest {
                     assertAll(
                             () -> assertThat(auctionArt.getArt().getLikeMembers()).hasSize(1),
                             () -> assertThat(auctionArt.getHighestBidder().id()).isEqualTo(bidder.getId()),
-                            () -> assertThat(auctionArt.getHighestBidder().nickname()).isEqualTo(bidder.getNicknameValue()),
+                            () -> assertThat(auctionArt.getHighestBidder().nickname()).isEqualTo(bidder.getNickname().getValue()),
                             () -> assertThat(auctionArt.getHighestBidder().school()).isEqualTo(bidder.getSchool())
                     );
                 }
@@ -205,7 +205,7 @@ class ArtSearchServiceTest extends ServiceTest {
                         () -> assertThat(generalArt.getArt().getHashtags()).containsExactlyInAnyOrderElementsOf(art.getHashtags()),
 
                         () -> assertThat(generalArt.getOwner().id()).isEqualTo(owner.getId()),
-                        () -> assertThat(generalArt.getOwner().nickname()).isEqualTo(owner.getNicknameValue()),
+                        () -> assertThat(generalArt.getOwner().nickname()).isEqualTo(owner.getNickname().getValue()),
                         () -> assertThat(generalArt.getOwner().school()).isEqualTo(owner.getSchool())
                 );
 
@@ -218,7 +218,7 @@ class ArtSearchServiceTest extends ServiceTest {
                     assertAll(
                             () -> assertThat(generalArt.getArt().getLikeMembers()).hasSize(1),
                             () -> assertThat(generalArt.getBuyer().id()).isEqualTo(buyer.getId()),
-                            () -> assertThat(generalArt.getBuyer().nickname()).isEqualTo(buyer.getNicknameValue()),
+                            () -> assertThat(generalArt.getBuyer().nickname()).isEqualTo(buyer.getNickname().getValue()),
                             () -> assertThat(generalArt.getBuyer().school()).isEqualTo(buyer.getSchool())
                     );
                 }

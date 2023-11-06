@@ -12,9 +12,6 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-import java.util.Objects;
-
 import static com.sjiwon.anotherart.member.domain.model.Role.USER;
 
 @Getter
@@ -89,18 +86,6 @@ public class Member extends BaseEntity<Member> {
         return new Member(name, nickname, loginId, password, school, phone, email, address, USER);
     }
 
-    public void addPointRecords(final PointType type, final int amount) {
-        this.point.addPointRecords(this, type, amount);
-    }
-
-    public void decreaseAvailablePoint(final int point) {
-        this.point = this.point.decreaseAvailablePoint(point);
-    }
-
-    public void increaseAvailablePoint(final int point) {
-        this.point = this.point.increaseAvailablePoint(point);
-    }
-
     public void changeNickname(final String nickname) {
         this.nickname = this.nickname.update(nickname);
     }
@@ -113,27 +98,27 @@ public class Member extends BaseEntity<Member> {
         this.address = this.address.update(postcode, defaultAddress, detailAddress);
     }
 
+    public void increaseTotalPoint(final int point) {
+        this.point = this.point.increaseTotalPoint(point);
+    }
+
+    public void decreaseTotalPoint(final int point) {
+        this.point = this.point.decreaseTotalPoint(point);
+    }
+
+    public void increaseAvailablePoint(final int point) {
+        this.point = this.point.increaseAvailablePoint(point);
+    }
+
+    public void decreaseAvailablePoint(final int point) {
+        this.point = this.point.decreaseAvailablePoint(point);
+    }
+
     public boolean isSameMember(final Member other) {
-        return Objects.equals(this.getId(), other.getId());
+        return getId().equals(other.getId());
     }
 
     // Add Getter
-    public String getNicknameValue() {
-        return nickname.getValue();
-    }
-
-    public String getPasswordValue() {
-        return password.getValue();
-    }
-
-    public String getEmailValue() {
-        return email.getValue();
-    }
-
-    public List<PointRecord> getPointRecords() {
-        return point.getPointRecords();
-    }
-
     public int getTotalPoint() {
         return point.getTotalPoint();
     }

@@ -1,6 +1,7 @@
-package com.sjiwon.anotherart.member.domain.model;
+package com.sjiwon.anotherart.point.domain.model;
 
 import com.sjiwon.anotherart.global.BaseEntity;
+import com.sjiwon.anotherart.member.domain.model.Member;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;

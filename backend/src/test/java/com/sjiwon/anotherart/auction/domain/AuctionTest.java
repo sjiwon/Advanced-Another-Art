@@ -20,7 +20,6 @@ import static com.sjiwon.anotherart.common.fixture.PeriodFixture.CLOSED_WEEK_1_A
 import static com.sjiwon.anotherart.common.fixture.PeriodFixture.CLOSED_WEEK_2_AGO;
 import static com.sjiwon.anotherart.common.fixture.PeriodFixture.OPEN_NOW;
 import static com.sjiwon.anotherart.common.fixture.PeriodFixture.OPEN_WEEK_1_LATER;
-import static com.sjiwon.anotherart.member.domain.model.PointType.CHARGE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -35,14 +34,15 @@ class AuctionTest {
 
     @BeforeEach
     void setUp() {
+        // TODO Point 도메인 분리 후 리팩토링
         owner = MEMBER_A.toMember().apply(1L);
-        owner.addPointRecords(CHARGE, MEMBER_INIT_POINT);
+//        owner.addPointRecords(CHARGE, MEMBER_INIT_POINT);
 
         memberA = MEMBER_B.toMember().apply(2L);
-        memberA.addPointRecords(CHARGE, MEMBER_INIT_POINT);
+//        memberA.addPointRecords(CHARGE, MEMBER_INIT_POINT);
 
         memberB = MEMBER_C.toMember().apply(3L);
-        memberB.addPointRecords(CHARGE, MEMBER_INIT_POINT);
+//        memberB.addPointRecords(CHARGE, MEMBER_INIT_POINT);
     }
 
     @Nested

@@ -12,9 +12,9 @@ import com.sjiwon.anotherart.member.domain.model.Member;
 import com.sjiwon.anotherart.member.domain.model.Nickname;
 import com.sjiwon.anotherart.member.domain.model.Password;
 import com.sjiwon.anotherart.member.domain.model.Phone;
-import com.sjiwon.anotherart.member.domain.model.PointRecord;
 import com.sjiwon.anotherart.member.domain.repository.MemberRepository;
-import com.sjiwon.anotherart.member.domain.repository.PointRecordRepository;
+import com.sjiwon.anotherart.point.domain.model.PointRecord;
+import com.sjiwon.anotherart.point.domain.repository.PointRecordRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import org.junit.jupiter.api.AfterEach;
@@ -26,7 +26,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.sjiwon.anotherart.member.domain.model.PointType.CHARGE;
+import static com.sjiwon.anotherart.point.domain.model.PointType.CHARGE;
 
 @SpringBootTest
 @ExtendWith({

@@ -42,7 +42,7 @@ class MemberServiceTest extends ServiceTest {
 
             // when - then
             final Member newMember = createDuplicateMember(
-                    member.getNicknameValue(),
+                    member.getNickname().getValue(),
                     "fake",
                     "99988887777",
                     "fake@gmail.com"
@@ -102,7 +102,7 @@ class MemberServiceTest extends ServiceTest {
                     "fake",
                     "fake",
                     "99988887777",
-                    member.getEmailValue()
+                    member.getEmail().getValue()
             );
 
             assertThatThrownBy(() -> memberService.signUp(newMember))
@@ -139,7 +139,7 @@ class MemberServiceTest extends ServiceTest {
         @DisplayName("닉네임 중복 체크를 진행한다")
         void checkNickname() {
             // given
-            final String same = member.getNicknameValue();
+            final String same = member.getNickname().getValue();
             final String diff = "fake";
 
             // when - then
@@ -181,7 +181,7 @@ class MemberServiceTest extends ServiceTest {
         @DisplayName("이메일 중복 체크를 진행한다")
         void checkEmail() {
             // given
-            final String same = member.getEmailValue();
+            final String same = member.getEmail().getValue();
             final String diff = "fake@gmail.com";
 
             // when - then
@@ -209,7 +209,7 @@ class MemberServiceTest extends ServiceTest {
             final Member compare = memberRepository.save(MEMBER_B.toMember());
 
             // when - then
-            assertThatThrownBy(() -> memberService.changeNickname(member.getId(), compare.getNicknameValue()))
+            assertThatThrownBy(() -> memberService.changeNickname(member.getId(), compare.getNickname().getValue()))
                     .isInstanceOf(AnotherArtException.class)
                     .hasMessage(MemberErrorCode.DUPLICATE_NICKNAME.getMessage());
         }
@@ -217,7 +217,7 @@ class MemberServiceTest extends ServiceTest {
         @Test
         @DisplayName("이전과 동일한 닉네임으로 변경하려고 하면 예외가 발생한다")
         void throwExceptionByNicknameSameAsBefore() {
-            assertThatThrownBy(() -> memberService.changeNickname(member.getId(), member.getNicknameValue()))
+            assertThatThrownBy(() -> memberService.changeNickname(member.getId(), member.getNickname().getValue()))
                     .isInstanceOf(AnotherArtException.class)
                     .hasMessage(MemberErrorCode.NICKNAME_SAME_AS_BEFORE.getMessage());
         }
@@ -226,14 +226,14 @@ class MemberServiceTest extends ServiceTest {
         @DisplayName("닉네임 변경에 성공한다")
         void success() {
             // given
-            final String update = member.getNicknameValue() + "update";
+            final String update = member.getNickname().getValue() + "update";
 
             // when
             memberService.changeNickname(member.getId(), update);
 
             // then
             final Member findMember = memberRepository.findById(member.getId()).orElseThrow();
-            assertThat(findMember.getNicknameValue()).isEqualTo(update);
+            assertThat(findMember.getNickname().getValue()).isEqualTo(update);
         }
     }
 
@@ -254,11 +254,11 @@ class MemberServiceTest extends ServiceTest {
         final Address updateAddress = findMember.getAddress();
 
         assertAll(
-                () -> assertThat(updateAddress.getPostcode()).isNotEqualTo(MEMBER_A.getPostcode()),
+                () -> assertThat(updateAddress.getPostcode()).isNotEqualTo(MEMBER_A.getAddress().getPostcode()),
                 () -> assertThat(updateAddress.getPostcode()).isEqualTo(postcode),
-                () -> assertThat(updateAddress.getDefaultAddress()).isNotEqualTo(MEMBER_A.getDefaultAddress()),
+                () -> assertThat(updateAddress.getDefaultAddress()).isNotEqualTo(MEMBER_A.getAddress().getDefaultAddress()),
                 () -> assertThat(updateAddress.getDefaultAddress()).isEqualTo(defaultAddress),
-                () -> assertThat(updateAddress.getDetailAddress()).isNotEqualTo(MEMBER_A.getDetailAddress()),
+                () -> assertThat(updateAddress.getDetailAddress()).isNotEqualTo(MEMBER_A.getAddress().getDetailAddress()),
                 () -> assertThat(updateAddress.getDetailAddress()).isEqualTo(detailAddress)
         );
     }
@@ -324,7 +324,7 @@ class MemberServiceTest extends ServiceTest {
 
             // then
             final Member findMember = memberRepository.findById(member.getId()).orElseThrow();
-            assertThat(passwordEncryptor.matches("hello123ABC!@#", findMember.getPasswordValue())).isTrue();
+            assertThat(passwordEncryptor.matches("hello123ABC!@#", findMember.getPassword().getValue())).isTrue();
         }
     }
 
@@ -354,7 +354,7 @@ class MemberServiceTest extends ServiceTest {
 
             // then
             final Member findMember = memberRepository.findById(member.getId()).orElseThrow();
-            assertThat(passwordEncryptor.matches("hello123ABC!@#", findMember.getPasswordValue())).isTrue();
+            assertThat(passwordEncryptor.matches("hello123ABC!@#", findMember.getPassword().getValue())).isTrue();
         }
     }
 

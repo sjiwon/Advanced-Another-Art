@@ -32,7 +32,7 @@ class MemberValidatorTest extends ServiceTest {
     @DisplayName("닉네임 중복에 대한 검증을 진행한다")
     void checkUniqueNickname() {
         final Nickname same = member.getNickname();
-        final Nickname diff = Nickname.from("diff" + member.getNicknameValue());
+        final Nickname diff = Nickname.from("diff" + member.getNickname().getValue());
 
         assertThatThrownBy(() -> memberValidator.validateNickname(same))
                 .isInstanceOf(AnotherArtException.class)
@@ -79,7 +79,7 @@ class MemberValidatorTest extends ServiceTest {
     @DisplayName("이메일 중복에 대한 검증을 진행한다")
     void checkUniqueEmail() {
         final Email same = member.getEmail();
-        final Email diff = Email.from("diff" + member.getEmailValue());
+        final Email diff = Email.from("diff" + member.getEmail().getValue());
 
         assertThatThrownBy(() -> memberValidator.validateEmail(same))
                 .isInstanceOf(AnotherArtException.class)

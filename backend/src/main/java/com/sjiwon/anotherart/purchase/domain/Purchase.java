@@ -16,9 +16,6 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import static com.sjiwon.anotherart.member.domain.model.PointType.PURCHASE;
-import static com.sjiwon.anotherart.member.domain.model.PointType.SOLD;
-
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
@@ -67,9 +64,10 @@ public class Purchase extends BaseEntity<Purchase> {
     private static Purchase proceedToPurchaseGeneralArt(final Art art, final Member buyer) {
         final Member owner = art.getOwner();
         final int purchasePrice = art.getPrice();
+        // TODO Point 도메인 분리 후 리팩토링
 
-        owner.addPointRecords(SOLD, purchasePrice);
-        buyer.addPointRecords(PURCHASE, purchasePrice);
+//        owner.addPointRecords(SOLD, purchasePrice);
+//        buyer.addPointRecords(PURCHASE, purchasePrice);
 
         art.closeSale();
         return new Purchase(art, buyer, purchasePrice);
@@ -77,9 +75,10 @@ public class Purchase extends BaseEntity<Purchase> {
 
     private static Purchase proceedToPurchaseAuctionArt(final Art art, final Member buyer, final int bidPrice) {
         final Member owner = art.getOwner();
+        // TODO Point 도메인 분리 후 리팩토링
 
-        owner.addPointRecords(SOLD, bidPrice);
-        buyer.addPointRecords(PURCHASE, bidPrice);
+//        owner.addPointRecords(SOLD, bidPrice);
+//        buyer.addPointRecords(PURCHASE, bidPrice);
 
         if (art.isAuctionType()) { // 사용 가능한 포인트 중복 감소 처리 (입찰 시 이미 소모)
             buyer.increaseAvailablePoint(bidPrice);

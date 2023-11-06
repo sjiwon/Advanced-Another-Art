@@ -1,7 +1,7 @@
 package com.sjiwon.anotherart.member.domain.repository.query.dto.response;
 
 import com.querydsl.core.annotations.QueryProjection;
-import com.sjiwon.anotherart.member.domain.model.PointType;
+import com.sjiwon.anotherart.point.domain.model.PointType;
 import lombok.Getter;
 
 import java.time.LocalDateTime;

@@ -1,4 +1,4 @@
-package com.sjiwon.anotherart.member.domain.model;
+package com.sjiwon.anotherart.point.domain.model;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

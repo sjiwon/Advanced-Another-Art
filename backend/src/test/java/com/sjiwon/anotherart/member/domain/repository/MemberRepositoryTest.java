@@ -52,7 +52,7 @@ class MemberRepositoryTest extends RepositoryTest {
         );
         final Optional<Member> emptyMember2 = memberRepository.findByNameAndEmail(
                 member.getName(),
-                Email.from("diff" + member.getEmailValue())
+                Email.from("diff" + member.getEmail().getValue())
         );
         final Member actualMember = memberRepository.findByNameAndEmail(member.getName(), member.getEmail()).orElseThrow();
 
@@ -69,7 +69,7 @@ class MemberRepositoryTest extends RepositoryTest {
     void existsByNickname() {
         // given
         final Nickname same = member.getNickname();
-        final Nickname diff = Nickname.from("diff" + member.getNicknameValue());
+        final Nickname diff = Nickname.from("diff" + member.getNickname().getValue());
 
         // when
         final boolean actual1 = memberRepository.existsByNickname(same);
@@ -140,7 +140,7 @@ class MemberRepositoryTest extends RepositoryTest {
     void existsByEmail() {
         // given
         final Email same = member.getEmail();
-        final Email diff = Email.from("diff" + member.getEmailValue());
+        final Email diff = Email.from("diff" + member.getEmail().getValue());
 
         // when
         final boolean actual1 = memberRepository.existsByEmail(same);

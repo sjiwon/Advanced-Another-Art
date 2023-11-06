@@ -2,23 +2,17 @@ package com.sjiwon.anotherart.member.domain.model;
 
 import com.sjiwon.anotherart.global.exception.AnotherArtException;
 import com.sjiwon.anotherart.member.exception.MemberErrorCode;
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
-import jakarta.persistence.OneToMany;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Embeddable
 public class Point {
-    @OneToMany(mappedBy = "member", cascade = CascadeType.PERSIST)
-    private final List<PointRecord> pointRecords = new ArrayList<>();
+    private static final int INIT_POINT = 0;
 
     @Column(name = "total_point", nullable = false)
     private int totalPoint;
@@ -32,38 +26,18 @@ public class Point {
     }
 
     public static Point init() {
-        return new Point(0, 0);
+        return new Point(INIT_POINT, INIT_POINT);
     }
 
-    public static Point of(final int totalPoint, final int availablePoint) {
-        validatePointIsPositive(totalPoint);
-        validatePointIsPositive(availablePoint);
-        return new Point(totalPoint, availablePoint);
-    }
-
-    public void addPointRecords(final Member member, final PointType type, final int amount) {
-        if (type.isIncreaseType()) {
-            increasePoint(amount);
-        } else {
-            decreasePoint(amount);
-        }
-
-        pointRecords.add(PointRecord.addPointRecord(member, type, amount));
-    }
-
-    private void increasePoint(final int value) {
+    public Point increaseTotalPoint(final int value) {
         validatePointIsPositive(value);
-
-        totalPoint += value;
-        availablePoint += value;
+        return new Point(totalPoint + value, availablePoint + value);
     }
 
-    private void decreasePoint(final int value) {
+    public Point decreaseTotalPoint(final int value) {
         validatePointIsPositive(value);
         validatePointIsEnough(value);
-
-        totalPoint -= value;
-        availablePoint -= value;
+        return new Point(totalPoint - value, availablePoint - value);
     }
 
     public Point increaseAvailablePoint(final int value) {
