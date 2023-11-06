@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 import static com.sjiwon.anotherart.common.utils.TokenUtils.REFRESH_TOKEN;
 import static org.assertj.core.api.Assertions.assertThat;
 
-@DisplayName("Token 도메인 테스트")
+@DisplayName("Token -> 도메인 [Token] 테스트")
 class TokenTest {
     @Test
     @DisplayName("Token을 업데이트한다")
