@@ -1,5 +1,6 @@
 package com.sjiwon.anotherart.token.application;
 
+import com.sjiwon.anotherart.global.annotation.AnotherArtWritableTransactional;
 import com.sjiwon.anotherart.global.exception.AnotherArtException;
 import com.sjiwon.anotherart.global.security.exception.AuthErrorCode;
 import com.sjiwon.anotherart.member.domain.Member;
@@ -9,7 +10,6 @@ import com.sjiwon.anotherart.token.domain.service.TokenManager;
 import com.sjiwon.anotherart.token.utils.TokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -18,20 +18,18 @@ public class TokenReissueService {
     private final TokenProvider tokenProvider;
     private final MemberFindService memberFindService;
 
-    @Transactional
+    @AnotherArtWritableTransactional
     public TokenResponse reissueTokens(final Long memberId, final String refreshToken) {
-        // 사용자가 보유하고 있는 Refresh Token인지
-        if (!tokenManager.isRefreshTokenExists(memberId, refreshToken)) {
+        if (!tokenManager.isMemberRefreshToken(memberId, refreshToken)) {
             throw AnotherArtException.type(AuthErrorCode.INVALID_TOKEN);
         }
 
-        // Access Token & Refresh Token 발급
         final Member member = memberFindService.findById(memberId);
         final String newAccessToken = tokenProvider.createAccessToken(member.getId());
         final String newRefreshToken = tokenProvider.createRefreshToken(member.getId());
 
         // RTR Policy
-        tokenManager.reissueRefreshTokenByRtrPolicy(memberId, newRefreshToken);
+        tokenManager.updateRefreshToken(memberId, newRefreshToken);
 
         return new TokenResponse(newAccessToken, newRefreshToken);
     }

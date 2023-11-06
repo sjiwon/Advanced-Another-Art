@@ -1,104 +1,82 @@
 package com.sjiwon.anotherart.token.domain.service;
 
-import com.sjiwon.anotherart.common.ServiceTest;
+import com.sjiwon.anotherart.common.UseCaseTest;
 import com.sjiwon.anotherart.member.domain.Member;
 import com.sjiwon.anotherart.token.domain.model.Token;
-import org.junit.jupiter.api.BeforeEach;
+import com.sjiwon.anotherart.token.domain.repository.TokenRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.Optional;
 
 import static com.sjiwon.anotherart.common.fixture.MemberFixture.MEMBER_A;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
-@DisplayName("Token [Service Layer] -> TokenManager 테스트")
-class TokenManagerTest extends ServiceTest {
-    @Autowired
-    private TokenManager tokenManager;
+@DisplayName("Token -> TokenManager 테스트")
+class TokenManagerTest extends UseCaseTest {
+    private final TokenRepository tokenRepository = mock(TokenRepository.class);
+    private final TokenManager sut = new TokenManager(tokenRepository);
 
-    private Member member;
-    private String refreshToken;
-
-    @BeforeEach
-    void setUp() {
-        member = memberRepository.save(MEMBER_A.toMember());
-        refreshToken = jwtTokenProvider.createRefreshToken(member.getId());
-    }
+    private final Member member = MEMBER_A.toMember().apply(1L);
+    private final String previousToken = "previous";
+    private final String newToken = "new";
 
     @Nested
     @DisplayName("RefreshToken 동기화")
-    class synchronizedRefreshToken {
+    class SynchronizeRefreshToken {
         @Test
-        @DisplayName("RefreshToken을 보유하고 있지 않은 사용자에게는 새로운 RefreshToken을 발급한다")
-        void reissueRefreshToken() {
-            // when
-            tokenManager.synchronizeRefreshToken(member.getId(), refreshToken);
-
-            // then
-            final Token findToken = tokenRepository.findByMemberId(member.getId()).orElseThrow();
-            assertThat(findToken.getRefreshToken()).isEqualTo(refreshToken);
-        }
-
-        @Test
-        @DisplayName("RefreshToken을 보유하고 있는 사용자에게는 새로운 RefreshToken으로 업데이트한다")
-        void updateRefreshToken() {
+        @DisplayName("RefreshToken을 보유한 상태면 새로운 RefreshToken으로 대체한다")
+        void update() {
             // given
-            tokenRepository.save(Token.issueRefreshToken(member.getId(), refreshToken));
+            final Token token = Token.issueRefreshToken(member.getId(), previousToken).apply(1L);
+            given(tokenRepository.findByMemberId(member.getId())).willReturn(Optional.of(token));
 
             // when
-            final String newRefreshToken = refreshToken + "new";
-            tokenManager.synchronizeRefreshToken(member.getId(), newRefreshToken);
+            sut.synchronizeRefreshToken(member.getId(), newToken);
 
             // then
-            final Token findToken = tokenRepository.findByMemberId(member.getId()).orElseThrow();
-            assertThat(findToken.getRefreshToken()).isEqualTo(newRefreshToken);
+            assertAll(
+                    () -> verify(tokenRepository, times(0)).save(any(Token.class)),
+                    () -> assertThat(token.getRefreshToken()).isEqualTo(newToken)
+            );
+        }
+
+        @Test
+        @DisplayName("보유한 RefreshToken이 없다면 새로 발급한다")
+        void reissue() {
+            // given
+            given(tokenRepository.findByMemberId(member.getId())).willReturn(Optional.empty());
+
+            // when
+            sut.synchronizeRefreshToken(member.getId(), newToken);
+
+            // then
+            verify(tokenRepository, times(1)).save(any(Token.class));
         }
     }
 
     @Test
-    @DisplayName("RTR정책에 의해서 RefreshToken을 재발급한다")
-    void reissueRefreshTokenByRtrPolicy() {
+    @DisplayName("사용자 소유의 RefreshToken인지 확인한다")
+    void isMemberRefreshToken() {
         // given
-        tokenRepository.save(Token.issueRefreshToken(member.getId(), refreshToken));
+        given(tokenRepository.existsByMemberIdAndRefreshToken(member.getId(), previousToken)).willReturn(false);
+        given(tokenRepository.existsByMemberIdAndRefreshToken(member.getId(), newToken)).willReturn(true);
 
         // when
-        final String newRefreshToken = refreshToken + "new";
-        tokenManager.reissueRefreshTokenByRtrPolicy(member.getId(), newRefreshToken);
-
-        // then
-        final Token findToken = tokenRepository.findByMemberId(member.getId()).orElseThrow();
-        assertThat(findToken.getRefreshToken()).isEqualTo(newRefreshToken);
-    }
-
-    @Test
-    @DisplayName("사용자가 보유하고 있는 RefreshToken을 삭제한다")
-    void deleteRefreshTokenByMemberId() {
-        // given
-        tokenRepository.save(Token.issueRefreshToken(member.getId(), refreshToken));
-
-        // when
-        tokenManager.deleteRefreshTokenByMemberId(member.getId());
-
-        // then
-        assertThat(tokenRepository.findByMemberId(member.getId())).isEmpty();
-    }
-
-    @Test
-    @DisplayName("사용자가 보유하고 있는 RefreshToken인지 확인한다")
-    void checkMemberHasSpecificRefreshToken() {
-        // given
-        tokenRepository.save(Token.issueRefreshToken(member.getId(), refreshToken));
-
-        // when
-        final boolean actual1 = tokenManager.isRefreshTokenExists(member.getId(), refreshToken);
-        final boolean actual2 = tokenManager.isRefreshTokenExists(member.getId(), refreshToken + "fake");
+        final boolean actual1 = sut.isMemberRefreshToken(member.getId(), previousToken);
+        final boolean actual2 = sut.isMemberRefreshToken(member.getId(), newToken);
 
         // then
         assertAll(
-                () -> assertThat(actual1).isTrue(),
-                () -> assertThat(actual2).isFalse()
+                () -> assertThat(actual1).isFalse(),
+                () -> assertThat(actual2).isTrue()
         );
     }
 }

@@ -1,18 +1,17 @@
 package com.sjiwon.anotherart.token.domain.service;
 
+import com.sjiwon.anotherart.global.annotation.AnotherArtWritableTransactional;
 import com.sjiwon.anotherart.token.domain.model.Token;
 import com.sjiwon.anotherart.token.domain.repository.TokenRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class TokenManager {
     private final TokenRepository tokenRepository;
 
-    @Transactional
+    @AnotherArtWritableTransactional
     public void synchronizeRefreshToken(final Long memberId, final String refreshToken) {
         tokenRepository.findByMemberId(memberId)
                 .ifPresentOrElse(
@@ -21,17 +20,17 @@ public class TokenManager {
                 );
     }
 
-    @Transactional
-    public void reissueRefreshTokenByRtrPolicy(final Long memberId, final String newRefreshToken) {
-        tokenRepository.reissueRefreshTokenByRtrPolicy(memberId, newRefreshToken);
+    @AnotherArtWritableTransactional
+    public void updateRefreshToken(final Long memberId, final String newRefreshToken) {
+        tokenRepository.updateRefreshToken(memberId, newRefreshToken);
     }
 
-    @Transactional
-    public void deleteRefreshTokenByMemberId(final Long memberId) {
-        tokenRepository.deleteByMemberId(memberId);
+    @AnotherArtWritableTransactional
+    public void deleteRefreshToken(final Long memberId) {
+        tokenRepository.deleteRefreshToken(memberId);
     }
 
-    public boolean isRefreshTokenExists(final Long memberId, final String refreshToken) {
+    public boolean isMemberRefreshToken(final Long memberId, final String refreshToken) {
         return tokenRepository.existsByMemberIdAndRefreshToken(memberId, refreshToken);
     }
 }
