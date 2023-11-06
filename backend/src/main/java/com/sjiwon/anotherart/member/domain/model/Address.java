@@ -65,4 +65,24 @@ public class Address {
     private static boolean isEmpty(final String str) {
         return !StringUtils.hasText(str);
     }
+
+    @Override
+    public boolean equals(final Object object) {
+        if (this == object) return true;
+        if (object == null || getClass() != object.getClass()) return false;
+
+        final Address other = (Address) object;
+
+        if (postcode != other.postcode) return false;
+        if (!defaultAddress.equals(other.defaultAddress)) return false;
+        return detailAddress.equals(other.detailAddress);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = postcode;
+        result = 31 * result + defaultAddress.hashCode();
+        result = 31 * result + detailAddress.hashCode();
+        return result;
+    }
 }

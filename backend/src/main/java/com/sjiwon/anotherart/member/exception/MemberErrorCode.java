@@ -20,7 +20,7 @@ public enum MemberErrorCode implements ErrorCode {
     INVALID_PHONE_PATTERN(BAD_REQUEST, "MEMBER_005", "전화번호는 '-'로 구분해서 작성해주세요"),
     INVALID_EMAIL_PATTERN(BAD_REQUEST, "MEMBER_006", "이메일 형식에 맞지 않습니다."),
     INVALID_POST_CODE(BAD_REQUEST, "MEMBER_007", "우편번호는 5자리여야 합니다."),
-    INVALID_ADDRESS(BAD_REQUEST, "MEMBER_008", "주소는 비어있지 않아야 합니다."),
+    INVALID_ADDRESS(BAD_REQUEST, "MEMBER_008", "주소를 입력해주세요."),
     POINT_CANNOT_BE_NEGATIVE(BAD_REQUEST, "MEMBER_009", "포인트는 음수가 될 수 없습니다."),
     POINT_IS_NOT_ENOUGH(CONFLICT, "MEMBER_010", "포인트가 부족합니다."),
     MEMBER_NOT_FOUND(NOT_FOUND, "MEMBER_011", "사용자 정보가 존재하지 않습니다."),
