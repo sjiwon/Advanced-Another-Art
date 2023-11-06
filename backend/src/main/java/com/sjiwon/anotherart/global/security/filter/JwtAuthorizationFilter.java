@@ -1,12 +1,12 @@
 package com.sjiwon.anotherart.global.security.filter;
 
 import com.sjiwon.anotherart.global.security.exception.AnotherArtAccessDeniedException;
-import com.sjiwon.anotherart.global.security.exception.AuthErrorCode;
 import com.sjiwon.anotherart.global.security.principal.MemberPrincipal;
 import com.sjiwon.anotherart.member.domain.Member;
 import com.sjiwon.anotherart.member.domain.MemberRepository;
 import com.sjiwon.anotherart.member.domain.Role;
 import com.sjiwon.anotherart.member.exception.MemberErrorCode;
+import com.sjiwon.anotherart.token.exception.TokenErrorCode;
 import com.sjiwon.anotherart.token.utils.AuthorizationExtractor;
 import com.sjiwon.anotherart.token.utils.TokenProvider;
 import jakarta.servlet.FilterChain;
@@ -43,7 +43,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
                 final UsernamePasswordAuthenticationToken securityToken = buildSecurityToken(token.get());
                 SecurityContextHolder.getContext().setAuthentication(securityToken);
             } else {
-                throw AnotherArtAccessDeniedException.type(AuthErrorCode.INVALID_TOKEN);
+                throw AnotherArtAccessDeniedException.type(TokenErrorCode.INVALID_TOKEN);
             }
         }
 

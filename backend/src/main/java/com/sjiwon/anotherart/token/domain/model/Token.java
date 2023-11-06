@@ -1,4 +1,4 @@
-package com.sjiwon.anotherart.token.domain;
+package com.sjiwon.anotherart.token.domain.model;
 
 import com.sjiwon.anotherart.global.BaseEntity;
 import jakarta.persistence.Column;

@@ -1,7 +1,6 @@
 package com.sjiwon.anotherart.token.utils;
 
 import jakarta.servlet.http.HttpServletRequest;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -14,14 +13,9 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
-@DisplayName("Token [Utils] -> AuthorizationExtractor 테스트")
+@DisplayName("Token -> AuthorizationExtractor 테스트")
 class AuthorizationExtractorTest {
-    private HttpServletRequest request;
-
-    @BeforeEach
-    void setUp() {
-        request = mock(HttpServletRequest.class);
-    }
+    private final HttpServletRequest request = mock(HttpServletRequest.class);
 
     @Test
     @DisplayName("HTTP Request Message의 Authorization Header에 토큰이 없다면 Optional 빈 값을 응답한다")
