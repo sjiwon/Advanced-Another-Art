@@ -2,11 +2,11 @@ package com.sjiwon.anotherart.token.application.usecase;
 
 import com.sjiwon.anotherart.common.UseCaseTest;
 import com.sjiwon.anotherart.global.exception.AnotherArtException;
-import com.sjiwon.anotherart.global.security.exception.AuthErrorCode;
 import com.sjiwon.anotherart.member.domain.Member;
 import com.sjiwon.anotherart.token.application.usecase.command.ReissueTokenCommand;
 import com.sjiwon.anotherart.token.domain.model.AuthToken;
 import com.sjiwon.anotherart.token.domain.service.TokenIssuer;
+import com.sjiwon.anotherart.token.exception.TokenErrorCode;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -36,7 +36,7 @@ class ReissueTokenUseCaseTest extends UseCaseTest {
         // when - then
         assertThatThrownBy(() -> sut.reissueTokens(command))
                 .isInstanceOf(AnotherArtException.class)
-                .hasMessage(AuthErrorCode.INVALID_TOKEN.getMessage());
+                .hasMessage(TokenErrorCode.INVALID_TOKEN.getMessage());
     }
 
     @Test
