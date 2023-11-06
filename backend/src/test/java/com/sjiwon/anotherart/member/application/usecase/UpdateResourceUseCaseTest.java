@@ -1,9 +1,12 @@
 package com.sjiwon.anotherart.member.application.usecase;
 
 import com.sjiwon.anotherart.common.UseCaseTest;
+import com.sjiwon.anotherart.common.mock.fake.FakePasswordEncryptor;
+import com.sjiwon.anotherart.global.encrypt.PasswordEncryptor;
 import com.sjiwon.anotherart.global.exception.AnotherArtException;
 import com.sjiwon.anotherart.member.application.usecase.command.UpdateAddressCommand;
 import com.sjiwon.anotherart.member.application.usecase.command.UpdateNicknameCommand;
+import com.sjiwon.anotherart.member.application.usecase.command.UpdatePasswordCommand;
 import com.sjiwon.anotherart.member.domain.model.Member;
 import com.sjiwon.anotherart.member.domain.repository.MemberRepository;
 import com.sjiwon.anotherart.member.domain.service.MemberResourceValidator;
@@ -25,8 +28,9 @@ import static org.mockito.Mockito.verify;
 @DisplayName("Member -> UpdateResourceUseCase 테스트")
 public class UpdateResourceUseCaseTest extends UseCaseTest {
     private final MemberRepository memberRepository = mock(MemberRepository.class);
+    private final PasswordEncryptor passwordEncryptor = new FakePasswordEncryptor();
     private final MemberResourceValidator memberResourceValidator = new MemberResourceValidator(memberRepository);
-    private final UpdateResourceUseCase sut = new UpdateResourceUseCase(memberResourceValidator, memberRepository);
+    private final UpdateResourceUseCase sut = new UpdateResourceUseCase(memberResourceValidator, passwordEncryptor, memberRepository);
 
     private final Member member = MEMBER_A.toMember().apply(1L);
 
@@ -42,7 +46,7 @@ public class UpdateResourceUseCaseTest extends UseCaseTest {
             given(memberRepository.isNicknameUsedByOther(command.memberId(), command.nickname())).willReturn(true);
 
             // when - then
-            assertThatThrownBy(() -> sut.invoke(command))
+            assertThatThrownBy(() -> sut.updateNickname(command))
                     .isInstanceOf(AnotherArtException.class)
                     .hasMessage(MemberErrorCode.DUPLICATE_NICKNAME.getMessage());
 
@@ -61,7 +65,7 @@ public class UpdateResourceUseCaseTest extends UseCaseTest {
             given(memberRepository.getById(command.memberId())).willReturn(member);
 
             // when - then
-            assertThatThrownBy(() -> sut.invoke(command))
+            assertThatThrownBy(() -> sut.updateNickname(command))
                     .isInstanceOf(AnotherArtException.class)
                     .hasMessage(MemberErrorCode.NICKNAME_SAME_AS_BEFORE.getMessage());
 
@@ -80,7 +84,7 @@ public class UpdateResourceUseCaseTest extends UseCaseTest {
             given(memberRepository.getById(command.memberId())).willReturn(member);
 
             // when
-            sut.invoke(command);
+            sut.updateNickname(command);
 
             // then
             assertAll(
@@ -108,7 +112,7 @@ public class UpdateResourceUseCaseTest extends UseCaseTest {
             given(memberRepository.getById(command.memberId())).willReturn(member);
 
             // when
-            sut.invoke(command);
+            sut.updateAddress(command);
 
             // then
             assertAll(
@@ -116,6 +120,33 @@ public class UpdateResourceUseCaseTest extends UseCaseTest {
                     () -> assertThat(member.getAddress().getPostcode()).isEqualTo(command.postcode()),
                     () -> assertThat(member.getAddress().getDefaultAddress()).isEqualTo(command.defaultAddress()),
                     () -> assertThat(member.getAddress().getDetailAddress()).isEqualTo(command.detailAddress())
+            );
+        }
+    }
+
+    @Nested
+    @DisplayName("비밀번호 수정")
+    class UpdatePassword {
+        private final PasswordEncryptor passwordEncryptor = new FakePasswordEncryptor();
+        private final UpdatePasswordCommand command = new UpdatePasswordCommand(
+                member.getId(),
+                MEMBER_B.getPassword()
+        );
+
+        @Test
+        @DisplayName("사용자의 비밀번호를 수정한다")
+        void success() {
+            // given
+            given(memberRepository.getById(command.memberId())).willReturn(member);
+
+            // when
+            sut.updatePassword(command);
+
+            // then
+            assertAll(
+                    () -> verify(memberRepository, times(1)).getById(command.memberId()),
+                    () -> assertThat(passwordEncryptor.matches(MEMBER_B.getPassword(), member.getPassword().getValue())).isTrue(),
+                    () -> assertThat(passwordEncryptor.matches(MEMBER_A.getPassword(), member.getPassword().getValue())).isFalse()
             );
         }
     }
