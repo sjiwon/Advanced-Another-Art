@@ -14,8 +14,7 @@ import java.util.regex.Pattern;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Embeddable
 public class Email {
-    private static final String EMAIL_PATTERN = "^[a-zA-Z0-9+-\\_.]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+$";
-    private static final Pattern EMAIL_MATCHER = Pattern.compile(EMAIL_PATTERN);
+    private static final Pattern EMAIL_PATTERN = Pattern.compile("^[a-zA-Z0-9+-\\_.]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+$");
 
     @Column(name = "email", nullable = false, unique = true, updatable = false)
     private String value;
@@ -36,10 +35,20 @@ public class Email {
     }
 
     private static boolean isNotValidPattern(final String email) {
-        return !EMAIL_MATCHER.matcher(email).matches();
+        return !EMAIL_PATTERN.matcher(email).matches();
     }
 
-    public boolean isSameEmail(final Email other) {
-        return this.value.equals(other.getValue());
+    @Override
+    public boolean equals(final Object object) {
+        if (this == object) return true;
+        if (object == null || getClass() != object.getClass()) return false;
+
+        final Email other = (Email) object;
+        return value.equals(other.value);
+    }
+
+    @Override
+    public int hashCode() {
+        return value.hashCode();
     }
 }
