@@ -35,11 +35,11 @@ public class AjaxAuthenticationFilter extends AbstractAuthenticationProcessingFi
         validateContentType(request);
 
         final LoginRequest loginRequest = objectMapper.readValue(request.getInputStream(), LoginRequest.class);
-        validateLoginRequestData(loginRequest.id(), loginRequest.password());
+        validateLoginRequestData(loginRequest.loginId(), loginRequest.loginPassword());
 
         final UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
-                loginRequest.id(),
-                loginRequest.password()
+                loginRequest.loginId(),
+                loginRequest.loginPassword()
         );
         return this.getAuthenticationManager().authenticate(token);
     }
