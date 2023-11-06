@@ -1,12 +1,12 @@
 package com.sjiwon.anotherart.member.domain.repository;
 
 import com.sjiwon.anotherart.global.exception.AnotherArtException;
-import com.sjiwon.anotherart.member.domain.model.Email;
 import com.sjiwon.anotherart.member.domain.model.Member;
-import com.sjiwon.anotherart.member.domain.model.Nickname;
 import com.sjiwon.anotherart.member.domain.repository.query.MemberInformationQueryRepository;
 import com.sjiwon.anotherart.member.exception.MemberErrorCode;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.Optional;
 
@@ -16,19 +16,42 @@ public interface MemberRepository extends JpaRepository<Member, Long>, MemberInf
                 .orElseThrow(() -> AnotherArtException.type(MemberErrorCode.MEMBER_NOT_FOUND));
     }
 
-    Optional<Member> findByLoginId(String loginId);
+    // @Query
+    @Query("SELECT m" +
+            " FROM Member m" +
+            " WHERE m.name = :name AND m.email.value = :email")
+    Optional<Member> findByNameAndEmail(@Param("name") final String name, @Param("email") final String email);
 
-    Optional<Member> findByNameAndEmail(String name, Email email);
+    default Member getByNameAndEmail(final String name, final String email) {
+        return findByNameAndEmail(name, email)
+                .orElseThrow(() -> AnotherArtException.type(MemberErrorCode.MEMBER_NOT_FOUND));
+    }
 
-    boolean existsByNickname(Nickname nickname);
+    @Query("SELECT m.id" +
+            " FROM Member m" +
+            " WHERE m.nickname.value = :nickname")
+    Long findIdByNicknameUsed(@Param("nickname") final String nickname);
 
-    boolean existsByIdNotAndNickname(Long memberId, Nickname nickname);
+    default boolean isNicknameUsedByOther(final Long memberId, final String nickname) {
+        final Long nicknameUsedId = findIdByNicknameUsed(nickname);
+        return nicknameUsedId != null && !nicknameUsedId.equals(memberId);
+    }
 
-    boolean existsByLoginId(String loginId);
+    // Query Method
+    Optional<Member> findByLoginId(final String loginId);
 
-    boolean existsByPhone(String phone);
+    default Member getByLoginId(final String loginId) {
+        return findByLoginId(loginId)
+                .orElseThrow(() -> AnotherArtException.type(MemberErrorCode.MEMBER_NOT_FOUND));
+    }
 
-    boolean existsByEmail(Email email);
+    boolean existsByNicknameValue(final String nickname);
 
-    boolean existsByNameAndEmailAndLoginId(String name, Email email, String loginId);
+    boolean existsByLoginId(final String loginId);
+
+    boolean existsByPhoneValue(final String phone);
+
+    boolean existsByEmailValue(final String email);
+
+    boolean existsByNameAndEmailValueAndLoginId(final String name, final String email, final String loginId);
 }

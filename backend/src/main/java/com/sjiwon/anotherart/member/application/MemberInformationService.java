@@ -22,11 +22,10 @@ import static com.sjiwon.anotherart.art.domain.ArtType.GENERAL;
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class MemberInformationService {
-    private final MemberFindService memberFindService;
     private final MemberRepository memberRepository;
 
     public MemberInformation getInformation(final Long memberId) {
-        final Member member = memberFindService.findById(memberId);
+        final Member member = memberRepository.getById(memberId);
         return new MemberInformation(member);
     }
 

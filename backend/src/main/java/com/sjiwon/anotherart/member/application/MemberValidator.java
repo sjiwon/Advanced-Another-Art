@@ -1,8 +1,6 @@
 package com.sjiwon.anotherart.member.application;
 
 import com.sjiwon.anotherart.global.exception.AnotherArtException;
-import com.sjiwon.anotherart.member.domain.model.Email;
-import com.sjiwon.anotherart.member.domain.model.Nickname;
 import com.sjiwon.anotherart.member.domain.repository.MemberRepository;
 import com.sjiwon.anotherart.member.exception.MemberErrorCode;
 import lombok.RequiredArgsConstructor;
@@ -15,14 +13,14 @@ import org.springframework.transaction.annotation.Transactional;
 public class MemberValidator {
     private final MemberRepository memberRepository;
 
-    public void validateNickname(final Nickname nickname) {
-        if (memberRepository.existsByNickname(nickname)) {
+    public void validateNickname(final String nickname) {
+        if (memberRepository.existsByNicknameValue(nickname)) {
             throw AnotherArtException.type(MemberErrorCode.DUPLICATE_NICKNAME);
         }
     }
 
-    public void validateNicknameForModify(final Long memberId, final Nickname nickname) {
-        if (memberRepository.existsByIdNotAndNickname(memberId, nickname)) {
+    public void validateNicknameForModify(final Long memberId, final String nickname) {
+        if (memberRepository.isNicknameUsedByOther(memberId, nickname)) {
             throw AnotherArtException.type(MemberErrorCode.DUPLICATE_NICKNAME);
         }
     }
@@ -34,13 +32,13 @@ public class MemberValidator {
     }
 
     public void validatePhone(final String phone) {
-        if (memberRepository.existsByPhone(phone)) {
+        if (memberRepository.existsByPhoneValue(phone)) {
             throw AnotherArtException.type(MemberErrorCode.DUPLICATE_PHONE);
         }
     }
 
-    public void validateEmail(final Email email) {
-        if (memberRepository.existsByEmail(email)) {
+    public void validateEmail(final String email) {
+        if (memberRepository.existsByEmailValue(email)) {
             throw AnotherArtException.type(MemberErrorCode.DUPLICATE_EMAIL);
         }
     }

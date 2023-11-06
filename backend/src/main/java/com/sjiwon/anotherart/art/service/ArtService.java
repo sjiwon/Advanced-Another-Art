@@ -12,8 +12,8 @@ import com.sjiwon.anotherart.auction.domain.AuctionRepository;
 import com.sjiwon.anotherart.auction.domain.Period;
 import com.sjiwon.anotherart.file.infrastructure.s3.S3FileUploader;
 import com.sjiwon.anotherart.global.exception.AnotherArtException;
-import com.sjiwon.anotherart.member.application.MemberFindService;
 import com.sjiwon.anotherart.member.domain.model.Member;
+import com.sjiwon.anotherart.member.domain.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,7 +28,7 @@ import static com.sjiwon.anotherart.art.domain.ArtType.GENERAL;
 @RequiredArgsConstructor
 public class ArtService {
     private final ArtFindService artFindService;
-    private final MemberFindService memberFindService;
+    private final MemberRepository memberRepository;
     private final S3FileUploader s3FileUploader;
     private final ArtValidator artValidator;
     private final ArtRepository artRepository;
@@ -39,7 +39,7 @@ public class ArtService {
     public Long registerArt(final Long ownerId, final ArtRegisterRequest request) {
         validateUniqueNameForCreate(request.name());
 
-        final Member owner = memberFindService.findById(ownerId);
+        final Member owner = memberRepository.getById(ownerId);
         final String storageName = s3FileUploader.uploadFile(null); // TODO command - RawFileData 리팩토링
         return buildArt(owner, storageName, request);
     }
