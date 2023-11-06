@@ -1,24 +1,26 @@
-package com.sjiwon.anotherart.upload.utils;
+package com.sjiwon.anotherart.file.infrastructure.s3;
 
+import com.sjiwon.anotherart.file.application.adapter.FileUploader;
+import com.sjiwon.anotherart.file.domain.model.FileExtension;
+import com.sjiwon.anotherart.file.domain.model.RawFileData;
+import com.sjiwon.anotherart.file.exception.FileErrorCode;
 import com.sjiwon.anotherart.global.exception.AnotherArtException;
-import com.sjiwon.anotherart.upload.exception.UploadErrorCode;
 import io.awspring.cloud.s3.ObjectMetadata;
 import io.awspring.cloud.s3.S3Template;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import org.springframework.web.multipart.MultipartFile;
 import software.amazon.awssdk.services.s3.model.ObjectCannedACL;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.UUID;
 
-import static com.sjiwon.anotherart.upload.utils.BucketMetadata.ART_IMAGES;
+import static com.sjiwon.anotherart.file.infrastructure.s3.BucketMetadata.ART_IMAGES;
 
 @Slf4j
 @Component
-public class S3FileUploader {
+public class S3FileUploader implements FileUploader {
     private final S3Template s3Template;
     private final String bucket;
     private final String cloudFrontUrl;
@@ -33,25 +35,25 @@ public class S3FileUploader {
         this.cloudFrontUrl = cloudFrontUrl;
     }
 
-    // TODO RawFileData Domain으로 수정
-    public String uploadFile(final MultipartFile file) {
+    @Override
+    public String uploadFile(final RawFileData file) {
         validateFileExists(file);
         return sendFileToS3(file);
     }
 
-    private void validateFileExists(final MultipartFile file) {
-        if (file == null || file.isEmpty()) {
-            throw AnotherArtException.type(UploadErrorCode.FILE_IS_EMPTY);
+    private void validateFileExists(final RawFileData file) {
+        if (file == null) {
+            throw AnotherArtException.type(FileErrorCode.FILE_IS_NOT_UPLOAD);
         }
     }
 
-    private String sendFileToS3(final MultipartFile file) {
-        try (final InputStream inputStream = file.getInputStream()) {
+    private String sendFileToS3(final RawFileData file) {
+        try (final InputStream inputStream = file.content()) {
             final ObjectMetadata objectMetadata = ObjectMetadata.builder()
-                    .contentType(file.getContentType())
+                    .contentType(file.contenType())
                     .acl(ObjectCannedACL.PUBLIC_READ)
                     .build();
-            final String uploadFileName = createFileName(file.getOriginalFilename());
+            final String uploadFileName = createFileName(file.extension());
 
             final String uploadUrlPath = s3Template.upload(bucket, uploadFileName, inputStream, objectMetadata)
                     .getURL()
@@ -59,12 +61,12 @@ public class S3FileUploader {
             return cloudFrontUrl + uploadUrlPath;
         } catch (final IOException e) {
             log.error("S3 파일 업로드에 실패했습니다. {}", e.getMessage(), e);
-            throw AnotherArtException.type(UploadErrorCode.S3_UPLOAD_FAILURE);
+            throw AnotherArtException.type(FileErrorCode.UPLOAD_FAILURE);
         }
     }
 
-    private String createFileName(final String originalFileName) {
-        final String fileName = UUID.randomUUID() + originalFileName.substring(originalFileName.lastIndexOf("."));
+    private String createFileName(final FileExtension fileExtension) {
+        final String fileName = UUID.randomUUID() + fileExtension.getValue();
         return String.format(ART_IMAGES, fileName);
     }
 }
