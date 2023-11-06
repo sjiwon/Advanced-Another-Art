@@ -15,7 +15,7 @@ import com.sjiwon.anotherart.global.security.properties.CorsProperties;
 import com.sjiwon.anotherart.global.security.provider.AjaxAuthenticationProvider;
 import com.sjiwon.anotherart.global.security.provider.CustomUserDetailsService;
 import com.sjiwon.anotherart.member.domain.MemberRepository;
-import com.sjiwon.anotherart.token.domain.service.TokenManager;
+import com.sjiwon.anotherart.token.domain.service.TokenIssuer;
 import com.sjiwon.anotherart.token.utils.TokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -55,7 +55,7 @@ public class SecurityConfiguration {
     private final ObjectMapper objectMapper;
     private final MemberRepository memberRepository;
     private final TokenProvider tokenProvider;
-    private final TokenManager tokenManager;
+    private final TokenIssuer tokenIssuer;
     private final CorsProperties corsProperties;
 
     @Bean
@@ -95,7 +95,7 @@ public class SecurityConfiguration {
 
     @Bean
     public AuthenticationSuccessHandler ajaxAuthenticationSuccessHandler() {
-        return new AjaxAuthenticationSuccessHandler(tokenProvider, tokenManager, objectMapper);
+        return new AjaxAuthenticationSuccessHandler(tokenIssuer, objectMapper);
     }
 
     @Bean
@@ -134,7 +134,7 @@ public class SecurityConfiguration {
 
     @Bean
     public JwtLogoutSuccessHandler jwtLogoutSuccessHandler() {
-        return new JwtLogoutSuccessHandler(tokenProvider, tokenManager);
+        return new JwtLogoutSuccessHandler(tokenProvider, tokenIssuer);
     }
 
     @Bean
