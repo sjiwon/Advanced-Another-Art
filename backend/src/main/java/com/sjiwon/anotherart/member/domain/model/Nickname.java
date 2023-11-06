@@ -14,11 +14,12 @@ import java.util.regex.Pattern;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Embeddable
 public class Nickname {
-    // 한글 & 알파벳 대소문자 & 숫자 가능
-    // 공백 불가능
-    // 2자 이상 10자 이하
-    private static final String NICKNAME_PATTERN = "^[a-zA-Z가-힣0-9]{2,10}$";
-    private static final Pattern NICKNAME_MATCHER = Pattern.compile(NICKNAME_PATTERN);
+    /**
+     * 1. 한글 & 알파벳 대소문자 & 숫자 가능 <br>
+     * 2. 공백 불가능 <br>
+     * 3. 2자 이상 10자 이하
+     */
+    private static final Pattern NICKNAME_PATTERN = Pattern.compile("^[a-zA-Z가-힣0-9]{2,10}$");
 
     @Column(name = "nickname", nullable = false, unique = true)
     private String value;
