@@ -20,12 +20,10 @@ public class TokenManager {
                 );
     }
 
-    @AnotherArtWritableTransactional
     public void updateRefreshToken(final Long memberId, final String newRefreshToken) {
         tokenRepository.updateRefreshToken(memberId, newRefreshToken);
     }
 
-    @AnotherArtWritableTransactional
     public void deleteRefreshToken(final Long memberId) {
         tokenRepository.deleteRefreshToken(memberId);
     }
