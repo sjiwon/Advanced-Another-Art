@@ -115,8 +115,8 @@ class ArtTest {
         final Art art = AUCTION_1.toArt(owner);
 
         // when
-        final boolean actual1 = art.isArtOwner(owner);
-        final boolean actual2 = art.isArtOwner(member);
+        final boolean actual1 = art.isOwner(owner);
+        final boolean actual2 = art.isOwner(member);
 
         // then
         assertAll(

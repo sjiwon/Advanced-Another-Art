@@ -2,7 +2,6 @@ package com.sjiwon.anotherart.art.domain.model;
 
 import com.sjiwon.anotherart.global.BaseEntity;
 import com.sjiwon.anotherart.member.domain.model.Member;
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
@@ -11,13 +10,11 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -50,12 +47,12 @@ public class Art extends BaseEntity<Art> {
     @Column(name = "art_status", nullable = false)
     private ArtStatus status;
 
+    @Embedded
+    private Hashtags hashtags;
+
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "owner_id", referencedColumnName = "id", nullable = false, updatable = false)
     private Member owner;
-
-    @OneToMany(mappedBy = "art", cascade = CascadeType.PERSIST)
-    private final List<Hashtag> hashtags = new ArrayList<>();
 
     private Art(
             final Member owner,
@@ -73,7 +70,7 @@ public class Art extends BaseEntity<Art> {
         this.price = price;
         this.storageName = storageName;
         this.status = ON_SALE;
-        applyHashtags(hashtags);
+        this.hashtags = new Hashtags(this, hashtags);
     }
 
     public static Art createArt(
@@ -91,16 +88,7 @@ public class Art extends BaseEntity<Art> {
     public void update(final ArtName name, final Description description, final Set<String> hashtags) {
         this.name = name;
         this.description = description;
-        applyHashtags(hashtags);
-    }
-
-    public void applyHashtags(final Set<String> hashtags) {
-        this.hashtags.clear();
-        this.hashtags.addAll(
-                hashtags.stream()
-                        .map(value -> Hashtag.applyHashtag(this, value))
-                        .toList()
-        );
+        this.hashtags.update(this, hashtags);
     }
 
     public void closeSale() {
@@ -115,13 +103,14 @@ public class Art extends BaseEntity<Art> {
         return this.type == AUCTION;
     }
 
-    public boolean isArtOwner(final Member other) {
+    public boolean isOwner(final Member other) {
         return owner.isSameMember(other);
     }
 
     // Add Getter
     public List<String> getHashtags() {
-        return hashtags.stream()
+        return hashtags.getHashtags()
+                .stream()
                 .map(Hashtag::getName)
                 .toList();
     }

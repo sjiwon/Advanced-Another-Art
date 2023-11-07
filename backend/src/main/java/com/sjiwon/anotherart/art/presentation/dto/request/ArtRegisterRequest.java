@@ -2,7 +2,6 @@ package com.sjiwon.anotherart.art.presentation.dto.request;
 
 import com.sjiwon.anotherart.art.utils.validator.ValidArtType;
 import com.sjiwon.anotherart.art.utils.validator.ValidAuctionStartDate;
-import com.sjiwon.anotherart.art.utils.validator.ValidHashtagCount;
 import com.sjiwon.anotherart.art.utils.validator.ValidImageContentType;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -35,7 +34,6 @@ public record ArtRegisterRequest(
         @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
         LocalDateTime auctionEndDate,
 
-        @ValidHashtagCount
         Set<String> hashtags,
 
         @ValidImageContentType

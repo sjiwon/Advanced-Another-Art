@@ -50,7 +50,7 @@ public class Purchase extends BaseEntity<Purchase> {
     }
 
     private static void validateBuyerIsArtOwner(final Art art, final Member buyer) {
-        if (art.isArtOwner(buyer)) {
+        if (art.isOwner(buyer)) {
             throw AnotherArtException.type(PurchaseErrorCode.ART_OWNER_CANNOT_PURCHASE_OWN);
         }
     }

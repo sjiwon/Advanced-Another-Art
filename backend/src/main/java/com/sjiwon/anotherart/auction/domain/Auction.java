@@ -67,7 +67,7 @@ public class Auction extends BaseEntity<Auction> {
     }
 
     private void validateArtOwner(final Member bidder) {
-        if (art.isArtOwner(bidder)) {
+        if (art.isOwner(bidder)) {
             throw AnotherArtException.type(AuctionErrorCode.ART_OWNER_CANNOT_BID);
         }
     }
