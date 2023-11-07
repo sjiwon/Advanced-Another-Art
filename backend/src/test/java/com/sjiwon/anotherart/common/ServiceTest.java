@@ -1,6 +1,6 @@
 package com.sjiwon.anotherart.common;
 
-import com.sjiwon.anotherart.art.domain.ArtRepository;
+import com.sjiwon.anotherart.art.domain.repository.ArtRepository;
 import com.sjiwon.anotherart.auction.domain.AuctionRepository;
 import com.sjiwon.anotherart.common.config.DatabaseCleanerEachCallbackExtension;
 import com.sjiwon.anotherart.common.config.MySqlTestContainersExtension;

@@ -1,6 +1,6 @@
 package com.sjiwon.anotherart.purchase.service;
 
-import com.sjiwon.anotherart.art.domain.Art;
+import com.sjiwon.anotherart.art.domain.model.Art;
 import com.sjiwon.anotherart.common.ConcurrencyTest;
 import com.sjiwon.anotherart.member.domain.model.Member;
 import lombok.extern.slf4j.Slf4j;

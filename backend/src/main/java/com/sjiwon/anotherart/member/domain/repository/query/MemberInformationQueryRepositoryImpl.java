@@ -1,7 +1,7 @@
 package com.sjiwon.anotherart.member.domain.repository.query;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import com.sjiwon.anotherart.art.domain.ArtType;
+import com.sjiwon.anotherart.art.domain.model.ArtType;
 import com.sjiwon.anotherart.global.annotation.AnotherArtReadOnlyTransactional;
 import com.sjiwon.anotherart.member.domain.repository.query.dto.MemberInformation;
 import com.sjiwon.anotherart.member.domain.repository.query.dto.MemberPointRecord;

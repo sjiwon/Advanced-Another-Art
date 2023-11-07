@@ -1,9 +1,9 @@
 package com.sjiwon.anotherart.art.utils.search;
 
-import com.sjiwon.anotherart.art.domain.ArtType;
+import com.sjiwon.anotherart.art.domain.model.ArtType;
 
-import static com.sjiwon.anotherart.art.domain.ArtType.AUCTION;
-import static com.sjiwon.anotherart.art.domain.ArtType.GENERAL;
+import static com.sjiwon.anotherart.art.domain.model.ArtType.AUCTION;
+import static com.sjiwon.anotherart.art.domain.model.ArtType.GENERAL;
 
 public record ArtDetailSearchCondition(
         SortType sortType,

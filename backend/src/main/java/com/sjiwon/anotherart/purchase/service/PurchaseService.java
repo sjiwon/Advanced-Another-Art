@@ -1,7 +1,7 @@
 package com.sjiwon.anotherart.purchase.service;
 
-import com.sjiwon.anotherart.art.domain.Art;
-import com.sjiwon.anotherart.art.service.ArtFindService;
+import com.sjiwon.anotherart.art.application.ArtFindService;
+import com.sjiwon.anotherart.art.domain.model.Art;
 import com.sjiwon.anotherart.auction.domain.Auction;
 import com.sjiwon.anotherart.auction.service.AuctionFindService;
 import com.sjiwon.anotherart.global.exception.AnotherArtException;

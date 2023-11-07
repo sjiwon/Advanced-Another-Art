@@ -1,6 +1,6 @@
 package com.sjiwon.anotherart.favorite.service;
 
-import com.sjiwon.anotherart.art.domain.Art;
+import com.sjiwon.anotherart.art.domain.model.Art;
 import com.sjiwon.anotherart.common.ServiceTest;
 import com.sjiwon.anotherart.favorite.domain.Favorite;
 import com.sjiwon.anotherart.favorite.exception.FavoriteErrorCode;

@@ -1,9 +1,9 @@
 package com.sjiwon.anotherart.common.fixture;
 
-import com.sjiwon.anotherart.art.domain.Art;
-import com.sjiwon.anotherart.art.domain.ArtName;
-import com.sjiwon.anotherart.art.domain.ArtType;
-import com.sjiwon.anotherart.art.domain.Description;
+import com.sjiwon.anotherart.art.domain.model.Art;
+import com.sjiwon.anotherart.art.domain.model.ArtName;
+import com.sjiwon.anotherart.art.domain.model.ArtType;
+import com.sjiwon.anotherart.art.domain.model.Description;
 import com.sjiwon.anotherart.member.domain.model.Member;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -11,8 +11,8 @@ import lombok.RequiredArgsConstructor;
 import java.util.HashSet;
 import java.util.Set;
 
-import static com.sjiwon.anotherart.art.domain.ArtType.AUCTION;
-import static com.sjiwon.anotherart.art.domain.ArtType.GENERAL;
+import static com.sjiwon.anotherart.art.domain.model.ArtType.AUCTION;
+import static com.sjiwon.anotherart.art.domain.model.ArtType.GENERAL;
 
 @Getter
 @RequiredArgsConstructor

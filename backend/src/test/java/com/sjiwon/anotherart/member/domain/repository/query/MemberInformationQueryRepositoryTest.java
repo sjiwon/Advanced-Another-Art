@@ -1,7 +1,7 @@
 //package com.sjiwon.anotherart.member.domain.repository.query;
 //
-//import com.sjiwon.anotherart.art.domain.Art;
-//import com.sjiwon.anotherart.art.domain.ArtRepository;
+//import com.sjiwon.anotherart.art.domain.model.Art;
+//import com.sjiwon.anotherart.art.domain.repository.ArtRepository;
 //import com.sjiwon.anotherart.art.infra.query.dto.response.AuctionArt;
 //import com.sjiwon.anotherart.auction.domain.Auction;
 //import com.sjiwon.anotherart.auction.domain.AuctionRepository;
@@ -27,8 +27,8 @@
 //import java.util.Arrays;
 //import java.util.List;
 //
-//import static com.sjiwon.anotherart.art.domain.ArtType.AUCTION;
-//import static com.sjiwon.anotherart.art.domain.ArtType.GENERAL;
+//import static com.sjiwon.anotherart.art.domain.model.ArtType.AUCTION;
+//import static com.sjiwon.anotherart.art.domain.model.ArtType.GENERAL;
 //import static com.sjiwon.anotherart.common.fixture.AuctionFixture.AUCTION_OPEN_NOW;
 //import static com.sjiwon.anotherart.common.fixture.MemberFixture.MEMBER_A;
 //import static com.sjiwon.anotherart.common.fixture.MemberFixture.MEMBER_B;

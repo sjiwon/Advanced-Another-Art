@@ -1,6 +1,6 @@
 package com.sjiwon.anotherart.auction.domain;
 
-import com.sjiwon.anotherart.art.domain.Art;
+import com.sjiwon.anotherart.art.domain.model.Art;
 import com.sjiwon.anotherart.auction.domain.record.AuctionRecord;
 import com.sjiwon.anotherart.auction.exception.AuctionErrorCode;
 import com.sjiwon.anotherart.global.exception.AnotherArtException;

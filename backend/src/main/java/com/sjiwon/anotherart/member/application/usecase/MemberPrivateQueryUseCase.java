@@ -18,8 +18,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-import static com.sjiwon.anotherart.art.domain.ArtType.AUCTION;
-import static com.sjiwon.anotherart.art.domain.ArtType.GENERAL;
+import static com.sjiwon.anotherart.art.domain.model.ArtType.AUCTION;
+import static com.sjiwon.anotherart.art.domain.model.ArtType.GENERAL;
 
 @Service
 @RequiredArgsConstructor
