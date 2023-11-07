@@ -2,8 +2,8 @@
 //
 //import com.sjiwon.anotherart.art.domain.model.Art;
 //import com.sjiwon.anotherart.art.domain.repository.ArtRepository;
-//import com.sjiwon.anotherart.art.domain.repository.query.dto.response.AuctionArt;
-//import com.sjiwon.anotherart.art.domain.repository.query.dto.response.GeneralArt;
+//import com.sjiwon.anotherart.art.domain.repository.query.dto.AuctionArt;
+//import com.sjiwon.anotherart.art.domain.repository.query.dto.GeneralArt;
 //import com.sjiwon.anotherart.art.utils.search.ArtDetailSearchCondition;
 //import com.sjiwon.anotherart.auction.domain.Auction;
 //import com.sjiwon.anotherart.auction.domain.AuctionRepository;

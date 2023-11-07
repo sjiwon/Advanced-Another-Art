@@ -1,4 +1,4 @@
-package com.sjiwon.anotherart.art.domain.repository.query.dto.response;
+package com.sjiwon.anotherart.art.domain.repository.query.dto;
 
 import com.querydsl.core.annotations.QueryProjection;
 

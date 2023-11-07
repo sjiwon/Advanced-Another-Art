@@ -1,10 +1,13 @@
 package com.sjiwon.anotherart.art.domain.repository.query;
 
-import com.sjiwon.anotherart.art.domain.repository.query.dto.response.AuctionArt;
-import com.sjiwon.anotherart.art.domain.repository.query.dto.response.GeneralArt;
+import com.sjiwon.anotherart.art.domain.model.ArtType;
+import com.sjiwon.anotherart.art.domain.repository.query.dto.AuctionArt;
+import com.sjiwon.anotherart.art.domain.repository.query.dto.GeneralArt;
 
 public interface ArtSingleQueryRepository {
-    AuctionArt getAuctionArt(Long artId);
+    ArtType getArtType(final Long artId);
 
-    GeneralArt getGeneralArt(Long artId);
+    AuctionArt fetchAuctionArt(final Long artId);
+
+    GeneralArt fetchGeneralArt(final Long artId);
 }

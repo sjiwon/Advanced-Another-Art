@@ -23,4 +23,8 @@ public enum ArtType {
                 .findFirst()
                 .orElseThrow(() -> AnotherArtException.type(ArtErrorCode.INVALID_ART_TYPE));
     }
+
+    public boolean isAuctionType() {
+        return this == AUCTION;
+    }
 }

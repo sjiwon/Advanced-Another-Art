@@ -9,7 +9,7 @@ import java.util.Arrays;
 
 @Getter
 @RequiredArgsConstructor
-public enum SortType {
+public enum SearchSortType {
     /**
      * 등록 날짜 ASC | DESC
      */
@@ -37,15 +37,15 @@ public enum SortType {
 
     private final String value;
 
-    public static SortType from(final String value) {
+    public static boolean isNotSupportedSortType(final String value) {
+        return Arrays.stream(values())
+                .noneMatch(sortType -> sortType.value.equals(value));
+    }
+
+    public static SearchSortType from(final String value) {
         return Arrays.stream(values())
                 .filter(sortType -> sortType.value.equals(value))
                 .findFirst()
                 .orElseThrow(() -> AnotherArtException.type(ArtErrorCode.SORT_TYPE_NOT_PROVIED));
-    }
-
-    public static boolean isNotSupportedSortType(final String value) {
-        return Arrays.stream(values())
-                .noneMatch(sortType -> sortType.value.equals(value));
     }
 }

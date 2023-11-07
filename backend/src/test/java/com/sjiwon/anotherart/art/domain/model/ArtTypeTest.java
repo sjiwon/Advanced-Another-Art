@@ -29,4 +29,13 @@ public class ArtTypeTest {
                 .isInstanceOf(AnotherArtException.class)
                 .hasMessage(ArtErrorCode.INVALID_ART_TYPE.getMessage());
     }
+
+    @Test
+    @DisplayName("경매 타입인지 확인한다")
+    void isAuctionType() {
+        assertAll(
+                () -> assertThat(GENERAL.isAuctionType()).isFalse(),
+                () -> assertThat(AUCTION.isAuctionType()).isTrue()
+        );
+    }
 }

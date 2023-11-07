@@ -1,7 +1,6 @@
 package com.sjiwon.anotherart.art.domain.repository;
 
 import com.sjiwon.anotherart.art.domain.model.Art;
-import com.sjiwon.anotherart.art.domain.model.ArtType;
 import com.sjiwon.anotherart.common.RepositoryTest;
 import com.sjiwon.anotherart.member.domain.model.Member;
 import com.sjiwon.anotherart.member.domain.repository.MemberRepository;
@@ -10,8 +9,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import static com.sjiwon.anotherart.art.domain.model.ArtType.AUCTION;
-import static com.sjiwon.anotherart.art.domain.model.ArtType.GENERAL;
 import static com.sjiwon.anotherart.common.fixture.ArtFixture.AUCTION_1;
 import static com.sjiwon.anotherart.common.fixture.ArtFixture.AUCTION_2;
 import static com.sjiwon.anotherart.common.fixture.ArtFixture.GENERAL_1;
@@ -35,24 +32,6 @@ class ArtRepositoryTest extends RepositoryTest {
     void setUp() {
         owner = memberRepository.save(MEMBER_A.toMember());
         anonymous = memberRepository.save(DUMMY_1.toMember());
-    }
-
-    @Test
-    @DisplayName("작품 타입을 조회한다")
-    void getArtTypeById() {
-        // given
-        final Art generalArt = sut.save(GENERAL_1.toArt(owner));
-        final Art auctionArt = sut.save(AUCTION_1.toArt(owner));
-
-        // when
-        final ArtType general = sut.getArtTypeById(generalArt.getId());
-        final ArtType auction = sut.getArtTypeById(auctionArt.getId());
-
-        // then
-        assertAll(
-                () -> assertThat(general).isEqualTo(GENERAL),
-                () -> assertThat(auction).isEqualTo(AUCTION)
-        );
     }
 
     @Test

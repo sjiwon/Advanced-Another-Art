@@ -1,7 +1,6 @@
 package com.sjiwon.anotherart.art.domain.repository;
 
 import com.sjiwon.anotherart.art.domain.model.Art;
-import com.sjiwon.anotherart.art.domain.model.ArtType;
 import com.sjiwon.anotherart.art.exception.ArtErrorCode;
 import com.sjiwon.anotherart.global.exception.AnotherArtException;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -27,11 +26,6 @@ public interface ArtRepository extends JpaRepository<Art, Long> {
         return findByIdWitFetchOwner(id)
                 .orElseThrow(() -> AnotherArtException.type(ArtErrorCode.ART_NOT_FOUND));
     }
-
-    @Query("SELECT a.type" +
-            " FROM Art a" +
-            " WHERE a.id = :id")
-    ArtType getArtTypeById(@Param("id") Long id);
 
     @Query("SELECT a.owner.id" +
             " FROM Art a" +

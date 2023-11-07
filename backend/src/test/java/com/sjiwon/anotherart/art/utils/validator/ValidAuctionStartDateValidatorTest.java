@@ -1,7 +1,6 @@
 package com.sjiwon.anotherart.art.utils.validator;
 
 import jakarta.validation.ConstraintValidatorContext;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -10,22 +9,16 @@ import java.time.LocalDateTime;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
-@DisplayName("Art [Validator] -> ValidAuctionStartDateValidator 테스트")
+@DisplayName("Art -> ValidAuctionStartDateValidator 테스트")
 class ValidAuctionStartDateValidatorTest {
-    private ValidAuctionStartDateValidator validator;
-    private ConstraintValidatorContext context;
-
-    @BeforeEach
-    void setUp() {
-        validator = new ValidAuctionStartDateValidator();
-        context = mock(ConstraintValidatorContext.class);
-    }
+    private final ConstraintValidatorContext context = mock(ConstraintValidatorContext.class);
+    private final ValidAuctionStartDateValidator sut = new ValidAuctionStartDateValidator();
 
     @Test
     @DisplayName("일반 작품[auctionStartDate == null]일 경우 validator를 검증없이 통과한다")
     void allowAllGeneralArt() {
         // when
-        final boolean actual = validator.isValid(null, context);
+        final boolean actual = sut.isValid(null, context);
 
         // then
         assertThat(actual).isTrue();
@@ -38,7 +31,7 @@ class ValidAuctionStartDateValidatorTest {
         final LocalDateTime auctionStartDate = LocalDateTime.now().minusHours(1);
 
         // when
-        final boolean actual = validator.isValid(auctionStartDate, context);
+        final boolean actual = sut.isValid(auctionStartDate, context);
 
         // then
         assertThat(actual).isFalse();
@@ -51,7 +44,7 @@ class ValidAuctionStartDateValidatorTest {
         final LocalDateTime auctionStartDate = LocalDateTime.now().plusHours(1);
 
         // when
-        final boolean actual = validator.isValid(auctionStartDate, context);
+        final boolean actual = sut.isValid(auctionStartDate, context);
 
         // then
         assertThat(actual).isTrue();

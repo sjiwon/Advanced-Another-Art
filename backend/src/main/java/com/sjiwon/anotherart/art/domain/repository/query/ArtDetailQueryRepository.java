@@ -1,20 +1,20 @@
 package com.sjiwon.anotherart.art.domain.repository.query;
 
-import com.sjiwon.anotherart.art.domain.repository.query.dto.response.AuctionArt;
-import com.sjiwon.anotherart.art.domain.repository.query.dto.response.GeneralArt;
-import com.sjiwon.anotherart.art.utils.search.ArtDetailSearchCondition;
-import com.sjiwon.anotherart.art.utils.search.SortType;
+import com.sjiwon.anotherart.art.domain.repository.query.dto.AuctionArt;
+import com.sjiwon.anotherart.art.domain.repository.query.dto.GeneralArt;
+import com.sjiwon.anotherart.art.utils.search.ActiveAuctionArtsSearchCondition;
+import com.sjiwon.anotherart.art.utils.search.ArtDetailsSearchCondition;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 public interface ArtDetailQueryRepository {
-    Page<AuctionArt> findActiveAuctionArts(SortType sortType, Pageable pageable);
+    Page<AuctionArt> fetchActiveAuctionArts(final ActiveAuctionArtsSearchCondition condition, final Pageable pageable);
 
-    Page<AuctionArt> findAuctionArtsByKeyword(ArtDetailSearchCondition condition, Pageable pageable);
+    Page<AuctionArt> fetchAuctionArtsByKeyword(final ArtDetailsSearchCondition condition, final Pageable pageable);
 
-    Page<AuctionArt> findAuctionArtsByHashtag(ArtDetailSearchCondition condition, Pageable pageable);
+    Page<AuctionArt> fetchAuctionArtsByHashtag(final ArtDetailsSearchCondition condition, final Pageable pageable);
 
-    Page<GeneralArt> findGeneralArtsByKeyword(ArtDetailSearchCondition condition, Pageable pageable);
+    Page<GeneralArt> fetchGeneralArtsByKeyword(final ArtDetailsSearchCondition condition, final Pageable pageable);
 
-    Page<GeneralArt> findGeneralArtsByHashtag(ArtDetailSearchCondition condition, Pageable pageable);
+    Page<GeneralArt> fetchGeneralArtsByHashtag(final ArtDetailsSearchCondition condition, final Pageable pageable);
 }
