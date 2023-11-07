@@ -1,6 +1,7 @@
 package com.sjiwon.anotherart.member.presentation;
 
-import com.sjiwon.anotherart.member.application.MemberService;
+import com.sjiwon.anotherart.member.application.usecase.ResetPasswordUseCase;
+import com.sjiwon.anotherart.member.application.usecase.RetrieveLoginIdUseCase;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,7 +28,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RequestMapping("/api/member")
 public class MemberAccountModifyApiController {
-    private final MemberService memberService;
+    private final RetrieveLoginIdUseCase retrieveLoginIdUseCase;
+    private final ResetPasswordUseCase resetPasswordUseCase;
 
     // TODO 메일 전송 & Redis 인프라 구축 후 구현
 }
