@@ -133,8 +133,8 @@
 //                    () -> assertThat(auctionArt.getAuction().getBidCount()).isEqualTo(bidCount),
 //
 //                    () -> assertThat(auctionArt.getArt().getId()).isEqualTo(art.getId()),
-//                    () -> assertThat(auctionArt.getArt().getName()).isEqualTo(art.getNameValue()),
-//                    () -> assertThat(auctionArt.getArt().getDescription()).isEqualTo(art.getDescriptionValue()),
+//                    () -> assertThat(auctionArt.getArt().getName()).isEqualTo(art.getName().getValue()),
+//                    () -> assertThat(auctionArt.getArt().getDescription()).isEqualTo(art.getDescription().getValue()),
 //                    () -> assertThat(auctionArt.getArt().getPrice()).isEqualTo(art.getPrice()),
 //                    () -> assertThat(auctionArt.getArt().getStatus()).isEqualTo(art.getStatus().getDescription()),
 //                    () -> assertThat(auctionArt.getArt().getStorageName()).isEqualTo(art.getStorageName()),
@@ -168,8 +168,8 @@
 //
 //            assertAll(
 //                    () -> assertThat(generalArt.getArt().getId()).isEqualTo(art.getId()),
-//                    () -> assertThat(generalArt.getArt().getName()).isEqualTo(art.getNameValue()),
-//                    () -> assertThat(generalArt.getArt().getDescription()).isEqualTo(art.getDescriptionValue()),
+//                    () -> assertThat(generalArt.getArt().getName()).isEqualTo(art.getName().getValue()),
+//                    () -> assertThat(generalArt.getArt().getDescription()).isEqualTo(art.getDescription().getValue()),
 //                    () -> assertThat(generalArt.getArt().getPrice()).isEqualTo(art.getPrice()),
 //                    () -> assertThat(generalArt.getArt().getStatus()).isEqualTo(art.getStatus().getDescription()),
 //                    () -> assertThat(generalArt.getArt().getStorageName()).isEqualTo(art.getStorageName()),

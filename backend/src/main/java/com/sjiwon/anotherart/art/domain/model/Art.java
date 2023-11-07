@@ -20,7 +20,6 @@ import lombok.NoArgsConstructor;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import static com.sjiwon.anotherart.art.domain.model.ArtStatus.ON_SALE;
 import static com.sjiwon.anotherart.art.domain.model.ArtStatus.SOLD;
@@ -58,8 +57,15 @@ public class Art extends BaseEntity<Art> {
     @OneToMany(mappedBy = "art", cascade = CascadeType.PERSIST)
     private final List<Hashtag> hashtags = new ArrayList<>();
 
-    private Art(final Member owner, final ArtName name, final Description description, final ArtType type,
-                final int price, final String storageName, final Set<String> hashtags) {
+    private Art(
+            final Member owner,
+            final ArtName name,
+            final Description description,
+            final ArtType type,
+            final int price,
+            final String storageName,
+            final Set<String> hashtags
+    ) {
         this.owner = owner;
         this.name = name;
         this.description = description;
@@ -70,8 +76,15 @@ public class Art extends BaseEntity<Art> {
         applyHashtags(hashtags);
     }
 
-    public static Art createArt(final Member owner, final ArtName name, final Description description, final ArtType type,
-                                final int price, final String storageName, final Set<String> hashtags) {
+    public static Art createArt(
+            final Member owner,
+            final ArtName name,
+            final Description description,
+            final ArtType type,
+            final int price,
+            final String storageName,
+            final Set<String> hashtags
+    ) {
         return new Art(owner, name, description, type, price, storageName, hashtags);
     }
 
@@ -107,17 +120,9 @@ public class Art extends BaseEntity<Art> {
     }
 
     // Add Getter
-    public String getNameValue() {
-        return name.getValue();
-    }
-
-    public String getDescriptionValue() {
-        return description.getValue();
-    }
-
     public List<String> getHashtags() {
         return hashtags.stream()
                 .map(Hashtag::getName)
-                .collect(Collectors.toList());
+                .toList();
     }
 }

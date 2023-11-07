@@ -22,13 +22,13 @@ public class ArtName {
     }
 
     public static ArtName from(final String value) {
-        validateNameIsNotBlank(value);
+        validateNameIsUsable(value);
         validateLengthIsInRange(value);
         return new ArtName(value);
     }
 
-    private static void validateNameIsNotBlank(final String value) {
-        if (value.isBlank()) {
+    private static void validateNameIsUsable(final String value) {
+        if (value == null || value.isBlank()) {
             throw AnotherArtException.type(ArtErrorCode.NAME_IS_BLANK);
         }
     }
@@ -40,6 +40,20 @@ public class ArtName {
     }
 
     private static boolean isLengthOutOfRange(final String name) {
-        return MAXIMUM_LENGTH < name.length();
+        return name.length() > MAXIMUM_LENGTH;
+    }
+
+    @Override
+    public boolean equals(final Object object) {
+        if (this == object) return true;
+        if (object == null || getClass() != object.getClass()) return false;
+
+        final ArtName other = (ArtName) object;
+        return value.equals(other.value);
+    }
+
+    @Override
+    public int hashCode() {
+        return value.hashCode();
     }
 }

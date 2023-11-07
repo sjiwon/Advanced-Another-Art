@@ -86,8 +86,8 @@ class ArtServiceTest extends ServiceTest {
             // then
             final Art findArt = artRepository.findById(artId).orElseThrow();
             assertAll(
-                    () -> assertThat(findArt.getNameValue()).isEqualTo(GENERAL_1.getName()),
-                    () -> assertThat(findArt.getDescriptionValue()).isEqualTo(GENERAL_1.getDescription()),
+                    () -> assertThat(findArt.getName().getValue()).isEqualTo(GENERAL_1.getName()),
+                    () -> assertThat(findArt.getDescription().getValue()).isEqualTo(GENERAL_1.getDescription()),
                     () -> assertThat(findArt.getType()).isEqualTo(GENERAL),
                     () -> assertThat(findArt.getPrice()).isEqualTo(GENERAL_1.getPrice()),
                     () -> assertThat(findArt.getStorageName()).isEqualTo(uploadLink),
@@ -112,8 +112,8 @@ class ArtServiceTest extends ServiceTest {
             // then
             final Art findArt = artRepository.findById(artId).orElseThrow();
             assertAll(
-                    () -> assertThat(findArt.getNameValue()).isEqualTo(AUCTION_1.getName()),
-                    () -> assertThat(findArt.getDescriptionValue()).isEqualTo(AUCTION_1.getDescription()),
+                    () -> assertThat(findArt.getName().getValue()).isEqualTo(AUCTION_1.getName()),
+                    () -> assertThat(findArt.getDescription().getValue()).isEqualTo(AUCTION_1.getDescription()),
                     () -> assertThat(findArt.getType()).isEqualTo(AUCTION),
                     () -> assertThat(findArt.getPrice()).isEqualTo(AUCTION_1.getPrice()),
                     () -> assertThat(findArt.getStorageName()).isEqualTo(uploadLink),
@@ -146,7 +146,7 @@ class ArtServiceTest extends ServiceTest {
         @DisplayName("작품명 중복 체크를 진행한다")
         void checkName() {
             // given
-            final String same = art.getNameValue();
+            final String same = art.getName().getValue();
             final String diff = "fake";
 
             // when - then
@@ -171,8 +171,8 @@ class ArtServiceTest extends ServiceTest {
 
         // then
         assertAll(
-                () -> assertThat(art.getNameValue()).isEqualTo(updateName),
-                () -> assertThat(art.getDescriptionValue()).isEqualTo(updateDescription),
+                () -> assertThat(art.getName().getValue()).isEqualTo(updateName),
+                () -> assertThat(art.getDescription().getValue()).isEqualTo(updateDescription),
                 () -> assertThat(art.getHashtags()).containsExactlyInAnyOrderElementsOf(updateHashtags)
         );
     }

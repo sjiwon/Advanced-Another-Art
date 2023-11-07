@@ -61,7 +61,7 @@ class ArtRepositoryTest extends RepositoryTest {
     void existsByName() {
         // given
         final ArtName same = auctionArt.getName();
-        final ArtName diff = ArtName.from("diff" + auctionArt.getNameValue());
+        final ArtName diff = ArtName.from("diff" + auctionArt.getName().getValue());
 
         // when
         final boolean actual1 = artRepository.existsByName(same);

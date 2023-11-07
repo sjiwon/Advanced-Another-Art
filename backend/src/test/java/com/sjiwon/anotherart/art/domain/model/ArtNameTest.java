@@ -5,17 +5,19 @@ import com.sjiwon.anotherart.global.exception.AnotherArtException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-@DisplayName("Art 도메인 {ArtName VO} 테스트")
+@DisplayName("Art -> 도메인 [ArtName VO] 테스트")
 class ArtNameTest {
-    @Test
-    @DisplayName("ArtName이 공백이면 생성에 실패한다")
-    void throwExceptionByNameIsBlank() {
-        assertThatThrownBy(() -> ArtName.from(""))
+    @ParameterizedTest
+    @NullAndEmptySource
+    @DisplayName("ArtName이 null이거나 공백이면 생성에 실패한다")
+    void throwExceptionByNameIsBlank(final String value) {
+        assertThatThrownBy(() -> ArtName.from(value))
                 .isInstanceOf(AnotherArtException.class)
                 .hasMessage(ArtErrorCode.NAME_IS_BLANK.getMessage());
     }

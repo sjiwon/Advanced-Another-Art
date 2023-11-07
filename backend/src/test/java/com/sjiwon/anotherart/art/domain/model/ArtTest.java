@@ -29,8 +29,8 @@ class ArtTest {
         final Art generalArt = GENERAL_1.toArt(owner);
 
         assertAll(
-                () -> assertThat(auctionArt.getNameValue()).isEqualTo(AUCTION_1.getName()),
-                () -> assertThat(auctionArt.getDescriptionValue()).isEqualTo(AUCTION_1.getDescription()),
+                () -> assertThat(auctionArt.getName().getValue()).isEqualTo(AUCTION_1.getName()),
+                () -> assertThat(auctionArt.getDescription().getValue()).isEqualTo(AUCTION_1.getDescription()),
                 () -> assertThat(auctionArt.getType()).isEqualTo(AUCTION),
                 () -> assertThat(auctionArt.getStorageName()).isEqualTo(AUCTION_1.getStorageName()),
                 () -> assertThat(auctionArt.getPrice()).isEqualTo(AUCTION_1.getPrice()),
@@ -40,8 +40,8 @@ class ArtTest {
                 () -> assertThat(auctionArt.getOwner().getNickname()).isEqualTo(owner.getNickname()),
                 () -> assertThat(auctionArt.getOwner().getLoginId()).isEqualTo(owner.getLoginId()),
 
-                () -> assertThat(generalArt.getNameValue()).isEqualTo(GENERAL_1.getName()),
-                () -> assertThat(generalArt.getDescriptionValue()).isEqualTo(GENERAL_1.getDescription()),
+                () -> assertThat(generalArt.getName().getValue()).isEqualTo(GENERAL_1.getName()),
+                () -> assertThat(generalArt.getDescription().getValue()).isEqualTo(GENERAL_1.getDescription()),
                 () -> assertThat(generalArt.getType()).isEqualTo(GENERAL),
                 () -> assertThat(generalArt.getStorageName()).isEqualTo(GENERAL_1.getStorageName()),
                 () -> assertThat(generalArt.getPrice()).isEqualTo(GENERAL_1.getPrice()),
@@ -67,8 +67,8 @@ class ArtTest {
 
         // then
         assertAll(
-                () -> assertThat(art.getNameValue()).isEqualTo("HELLO ART"),
-                () -> assertThat(art.getDescriptionValue()).isEqualTo("Hello World"),
+                () -> assertThat(art.getName().getValue()).isEqualTo("HELLO ART"),
+                () -> assertThat(art.getDescription().getValue()).isEqualTo("Hello World"),
                 () -> assertThat(art.getHashtags()).containsExactlyInAnyOrderElementsOf(updateHashtags)
         );
     }
