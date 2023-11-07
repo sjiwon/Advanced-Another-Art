@@ -13,7 +13,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-@DisplayName("Auction 도메인 {Period VO} 테스트")
+@DisplayName("Auction -> 도메인 [Period VO] 테스트")
 class PeriodTest {
     @Test
     @DisplayName("날짜가 입력되지 않으면 Period 생성에 실패한다")
@@ -67,15 +67,15 @@ class PeriodTest {
     }
 
     @Test
-    @DisplayName("경매가 종료되었는지 확인한다")
-    void isAuctionFinished() {
+    @DisplayName("endDate를 기준으로 지나간 시간인지 확인한다")
+    void isTimePassed() {
         // given
         final Period periodA = CLOSED_WEEK_1_AGO.toPeriod();
         final Period periodB = OPEN_NOW.toPeriod();
 
         // when
-        final boolean actual1 = periodA.isAuctionFinished(LocalDateTime.now());
-        final boolean actual2 = periodB.isAuctionFinished(LocalDateTime.now());
+        final boolean actual1 = periodA.isTimePassed(LocalDateTime.now());
+        final boolean actual2 = periodB.isTimePassed(LocalDateTime.now());
 
         // then
         assertAll(

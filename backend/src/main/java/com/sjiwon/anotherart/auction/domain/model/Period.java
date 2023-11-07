@@ -47,7 +47,7 @@ public class Period {
         return time.isAfter(startDate) && time.isBefore(endDate);
     }
 
-    public boolean isAuctionFinished(final LocalDateTime time) {
+    public boolean isTimePassed(final LocalDateTime time) {
         return endDate.isBefore(time);
     }
 }
