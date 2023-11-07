@@ -2,8 +2,8 @@ package com.sjiwon.anotherart.art.domain.service;
 
 import com.sjiwon.anotherart.art.domain.model.Art;
 import com.sjiwon.anotherart.art.domain.repository.ArtRepository;
-import com.sjiwon.anotherart.auction.domain.Auction;
-import com.sjiwon.anotherart.auction.domain.AuctionRepository;
+import com.sjiwon.anotherart.auction.domain.model.Auction;
+import com.sjiwon.anotherart.auction.domain.repository.AuctionRepository;
 import com.sjiwon.anotherart.common.UseCaseTest;
 import com.sjiwon.anotherart.member.domain.model.Member;
 import org.junit.jupiter.api.DisplayName;

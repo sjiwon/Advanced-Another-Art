@@ -1,7 +1,7 @@
-package com.sjiwon.anotherart.auction.controller;
+package com.sjiwon.anotherart.auction.presentation;
 
-import com.sjiwon.anotherart.auction.controller.dto.request.BidRequest;
-import com.sjiwon.anotherart.auction.facade.BidFacade;
+import com.sjiwon.anotherart.auction.application.facade.BidFacade;
+import com.sjiwon.anotherart.auction.presentation.dto.request.BidRequest;
 import com.sjiwon.anotherart.global.resolver.ExtractPayload;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

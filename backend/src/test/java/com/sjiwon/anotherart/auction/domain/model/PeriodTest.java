@@ -1,4 +1,4 @@
-package com.sjiwon.anotherart.auction.domain;
+package com.sjiwon.anotherart.auction.domain.model;
 
 import com.sjiwon.anotherart.auction.exception.AuctionErrorCode;
 import com.sjiwon.anotherart.global.exception.AnotherArtException;

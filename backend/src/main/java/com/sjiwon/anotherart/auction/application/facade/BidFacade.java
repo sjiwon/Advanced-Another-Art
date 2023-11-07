@@ -1,6 +1,6 @@
-package com.sjiwon.anotherart.auction.facade;
+package com.sjiwon.anotherart.auction.application.facade;
 
-import com.sjiwon.anotherart.auction.service.BidService;
+import com.sjiwon.anotherart.auction.application.usecase.BidService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.redisson.api.RLock;

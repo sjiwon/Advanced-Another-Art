@@ -2,8 +2,8 @@ package com.sjiwon.anotherart.purchase.service;
 
 import com.sjiwon.anotherart.art.domain.model.Art;
 import com.sjiwon.anotherart.art.domain.repository.ArtRepository;
-import com.sjiwon.anotherart.auction.domain.Auction;
-import com.sjiwon.anotherart.auction.service.AuctionFindService;
+import com.sjiwon.anotherart.auction.domain.model.Auction;
+import com.sjiwon.anotherart.auction.domain.repository.AuctionRepository;
 import com.sjiwon.anotherart.global.exception.AnotherArtException;
 import com.sjiwon.anotherart.member.domain.model.Member;
 import com.sjiwon.anotherart.member.domain.repository.MemberRepository;
@@ -21,7 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class PurchaseService {
     private final ArtRepository artRepository;
     private final MemberRepository memberRepository;
-    private final AuctionFindService auctionFindService;
+    private final AuctionRepository auctionRepository;
     private final PurchaseRepository purchaseRepository;
 
     @Transactional
@@ -38,7 +38,7 @@ public class PurchaseService {
 
     private Long processArtPurchase(final Art art, final Member buyer) {
         if (art.isAuctionType()) {
-            final Auction auction = auctionFindService.findByArtId(art.getId());
+            final Auction auction = auctionRepository.getByArtId(art.getId());
             validateAuctionFinished(auction);
             validateHighestBidder(auction, buyer);
 

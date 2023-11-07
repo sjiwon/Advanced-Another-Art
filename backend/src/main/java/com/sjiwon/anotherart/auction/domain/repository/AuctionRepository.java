@@ -1,8 +1,9 @@
-package com.sjiwon.anotherart.auction.domain;
+package com.sjiwon.anotherart.auction.domain.repository;
 
-import jakarta.persistence.LockModeType;
+import com.sjiwon.anotherart.auction.domain.model.Auction;
+import com.sjiwon.anotherart.auction.exception.AuctionErrorCode;
+import com.sjiwon.anotherart.global.exception.AnotherArtException;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -15,16 +16,13 @@ public interface AuctionRepository extends JpaRepository<Auction, Long> {
             " FROM Auction ac" +
             " JOIN FETCH ac.art a" +
             " JOIN FETCH a.owner" +
-            " WHERE ac.id = :auctionId")
-    Optional<Auction> findById(@Param("auctionId") Long auctionId);
+            " WHERE ac.id = :id")
+    Optional<Auction> findById(@Param("id") Long id);
 
-    @Lock(LockModeType.PESSIMISTIC_WRITE)
-    @Query("SELECT ac" +
-            " FROM Auction ac" +
-            " JOIN FETCH ac.art a" +
-            " JOIN FETCH a.owner" +
-            " WHERE ac.id = :auctionId")
-    Optional<Auction> findByIdWithPessimisticLock(@Param("auctionId") Long auctionId);
+    default Auction getById(final Long id) {
+        return findById(id)
+                .orElseThrow(() -> AnotherArtException.type(AuctionErrorCode.AUCTION_NOT_FOUND));
+    }
 
     @Query("SELECT ac" +
             " FROM Auction ac" +
@@ -32,6 +30,11 @@ public interface AuctionRepository extends JpaRepository<Auction, Long> {
             " JOIN FETCH a.owner" +
             " WHERE a.id = :artId")
     Optional<Auction> findByArtId(@Param("artId") Long artId);
+
+    default Auction getByArtId(final Long artId) {
+        return findByArtId(artId)
+                .orElseThrow(() -> AnotherArtException.type(AuctionErrorCode.AUCTION_NOT_FOUND));
+    }
 
     @Modifying(flushAutomatically = true, clearAutomatically = true)
     @Query("DELETE FROM Auction ac WHERE ac.art.id = :artId")

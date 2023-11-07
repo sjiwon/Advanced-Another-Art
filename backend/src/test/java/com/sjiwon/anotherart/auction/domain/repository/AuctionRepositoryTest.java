@@ -1,7 +1,8 @@
-package com.sjiwon.anotherart.auction.domain;
+package com.sjiwon.anotherart.auction.domain.repository;
 
 import com.sjiwon.anotherart.art.domain.model.Art;
 import com.sjiwon.anotherart.art.domain.repository.ArtRepository;
+import com.sjiwon.anotherart.auction.domain.model.Auction;
 import com.sjiwon.anotherart.common.RepositoryTest;
 import com.sjiwon.anotherart.member.domain.model.Member;
 import com.sjiwon.anotherart.member.domain.repository.MemberRepository;
@@ -38,21 +39,6 @@ class AuctionRepositoryTest extends RepositoryTest {
         owner = memberRepository.save(MEMBER_A.toMember());
         art = artRepository.save(AUCTION_1.toArt(owner));
         auction = auctionRepository.save(AUCTION_OPEN_NOW.toAuction(art));
-    }
-
-    @Test
-    @DisplayName("ID(PK)로 경매 정보를 조회한다")
-    void findByIdWithPessimisticLock() {
-        // when
-        final Optional<Auction> emptyAuction = auctionRepository.findByIdWithPessimisticLock(auction.getId() + 10000L);
-        final Optional<Auction> existsAuction = auctionRepository.findByIdWithPessimisticLock(auction.getId());
-
-        // then
-        assertAll(
-                () -> assertThat(emptyAuction).isEmpty(),
-                () -> assertThat(existsAuction).isPresent()
-        );
-        assertThat(existsAuction.get()).isEqualTo(auction);
     }
 
     @Test

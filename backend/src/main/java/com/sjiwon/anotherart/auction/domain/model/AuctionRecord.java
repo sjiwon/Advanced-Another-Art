@@ -1,6 +1,5 @@
-package com.sjiwon.anotherart.auction.domain.record;
+package com.sjiwon.anotherart.auction.domain.model;
 
-import com.sjiwon.anotherart.auction.domain.Auction;
 import com.sjiwon.anotherart.global.BaseEntity;
 import com.sjiwon.anotherart.member.domain.model.Member;
 import jakarta.persistence.Column;

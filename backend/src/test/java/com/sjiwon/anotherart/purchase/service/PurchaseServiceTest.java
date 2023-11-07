@@ -1,7 +1,7 @@
 package com.sjiwon.anotherart.purchase.service;
 
 import com.sjiwon.anotherart.art.domain.model.Art;
-import com.sjiwon.anotherart.auction.domain.Auction;
+import com.sjiwon.anotherart.auction.domain.model.Auction;
 import com.sjiwon.anotherart.common.ServiceTest;
 import com.sjiwon.anotherart.common.fixture.MemberFixture;
 import com.sjiwon.anotherart.global.exception.AnotherArtException;

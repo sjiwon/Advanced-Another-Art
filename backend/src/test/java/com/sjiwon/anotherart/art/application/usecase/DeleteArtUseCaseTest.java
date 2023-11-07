@@ -7,7 +7,7 @@ import com.sjiwon.anotherart.art.domain.repository.HashtagRepository;
 import com.sjiwon.anotherart.art.domain.service.ArtDeleter;
 import com.sjiwon.anotherart.art.domain.service.ArtDeletionPreInspector;
 import com.sjiwon.anotherart.art.exception.ArtErrorCode;
-import com.sjiwon.anotherart.auction.domain.AuctionRepository;
+import com.sjiwon.anotherart.auction.domain.repository.AuctionRepository;
 import com.sjiwon.anotherart.common.UseCaseTest;
 import com.sjiwon.anotherart.favorite.domain.repository.FavoriteRepository;
 import com.sjiwon.anotherart.global.exception.AnotherArtException;
