@@ -15,13 +15,13 @@ public class ArtValidator {
     private final ArtRepository artRepository;
 
     public void validateUniqueNameForCreate(final ArtName name) {
-        if (artRepository.existsByName(name)) {
+        if (artRepository.existsByNameValue(name.getValue())) {
             throw AnotherArtException.type(ArtErrorCode.DUPLICATE_NAME);
         }
     }
 
     public void validateUniqueNameForUpdate(final ArtName name, final Long artId) {
-        if (artRepository.existsByNameAndIdNot(name, artId)) {
+        if (artRepository.isNameUsedByOther(artId, name.getValue())) {
             throw AnotherArtException.type(ArtErrorCode.DUPLICATE_NAME);
         }
     }

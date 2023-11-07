@@ -28,7 +28,6 @@ import static com.sjiwon.anotherart.art.domain.model.ArtType.GENERAL;
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class ArtService {
-    private final ArtFindService artFindService;
     private final MemberRepository memberRepository;
     private final S3FileUploader s3FileUploader;
     private final ArtValidator artValidator;
@@ -81,7 +80,7 @@ public class ArtService {
     public void update(final Long artId, final String name, final String description, final Set<String> hashtags) {
         validateUniqueNameForUpdate(name, artId);
 
-        final Art art = artFindService.findById(artId);
+        final Art art = artRepository.getById(artId);
         art.update(ArtName.from(name), Description.from(description), hashtags);
     }
 
@@ -91,7 +90,7 @@ public class ArtService {
 
     @Transactional
     public void delete(final Long artId) {
-        final Art art = artFindService.findById(artId);
+        final Art art = artRepository.getById(artId);
         validateArtIsSold(art);
         validateAuctionRecordIsExists(art);
         proceedToDeleteArt(artId);
