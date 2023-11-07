@@ -5,7 +5,6 @@ import com.sjiwon.anotherart.art.domain.ArtName;
 import com.sjiwon.anotherart.art.domain.ArtStatus;
 import com.sjiwon.anotherart.art.domain.Description;
 import com.sjiwon.anotherart.member.domain.model.Nickname;
-import com.sjiwon.anotherart.member.domain.repository.query.dto.response.BasicMember;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -17,8 +16,8 @@ import java.util.List;
 public class AuctionArt implements ArtDetails {
     private final BasicAuction auction;
     private final BasicArt art;
-    private final BasicMember owner;
-    private final BasicMember highestBidder;
+//    private final BasicMember owner;
+//    private final BasicMember highestBidder;
 
     @QueryProjection
     public AuctionArt(
@@ -44,15 +43,15 @@ public class AuctionArt implements ArtDetails {
                 registrationDate
         );
 
-        this.owner = new BasicMember(
-                ownerId,
-                ownerNickname,
-                ownerSchool
-        );
+//        this.owner = new BasicMember(
+//                ownerId,
+//                ownerNickname,
+//                ownerSchool
+//        );
 
-        this.highestBidder = highestBidderId != null
-                ? new BasicMember(highestBidderId, highestBidderNickname, highestBidderSchool)
-                : null;
+//        this.highestBidder = highestBidderId != null
+//                ? new BasicMember(highestBidderId, highestBidderNickname, highestBidderSchool)
+//                : null;
     }
 
     public void applyHashtags(final List<String> hashtags) {

@@ -5,7 +5,6 @@ import com.sjiwon.anotherart.art.domain.ArtName;
 import com.sjiwon.anotherart.art.domain.ArtStatus;
 import com.sjiwon.anotherart.art.domain.Description;
 import com.sjiwon.anotherart.member.domain.model.Nickname;
-import com.sjiwon.anotherart.member.domain.repository.query.dto.response.BasicMember;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -16,8 +15,8 @@ import java.util.List;
 @AllArgsConstructor
 public class GeneralArt implements ArtDetails {
     private final BasicArt art;
-    private final BasicMember owner;
-    private final BasicMember buyer;
+//    private final BasicMember owner;
+//    private final BasicMember buyer;
 
     @QueryProjection
     public GeneralArt(
@@ -35,15 +34,15 @@ public class GeneralArt implements ArtDetails {
                 registrationDate
         );
 
-        this.owner = new BasicMember(
-                ownerId,
-                ownerNickname,
-                ownerSchool
-        );
+//        this.owner = new BasicMember(
+//                ownerId,
+//                ownerNickname,
+//                ownerSchool
+//        );
 
-        this.buyer = buyerId != null
-                ? new BasicMember(buyerId, buyerNickname, buyerSchool)
-                : null;
+//        this.buyer = buyerId != null
+//                ? new BasicMember(buyerId, buyerNickname, buyerSchool)
+//                : null;
     }
 
     public void applyHashtags(final List<String> hashtags) {

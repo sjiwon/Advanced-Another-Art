@@ -2,7 +2,6 @@ package com.sjiwon.anotherart.member.domain.repository;
 
 import com.sjiwon.anotherart.global.exception.AnotherArtException;
 import com.sjiwon.anotherart.member.domain.model.Member;
-import com.sjiwon.anotherart.member.domain.repository.query.MemberInformationQueryRepository;
 import com.sjiwon.anotherart.member.exception.MemberErrorCode;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -10,7 +9,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.Optional;
 
-public interface MemberRepository extends JpaRepository<Member, Long>, MemberInformationQueryRepository {
+public interface MemberRepository extends JpaRepository<Member, Long> {
     default Member getById(final Long id) {
         return findById(id)
                 .orElseThrow(() -> AnotherArtException.type(MemberErrorCode.MEMBER_NOT_FOUND));
