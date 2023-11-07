@@ -16,7 +16,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -37,28 +36,28 @@ public class MemberApiController {
     private final SignUpMemberUseCase signUpMemberUseCase;
 
     @Operation(summary = "로그인 아이디 중복체크 EndPoint")
-    @GetMapping("/duplicate/login-id")
+    @PostMapping("/duplicate/login-id")
     public ResponseEntity<Void> checkLoginId(@RequestBody @Valid final MemberDuplicateCheckRequest request) {
         validateMemberResourceUseCase.invoke(new ValidateMemberResourceCommand(LOGIN_ID, request.value()));
         return ResponseEntity.noContent().build();
     }
 
     @Operation(summary = "이메일 중복체크 EndPoint")
-    @GetMapping("/duplicate/email")
+    @PostMapping("/duplicate/email")
     public ResponseEntity<Void> checkEmail(@RequestBody @Valid final MemberDuplicateCheckRequest request) {
         validateMemberResourceUseCase.invoke(new ValidateMemberResourceCommand(EMAIL, request.value()));
         return ResponseEntity.noContent().build();
     }
 
     @Operation(summary = "닉네임 중복체크 EndPoint")
-    @GetMapping("/duplicate/nickname")
+    @PostMapping("/duplicate/nickname")
     public ResponseEntity<Void> checkNickname(@RequestBody @Valid final MemberDuplicateCheckRequest request) {
         validateMemberResourceUseCase.invoke(new ValidateMemberResourceCommand(NICKNAME, request.value()));
         return ResponseEntity.noContent().build();
     }
 
     @Operation(summary = "전화번호 중복체크 EndPoint")
-    @GetMapping("/duplicate/phone")
+    @PostMapping("/duplicate/phone")
     public ResponseEntity<Void> checkPhone(@RequestBody @Valid final MemberDuplicateCheckRequest request) {
         validateMemberResourceUseCase.invoke(new ValidateMemberResourceCommand(PHONE, request.value()));
         return ResponseEntity.noContent().build();
