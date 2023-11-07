@@ -104,7 +104,7 @@ public class Art extends BaseEntity<Art> {
     }
 
     public boolean isOwner(final Member other) {
-        return owner.isSameMember(other);
+        return owner.isSame(other);
     }
 
     // Add Getter

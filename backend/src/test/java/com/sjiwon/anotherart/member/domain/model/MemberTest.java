@@ -258,8 +258,8 @@ class MemberTest {
         final Member other = MEMBER_B.toMember().apply(2L);
 
         // when
-        final boolean actual1 = member.isSameMember(member);
-        final boolean actual2 = member.isSameMember(other);
+        final boolean actual1 = member.isSame(member);
+        final boolean actual2 = member.isSame(other);
 
         // then
         assertAll(
