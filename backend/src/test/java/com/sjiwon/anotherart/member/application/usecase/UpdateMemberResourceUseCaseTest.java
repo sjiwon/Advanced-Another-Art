@@ -25,12 +25,12 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-@DisplayName("Member -> UpdateResourceUseCase 테스트")
-public class UpdateResourceUseCaseTest extends UseCaseTest {
+@DisplayName("Member -> UpdateMemberResourceUseCase 테스트")
+public class UpdateMemberResourceUseCaseTest extends UseCaseTest {
     private final MemberRepository memberRepository = mock(MemberRepository.class);
     private final PasswordEncryptor passwordEncryptor = new FakePasswordEncryptor();
     private final MemberResourceValidator memberResourceValidator = new MemberResourceValidator(memberRepository);
-    private final UpdateResourceUseCase sut = new UpdateResourceUseCase(memberResourceValidator, passwordEncryptor, memberRepository);
+    private final UpdateMemberResourceUseCase sut = new UpdateMemberResourceUseCase(memberResourceValidator, passwordEncryptor, memberRepository);
 
     private final Member member = MEMBER_A.toMember().apply(1L);
 

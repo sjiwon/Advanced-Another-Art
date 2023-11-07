@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class UpdateResourceUseCase {
+public class UpdateMemberResourceUseCase {
     private final MemberResourceValidator memberResourceValidator;
     private final PasswordEncryptor passwordEncryptor;
     private final MemberRepository memberRepository;
