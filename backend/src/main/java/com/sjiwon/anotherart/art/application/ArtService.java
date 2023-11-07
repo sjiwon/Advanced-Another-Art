@@ -3,6 +3,7 @@ package com.sjiwon.anotherart.art.application;
 import com.sjiwon.anotherart.art.domain.model.Art;
 import com.sjiwon.anotherart.art.domain.model.ArtName;
 import com.sjiwon.anotherart.art.domain.model.Description;
+import com.sjiwon.anotherart.art.domain.model.UploadImage;
 import com.sjiwon.anotherart.art.domain.repository.ArtRepository;
 import com.sjiwon.anotherart.art.domain.repository.HashtagRepository;
 import com.sjiwon.anotherart.art.exception.ArtErrorCode;
@@ -56,7 +57,7 @@ public class ArtService {
                         Description.from(request.description()),
                         request.type().equals("general") ? GENERAL : AUCTION,
                         request.price(),
-                        storageName,
+                        new UploadImage(null, null), // TODO 파일 업로드 후 리팩토링
                         request.hashtags()
                 )
         );

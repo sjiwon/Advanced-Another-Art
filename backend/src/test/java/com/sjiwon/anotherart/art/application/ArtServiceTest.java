@@ -86,11 +86,11 @@ class ArtServiceTest extends ServiceTest {
             // then
             final Art findArt = artRepository.findById(artId).orElseThrow();
             assertAll(
-                    () -> assertThat(findArt.getName().getValue()).isEqualTo(GENERAL_1.getName()),
-                    () -> assertThat(findArt.getDescription().getValue()).isEqualTo(GENERAL_1.getDescription()),
+                    () -> assertThat(findArt.getName().getValue()).isEqualTo(GENERAL_1.getName().getValue()),
+                    () -> assertThat(findArt.getDescription().getValue()).isEqualTo(GENERAL_1.getDescription().getValue()),
                     () -> assertThat(findArt.getType()).isEqualTo(GENERAL),
                     () -> assertThat(findArt.getPrice()).isEqualTo(GENERAL_1.getPrice()),
-                    () -> assertThat(findArt.getStorageName()).isEqualTo(uploadLink),
+                    () -> assertThat(findArt.getUploadImage().getLink()).isEqualTo(uploadLink),
                     () -> assertThat(findArt.getStatus()).isEqualTo(ON_SALE),
                     () -> assertThat(findArt.getOwner()).isEqualTo(owner),
                     () -> assertThat(findArt.getHashtags()).containsExactlyInAnyOrderElementsOf(hashtags)
@@ -112,11 +112,11 @@ class ArtServiceTest extends ServiceTest {
             // then
             final Art findArt = artRepository.findById(artId).orElseThrow();
             assertAll(
-                    () -> assertThat(findArt.getName().getValue()).isEqualTo(AUCTION_1.getName()),
-                    () -> assertThat(findArt.getDescription().getValue()).isEqualTo(AUCTION_1.getDescription()),
+                    () -> assertThat(findArt.getName().getValue()).isEqualTo(AUCTION_1.getName().getValue()),
+                    () -> assertThat(findArt.getDescription().getValue()).isEqualTo(AUCTION_1.getDescription().getValue()),
                     () -> assertThat(findArt.getType()).isEqualTo(AUCTION),
                     () -> assertThat(findArt.getPrice()).isEqualTo(AUCTION_1.getPrice()),
-                    () -> assertThat(findArt.getStorageName()).isEqualTo(uploadLink),
+                    () -> assertThat(findArt.getUploadImage().getLink()).isEqualTo(uploadLink),
                     () -> assertThat(findArt.getStatus()).isEqualTo(ON_SALE),
                     () -> assertThat(findArt.getOwner()).isEqualTo(owner),
                     () -> assertThat(findArt.getHashtags()).containsExactlyInAnyOrderElementsOf(hashtags)

@@ -17,7 +17,7 @@ import static com.sjiwon.anotherart.common.fixture.MemberFixture.MEMBER_B;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-@DisplayName("Art 도메인 테스트")
+@DisplayName("Art -> 도메인 [Art] 테스트")
 class ArtTest {
     private final Member owner = MEMBER_A.toMember().apply(1L);
     private final Member member = MEMBER_B.toMember().apply(2L);
@@ -29,27 +29,25 @@ class ArtTest {
         final Art generalArt = GENERAL_1.toArt(owner);
 
         assertAll(
-                () -> assertThat(auctionArt.getName().getValue()).isEqualTo(AUCTION_1.getName()),
-                () -> assertThat(auctionArt.getDescription().getValue()).isEqualTo(AUCTION_1.getDescription()),
+                () -> assertThat(auctionArt.getName().getValue()).isEqualTo(AUCTION_1.getName().getValue()),
+                () -> assertThat(auctionArt.getDescription().getValue()).isEqualTo(AUCTION_1.getDescription().getValue()),
                 () -> assertThat(auctionArt.getType()).isEqualTo(AUCTION),
-                () -> assertThat(auctionArt.getStorageName()).isEqualTo(AUCTION_1.getStorageName()),
                 () -> assertThat(auctionArt.getPrice()).isEqualTo(AUCTION_1.getPrice()),
+                () -> assertThat(auctionArt.getUploadImage().getUploadFileName()).isEqualTo(AUCTION_1.getUploadImage().getUploadFileName()),
+                () -> assertThat(auctionArt.getUploadImage().getLink()).isEqualTo(AUCTION_1.getUploadImage().getLink()),
                 () -> assertThat(auctionArt.getStatus()).isEqualTo(ON_SALE),
                 () -> assertThat(auctionArt.getHashtags()).containsExactlyInAnyOrderElementsOf(AUCTION_1.getHashtags()),
-                () -> assertThat(auctionArt.getOwner().getName()).isEqualTo(owner.getName()),
-                () -> assertThat(auctionArt.getOwner().getNickname()).isEqualTo(owner.getNickname()),
-                () -> assertThat(auctionArt.getOwner().getLoginId()).isEqualTo(owner.getLoginId()),
+                () -> assertThat(auctionArt.getOwner().getId()).isEqualTo(owner.getId()),
 
-                () -> assertThat(generalArt.getName().getValue()).isEqualTo(GENERAL_1.getName()),
-                () -> assertThat(generalArt.getDescription().getValue()).isEqualTo(GENERAL_1.getDescription()),
+                () -> assertThat(generalArt.getName().getValue()).isEqualTo(GENERAL_1.getName().getValue()),
+                () -> assertThat(generalArt.getDescription().getValue()).isEqualTo(GENERAL_1.getDescription().getValue()),
                 () -> assertThat(generalArt.getType()).isEqualTo(GENERAL),
-                () -> assertThat(generalArt.getStorageName()).isEqualTo(GENERAL_1.getStorageName()),
                 () -> assertThat(generalArt.getPrice()).isEqualTo(GENERAL_1.getPrice()),
+                () -> assertThat(generalArt.getUploadImage().getUploadFileName()).isEqualTo(GENERAL_1.getUploadImage().getUploadFileName()),
+                () -> assertThat(generalArt.getUploadImage().getLink()).isEqualTo(GENERAL_1.getUploadImage().getLink()),
                 () -> assertThat(generalArt.getStatus()).isEqualTo(ON_SALE),
                 () -> assertThat(generalArt.getHashtags()).containsExactlyInAnyOrderElementsOf(GENERAL_1.getHashtags()),
-                () -> assertThat(generalArt.getOwner().getName()).isEqualTo(owner.getName()),
-                () -> assertThat(generalArt.getOwner().getNickname()).isEqualTo(owner.getNickname()),
-                () -> assertThat(generalArt.getOwner().getLoginId()).isEqualTo(owner.getLoginId())
+                () -> assertThat(generalArt.getOwner().getId()).isEqualTo(owner.getId())
         );
     }
 
@@ -58,17 +56,17 @@ class ArtTest {
     void update() {
         // given
         final Art art = AUCTION_1.toArt(owner);
-
-        // when
         final ArtName updateName = ArtName.from("HELLO ART");
         final Description updateDescription = Description.from("Hello World");
         final Set<String> updateHashtags = Set.of("HELLO", "WORLD", "JAVA", "SPRING");
+
+        // when
         art.update(updateName, updateDescription, updateHashtags);
 
         // then
         assertAll(
-                () -> assertThat(art.getName().getValue()).isEqualTo("HELLO ART"),
-                () -> assertThat(art.getDescription().getValue()).isEqualTo("Hello World"),
+                () -> assertThat(art.getName().getValue()).isEqualTo(updateName.getValue()),
+                () -> assertThat(art.getDescription().getValue()).isEqualTo(updateDescription.getValue()),
                 () -> assertThat(art.getHashtags()).containsExactlyInAnyOrderElementsOf(updateHashtags)
         );
     }
@@ -78,7 +76,10 @@ class ArtTest {
     void closeSale() {
         // given
         final Art art = AUCTION_1.toArt(owner);
-        assertThat(art.getStatus()).isEqualTo(ON_SALE);
+        assertAll(
+                () -> assertThat(art.getStatus()).isEqualTo(ON_SALE),
+                () -> assertThat(art.isSold()).isFalse()
+        );
 
         // when
         art.closeSale();
@@ -110,7 +111,7 @@ class ArtTest {
 
     @Test
     @DisplayName("작품 소유자인지 확인한다")
-    void isArtOwner() {
+    void isOwner() {
         // given
         final Art art = AUCTION_1.toArt(owner);
 

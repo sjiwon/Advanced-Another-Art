@@ -40,8 +40,8 @@ public class Art extends BaseEntity<Art> {
     @Column(name = "price", nullable = false, updatable = false)
     private int price;
 
-    @Column(name = "storage_name", nullable = false)
-    private String storageName;
+    @Embedded
+    private UploadImage uploadImage;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "art_status", nullable = false)
@@ -60,7 +60,7 @@ public class Art extends BaseEntity<Art> {
             final Description description,
             final ArtType type,
             final int price,
-            final String storageName,
+            final UploadImage uploadImage,
             final Set<String> hashtags
     ) {
         this.owner = owner;
@@ -68,7 +68,7 @@ public class Art extends BaseEntity<Art> {
         this.description = description;
         this.type = type;
         this.price = price;
-        this.storageName = storageName;
+        this.uploadImage = uploadImage;
         this.status = ON_SALE;
         this.hashtags = new Hashtags(this, hashtags);
     }
@@ -79,10 +79,10 @@ public class Art extends BaseEntity<Art> {
             final Description description,
             final ArtType type,
             final int price,
-            final String storageName,
+            final UploadImage uploadImage,
             final Set<String> hashtags
     ) {
-        return new Art(owner, name, description, type, price, storageName, hashtags);
+        return new Art(owner, name, description, type, price, uploadImage, hashtags);
     }
 
     public void update(final ArtName name, final Description description, final Set<String> hashtags) {

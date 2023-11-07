@@ -11,8 +11,8 @@ import static com.sjiwon.anotherart.common.fixture.PeriodFixture.OPEN_WEEK_1_LAT
 public class ArtRegisterRequestUtils {
     public static ArtRegisterRequest createArtRegisterRequestWithInsufficientPrice(final ArtFixture fixture, final MultipartFile file, final Set<String> hashtags) {
         return new ArtRegisterRequest(
-                fixture.getName(),
-                fixture.getDescription(),
+                fixture.getName().getValue(),
+                fixture.getDescription().getValue(),
                 "general",
                 999,
                 null,
@@ -24,8 +24,8 @@ public class ArtRegisterRequestUtils {
 
     public static ArtRegisterRequest createGeneralArtRegisterRequest(final ArtFixture fixture, final MultipartFile file, final Set<String> hashtags) {
         return new ArtRegisterRequest(
-                fixture.getName(),
-                fixture.getDescription(),
+                fixture.getName().getValue(),
+                fixture.getDescription().getValue(),
                 "general",
                 fixture.getPrice(),
                 null,
@@ -37,8 +37,8 @@ public class ArtRegisterRequestUtils {
 
     public static ArtRegisterRequest createAuctionArtRegisterRequest(final ArtFixture fixture, final MultipartFile file, final Set<String> hashtags) {
         return new ArtRegisterRequest(
-                fixture.getName(),
-                fixture.getDescription(),
+                fixture.getName().getValue(),
+                fixture.getDescription().getValue(),
                 "auction",
                 fixture.getPrice(),
                 OPEN_WEEK_1_LATER.getStartDate(),
