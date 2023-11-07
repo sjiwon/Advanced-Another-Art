@@ -8,8 +8,8 @@ import org.springframework.http.HttpStatus;
 @Getter
 @RequiredArgsConstructor
 public enum FavoriteErrorCode implements ErrorCode {
-    ALREADY_FAVORITE_MARKED(HttpStatus.CONFLICT, "FAVORITE_001", "이미 찜한 작품입니다."),
-    NOT_FAVORITE_MARKED(HttpStatus.CONFLICT, "FAVORITE_002", "찜 등록되어 있지 않은 작품입니다."),
+    ALREADY_LIKE_MARKED(HttpStatus.CONFLICT, "FAVORITE_001", "이미 좋아요 등록을 진행한 작품입니다."),
+    FAVORITE_MARKING_NOT_FOUND(HttpStatus.NOT_FOUND, "FAVORITE_002", "좋아요 등록을 하지 않은 작품입니다."),
     ;
 
     private final HttpStatus status;

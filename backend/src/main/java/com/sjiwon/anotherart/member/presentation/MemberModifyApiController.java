@@ -1,7 +1,7 @@
 package com.sjiwon.anotherart.member.presentation;
 
 import com.sjiwon.anotherart.global.resolver.ExtractPayload;
-import com.sjiwon.anotherart.member.application.usecase.UpdateResourceUseCase;
+import com.sjiwon.anotherart.member.application.usecase.UpdateMemberResourceUseCase;
 import com.sjiwon.anotherart.member.application.usecase.command.UpdateAddressCommand;
 import com.sjiwon.anotherart.member.application.usecase.command.UpdateNicknameCommand;
 import com.sjiwon.anotherart.member.application.usecase.command.UpdatePasswordCommand;
@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RequestMapping("/api/members/me")
 public class MemberModifyApiController {
-    private final UpdateResourceUseCase updateResourceUseCase;
+    private final UpdateMemberResourceUseCase updateMemberResourceUseCase;
 
     @Operation(summary = "닉네임 수정 EndPoint")
     @PatchMapping("/nickname")
@@ -31,7 +31,7 @@ public class MemberModifyApiController {
             @ExtractPayload final Long memberId,
             @RequestBody @Valid final UpdateNicknameRequest request
     ) {
-        updateResourceUseCase.updateNickname(new UpdateNicknameCommand(memberId, request.value()));
+        updateMemberResourceUseCase.updateNickname(new UpdateNicknameCommand(memberId, request.value()));
         return ResponseEntity.noContent().build();
     }
 
@@ -41,7 +41,7 @@ public class MemberModifyApiController {
             @ExtractPayload final Long memberId,
             @RequestBody @Valid final UpdateAddressRequest request
     ) {
-        updateResourceUseCase.updateAddress(new UpdateAddressCommand(
+        updateMemberResourceUseCase.updateAddress(new UpdateAddressCommand(
                 memberId,
                 request.postcode(),
                 request.defaultAddress(),
@@ -56,7 +56,7 @@ public class MemberModifyApiController {
             @ExtractPayload final Long memberId,
             @RequestBody @Valid final UpdatePasswordRequest request
     ) {
-        updateResourceUseCase.updatePassword(new UpdatePasswordCommand(memberId, request.value()));
+        updateMemberResourceUseCase.updatePassword(new UpdatePasswordCommand(memberId, request.value()));
         return ResponseEntity.noContent().build();
     }
 }

@@ -1,6 +1,6 @@
 package com.sjiwon.anotherart.global.security.validator;
 
-import com.sjiwon.anotherart.art.domain.ArtRepository;
+import com.sjiwon.anotherart.art.domain.repository.ArtRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

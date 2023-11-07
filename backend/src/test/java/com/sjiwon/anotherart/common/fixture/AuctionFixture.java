@@ -1,6 +1,6 @@
 package com.sjiwon.anotherart.common.fixture;
 
-import com.sjiwon.anotherart.art.domain.Art;
+import com.sjiwon.anotherart.art.domain.model.Art;
 import com.sjiwon.anotherart.auction.domain.Auction;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

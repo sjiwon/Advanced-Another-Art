@@ -1,7 +1,7 @@
 package com.sjiwon.anotherart.purchase.service;
 
-import com.sjiwon.anotherart.art.domain.Art;
-import com.sjiwon.anotherart.art.service.ArtFindService;
+import com.sjiwon.anotherart.art.domain.model.Art;
+import com.sjiwon.anotherart.art.domain.repository.ArtRepository;
 import com.sjiwon.anotherart.auction.domain.Auction;
 import com.sjiwon.anotherart.auction.service.AuctionFindService;
 import com.sjiwon.anotherart.global.exception.AnotherArtException;
@@ -19,14 +19,14 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class PurchaseService {
-    private final ArtFindService artFindService;
+    private final ArtRepository artRepository;
     private final MemberRepository memberRepository;
     private final AuctionFindService auctionFindService;
     private final PurchaseRepository purchaseRepository;
 
     @Transactional
     public Long purchaseArt(final Long artId, final Long memberId) {
-        final Art art = artFindService.findByIdWithOwner(artId);
+        final Art art = artRepository.getByIdWithFetchOwner(artId);
         final Member buyer = memberRepository.getById(memberId);
 
         try {

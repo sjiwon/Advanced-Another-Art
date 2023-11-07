@@ -1,15 +1,15 @@
 //package com.sjiwon.anotherart.member.domain.repository.query;
 //
-//import com.sjiwon.anotherart.art.domain.Art;
-//import com.sjiwon.anotherart.art.domain.ArtRepository;
+//import com.sjiwon.anotherart.art.domain.model.Art;
+//import com.sjiwon.anotherart.art.domain.repository.ArtRepository;
 //import com.sjiwon.anotherart.art.infra.query.dto.response.AuctionArt;
 //import com.sjiwon.anotherart.auction.domain.Auction;
 //import com.sjiwon.anotherart.auction.domain.AuctionRepository;
 //import com.sjiwon.anotherart.common.RepositoryTest;
 //import com.sjiwon.anotherart.common.fixture.ArtFixture;
 //import com.sjiwon.anotherart.common.fixture.MemberFixture;
-//import com.sjiwon.anotherart.favorite.domain.Favorite;
-//import com.sjiwon.anotherart.favorite.domain.FavoriteRepository;
+//import com.sjiwon.anotherart.favorite.domain.model.Favorite;
+//import com.sjiwon.anotherart.favorite.domain.repository.FavoriteRepository;
 //import com.sjiwon.anotherart.member.domain.model.Member;
 //import com.sjiwon.anotherart.member.domain.repository.MemberRepository;
 //import com.sjiwon.anotherart.member.domain.repository.query.dto.MemberPointRecord;
@@ -27,8 +27,8 @@
 //import java.util.Arrays;
 //import java.util.List;
 //
-//import static com.sjiwon.anotherart.art.domain.ArtType.AUCTION;
-//import static com.sjiwon.anotherart.art.domain.ArtType.GENERAL;
+//import static com.sjiwon.anotherart.art.domain.model.ArtType.AUCTION;
+//import static com.sjiwon.anotherart.art.domain.model.ArtType.GENERAL;
 //import static com.sjiwon.anotherart.common.fixture.AuctionFixture.AUCTION_OPEN_NOW;
 //import static com.sjiwon.anotherart.common.fixture.MemberFixture.MEMBER_A;
 //import static com.sjiwon.anotherart.common.fixture.MemberFixture.MEMBER_B;
@@ -307,8 +307,8 @@
 //                    () -> assertThat(auctionArt.getAuction().getBidCount()).isEqualTo(10),
 //
 //                    () -> assertThat(auctionArt.getArt().getId()).isEqualTo(art.getId()),
-//                    () -> assertThat(auctionArt.getArt().getName()).isEqualTo(art.getNameValue()),
-//                    () -> assertThat(auctionArt.getArt().getDescription()).isEqualTo(art.getDescriptionValue()),
+//                    () -> assertThat(auctionArt.getArt().getName()).isEqualTo(art.getName().getValue()),
+//                    () -> assertThat(auctionArt.getArt().getDescription()).isEqualTo(art.getDescription().getValue()),
 //                    () -> assertThat(auctionArt.getArt().getPrice()).isEqualTo(art.getPrice()),
 //                    () -> assertThat(auctionArt.getArt().getStatus()).isEqualTo(art.getStatus().getDescription()),
 //                    () -> assertThat(auctionArt.getArt().getStorageName()).isEqualTo(art.getStorageName()),
@@ -341,8 +341,8 @@
 //
 //            assertAll(
 //                    () -> assertThat(tradedArt.getArt().getId()).isEqualTo(art.getId()),
-//                    () -> assertThat(tradedArt.getArt().getName()).isEqualTo(art.getNameValue()),
-//                    () -> assertThat(tradedArt.getArt().getDescription()).isEqualTo(art.getDescriptionValue()),
+//                    () -> assertThat(tradedArt.getArt().getName()).isEqualTo(art.getName().getValue()),
+//                    () -> assertThat(tradedArt.getArt().getDescription()).isEqualTo(art.getDescription().getValue()),
 //                    () -> assertThat(tradedArt.getArt().getPrice()).isEqualTo(art.getPrice()),
 //                    () -> assertThat(tradedArt.getArt().getStatus()).isEqualTo(art.getStatus().getDescription()),
 //                    () -> assertThat(tradedArt.getArt().getStorageName()).isEqualTo(art.getStorageName()),
@@ -367,8 +367,8 @@
 //
 //            assertAll(
 //                    () -> assertThat(tradedArt.getArt().getId()).isEqualTo(art.getId()),
-//                    () -> assertThat(tradedArt.getArt().getName()).isEqualTo(art.getNameValue()),
-//                    () -> assertThat(tradedArt.getArt().getDescription()).isEqualTo(art.getDescriptionValue()),
+//                    () -> assertThat(tradedArt.getArt().getName()).isEqualTo(art.getName().getValue()),
+//                    () -> assertThat(tradedArt.getArt().getDescription()).isEqualTo(art.getDescription().getValue()),
 //                    () -> assertThat(tradedArt.getArt().getPrice()).isEqualTo(art.getPrice()),
 //                    () -> assertThat(tradedArt.getArt().getStatus()).isEqualTo(art.getStatus().getDescription()),
 //                    () -> assertThat(tradedArt.getArt().getStorageName()).isEqualTo(art.getStorageName()),

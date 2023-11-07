@@ -1,8 +1,8 @@
 package com.sjiwon.anotherart.member.domain.repository.query.dto;
 
 import com.querydsl.core.annotations.QueryProjection;
-import com.sjiwon.anotherart.art.domain.ArtName;
-import com.sjiwon.anotherart.art.domain.Description;
+import com.sjiwon.anotherart.art.domain.model.ArtName;
+import com.sjiwon.anotherart.art.domain.model.Description;
 import com.sjiwon.anotherart.member.domain.model.Nickname;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

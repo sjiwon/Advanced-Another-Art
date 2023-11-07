@@ -1,6 +1,6 @@
 package com.sjiwon.anotherart.auction.service;
 
-import com.sjiwon.anotherart.art.domain.Art;
+import com.sjiwon.anotherart.art.domain.model.Art;
 import com.sjiwon.anotherart.auction.domain.Auction;
 import com.sjiwon.anotherart.auction.facade.BidFacade;
 import com.sjiwon.anotherart.common.ConcurrencyTest;

@@ -36,4 +36,13 @@ public interface AuctionRepository extends JpaRepository<Auction, Long> {
     @Modifying(flushAutomatically = true, clearAutomatically = true)
     @Query("DELETE FROM Auction ac WHERE ac.art.id = :artId")
     void deleteByArtId(@Param("artId") Long artId);
+
+    @Query("SELECT ac.bidders.highestBidder.id" +
+            " FROM Auction ac" +
+            " WHERE ac.art.id = :artId")
+    Long getBidderIdByArtId(@Param("artId") Long artId);
+
+    default boolean isBidRecordExists(final Long artId) {
+        return getBidderIdByArtId(artId) != null;
+    }
 }

@@ -1,6 +1,6 @@
 package com.sjiwon.anotherart.member.domain.repository.query;
 
-import com.sjiwon.anotherart.art.domain.ArtType;
+import com.sjiwon.anotherart.art.domain.model.ArtType;
 import com.sjiwon.anotherart.member.domain.repository.query.dto.MemberInformation;
 import com.sjiwon.anotherart.member.domain.repository.query.dto.MemberPointRecord;
 import com.sjiwon.anotherart.member.domain.repository.query.dto.PurchaseArts;

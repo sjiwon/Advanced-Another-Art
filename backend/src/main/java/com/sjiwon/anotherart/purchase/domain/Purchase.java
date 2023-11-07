@@ -1,6 +1,6 @@
 package com.sjiwon.anotherart.purchase.domain;
 
-import com.sjiwon.anotherart.art.domain.Art;
+import com.sjiwon.anotherart.art.domain.model.Art;
 import com.sjiwon.anotherart.global.BaseEntity;
 import com.sjiwon.anotherart.global.exception.AnotherArtException;
 import com.sjiwon.anotherart.member.domain.model.Member;
@@ -50,7 +50,7 @@ public class Purchase extends BaseEntity<Purchase> {
     }
 
     private static void validateBuyerIsArtOwner(final Art art, final Member buyer) {
-        if (art.isArtOwner(buyer)) {
+        if (art.isOwner(buyer)) {
             throw AnotherArtException.type(PurchaseErrorCode.ART_OWNER_CANNOT_PURCHASE_OWN);
         }
     }
