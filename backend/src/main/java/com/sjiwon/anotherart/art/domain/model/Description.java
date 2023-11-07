@@ -24,13 +24,13 @@ public class Description {
     }
 
     public static Description from(final String value) {
-        validateDescriptionIsNotBlank(value);
+        validateDescriptionIsUsable(value);
         validateLengthIsInRange(value);
         return new Description(value);
     }
 
-    private static void validateDescriptionIsNotBlank(final String value) {
-        if (value.isBlank()) {
+    private static void validateDescriptionIsUsable(final String value) {
+        if (value == null || value.isBlank()) {
             throw AnotherArtException.type(ArtErrorCode.DESCRIPTION_IS_BLANK);
         }
     }
@@ -42,6 +42,20 @@ public class Description {
     }
 
     private static boolean isLengthOutOfRange(final String name) {
-        return MAXIMUM_LENGTH < name.length();
+        return name.length() > MAXIMUM_LENGTH;
+    }
+
+    @Override
+    public boolean equals(final Object object) {
+        if (this == object) return true;
+        if (object == null || getClass() != object.getClass()) return false;
+
+        final Description other = (Description) object;
+        return value.equals(other.value);
+    }
+
+    @Override
+    public int hashCode() {
+        return value.hashCode();
     }
 }
