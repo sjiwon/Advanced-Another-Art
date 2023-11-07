@@ -1,6 +1,6 @@
 package com.sjiwon.anotherart.art.application.utils;
 
-import com.sjiwon.anotherart.art.presentation.dto.request.ArtRegisterRequest;
+import com.sjiwon.anotherart.art.presentation.dto.request.RegisterArtRequest;
 import com.sjiwon.anotherart.common.fixture.ArtFixture;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -9,8 +9,8 @@ import java.util.Set;
 import static com.sjiwon.anotherart.common.fixture.PeriodFixture.OPEN_WEEK_1_LATER;
 
 public class ArtRegisterRequestUtils {
-    public static ArtRegisterRequest createArtRegisterRequestWithInsufficientPrice(final ArtFixture fixture, final MultipartFile file, final Set<String> hashtags) {
-        return new ArtRegisterRequest(
+    public static RegisterArtRequest createArtRegisterRequestWithInsufficientPrice(final ArtFixture fixture, final MultipartFile file, final Set<String> hashtags) {
+        return new RegisterArtRequest(
                 fixture.getName().getValue(),
                 fixture.getDescription().getValue(),
                 "general",
@@ -22,8 +22,8 @@ public class ArtRegisterRequestUtils {
         );
     }
 
-    public static ArtRegisterRequest createGeneralArtRegisterRequest(final ArtFixture fixture, final MultipartFile file, final Set<String> hashtags) {
-        return new ArtRegisterRequest(
+    public static RegisterArtRequest createGeneralArtRegisterRequest(final ArtFixture fixture, final MultipartFile file, final Set<String> hashtags) {
+        return new RegisterArtRequest(
                 fixture.getName().getValue(),
                 fixture.getDescription().getValue(),
                 "general",
@@ -35,8 +35,8 @@ public class ArtRegisterRequestUtils {
         );
     }
 
-    public static ArtRegisterRequest createAuctionArtRegisterRequest(final ArtFixture fixture, final MultipartFile file, final Set<String> hashtags) {
-        return new ArtRegisterRequest(
+    public static RegisterArtRequest createAuctionArtRegisterRequest(final ArtFixture fixture, final MultipartFile file, final Set<String> hashtags) {
+        return new RegisterArtRequest(
                 fixture.getName().getValue(),
                 fixture.getDescription().getValue(),
                 "auction",

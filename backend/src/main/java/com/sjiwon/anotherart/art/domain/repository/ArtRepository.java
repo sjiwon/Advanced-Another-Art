@@ -2,9 +2,6 @@ package com.sjiwon.anotherart.art.domain.repository;
 
 import com.sjiwon.anotherart.art.domain.model.Art;
 import com.sjiwon.anotherart.art.domain.model.ArtType;
-import com.sjiwon.anotherart.art.domain.repository.query.ArtDetailQueryRepository;
-import com.sjiwon.anotherart.art.domain.repository.query.ArtSimpleQueryRepository;
-import com.sjiwon.anotherart.art.domain.repository.query.ArtSingleQueryRepository;
 import com.sjiwon.anotherart.art.exception.ArtErrorCode;
 import com.sjiwon.anotherart.global.exception.AnotherArtException;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -13,8 +10,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.Optional;
 
-public interface ArtRepository extends JpaRepository<Art, Long>,
-        ArtSingleQueryRepository, ArtDetailQueryRepository, ArtSimpleQueryRepository {
+public interface ArtRepository extends JpaRepository<Art, Long> {
     default Art getById(final Long id) {
         return findById(id)
                 .orElseThrow(() -> AnotherArtException.type(ArtErrorCode.ART_NOT_FOUND));

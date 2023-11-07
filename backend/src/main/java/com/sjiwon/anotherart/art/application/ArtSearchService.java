@@ -8,7 +8,6 @@ import com.sjiwon.anotherart.art.domain.repository.query.dto.response.GeneralArt
 import com.sjiwon.anotherart.art.exception.ArtErrorCode;
 import com.sjiwon.anotherart.art.utils.search.ArtDetailSearchCondition;
 import com.sjiwon.anotherart.art.utils.search.Pagination;
-import com.sjiwon.anotherart.art.utils.search.SortType;
 import com.sjiwon.anotherart.global.exception.AnotherArtException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -27,7 +26,8 @@ public class ArtSearchService {
     private final ArtRepository artRepository;
 
     public ArtDetails getArt(final Long artId) {
-        final ArtDetails response = isAuctionType(artId) ? artRepository.getAuctionArt(artId) : artRepository.getGeneralArt(artId);
+//        final ArtDetails response = isAuctionType(artId) ? artRepository.getAuctionArt(artId) : artRepository.getGeneralArt(artId);
+        final ArtDetails response = null;
         validateResponseExists(response);
         return response;
     }
@@ -43,7 +43,8 @@ public class ArtSearchService {
     }
 
     public ArtAssembler getActiveAuctionArts(final String sortType, final Pageable pageable) {
-        final Page<AuctionArt> result = artRepository.findActiveAuctionArts(SortType.from(sortType), pageable);
+//        final Page<AuctionArt> result = artRepository.findActiveAuctionArts(SortType.from(sortType), pageable);
+        final Page<AuctionArt> result = null;
         return assemblingResult(result, pageable.getPageNumber() + 1);
     }
 
@@ -55,11 +56,13 @@ public class ArtSearchService {
     }
 
     private Page<AuctionArt> getAuctionArtsByKeyword(final ArtDetailSearchCondition condition, final Pageable pageable) {
-        return artRepository.findAuctionArtsByKeyword(condition, pageable);
+//        return artRepository.findAuctionArtsByKeyword(condition, pageable);
+        return null;
     }
 
     private Page<GeneralArt> getGeneralArtsByKeyword(final ArtDetailSearchCondition condition, final Pageable pageable) {
-        return artRepository.findGeneralArtsByKeyword(condition, pageable);
+//        return artRepository.findGeneralArtsByKeyword(condition, pageable);
+        return null;
     }
 
     public ArtAssembler getArtsByHashtag(final ArtDetailSearchCondition condition, final Pageable pageable) {
@@ -70,11 +73,13 @@ public class ArtSearchService {
     }
 
     private Page<AuctionArt> getAuctionArtsByHashtag(final ArtDetailSearchCondition condition, final Pageable pageable) {
-        return artRepository.findAuctionArtsByHashtag(condition, pageable);
+//        return artRepository.findAuctionArtsByHashtag(condition, pageable);
+        return null;
     }
 
     private Page<GeneralArt> getGeneralArtsByHashtag(final ArtDetailSearchCondition condition, final Pageable pageable) {
-        return artRepository.findGeneralArtsByHashtag(condition, pageable);
+//        return artRepository.findGeneralArtsByHashtag(condition, pageable);
+        return null;
     }
 
     private ArtAssembler assemblingResult(final Page<? extends ArtDetails> result, final int page) {

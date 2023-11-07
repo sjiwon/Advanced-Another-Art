@@ -27,6 +27,9 @@ spring:
       cloudfront:
         url: https://cloudfront-domain
 
+cors:
+  allowed-origin-patterns: http://localhost:8080
+
 jwt:
   secret-key: adsfasjdflksajdlkfjasldjflkasdjflasjdlfjasldfjlkasdfasdasd
   access-token-validity: 1234

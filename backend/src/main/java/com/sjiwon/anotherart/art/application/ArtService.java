@@ -7,7 +7,7 @@ import com.sjiwon.anotherart.art.domain.model.UploadImage;
 import com.sjiwon.anotherart.art.domain.repository.ArtRepository;
 import com.sjiwon.anotherart.art.domain.repository.HashtagRepository;
 import com.sjiwon.anotherart.art.exception.ArtErrorCode;
-import com.sjiwon.anotherart.art.presentation.dto.request.ArtRegisterRequest;
+import com.sjiwon.anotherart.art.presentation.dto.request.RegisterArtRequest;
 import com.sjiwon.anotherart.auction.domain.Auction;
 import com.sjiwon.anotherart.auction.domain.AuctionRepository;
 import com.sjiwon.anotherart.auction.domain.Period;
@@ -36,7 +36,7 @@ public class ArtService {
     private final AuctionRepository auctionRepository;
 
     @Transactional
-    public Long registerArt(final Long ownerId, final ArtRegisterRequest request) {
+    public Long registerArt(final Long ownerId, final RegisterArtRequest request) {
         validateUniqueNameForCreate(request.name());
 
         final Member owner = memberRepository.getById(ownerId);
@@ -48,7 +48,7 @@ public class ArtService {
         artValidator.validateUniqueNameForCreate(ArtName.from(name));
     }
 
-    private Long buildArt(final Member owner, final String storageName, final ArtRegisterRequest request) {
+    private Long buildArt(final Member owner, final String storageName, final RegisterArtRequest request) {
         final Art art = artRepository.save(
                 Art.createArt(
                         owner,
@@ -109,7 +109,8 @@ public class ArtService {
     }
 
     private boolean hasAuctionRecords(final Long artId) {
-        return artRepository.isAuctionRecordExists(artId);
+//        return artRepository.isAuctionRecordExists(artId);
+        return true;
     }
 
     private void proceedToDeleteArt(final Long artId) {
