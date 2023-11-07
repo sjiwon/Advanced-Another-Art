@@ -9,7 +9,7 @@ import com.sjiwon.anotherart.art.domain.service.ArtDeletionPreInspector;
 import com.sjiwon.anotherart.art.exception.ArtErrorCode;
 import com.sjiwon.anotherart.auction.domain.AuctionRepository;
 import com.sjiwon.anotherart.common.UseCaseTest;
-import com.sjiwon.anotherart.favorite.domain.FavoriteRepository;
+import com.sjiwon.anotherart.favorite.domain.repository.FavoriteRepository;
 import com.sjiwon.anotherart.global.exception.AnotherArtException;
 import com.sjiwon.anotherart.member.domain.model.Member;
 import org.junit.jupiter.api.BeforeEach;

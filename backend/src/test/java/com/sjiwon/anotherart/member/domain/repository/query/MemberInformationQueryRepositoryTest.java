@@ -8,8 +8,8 @@
 //import com.sjiwon.anotherart.common.RepositoryTest;
 //import com.sjiwon.anotherart.common.fixture.ArtFixture;
 //import com.sjiwon.anotherart.common.fixture.MemberFixture;
-//import com.sjiwon.anotherart.favorite.domain.Favorite;
-//import com.sjiwon.anotherart.favorite.domain.FavoriteRepository;
+//import com.sjiwon.anotherart.favorite.domain.model.Favorite;
+//import com.sjiwon.anotherart.favorite.domain.repository.FavoriteRepository;
 //import com.sjiwon.anotherart.member.domain.model.Member;
 //import com.sjiwon.anotherart.member.domain.repository.MemberRepository;
 //import com.sjiwon.anotherart.member.domain.repository.query.dto.MemberPointRecord;
