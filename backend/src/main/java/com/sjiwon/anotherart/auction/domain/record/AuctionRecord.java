@@ -2,7 +2,7 @@ package com.sjiwon.anotherart.auction.domain.record;
 
 import com.sjiwon.anotherart.auction.domain.Auction;
 import com.sjiwon.anotherart.global.BaseEntity;
-import com.sjiwon.anotherart.member.domain.Member;
+import com.sjiwon.anotherart.member.domain.model.Member;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;

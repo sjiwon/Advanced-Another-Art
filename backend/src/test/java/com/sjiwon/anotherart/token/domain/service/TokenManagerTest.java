@@ -1,7 +1,7 @@
 package com.sjiwon.anotherart.token.domain.service;
 
 import com.sjiwon.anotherart.common.UseCaseTest;
-import com.sjiwon.anotherart.member.domain.Member;
+import com.sjiwon.anotherart.member.domain.model.Member;
 import com.sjiwon.anotherart.token.domain.model.Token;
 import com.sjiwon.anotherart.token.domain.repository.TokenRepository;
 import org.junit.jupiter.api.DisplayName;

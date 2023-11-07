@@ -12,8 +12,8 @@ import com.sjiwon.anotherart.common.fixture.ArtFixture;
 import com.sjiwon.anotherart.common.fixture.MemberFixture;
 import com.sjiwon.anotherart.favorite.domain.Favorite;
 import com.sjiwon.anotherart.favorite.domain.FavoriteRepository;
-import com.sjiwon.anotherart.member.domain.Member;
-import com.sjiwon.anotherart.member.domain.MemberRepository;
+import com.sjiwon.anotherart.member.domain.model.Member;
+import com.sjiwon.anotherart.member.domain.repository.MemberRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import org.junit.jupiter.api.BeforeEach;
@@ -42,7 +42,6 @@ import static com.sjiwon.anotherart.art.utils.search.SortType.PRICE_ASC;
 import static com.sjiwon.anotherart.art.utils.search.SortType.PRICE_DESC;
 import static com.sjiwon.anotherart.common.fixture.AuctionFixture.AUCTION_OPEN_NOW;
 import static com.sjiwon.anotherart.common.fixture.MemberFixture.MEMBER_A;
-import static com.sjiwon.anotherart.member.domain.point.PointType.CHARGE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
@@ -85,7 +84,8 @@ class ArtDetailQueryRepositoryTest extends RepositoryTest {
 
     private Member createMember(final MemberFixture fixture) {
         final Member member = fixture.toMember();
-        member.addPointRecords(CHARGE, 100_000_000);
+        // TODO Point 도메인 분리 후 리팩토링
+//        member.addPointRecords(CHARGE, 100_000_000);
         return memberRepository.save(member);
     }
 

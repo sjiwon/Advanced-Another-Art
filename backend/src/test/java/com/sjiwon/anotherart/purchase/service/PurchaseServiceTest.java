@@ -5,7 +5,7 @@ import com.sjiwon.anotherart.auction.domain.Auction;
 import com.sjiwon.anotherart.common.ServiceTest;
 import com.sjiwon.anotherart.common.fixture.MemberFixture;
 import com.sjiwon.anotherart.global.exception.AnotherArtException;
-import com.sjiwon.anotherart.member.domain.Member;
+import com.sjiwon.anotherart.member.domain.model.Member;
 import com.sjiwon.anotherart.purchase.domain.Purchase;
 import com.sjiwon.anotherart.purchase.exception.PurchaseErrorCode;
 import org.junit.jupiter.api.BeforeEach;
@@ -23,7 +23,6 @@ import static com.sjiwon.anotherart.common.fixture.AuctionFixture.AUCTION_OPEN_N
 import static com.sjiwon.anotherart.common.fixture.MemberFixture.MEMBER_A;
 import static com.sjiwon.anotherart.common.fixture.MemberFixture.MEMBER_B;
 import static com.sjiwon.anotherart.common.fixture.MemberFixture.MEMBER_C;
-import static com.sjiwon.anotherart.member.domain.point.PointType.CHARGE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -52,7 +51,8 @@ class PurchaseServiceTest extends ServiceTest {
 
     private Member createMember(final MemberFixture fixture) {
         final Member member = fixture.toMember();
-        member.addPointRecords(CHARGE, 100_000_000);
+        // TODO Point 도메인 분리 후 리팩토링
+//        member.addPointRecords(CHARGE, 100_000_000);
 
         return memberRepository.save(member);
     }

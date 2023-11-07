@@ -7,7 +7,7 @@ import com.sjiwon.anotherart.auction.exception.AuctionErrorCode;
 import com.sjiwon.anotherart.common.ServiceTest;
 import com.sjiwon.anotherart.common.fixture.MemberFixture;
 import com.sjiwon.anotherart.global.exception.AnotherArtException;
-import com.sjiwon.anotherart.member.domain.Member;
+import com.sjiwon.anotherart.member.domain.model.Member;
 import com.sjiwon.anotherart.member.exception.MemberErrorCode;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -23,7 +23,6 @@ import static com.sjiwon.anotherart.common.fixture.AuctionFixture.AUCTION_OPEN_N
 import static com.sjiwon.anotherart.common.fixture.MemberFixture.MEMBER_A;
 import static com.sjiwon.anotherart.common.fixture.MemberFixture.MEMBER_B;
 import static com.sjiwon.anotherart.common.fixture.MemberFixture.MEMBER_C;
-import static com.sjiwon.anotherart.member.domain.point.PointType.CHARGE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -52,7 +51,8 @@ class BidServiceTest extends ServiceTest {
 
     private Member createMember(final MemberFixture fixture) {
         final Member member = fixture.toMember();
-        member.addPointRecords(CHARGE, MEMBER_INIT_POINT);
+        // TODO Point 도메인 분리 후 리팩토링
+//        member.addPointRecords(CHARGE, MEMBER_INIT_POINT);
 
         return memberRepository.save(member);
     }

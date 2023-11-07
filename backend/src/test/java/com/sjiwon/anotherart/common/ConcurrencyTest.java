@@ -5,15 +5,16 @@ import com.sjiwon.anotherart.auction.domain.AuctionRepository;
 import com.sjiwon.anotherart.common.config.DatabaseCleanerEachCallbackExtension;
 import com.sjiwon.anotherart.common.config.MySqlTestContainersExtension;
 import com.sjiwon.anotherart.common.config.RedisTestContainersExtension;
-import com.sjiwon.anotherart.common.utils.PasswordEncoderUtils;
-import com.sjiwon.anotherart.member.domain.Address;
-import com.sjiwon.anotherart.member.domain.Email;
-import com.sjiwon.anotherart.member.domain.Member;
-import com.sjiwon.anotherart.member.domain.MemberRepository;
-import com.sjiwon.anotherart.member.domain.Nickname;
-import com.sjiwon.anotherart.member.domain.Password;
-import com.sjiwon.anotherart.member.domain.point.PointRecord;
-import com.sjiwon.anotherart.member.domain.point.PointRecordRepository;
+import com.sjiwon.anotherart.common.mock.fake.FakePasswordEncryptor;
+import com.sjiwon.anotherart.member.domain.model.Address;
+import com.sjiwon.anotherart.member.domain.model.Email;
+import com.sjiwon.anotherart.member.domain.model.Member;
+import com.sjiwon.anotherart.member.domain.model.Nickname;
+import com.sjiwon.anotherart.member.domain.model.Password;
+import com.sjiwon.anotherart.member.domain.model.Phone;
+import com.sjiwon.anotherart.member.domain.repository.MemberRepository;
+import com.sjiwon.anotherart.point.domain.model.PointRecord;
+import com.sjiwon.anotherart.point.domain.repository.PointRecordRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import org.junit.jupiter.api.AfterEach;
@@ -25,7 +26,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.sjiwon.anotherart.member.domain.point.PointType.CHARGE;
+import static com.sjiwon.anotherart.point.domain.model.PointType.CHARGE;
 
 @SpringBootTest
 @ExtendWith({
@@ -72,9 +73,9 @@ public abstract class ConcurrencyTest {
                 "name" + index,
                 Nickname.from("nick" + index),
                 "loginid" + index,
-                Password.encrypt("abcABC123!@#", PasswordEncoderUtils.getEncoder()),
+                Password.encrypt("abcABC123!@#", new FakePasswordEncryptor()),
                 "경기대학교",
-                generateRandomPhoneNumber(),
+                Phone.from(generateRandomPhoneNumber()),
                 Email.from("test" + index + "@gmail.com"),
                 Address.of(12345, "기본 주소", "상세 주소")
         );

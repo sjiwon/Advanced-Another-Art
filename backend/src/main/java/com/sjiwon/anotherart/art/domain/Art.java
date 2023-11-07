@@ -2,7 +2,7 @@ package com.sjiwon.anotherart.art.domain;
 
 import com.sjiwon.anotherart.art.domain.hashtag.Hashtag;
 import com.sjiwon.anotherart.global.BaseEntity;
-import com.sjiwon.anotherart.member.domain.Member;
+import com.sjiwon.anotherart.member.domain.model.Member;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;

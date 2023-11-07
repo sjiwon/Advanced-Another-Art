@@ -4,7 +4,7 @@ import com.sjiwon.anotherart.art.domain.Art;
 import com.sjiwon.anotherart.art.domain.ArtName;
 import com.sjiwon.anotherart.art.domain.ArtType;
 import com.sjiwon.anotherart.art.domain.Description;
-import com.sjiwon.anotherart.member.domain.Member;
+import com.sjiwon.anotherart.member.domain.model.Member;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
