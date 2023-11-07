@@ -155,6 +155,8 @@ public class SecurityConfiguration {
         http.formLogin(AbstractHttpConfigurer::disable);
         http.httpBasic(AbstractHttpConfigurer::disable);
 
+        // TODO URL Based 인가 처리 적용
+
         http.sessionManagement(session ->
                 session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
         );
