@@ -5,8 +5,8 @@
 //import com.sjiwon.anotherart.art.domain.repository.query.dto.AuctionArt;
 //import com.sjiwon.anotherart.art.domain.repository.query.dto.GeneralArt;
 //import com.sjiwon.anotherart.art.utils.search.ArtDetailSearchCondition;
-//import com.sjiwon.anotherart.auction.domain.Auction;
-//import com.sjiwon.anotherart.auction.domain.AuctionRepository;
+//import com.sjiwon.anotherart.auction.domain.model.Auction;
+//import com.sjiwon.anotherart.auction.domain.repository.AuctionRepository;
 //import com.sjiwon.anotherart.common.RepositoryTest;
 //import com.sjiwon.anotherart.common.fixture.ArtFixture;
 //import com.sjiwon.anotherart.common.fixture.MemberFixture;

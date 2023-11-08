@@ -6,6 +6,7 @@ import io.restassured.RestAssured;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 
@@ -15,6 +16,7 @@ import org.springframework.boot.test.web.server.LocalServerPort;
         MySqlTestContainersExtension.class,
         RedisTestContainersExtension.class
 })
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 public abstract class AcceptanceTest {
     @LocalServerPort
     private int port;

@@ -72,17 +72,17 @@ class FavoriteRepositoryTest extends RepositoryTest {
         sut.save(Favorite.favoriteMarking(artB, member));
 
         // when
-        final Optional<Favorite> actual1 = sut.findByArtIdAndMemberId(artA.getId(), owner.getId());
-        final Optional<Favorite> actual2 = sut.findByArtIdAndMemberId(artA.getId(), member.getId());
-        final Optional<Favorite> actual3 = sut.findByArtIdAndMemberId(artB.getId(), owner.getId());
-        final Optional<Favorite> actual4 = sut.findByArtIdAndMemberId(artB.getId(), member.getId());
+        final Optional<Favorite> favorite1 = sut.findByArtIdAndMemberId(artA.getId(), owner.getId());
+        final Optional<Favorite> favorite2 = sut.findByArtIdAndMemberId(artA.getId(), member.getId());
+        final Optional<Favorite> favorite3 = sut.findByArtIdAndMemberId(artB.getId(), owner.getId());
+        final Optional<Favorite> favorite4 = sut.findByArtIdAndMemberId(artB.getId(), member.getId());
 
         // then
         assertAll(
-                () -> assertThat(actual1).isPresent(),
-                () -> assertThat(actual2).isEmpty(),
-                () -> assertThat(actual3).isEmpty(),
-                () -> assertThat(actual4).isPresent()
+                () -> assertThat(favorite1).isPresent(),
+                () -> assertThat(favorite2).isEmpty(),
+                () -> assertThat(favorite3).isEmpty(),
+                () -> assertThat(favorite4).isPresent()
         );
     }
 }

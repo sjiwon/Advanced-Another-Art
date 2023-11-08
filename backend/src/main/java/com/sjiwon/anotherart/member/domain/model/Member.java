@@ -114,7 +114,7 @@ public class Member extends BaseEntity<Member> {
         this.point = this.point.decreaseAvailablePoint(point);
     }
 
-    public boolean isSameMember(final Member other) {
+    public boolean isSame(final Member other) {
         return getId().equals(other.getId());
     }
 
