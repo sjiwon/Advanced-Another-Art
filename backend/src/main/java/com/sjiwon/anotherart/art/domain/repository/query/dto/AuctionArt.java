@@ -77,9 +77,16 @@ public class AuctionArt implements ArtDetails {
         this.ownerId = ownerId;
         this.ownerNickname = ownerNickname.getValue();
         this.ownerSchool = ownerSchool;
-        this.highestBidderId = highestBidderId;
-        this.highestBidderNickname = highestBidderNickname.getValue();
-        this.highestBidderSchool = highestBidderSchool;
+
+        if (highestBidderId != null) {
+            this.highestBidderId = highestBidderId;
+            this.highestBidderNickname = highestBidderNickname.getValue();
+            this.highestBidderSchool = highestBidderSchool;
+        } else {
+            this.highestBidderId = null;
+            this.highestBidderNickname = null;
+            this.highestBidderSchool = null;
+        }
     }
 
     public void applyHashtags(final List<String> hashtags) {
