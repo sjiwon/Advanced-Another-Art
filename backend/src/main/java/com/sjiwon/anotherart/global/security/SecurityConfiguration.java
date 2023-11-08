@@ -20,6 +20,7 @@ import com.sjiwon.anotherart.token.utils.TokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.ProviderManager;
@@ -155,7 +156,31 @@ public class SecurityConfiguration {
         http.formLogin(AbstractHttpConfigurer::disable);
         http.httpBasic(AbstractHttpConfigurer::disable);
 
-        // TODO URL Based 인가 처리 적용
+        http.authorizeHttpRequests(request ->
+                request
+                        // Auth
+                        .requestMatchers("/api/login").permitAll()
+                        .requestMatchers("/api/logout").hasRole("USER")
+
+                        // Member
+                        .requestMatchers("/api/members/me/**").hasRole("USER")
+                        .requestMatchers("/api/members/**").permitAll()
+
+                        // Token
+                        .requestMatchers("/api/token/**").hasRole("USER")
+
+                        // Art
+                        .requestMatchers(HttpMethod.GET, "/api/arts/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/arts/**").hasRole("USER")
+                        .requestMatchers(HttpMethod.DELETE, "/api/arts/**").hasRole("USER")
+                        .requestMatchers(HttpMethod.PATCH, "/api/arts/**").hasRole("USER")
+
+                        // Auction
+                        .requestMatchers("/api/auctions/**").hasRole("USER")
+
+                        // Point
+                        .requestMatchers("/api/points/**").hasRole("USER")
+        );
 
         http.sessionManagement(session ->
                 session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
