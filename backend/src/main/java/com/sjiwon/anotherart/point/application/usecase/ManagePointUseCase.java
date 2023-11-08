@@ -22,7 +22,6 @@ public class ManagePointUseCase {
     @AnotherArtWritableTransactional
     public void charge(final ChargePointCommand command) {
         final Member member = memberRepository.getById(command.memberId());
-
         member.increaseTotalPoint(command.chargeAmount());
         pointRecordRepository.save(PointRecord.addPointRecord(member, CHARGE, command.chargeAmount()));
     }
@@ -30,7 +29,6 @@ public class ManagePointUseCase {
     @AnotherArtWritableTransactional
     public void refund(final RefundPointCommand command) {
         final Member member = memberRepository.getById(command.memberId());
-
         member.decreaseTotalPoint(command.refundAmount());
         pointRecordRepository.save(PointRecord.addPointRecord(member, REFUND, command.refundAmount()));
     }
