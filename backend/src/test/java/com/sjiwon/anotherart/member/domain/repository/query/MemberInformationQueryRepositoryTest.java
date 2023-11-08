@@ -1,27 +1,37 @@
 package com.sjiwon.anotherart.member.domain.repository.query;
 
+import com.sjiwon.anotherart.art.domain.model.Art;
 import com.sjiwon.anotherart.art.domain.repository.ArtRepository;
+import com.sjiwon.anotherart.auction.domain.model.Auction;
 import com.sjiwon.anotherart.auction.domain.repository.AuctionRepository;
 import com.sjiwon.anotherart.common.RepositoryTest;
 import com.sjiwon.anotherart.member.domain.model.Member;
 import com.sjiwon.anotherart.member.domain.repository.MemberRepository;
 import com.sjiwon.anotherart.member.domain.repository.query.dto.MemberInformation;
 import com.sjiwon.anotherart.member.domain.repository.query.dto.MemberPointRecord;
+import com.sjiwon.anotherart.member.domain.repository.query.dto.WinningAuctionArts;
 import com.sjiwon.anotherart.point.domain.model.PointRecord;
 import com.sjiwon.anotherart.point.domain.model.PointType;
 import com.sjiwon.anotherart.point.domain.repository.PointRecordRepository;
 import com.sjiwon.anotherart.purchase.domain.repository.PurchaseRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
+import static com.sjiwon.anotherart.common.fixture.ArtFixture.AUCTION_1;
+import static com.sjiwon.anotherart.common.fixture.ArtFixture.AUCTION_2;
+import static com.sjiwon.anotherart.common.fixture.ArtFixture.AUCTION_3;
+import static com.sjiwon.anotherart.common.fixture.AuctionFixture.AUCTION_OPEN_NOW;
 import static com.sjiwon.anotherart.common.fixture.MemberFixture.MEMBER_A;
+import static com.sjiwon.anotherart.common.fixture.MemberFixture.MEMBER_B;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
@@ -165,9 +175,92 @@ class MemberInformationQueryRepositoryTest extends RepositoryTest {
     @Nested
     @DisplayName("낙찰된 경매 작품 조회 Query")
     class FetchWinningAuctionArts {
+        private Member bidder;
+        private Art artA;
+        private Art artB;
+        private Art artC;
+
+        @BeforeEach
+        void setUp() {
+            bidder = memberRepository.save(MEMBER_A.toMember());
+            bidder.increaseTotalPoint(MEMBER_INIT_POINT);
+
+            final Member owner = memberRepository.save(MEMBER_B.toMember());
+            artA = artRepository.save(AUCTION_1.toArt(owner));
+            artB = artRepository.save(AUCTION_2.toArt(owner));
+            artC = artRepository.save(AUCTION_3.toArt(owner));
+
+            final Auction auctionA = auctionRepository.save(AUCTION_OPEN_NOW.toAuction(artA));
+            final Auction auctionB = auctionRepository.save(AUCTION_OPEN_NOW.toAuction(artB));
+            final Auction auctionC = auctionRepository.save(AUCTION_OPEN_NOW.toAuction(artC));
+            auctionA.applyNewBid(bidder, artA.getPrice());
+            auctionB.applyNewBid(bidder, artB.getPrice());
+            auctionC.applyNewBid(bidder, artC.getPrice());
+        }
+
         @Test
         @DisplayName("낙찰된 경매 작품을 조회한다")
         void success() {
+            final List<WinningAuctionArts> result1 = sut.fetchWinningAuctionArts(bidder.getId());
+            assertThat(result1).isEmpty();
+
+            /* artA 경매 종료 */
+            closeAuction(artA);
+
+            final List<WinningAuctionArts> result2 = sut.fetchWinningAuctionArts(bidder.getId());
+            assertAll(
+                    () -> assertThat(result2).hasSize(1),
+                    () -> assertThat(result2)
+                            .map(WinningAuctionArts::getArtId)
+                            .containsExactly(artA.getId()),
+                    () -> assertThat(result2)
+                            .map(WinningAuctionArts::getHighestBidPrice)
+                            .containsExactly(artA.getPrice()),
+                    () -> assertThat(result2.get(0).getArtHashtags()).containsExactlyInAnyOrderElementsOf(artA.getHashtags())
+            );
+
+            /* artB 경매 종료 */
+            closeAuction(artB);
+
+            final List<WinningAuctionArts> result3 = sut.fetchWinningAuctionArts(bidder.getId());
+            assertAll(
+                    () -> assertThat(result3).hasSize(2),
+                    () -> assertThat(result3)
+                            .map(WinningAuctionArts::getArtId)
+                            .containsExactly(artB.getId(), artA.getId()),
+                    () -> assertThat(result3)
+                            .map(WinningAuctionArts::getHighestBidPrice)
+                            .containsExactly(artB.getPrice(), artA.getPrice()),
+                    () -> assertThat(result3.get(0).getArtHashtags()).containsExactlyInAnyOrderElementsOf(artB.getHashtags()),
+                    () -> assertThat(result3.get(1).getArtHashtags()).containsExactlyInAnyOrderElementsOf(artA.getHashtags())
+            );
+
+            /* artC 경매 종료 */
+            closeAuction(artC);
+
+            final List<WinningAuctionArts> result4 = sut.fetchWinningAuctionArts(bidder.getId());
+            assertAll(
+                    () -> assertThat(result4).hasSize(3),
+                    () -> assertThat(result4)
+                            .map(WinningAuctionArts::getArtId)
+                            .containsExactly(artC.getId(), artB.getId(), artA.getId()),
+                    () -> assertThat(result4)
+                            .map(WinningAuctionArts::getHighestBidPrice)
+                            .containsExactly(artC.getPrice(), artB.getPrice(), artA.getPrice()),
+                    () -> assertThat(result4.get(0).getArtHashtags()).containsExactlyInAnyOrderElementsOf(artC.getHashtags()),
+                    () -> assertThat(result4.get(1).getArtHashtags()).containsExactlyInAnyOrderElementsOf(artB.getHashtags()),
+                    () -> assertThat(result4.get(2).getArtHashtags()).containsExactlyInAnyOrderElementsOf(artA.getHashtags())
+            );
+        }
+
+        private void closeAuction(final Art art) {
+            em.createQuery("UPDATE Auction ac" +
+                            " SET ac.period.startDate = :startDate, ac.period.endDate = :endDate" +
+                            " WHERE ac.art.id = :artId")
+                    .setParameter("startDate", LocalDateTime.now().minusDays(5))
+                    .setParameter("endDate", LocalDateTime.now().minusDays(1))
+                    .setParameter("artId", art.getId())
+                    .executeUpdate();
         }
     }
 
