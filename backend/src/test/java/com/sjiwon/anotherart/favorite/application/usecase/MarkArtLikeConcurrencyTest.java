@@ -2,9 +2,7 @@ package com.sjiwon.anotherart.favorite.application.usecase;
 
 import com.sjiwon.anotherart.art.domain.model.Art;
 import com.sjiwon.anotherart.art.domain.repository.ArtRepository;
-import com.sjiwon.anotherart.common.config.DatabaseCleanerEachCallbackExtension;
-import com.sjiwon.anotherart.common.config.MySqlTestContainersExtension;
-import com.sjiwon.anotherart.common.config.RedisTestContainersExtension;
+import com.sjiwon.anotherart.common.IntegrateTest;
 import com.sjiwon.anotherart.favorite.application.usecase.command.MarkArtLikeCommand;
 import com.sjiwon.anotherart.member.domain.model.Member;
 import com.sjiwon.anotherart.member.domain.repository.MemberRepository;
@@ -13,10 +11,7 @@ import jakarta.persistence.PersistenceContext;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
@@ -26,15 +21,8 @@ import static com.sjiwon.anotherart.common.fixture.ArtFixture.GENERAL_1;
 import static com.sjiwon.anotherart.common.fixture.MemberFixture.MEMBER_A;
 import static org.assertj.core.api.Assertions.assertThat;
 
-@SpringBootTest
-@ExtendWith({
-        DatabaseCleanerEachCallbackExtension.class,
-        MySqlTestContainersExtension.class,
-        RedisTestContainersExtension.class
-})
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @DisplayName("Favorite -> 작품 좋아요 동시성 테스트")
-public class MarkArtLikeConcurrencyTest {
+public class MarkArtLikeConcurrencyTest extends IntegrateTest {
     @Autowired
     private ManageFavoriteUseCase sut;
 
