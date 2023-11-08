@@ -28,7 +28,7 @@ public interface AuctionRepository extends JpaRepository<Auction, Long> {
             " WHERE ac.art.id = :artId")
     Optional<Auction> findByArtId(@Param("artId") Long artId);
 
-    default Auction getByArtIdWithFetchOwnerAndBidder(final Long artId) {
+    default Auction getByArtId(final Long artId) {
         return findByArtId(artId)
                 .orElseThrow(() -> AnotherArtException.type(AuctionErrorCode.AUCTION_NOT_FOUND));
     }

@@ -81,8 +81,8 @@ public class Auction extends BaseEntity<Auction> {
         return highestBid.getBidder().isSame(other);
     }
 
-    public boolean isFinished() {
-        return period.isTimePassed(LocalDateTime.now());
+    public boolean isInProgress() {
+        return period.isDateWithInRange(LocalDateTime.now());
     }
 
     // Add Getter

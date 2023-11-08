@@ -7,8 +7,6 @@ import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
 
-import static com.sjiwon.anotherart.common.fixture.PeriodFixture.CLOSED_WEEK_1_AGO;
-import static com.sjiwon.anotherart.common.fixture.PeriodFixture.OPEN_NOW;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -58,24 +56,6 @@ class PeriodTest {
         // when
         final boolean actual1 = period.isDateWithInRange(LocalDateTime.now().plusDays(4));
         final boolean actual2 = period.isDateWithInRange(LocalDateTime.now().plusDays(8));
-
-        // then
-        assertAll(
-                () -> assertThat(actual1).isTrue(),
-                () -> assertThat(actual2).isFalse()
-        );
-    }
-
-    @Test
-    @DisplayName("endDate를 기준으로 지나간 시간인지 확인한다")
-    void isTimePassed() {
-        // given
-        final Period periodA = CLOSED_WEEK_1_AGO.toPeriod();
-        final Period periodB = OPEN_NOW.toPeriod();
-
-        // when
-        final boolean actual1 = periodA.isTimePassed(LocalDateTime.now());
-        final boolean actual2 = periodB.isTimePassed(LocalDateTime.now());
 
         // then
         assertAll(

@@ -237,22 +237,22 @@ class AuctionTest {
     }
 
     @Test
-    @DisplayName("경매가 종료되었는지 확인한다")
-    void isAuctionFinished() {
+    @DisplayName("경매가 진행중인지 확인한다")
+    void isInProgress() {
         // given
         final Auction auctionA = Auction.createAuction(AUCTION_1.toArt(owner), CLOSED_WEEK_1_AGO.toPeriod());
         final Auction auctionB = Auction.createAuction(AUCTION_2.toArt(owner), OPEN_NOW.toPeriod());
         final Auction auctionC = Auction.createAuction(AUCTION_3.toArt(owner), OPEN_WEEK_1_LATER.toPeriod());
 
         // when
-        final boolean actual1 = auctionA.isFinished();
-        final boolean actual2 = auctionB.isFinished();
-        final boolean actual3 = auctionC.isFinished();
+        final boolean actual1 = auctionA.isInProgress();
+        final boolean actual2 = auctionB.isInProgress();
+        final boolean actual3 = auctionC.isInProgress();
 
         // then
         assertAll(
-                () -> assertThat(actual1).isTrue(),
-                () -> assertThat(actual2).isFalse(),
+                () -> assertThat(actual1).isFalse(),
+                () -> assertThat(actual2).isTrue(),
                 () -> assertThat(actual3).isFalse()
         );
     }

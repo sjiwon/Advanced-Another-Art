@@ -46,8 +46,4 @@ public class Period {
     public boolean isDateWithInRange(final LocalDateTime time) {
         return time.isAfter(startDate) && time.isBefore(endDate);
     }
-
-    public boolean isTimePassed(final LocalDateTime time) {
-        return endDate.isBefore(time);
-    }
 }
