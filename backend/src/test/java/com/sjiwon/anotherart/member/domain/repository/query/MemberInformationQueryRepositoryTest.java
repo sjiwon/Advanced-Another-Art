@@ -10,6 +10,7 @@ import com.sjiwon.anotherart.member.domain.model.Member;
 import com.sjiwon.anotherart.member.domain.repository.MemberRepository;
 import com.sjiwon.anotherart.member.domain.repository.query.dto.MemberInformation;
 import com.sjiwon.anotherart.member.domain.repository.query.dto.MemberPointRecord;
+import com.sjiwon.anotherart.member.domain.repository.query.dto.PurchaseArt;
 import com.sjiwon.anotherart.member.domain.repository.query.dto.SoldArt;
 import com.sjiwon.anotherart.member.domain.repository.query.dto.WinningAuctionArt;
 import com.sjiwon.anotherart.point.domain.model.PointRecord;
@@ -402,9 +403,123 @@ class MemberInformationQueryRepositoryTest extends RepositoryTest {
     @Nested
     @DisplayName("구매한 작품 조회 Query")
     class FetchPurchaseArtsByType {
+        private Member member;
+        private Art generalArtA;
+        private Art generalArtB;
+        private Art auctionArtA;
+        private Art auctionArtB;
+
+        @BeforeEach
+        void setUp() {
+            member = memberRepository.save(MEMBER_A.toMember());
+            member.increaseTotalPoint(MEMBER_INIT_POINT);
+
+            final Member owner = memberRepository.save(MEMBER_B.toMember());
+            generalArtA = artRepository.save(GENERAL_1.toArt(owner));
+            generalArtB = artRepository.save(GENERAL_2.toArt(owner));
+            auctionArtA = artRepository.save(AUCTION_1.toArt(owner));
+            auctionArtB = artRepository.save(AUCTION_2.toArt(owner));
+        }
+
         @Test
         @DisplayName("구매한 작품을 조회한다")
         void success() {
+            final List<PurchaseArt> purchaseGeneralArts1 = sut.fetchPurchaseArtsByType(member.getId(), ArtType.GENERAL);
+            final List<PurchaseArt> purchaseAuctionArts1 = sut.fetchPurchaseArtsByType(member.getId(), ArtType.AUCTION);
+            assertThatPurchaseArtsMatch(
+                    purchaseGeneralArts1,
+                    List.of(),
+                    purchaseAuctionArts1,
+                    List.of()
+            );
+
+            /* generalArtA 구매 */
+            purchase(generalArtA);
+
+            final List<PurchaseArt> purchaseGeneralArts2 = sut.fetchPurchaseArtsByType(member.getId(), ArtType.GENERAL);
+            final List<PurchaseArt> purchaseAuctionArts2 = sut.fetchPurchaseArtsByType(member.getId(), ArtType.AUCTION);
+            assertThatPurchaseArtsMatch(
+                    purchaseGeneralArts2,
+                    List.of(generalArtA),
+                    purchaseAuctionArts2,
+                    List.of()
+            );
+
+            /* auctionArtB 구매 */
+            purchase(auctionArtB);
+
+            final List<PurchaseArt> purchaseGeneralArts3 = sut.fetchPurchaseArtsByType(member.getId(), ArtType.GENERAL);
+            final List<PurchaseArt> purchaseAuctionArts3 = sut.fetchPurchaseArtsByType(member.getId(), ArtType.AUCTION);
+            assertThatPurchaseArtsMatch(
+                    purchaseGeneralArts3,
+                    List.of(generalArtA),
+                    purchaseAuctionArts3,
+                    List.of(auctionArtB)
+            );
+
+            /* auctionArtA 구매 */
+            purchase(auctionArtA);
+
+            final List<PurchaseArt> purchaseGeneralArts4 = sut.fetchPurchaseArtsByType(member.getId(), ArtType.GENERAL);
+            final List<PurchaseArt> purchaseAuctionArts4 = sut.fetchPurchaseArtsByType(member.getId(), ArtType.AUCTION);
+            assertThatPurchaseArtsMatch(
+                    purchaseGeneralArts4,
+                    List.of(generalArtA),
+                    purchaseAuctionArts4,
+                    List.of(auctionArtA, auctionArtB)
+            );
+
+            /* generalArtB 구매 */
+            purchase(generalArtB);
+
+            final List<PurchaseArt> purchaseGeneralArts5 = sut.fetchPurchaseArtsByType(member.getId(), ArtType.GENERAL);
+            final List<PurchaseArt> purchaseAuctionArts5 = sut.fetchPurchaseArtsByType(member.getId(), ArtType.AUCTION);
+            assertThatPurchaseArtsMatch(
+                    purchaseGeneralArts5,
+                    List.of(generalArtB, generalArtA),
+                    purchaseAuctionArts5,
+                    List.of(auctionArtA, auctionArtB)
+            );
+        }
+
+        private void purchase(final Art art) {
+            if (art.isAuctionType()) {
+                purchaseRepository.save(Purchase.purchaseAuctionArt(art, member, art.getPrice()));
+            } else {
+                purchaseRepository.save(Purchase.purchaseGeneralArt(art, member));
+            }
+        }
+
+        private void assertThatPurchaseArtsMatch(
+                final List<PurchaseArt> purchaseGeneralArts,
+                final List<Art> generalArts,
+                final List<PurchaseArt> purchaseAuctionArts,
+                final List<Art> auctionArts
+        ) {
+            assertThat(purchaseGeneralArts).hasSize(generalArts.size());
+            assertThat(purchaseAuctionArts).hasSize(auctionArts.size());
+
+            for (int i = 0; i < purchaseGeneralArts.size(); i++) {
+                final PurchaseArt purchaseArt = purchaseGeneralArts.get(i);
+                final Art art = generalArts.get(i);
+
+                assertAll(
+                        () -> assertThat(purchaseArt.getArtId()).isEqualTo(art.getId()),
+                        () -> assertThat(purchaseArt.getPurchasePrice()).isEqualTo(art.getPrice()),
+                        () -> assertThat(purchaseArt.getArtHashtags()).containsExactlyInAnyOrderElementsOf(art.getHashtags())
+                );
+            }
+
+            for (int i = 0; i < purchaseAuctionArts.size(); i++) {
+                final PurchaseArt purchaseArt = purchaseAuctionArts.get(i);
+                final Art art = auctionArts.get(i);
+
+                assertAll(
+                        () -> assertThat(purchaseArt.getArtId()).isEqualTo(art.getId()),
+                        () -> assertThat(purchaseArt.getPurchasePrice()).isEqualTo(art.getPrice()),
+                        () -> assertThat(purchaseArt.getArtHashtags()).containsExactlyInAnyOrderElementsOf(art.getHashtags())
+                );
+            }
         }
     }
 }

@@ -11,6 +11,7 @@ import com.sjiwon.anotherart.member.domain.repository.query.dto.MemberPointRecor
 import com.sjiwon.anotherart.member.domain.repository.query.dto.PurchaseArt;
 import com.sjiwon.anotherart.member.domain.repository.query.dto.QMemberInformation;
 import com.sjiwon.anotherart.member.domain.repository.query.dto.QMemberPointRecord;
+import com.sjiwon.anotherart.member.domain.repository.query.dto.QPurchaseArt;
 import com.sjiwon.anotherart.member.domain.repository.query.dto.QSoldArt;
 import com.sjiwon.anotherart.member.domain.repository.query.dto.QWinningAuctionArt;
 import com.sjiwon.anotherart.member.domain.repository.query.dto.SoldArt;
@@ -158,7 +159,46 @@ public class MemberInformationQueryRepositoryImpl implements MemberInformationQu
 
     @Override
     public List<PurchaseArt> fetchPurchaseArtsByType(final long memberId, final ArtType type) {
-        return null;
+        final QMember owner = new QMember("owner");
+        final QMember buyer = new QMember("buyer");
+
+        final List<PurchaseArt> result = query
+                .select(new QPurchaseArt(
+                        art.id,
+                        art.name,
+                        art.description,
+                        art.uploadImage,
+                        owner.nickname,
+                        owner.school,
+                        purchase.price
+                ))
+                .from(purchase)
+                .innerJoin(purchase.art, art)
+                .innerJoin(art.owner, owner)
+                .innerJoin(purchase.buyer, buyer)
+                .where(
+                        buyer.id.eq(memberId),
+                        art.type.eq(type)
+                )
+                .orderBy(purchase.id.desc())
+                .fetch();
+
+        if (!result.isEmpty()) {
+            final List<Long> artIds = result.stream()
+                    .map(PurchaseArt::getArtId)
+                    .toList();
+            final List<SimpleHashtag> simpleHashtags = getHashtags(artIds);
+
+            result.forEach(row -> {
+                final List<String> hashtags = simpleHashtags.stream()
+                        .filter(hashtag -> hashtag.artId().equals(row.getArtId()))
+                        .map(SimpleHashtag::name)
+                        .toList();
+                row.applyHashtags(hashtags);
+            });
+        }
+
+        return result;
     }
 
     private List<SimpleHashtag> getHashtags(final List<Long> artIds) {
