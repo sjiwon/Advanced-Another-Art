@@ -8,7 +8,8 @@ import com.sjiwon.anotherart.global.annotation.AnotherArtReadOnlyTransactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
-// TODO 전체 Command 로직 리팩토링 후 Query 로직 한번에 구현
+import static com.sjiwon.anotherart.art.domain.model.QArt.art;
+
 @Repository
 @AnotherArtReadOnlyTransactional
 @RequiredArgsConstructor
@@ -17,7 +18,11 @@ public class ArtSingleQueryRepositoryImpl implements ArtSingleQueryRepository {
 
     @Override
     public ArtType getArtType(final Long artId) {
-        return null;
+        return query
+                .select(art.type)
+                .from(art)
+                .where(art.id.eq(artId))
+                .fetchOne();
     }
 
     @Override
