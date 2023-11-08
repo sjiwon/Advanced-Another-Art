@@ -132,6 +132,11 @@ class BidUseCaseTest extends UseCaseTest {
         assertThatThrownBy(() -> sut.invoke(command))
                 .isInstanceOf(AnotherArtException.class)
                 .hasMessage(AuctionErrorCode.HIGHEST_BIDDER_CANNOT_BID_AGAIN.getMessage());
+
+        assertAll(
+                () -> verify(auctionRepository, times(1)).getByIdWithFetchBidder(command.auctionId()),
+                () -> verify(memberRepository, times(1)).getById(command.memberId())
+        );
     }
 
     @Test
@@ -174,6 +179,11 @@ class BidUseCaseTest extends UseCaseTest {
         assertThatThrownBy(() -> sut.invoke(command))
                 .isInstanceOf(AnotherArtException.class)
                 .hasMessage(AuctionErrorCode.BID_PRICE_IS_NOT_ENOUGH.getMessage());
+
+        assertAll(
+                () -> verify(auctionRepository, times(1)).getByIdWithFetchBidder(command.auctionId()),
+                () -> verify(memberRepository, times(1)).getById(command.memberId())
+        );
     }
 
     @Test
@@ -190,6 +200,9 @@ class BidUseCaseTest extends UseCaseTest {
 
         // then
         assertAll(
+                () -> verify(auctionRepository, times(1)).getByIdWithFetchBidder(command.auctionId()),
+                () -> verify(memberRepository, times(1)).getById(command.memberId()),
+
                 // HighestBid Info
                 () -> assertThat(auction.getAuctionRecords()).hasSize(1),
                 () -> assertThat(auction.getAuctionRecords())
@@ -224,6 +237,9 @@ class BidUseCaseTest extends UseCaseTest {
 
         // then
         assertAll(
+                () -> verify(auctionRepository, times(1)).getByIdWithFetchBidder(command.auctionId()),
+                () -> verify(memberRepository, times(1)).getById(command.memberId()),
+
                 // Bid Info
                 () -> assertThat(auction.getAuctionRecords()).hasSize(2),
                 () -> assertThat(auction.getAuctionRecords())
