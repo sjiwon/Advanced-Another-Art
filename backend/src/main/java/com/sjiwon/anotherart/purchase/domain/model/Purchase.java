@@ -63,27 +63,30 @@ public class Purchase extends BaseEntity<Purchase> {
 
     private static Purchase proceedToPurchaseGeneralArt(final Art art, final Member buyer) {
         final Member owner = art.getOwner();
-        final int purchasePrice = art.getPrice();
-        // TODO Point 도메인 분리 후 리팩토링
+        final int price = art.getPrice();
 
-//        owner.addPointRecords(SOLD, purchasePrice);
-//        buyer.addPointRecords(PURCHASE, purchasePrice);
+        // 1. 구매자 포인트 차감
+        buyer.decreaseTotalPoint(price);
 
+        // 2. 판매자 포인트 적립
+        owner.increaseTotalPoint(price);
+
+        // 3. 구매
         art.closeSale();
-        return new Purchase(art, buyer, purchasePrice);
+        return new Purchase(art, buyer, price);
     }
 
     private static Purchase proceedToPurchaseAuctionArt(final Art art, final Member buyer, final int bidPrice) {
         final Member owner = art.getOwner();
-        // TODO Point 도메인 분리 후 리팩토링
 
-//        owner.addPointRecords(SOLD, bidPrice);
-//        buyer.addPointRecords(PURCHASE, bidPrice);
+        // 1. 구매자 포인트 차감
+        buyer.decreaseTotalPoint(bidPrice);
+        buyer.increaseAvailablePoint(bidPrice); // 입찰 시 소모한 포인트 누적 차감 문제 해결
 
-        if (art.isAuctionType()) { // 사용 가능한 포인트 중복 감소 처리 (입찰 시 이미 소모)
-            buyer.increaseAvailablePoint(bidPrice);
-        }
+        // 2. 판매자 포인트 적립
+        owner.increaseTotalPoint(bidPrice);
 
+        // 3. 구매
         art.closeSale();
         return new Purchase(art, buyer, bidPrice);
     }

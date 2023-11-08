@@ -10,7 +10,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.springframework.test.util.ReflectionTestUtils;
 
 import static com.sjiwon.anotherart.common.fixture.ArtFixture.AUCTION_1;
 import static com.sjiwon.anotherart.common.fixture.ArtFixture.GENERAL_1;
@@ -21,7 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-@DisplayName("Member 도메인 테스트")
+@DisplayName("Purchase -> 도메인 [Purchase] 테스트")
 class PurchaseTest {
     private static final int MEMBER_INIT_POINT = 1_000_000;
 
@@ -33,10 +32,10 @@ class PurchaseTest {
     @BeforeEach
     void setUp() {
         owner = MEMBER_A.toMember().apply(1L);
-        // TODO Point 도메인 분리 후 리팩토링
-//        owner.addPointRecords(CHARGE, MEMBER_INIT_POINT);
+        owner.increaseTotalPoint(MEMBER_INIT_POINT);
+
         member = MEMBER_B.toMember().apply(2L);
-//        member.addPointRecords(CHARGE, MEMBER_INIT_POINT);
+        member.increaseTotalPoint(MEMBER_INIT_POINT);
 
         generalArt = GENERAL_1.toArt(owner).apply(1L);
         auctionArt = AUCTION_1.toArt(owner).apply(2L);
@@ -44,7 +43,7 @@ class PurchaseTest {
 
     @Nested
     @DisplayName("일반 작품 구매")
-    class purchaseGeneralArt {
+    class PurchaseGeneralArt {
         @Test
         @DisplayName("본인 작품은 구매할 수 없다")
         void throwExceptionByArtOwnerCannotPurchaseOwn() {
@@ -69,7 +68,7 @@ class PurchaseTest {
         @DisplayName("사용 가능한 포인트가 부족함에 따라 구매할 수 없다")
         void throwExceptionByPointIsNotEnough() {
             // given
-            ReflectionTestUtils.setField(member.getPoint(), "availablePoint", 0);
+            member.decreaseTotalPoint(MEMBER_INIT_POINT);
 
             // when - then
             assertThatThrownBy(() -> Purchase.purchaseGeneralArt(generalArt, member))
@@ -102,13 +101,15 @@ class PurchaseTest {
 
     @Nested
     @DisplayName("경매 작품 구매")
-    class purchaseAuctionArt {
+    class PurchaseAuctionArt {
         private Auction auction;
+        private int bidPrice;
 
         @BeforeEach
         void setUp() {
             auction = Auction.createAuction(auctionArt, OPEN_NOW.toPeriod());
-            auction.applyNewBid(member, auction.getHighestBidPrice());
+            bidPrice = auction.getHighestBidPrice() + 50_000;
+            auction.applyNewBid(member, bidPrice);
         }
 
         @Test
@@ -118,7 +119,7 @@ class PurchaseTest {
             auctionArt.closeSale();
 
             // when - then
-            assertThatThrownBy(() -> Purchase.purchaseAuctionArt(auctionArt, member, auction.getHighestBidPrice()))
+            assertThatThrownBy(() -> Purchase.purchaseAuctionArt(auctionArt, member, bidPrice))
                     .isInstanceOf(AnotherArtException.class)
                     .hasMessage(PurchaseErrorCode.ALREADY_SOLD.getMessage());
         }
@@ -127,10 +128,10 @@ class PurchaseTest {
         @DisplayName("사용 가능한 포인트가 부족함에 따라 구매할 수 없다")
         void throwExceptionByPointIsNotEnough() {
             // given
-            ReflectionTestUtils.setField(member.getPoint(), "availablePoint", 0);
+            member.decreaseTotalPoint(MEMBER_INIT_POINT - bidPrice); // available to 0
 
             // when - then
-            assertThatThrownBy(() -> Purchase.purchaseAuctionArt(auctionArt, member, auction.getHighestBidPrice()))
+            assertThatThrownBy(() -> Purchase.purchaseAuctionArt(auctionArt, member, bidPrice))
                     .isInstanceOf(AnotherArtException.class)
                     .hasMessage(MemberErrorCode.POINT_IS_NOT_ENOUGH.getMessage());
         }
@@ -139,7 +140,7 @@ class PurchaseTest {
         @DisplayName("경매 작품을 구매한다")
         void success() {
             // when
-            final Purchase purchase = Purchase.purchaseAuctionArt(auctionArt, member, auction.getHighestBidPrice());
+            final Purchase purchase = Purchase.purchaseAuctionArt(auctionArt, member, bidPrice);
 
             // then
             assertAll(
@@ -147,13 +148,13 @@ class PurchaseTest {
                     () -> assertThat(purchase.getArt()).isEqualTo(auctionArt),
                     () -> assertThat(purchase.getArt().isSold()).isTrue(),
                     () -> assertThat(purchase.getBuyer()).isEqualTo(member),
-                    () -> assertThat(purchase.getPrice()).isEqualTo(auction.getHighestBidPrice()),
+                    () -> assertThat(purchase.getPrice()).isEqualTo(bidPrice),
 
                     // Owner - Buyer
-                    () -> assertThat(owner.getTotalPoint()).isEqualTo(MEMBER_INIT_POINT + auction.getHighestBidPrice()),
-                    () -> assertThat(owner.getAvailablePoint()).isEqualTo(MEMBER_INIT_POINT + auction.getHighestBidPrice()),
-                    () -> assertThat(member.getTotalPoint()).isEqualTo(MEMBER_INIT_POINT - auction.getHighestBidPrice()),
-                    () -> assertThat(member.getAvailablePoint()).isEqualTo(MEMBER_INIT_POINT - auction.getHighestBidPrice())
+                    () -> assertThat(owner.getTotalPoint()).isEqualTo(MEMBER_INIT_POINT + bidPrice),
+                    () -> assertThat(owner.getAvailablePoint()).isEqualTo(MEMBER_INIT_POINT + bidPrice),
+                    () -> assertThat(member.getTotalPoint()).isEqualTo(MEMBER_INIT_POINT - bidPrice),
+                    () -> assertThat(member.getAvailablePoint()).isEqualTo(MEMBER_INIT_POINT - bidPrice)
             );
         }
     }
