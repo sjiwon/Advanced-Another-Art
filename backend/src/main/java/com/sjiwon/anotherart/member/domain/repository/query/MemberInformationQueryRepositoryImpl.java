@@ -8,13 +8,13 @@ import com.sjiwon.anotherart.global.annotation.AnotherArtReadOnlyTransactional;
 import com.sjiwon.anotherart.member.domain.model.QMember;
 import com.sjiwon.anotherart.member.domain.repository.query.dto.MemberInformation;
 import com.sjiwon.anotherart.member.domain.repository.query.dto.MemberPointRecord;
-import com.sjiwon.anotherart.member.domain.repository.query.dto.PurchaseArts;
+import com.sjiwon.anotherart.member.domain.repository.query.dto.PurchaseArt;
 import com.sjiwon.anotherart.member.domain.repository.query.dto.QMemberInformation;
 import com.sjiwon.anotherart.member.domain.repository.query.dto.QMemberPointRecord;
-import com.sjiwon.anotherart.member.domain.repository.query.dto.QSoldArts;
-import com.sjiwon.anotherart.member.domain.repository.query.dto.QWinningAuctionArts;
-import com.sjiwon.anotherart.member.domain.repository.query.dto.SoldArts;
-import com.sjiwon.anotherart.member.domain.repository.query.dto.WinningAuctionArts;
+import com.sjiwon.anotherart.member.domain.repository.query.dto.QSoldArt;
+import com.sjiwon.anotherart.member.domain.repository.query.dto.QWinningAuctionArt;
+import com.sjiwon.anotherart.member.domain.repository.query.dto.SoldArt;
+import com.sjiwon.anotherart.member.domain.repository.query.dto.WinningAuctionArt;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -68,13 +68,13 @@ public class MemberInformationQueryRepositoryImpl implements MemberInformationQu
     }
 
     @Override
-    public List<WinningAuctionArts> fetchWinningAuctionArts(final long memberId) {
+    public List<WinningAuctionArt> fetchWinningAuctionArts(final long memberId) {
         final LocalDateTime now = LocalDateTime.now();
         final QMember bidder = new QMember("member");
         final QMember owner = new QMember("owner");
 
-        final List<WinningAuctionArts> result = query
-                .select(new QWinningAuctionArts(
+        final List<WinningAuctionArt> result = query
+                .select(new QWinningAuctionArt(
                         art.id,
                         art.name,
                         art.description,
@@ -96,7 +96,7 @@ public class MemberInformationQueryRepositoryImpl implements MemberInformationQu
 
         if (!result.isEmpty()) {
             final List<Long> artIds = result.stream()
-                    .map(WinningAuctionArts::getArtId)
+                    .map(WinningAuctionArt::getArtId)
                     .toList();
             final List<SimpleHashtag> simpleHashtags = getHashtags(artIds);
 
@@ -113,12 +113,12 @@ public class MemberInformationQueryRepositoryImpl implements MemberInformationQu
     }
 
     @Override
-    public List<SoldArts> fetchSoldArtsByType(final long memberId, final ArtType type) {
+    public List<SoldArt> fetchSoldArtsByType(final long memberId, final ArtType type) {
         final QMember owner = new QMember("owner");
         final QMember buyer = new QMember("buyer");
 
-        final List<SoldArts> result = query
-                .select(new QSoldArts(
+        final List<SoldArt> result = query
+                .select(new QSoldArt(
                         art.id,
                         art.name,
                         art.description,
@@ -140,7 +140,7 @@ public class MemberInformationQueryRepositoryImpl implements MemberInformationQu
 
         if (!result.isEmpty()) {
             final List<Long> artIds = result.stream()
-                    .map(SoldArts::getArtId)
+                    .map(SoldArt::getArtId)
                     .toList();
             final List<SimpleHashtag> simpleHashtags = getHashtags(artIds);
 
@@ -157,7 +157,7 @@ public class MemberInformationQueryRepositoryImpl implements MemberInformationQu
     }
 
     @Override
-    public List<PurchaseArts> fetchPurchaseArtsByType(final long memberId, final ArtType type) {
+    public List<PurchaseArt> fetchPurchaseArtsByType(final long memberId, final ArtType type) {
         return null;
     }
 

@@ -12,7 +12,7 @@ import com.sjiwon.anotherart.member.application.usecase.query.GetSoldArtsById;
 import com.sjiwon.anotherart.member.application.usecase.query.GetWinningAuctionArtsById;
 import com.sjiwon.anotherart.member.domain.repository.query.dto.MemberInformation;
 import com.sjiwon.anotherart.member.domain.repository.query.dto.MemberPointRecord;
-import com.sjiwon.anotherart.member.domain.repository.query.dto.WinningAuctionArts;
+import com.sjiwon.anotherart.member.domain.repository.query.dto.WinningAuctionArt;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -46,8 +46,8 @@ public class MemberInformationApiController {
 
     @Operation(summary = "낙찰된 경매 작품 조회 Endpoint")
     @GetMapping("/arts/winning-auction")
-    public ResponseEntity<ResponseWrapper<List<WinningAuctionArts>>> getWinningAuctionArts(@ExtractPayload final Long memberId) {
-        final List<WinningAuctionArts> response = memberPrivateQueryUseCase.getWinningAuctionArts(new GetWinningAuctionArtsById(memberId));
+    public ResponseEntity<ResponseWrapper<List<WinningAuctionArt>>> getWinningAuctionArts(@ExtractPayload final Long memberId) {
+        final List<WinningAuctionArt> response = memberPrivateQueryUseCase.getWinningAuctionArts(new GetWinningAuctionArtsById(memberId));
         return ResponseEntity.ok(ResponseWrapper.from(response));
     }
 

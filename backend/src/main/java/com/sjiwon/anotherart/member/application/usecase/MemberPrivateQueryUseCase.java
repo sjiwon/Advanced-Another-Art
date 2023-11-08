@@ -10,9 +10,9 @@ import com.sjiwon.anotherart.member.application.usecase.query.GetWinningAuctionA
 import com.sjiwon.anotherart.member.domain.repository.query.MemberInformationQueryRepository;
 import com.sjiwon.anotherart.member.domain.repository.query.dto.MemberInformation;
 import com.sjiwon.anotherart.member.domain.repository.query.dto.MemberPointRecord;
-import com.sjiwon.anotherart.member.domain.repository.query.dto.PurchaseArts;
-import com.sjiwon.anotherart.member.domain.repository.query.dto.SoldArts;
-import com.sjiwon.anotherart.member.domain.repository.query.dto.WinningAuctionArts;
+import com.sjiwon.anotherart.member.domain.repository.query.dto.PurchaseArt;
+import com.sjiwon.anotherart.member.domain.repository.query.dto.SoldArt;
+import com.sjiwon.anotherart.member.domain.repository.query.dto.WinningAuctionArt;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -34,20 +34,20 @@ public class MemberPrivateQueryUseCase {
         return memberInformationRepository.fetchPointRecords(query.memberId());
     }
 
-    public List<WinningAuctionArts> getWinningAuctionArts(final GetWinningAuctionArtsById query) {
+    public List<WinningAuctionArt> getWinningAuctionArts(final GetWinningAuctionArtsById query) {
         return memberInformationRepository.fetchWinningAuctionArts(query.memberId());
     }
 
     public SoldArtsAssembler getSoldArts(final GetSoldArtsById query) {
-        final List<SoldArts> soldGeneralArts = memberInformationRepository.fetchSoldArtsByType(query.memberId(), GENERAL);
-        final List<SoldArts> soldAuctionArts = memberInformationRepository.fetchSoldArtsByType(query.memberId(), AUCTION);
+        final List<SoldArt> soldGeneralArts = memberInformationRepository.fetchSoldArtsByType(query.memberId(), GENERAL);
+        final List<SoldArt> soldAuctionArts = memberInformationRepository.fetchSoldArtsByType(query.memberId(), AUCTION);
 
         return new SoldArtsAssembler(soldGeneralArts, soldAuctionArts);
     }
 
     public PurchaseArtsAssembler getPurchaseArts(final GetPurchaseArtsById query) {
-        final List<PurchaseArts> purchaseGeneralArts = memberInformationRepository.fetchPurchaseArtsByType(query.memberId(), GENERAL);
-        final List<PurchaseArts> purchaseAuctionArts = memberInformationRepository.fetchPurchaseArtsByType(query.memberId(), AUCTION);
+        final List<PurchaseArt> purchaseGeneralArts = memberInformationRepository.fetchPurchaseArtsByType(query.memberId(), GENERAL);
+        final List<PurchaseArt> purchaseAuctionArts = memberInformationRepository.fetchPurchaseArtsByType(query.memberId(), AUCTION);
 
         return new PurchaseArtsAssembler(purchaseGeneralArts, purchaseAuctionArts);
     }

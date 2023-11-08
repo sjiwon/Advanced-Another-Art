@@ -10,8 +10,8 @@ import com.sjiwon.anotherart.member.domain.model.Member;
 import com.sjiwon.anotherart.member.domain.repository.MemberRepository;
 import com.sjiwon.anotherart.member.domain.repository.query.dto.MemberInformation;
 import com.sjiwon.anotherart.member.domain.repository.query.dto.MemberPointRecord;
-import com.sjiwon.anotherart.member.domain.repository.query.dto.SoldArts;
-import com.sjiwon.anotherart.member.domain.repository.query.dto.WinningAuctionArts;
+import com.sjiwon.anotherart.member.domain.repository.query.dto.SoldArt;
+import com.sjiwon.anotherart.member.domain.repository.query.dto.WinningAuctionArt;
 import com.sjiwon.anotherart.point.domain.model.PointRecord;
 import com.sjiwon.anotherart.point.domain.model.PointType;
 import com.sjiwon.anotherart.point.domain.repository.PointRecordRepository;
@@ -207,22 +207,22 @@ class MemberInformationQueryRepositoryTest extends RepositoryTest {
         @Test
         @DisplayName("낙찰된 경매 작품을 조회한다")
         void success() {
-            final List<WinningAuctionArts> result1 = sut.fetchWinningAuctionArts(bidder.getId());
+            final List<WinningAuctionArt> result1 = sut.fetchWinningAuctionArts(bidder.getId());
             assertThat(result1).isEmpty();
 
             /* artA 경매 종료 */
             closeAuction(artA);
-            final List<WinningAuctionArts> result2 = sut.fetchWinningAuctionArts(bidder.getId());
+            final List<WinningAuctionArt> result2 = sut.fetchWinningAuctionArts(bidder.getId());
             assertThatWinningAuctionArtsMatch(result2, List.of(artA));
 
             /* artB 경매 종료 */
             closeAuction(artB);
-            final List<WinningAuctionArts> result3 = sut.fetchWinningAuctionArts(bidder.getId());
+            final List<WinningAuctionArt> result3 = sut.fetchWinningAuctionArts(bidder.getId());
             assertThatWinningAuctionArtsMatch(result3, List.of(artB, artA));
 
             /* artC 경매 종료 */
             closeAuction(artC);
-            final List<WinningAuctionArts> result4 = sut.fetchWinningAuctionArts(bidder.getId());
+            final List<WinningAuctionArt> result4 = sut.fetchWinningAuctionArts(bidder.getId());
             assertThatWinningAuctionArtsMatch(result4, List.of(artC, artB, artA));
         }
 
@@ -237,19 +237,19 @@ class MemberInformationQueryRepositoryTest extends RepositoryTest {
         }
 
         private void assertThatWinningAuctionArtsMatch(
-                final List<WinningAuctionArts> result,
+                final List<WinningAuctionArt> result,
                 final List<Art> arts
         ) {
             assertThat(result).hasSize(arts.size());
 
             for (int i = 0; i < result.size(); i++) {
-                final WinningAuctionArts winningAuctionArts = result.get(i);
+                final WinningAuctionArt winningAuctionArt = result.get(i);
                 final Art art = arts.get(i);
 
                 assertAll(
-                        () -> assertThat(winningAuctionArts.getArtId()).isEqualTo(art.getId()),
-                        () -> assertThat(winningAuctionArts.getHighestBidPrice()).isEqualTo(art.getPrice()),
-                        () -> assertThat(winningAuctionArts.getArtHashtags()).containsExactlyInAnyOrderElementsOf(art.getHashtags())
+                        () -> assertThat(winningAuctionArt.getArtId()).isEqualTo(art.getId()),
+                        () -> assertThat(winningAuctionArt.getHighestBidPrice()).isEqualTo(art.getPrice()),
+                        () -> assertThat(winningAuctionArt.getArtHashtags()).containsExactlyInAnyOrderElementsOf(art.getHashtags())
                 );
             }
         }
@@ -284,8 +284,8 @@ class MemberInformationQueryRepositoryTest extends RepositoryTest {
         @Test
         @DisplayName("판매한 작품을 조회한다")
         void success() {
-            final List<SoldArts> soldGeneralArts1 = sut.fetchSoldArtsByType(member.getId(), ArtType.GENERAL);
-            final List<SoldArts> soldAuctionArts1 = sut.fetchSoldArtsByType(member.getId(), ArtType.AUCTION);
+            final List<SoldArt> soldGeneralArts1 = sut.fetchSoldArtsByType(member.getId(), ArtType.GENERAL);
+            final List<SoldArt> soldAuctionArts1 = sut.fetchSoldArtsByType(member.getId(), ArtType.AUCTION);
             assertThatSoldArtsMatch(
                     soldGeneralArts1,
                     List.of(),
@@ -298,8 +298,8 @@ class MemberInformationQueryRepositoryTest extends RepositoryTest {
             /* generalArtA 판매 */
             sold(generalArtA, buyerA);
 
-            final List<SoldArts> soldGeneralArts2 = sut.fetchSoldArtsByType(member.getId(), ArtType.GENERAL);
-            final List<SoldArts> soldAuctionArts2 = sut.fetchSoldArtsByType(member.getId(), ArtType.AUCTION);
+            final List<SoldArt> soldGeneralArts2 = sut.fetchSoldArtsByType(member.getId(), ArtType.GENERAL);
+            final List<SoldArt> soldAuctionArts2 = sut.fetchSoldArtsByType(member.getId(), ArtType.AUCTION);
             assertThatSoldArtsMatch(
                     soldGeneralArts2,
                     List.of(generalArtA),
@@ -312,8 +312,8 @@ class MemberInformationQueryRepositoryTest extends RepositoryTest {
             /* auctionArtB 판매 */
             sold(auctionArtB, buyerB);
 
-            final List<SoldArts> soldGeneralArts3 = sut.fetchSoldArtsByType(member.getId(), ArtType.GENERAL);
-            final List<SoldArts> soldAuctionArts3 = sut.fetchSoldArtsByType(member.getId(), ArtType.AUCTION);
+            final List<SoldArt> soldGeneralArts3 = sut.fetchSoldArtsByType(member.getId(), ArtType.GENERAL);
+            final List<SoldArt> soldAuctionArts3 = sut.fetchSoldArtsByType(member.getId(), ArtType.AUCTION);
             assertThatSoldArtsMatch(
                     soldGeneralArts3,
                     List.of(generalArtA),
@@ -326,8 +326,8 @@ class MemberInformationQueryRepositoryTest extends RepositoryTest {
             /* auctionArtA 판매 */
             sold(auctionArtA, buyerA);
 
-            final List<SoldArts> soldGeneralArts4 = sut.fetchSoldArtsByType(member.getId(), ArtType.GENERAL);
-            final List<SoldArts> soldAuctionArts4 = sut.fetchSoldArtsByType(member.getId(), ArtType.AUCTION);
+            final List<SoldArt> soldGeneralArts4 = sut.fetchSoldArtsByType(member.getId(), ArtType.GENERAL);
+            final List<SoldArt> soldAuctionArts4 = sut.fetchSoldArtsByType(member.getId(), ArtType.AUCTION);
             assertThatSoldArtsMatch(
                     soldGeneralArts4,
                     List.of(generalArtA),
@@ -340,8 +340,8 @@ class MemberInformationQueryRepositoryTest extends RepositoryTest {
             /* generalArtB 판매 */
             sold(generalArtB, buyerB);
 
-            final List<SoldArts> soldGeneralArts5 = sut.fetchSoldArtsByType(member.getId(), ArtType.GENERAL);
-            final List<SoldArts> soldAuctionArts5 = sut.fetchSoldArtsByType(member.getId(), ArtType.AUCTION);
+            final List<SoldArt> soldGeneralArts5 = sut.fetchSoldArtsByType(member.getId(), ArtType.GENERAL);
+            final List<SoldArt> soldAuctionArts5 = sut.fetchSoldArtsByType(member.getId(), ArtType.AUCTION);
             assertThatSoldArtsMatch(
                     soldGeneralArts5,
                     List.of(generalArtB, generalArtA),
@@ -361,10 +361,10 @@ class MemberInformationQueryRepositoryTest extends RepositoryTest {
         }
 
         private void assertThatSoldArtsMatch(
-                final List<SoldArts> soldGeneralArts,
+                final List<SoldArt> soldGeneralArts,
                 final List<Art> generalArts,
                 final List<Member> generalArtBuyers,
-                final List<SoldArts> soldAuctionArts,
+                final List<SoldArt> soldAuctionArts,
                 final List<Art> auctionArts,
                 final List<Member> auctionArtBuyers
         ) {
@@ -372,28 +372,28 @@ class MemberInformationQueryRepositoryTest extends RepositoryTest {
             assertThat(soldAuctionArts).hasSize(auctionArts.size());
 
             for (int i = 0; i < soldGeneralArts.size(); i++) {
-                final SoldArts soldArts = soldGeneralArts.get(i);
+                final SoldArt soldArt = soldGeneralArts.get(i);
                 final Art art = generalArts.get(i);
                 final Member buyer = generalArtBuyers.get(i);
 
                 assertAll(
-                        () -> assertThat(soldArts.getArtId()).isEqualTo(art.getId()),
-                        () -> assertThat(soldArts.getBuyerNickname()).isEqualTo(buyer.getNickname().getValue()),
-                        () -> assertThat(soldArts.getSoldPrice()).isEqualTo(art.getPrice()),
-                        () -> assertThat(soldArts.getArtHashtags()).containsExactlyInAnyOrderElementsOf(art.getHashtags())
+                        () -> assertThat(soldArt.getArtId()).isEqualTo(art.getId()),
+                        () -> assertThat(soldArt.getBuyerNickname()).isEqualTo(buyer.getNickname().getValue()),
+                        () -> assertThat(soldArt.getSoldPrice()).isEqualTo(art.getPrice()),
+                        () -> assertThat(soldArt.getArtHashtags()).containsExactlyInAnyOrderElementsOf(art.getHashtags())
                 );
             }
 
             for (int i = 0; i < soldAuctionArts.size(); i++) {
-                final SoldArts soldArts = soldAuctionArts.get(i);
+                final SoldArt soldArt = soldAuctionArts.get(i);
                 final Art art = auctionArts.get(i);
                 final Member buyer = auctionArtBuyers.get(i);
 
                 assertAll(
-                        () -> assertThat(soldArts.getArtId()).isEqualTo(art.getId()),
-                        () -> assertThat(soldArts.getBuyerNickname()).isEqualTo(buyer.getNickname().getValue()),
-                        () -> assertThat(soldArts.getSoldPrice()).isEqualTo(art.getPrice()),
-                        () -> assertThat(soldArts.getArtHashtags()).containsExactlyInAnyOrderElementsOf(art.getHashtags())
+                        () -> assertThat(soldArt.getArtId()).isEqualTo(art.getId()),
+                        () -> assertThat(soldArt.getBuyerNickname()).isEqualTo(buyer.getNickname().getValue()),
+                        () -> assertThat(soldArt.getSoldPrice()).isEqualTo(art.getPrice()),
+                        () -> assertThat(soldArt.getArtHashtags()).containsExactlyInAnyOrderElementsOf(art.getHashtags())
                 );
             }
         }

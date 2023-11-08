@@ -12,33 +12,33 @@ import java.util.List;
 
 @Getter
 @AllArgsConstructor
-public class SoldArts {
+public class PurchaseArt {
     private final Long artId;
     private final String artName;
     private final String artDescription;
     private final String artStorageUrl;
-    private final String buyerNickname;
-    private final String buyerSchool;
-    private final int soldPrice;
+    private final String ownerNickname;
+    private final String ownerSchool;
+    private final int purchasePrice;
     private List<String> artHashtags;
 
     @QueryProjection
-    public SoldArts(
+    public PurchaseArt(
             final Long artId,
             final ArtName artName,
             final Description artDescription,
             final UploadImage uploadImage,
-            final Nickname buyerNickname,
-            final String buyerSchool,
+            final Nickname ownerNickname,
+            final String ownerSchool,
             final int soldPrice
     ) {
         this.artId = artId;
         this.artName = artName.getValue();
         this.artDescription = artDescription.getValue();
         this.artStorageUrl = uploadImage.getLink();
-        this.buyerNickname = buyerNickname.getValue();
-        this.buyerSchool = buyerSchool;
-        this.soldPrice = soldPrice;
+        this.ownerNickname = ownerNickname.getValue();
+        this.ownerSchool = ownerSchool;
+        this.purchasePrice = soldPrice;
     }
 
     public void applyHashtags(final List<String> artHashtags) {
