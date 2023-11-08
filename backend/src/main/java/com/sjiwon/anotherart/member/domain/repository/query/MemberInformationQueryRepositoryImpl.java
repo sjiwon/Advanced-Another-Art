@@ -11,6 +11,7 @@ import com.sjiwon.anotherart.member.domain.repository.query.dto.MemberPointRecor
 import com.sjiwon.anotherart.member.domain.repository.query.dto.PurchaseArts;
 import com.sjiwon.anotherart.member.domain.repository.query.dto.QMemberInformation;
 import com.sjiwon.anotherart.member.domain.repository.query.dto.QMemberPointRecord;
+import com.sjiwon.anotherart.member.domain.repository.query.dto.QSoldArts;
 import com.sjiwon.anotherart.member.domain.repository.query.dto.QWinningAuctionArts;
 import com.sjiwon.anotherart.member.domain.repository.query.dto.SoldArts;
 import com.sjiwon.anotherart.member.domain.repository.query.dto.WinningAuctionArts;
@@ -25,6 +26,7 @@ import static com.sjiwon.anotherart.art.domain.model.QHashtag.hashtag;
 import static com.sjiwon.anotherart.auction.domain.model.QAuction.auction;
 import static com.sjiwon.anotherart.member.domain.model.QMember.member;
 import static com.sjiwon.anotherart.point.domain.model.QPointRecord.pointRecord;
+import static com.sjiwon.anotherart.purchase.domain.model.QPurchase.purchase;
 
 @Repository
 @AnotherArtReadOnlyTransactional
@@ -112,7 +114,46 @@ public class MemberInformationQueryRepositoryImpl implements MemberInformationQu
 
     @Override
     public List<SoldArts> fetchSoldArtsByType(final long memberId, final ArtType type) {
-        return null;
+        final QMember owner = new QMember("owner");
+        final QMember buyer = new QMember("buyer");
+
+        final List<SoldArts> result = query
+                .select(new QSoldArts(
+                        art.id,
+                        art.name,
+                        art.description,
+                        art.uploadImage,
+                        buyer.nickname,
+                        buyer.school,
+                        purchase.price
+                ))
+                .from(purchase)
+                .innerJoin(purchase.art, art)
+                .innerJoin(art.owner, owner)
+                .innerJoin(purchase.buyer, buyer)
+                .where(
+                        owner.id.eq(memberId),
+                        art.type.eq(type)
+                )
+                .orderBy(purchase.id.desc())
+                .fetch();
+
+        if (!result.isEmpty()) {
+            final List<Long> artIds = result.stream()
+                    .map(SoldArts::getArtId)
+                    .toList();
+            final List<SimpleHashtag> simpleHashtags = getHashtags(artIds);
+
+            result.forEach(row -> {
+                final List<String> hashtags = simpleHashtags.stream()
+                        .filter(hashtag -> hashtag.artId().equals(row.getArtId()))
+                        .map(SimpleHashtag::name)
+                        .toList();
+                row.applyHashtags(hashtags);
+            });
+        }
+
+        return result;
     }
 
     @Override
