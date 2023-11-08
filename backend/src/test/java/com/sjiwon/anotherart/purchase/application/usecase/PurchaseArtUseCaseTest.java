@@ -9,6 +9,7 @@ import com.sjiwon.anotherart.global.exception.AnotherArtException;
 import com.sjiwon.anotherart.member.domain.model.Member;
 import com.sjiwon.anotherart.member.domain.repository.MemberRepository;
 import com.sjiwon.anotherart.member.exception.MemberErrorCode;
+import com.sjiwon.anotherart.point.domain.repository.PointRecordRepository;
 import com.sjiwon.anotherart.purchase.application.usecase.command.PurchaseArtCommand;
 import com.sjiwon.anotherart.purchase.domain.model.Purchase;
 import com.sjiwon.anotherart.purchase.domain.repository.PurchaseRepository;
@@ -40,11 +41,13 @@ class PurchaseArtUseCaseTest extends UseCaseTest {
     private final ArtRepository artRepository = mock(ArtRepository.class);
     private final MemberRepository memberRepository = mock(MemberRepository.class);
     private final AuctionRepository auctionRepository = mock(AuctionRepository.class);
+    private final PointRecordRepository pointRecordRepository = mock(PointRecordRepository.class);
     private final PurchaseRepository purchaseRepository = mock(PurchaseRepository.class);
     private final PurchaseArtUseCase sut = new PurchaseArtUseCase(
             artRepository,
             memberRepository,
             auctionRepository,
+            pointRecordRepository,
             purchaseRepository
     );
 
@@ -90,7 +93,8 @@ class PurchaseArtUseCaseTest extends UseCaseTest {
                     () -> verify(artRepository, times(1)).getByIdWithFetchOwner(command.artId()),
                     () -> verify(memberRepository, times(1)).getById(command.memberId()),
                     () -> verify(auctionRepository, times(0)).getByArtId(command.artId()),
-                    () -> verify(purchaseRepository, times(0)).save(any(Purchase.class))
+                    () -> verify(purchaseRepository, times(0)).save(any(Purchase.class)),
+                    () -> verify(pointRecordRepository, times(0)).saveAll(any())
             );
         }
 
@@ -113,7 +117,8 @@ class PurchaseArtUseCaseTest extends UseCaseTest {
                     () -> verify(artRepository, times(1)).getByIdWithFetchOwner(command.artId()),
                     () -> verify(memberRepository, times(1)).getById(command.memberId()),
                     () -> verify(auctionRepository, times(0)).getByArtId(command.artId()),
-                    () -> verify(purchaseRepository, times(0)).save(any(Purchase.class))
+                    () -> verify(purchaseRepository, times(0)).save(any(Purchase.class)),
+                    () -> verify(pointRecordRepository, times(0)).saveAll(any())
             );
         }
 
@@ -136,7 +141,8 @@ class PurchaseArtUseCaseTest extends UseCaseTest {
                     () -> verify(artRepository, times(1)).getByIdWithFetchOwner(command.artId()),
                     () -> verify(memberRepository, times(1)).getById(command.memberId()),
                     () -> verify(auctionRepository, times(0)).getByArtId(command.artId()),
-                    () -> verify(purchaseRepository, times(0)).save(any(Purchase.class))
+                    () -> verify(purchaseRepository, times(0)).save(any(Purchase.class)),
+                    () -> verify(pointRecordRepository, times(0)).saveAll(any())
             );
         }
 
@@ -158,6 +164,7 @@ class PurchaseArtUseCaseTest extends UseCaseTest {
                     () -> verify(memberRepository, times(1)).getById(command.memberId()),
                     () -> verify(auctionRepository, times(0)).getByArtId(command.artId()),
                     () -> verify(purchaseRepository, times(1)).save(any(Purchase.class)),
+                    () -> verify(pointRecordRepository, times(1)).saveAll(any()),
 
                     // Owner & buyer
                     () -> assertThat(owner.getTotalPoint()).isEqualTo(MEMBER_INIT_POINT + generalArt.getPrice()),
@@ -209,7 +216,8 @@ class PurchaseArtUseCaseTest extends UseCaseTest {
                     () -> verify(artRepository, times(1)).getByIdWithFetchOwner(command.artId()),
                     () -> verify(memberRepository, times(1)).getById(command.memberId()),
                     () -> verify(auctionRepository, times(1)).getByArtId(command.artId()),
-                    () -> verify(purchaseRepository, times(0)).save(any(Purchase.class))
+                    () -> verify(purchaseRepository, times(0)).save(any(Purchase.class)),
+                    () -> verify(pointRecordRepository, times(0)).saveAll(any())
             );
         }
 
@@ -231,7 +239,8 @@ class PurchaseArtUseCaseTest extends UseCaseTest {
                     () -> verify(artRepository, times(1)).getByIdWithFetchOwner(command.artId()),
                     () -> verify(memberRepository, times(1)).getById(command.memberId()),
                     () -> verify(auctionRepository, times(1)).getByArtId(command.artId()),
-                    () -> verify(purchaseRepository, times(0)).save(any(Purchase.class))
+                    () -> verify(purchaseRepository, times(0)).save(any(Purchase.class)),
+                    () -> verify(pointRecordRepository, times(0)).saveAll(any())
             );
         }
 
@@ -255,7 +264,8 @@ class PurchaseArtUseCaseTest extends UseCaseTest {
                     () -> verify(artRepository, times(1)).getByIdWithFetchOwner(command.artId()),
                     () -> verify(memberRepository, times(1)).getById(command.memberId()),
                     () -> verify(auctionRepository, times(1)).getByArtId(command.artId()),
-                    () -> verify(purchaseRepository, times(0)).save(any(Purchase.class))
+                    () -> verify(purchaseRepository, times(0)).save(any(Purchase.class)),
+                    () -> verify(pointRecordRepository, times(0)).saveAll(any())
             );
         }
 
@@ -279,7 +289,8 @@ class PurchaseArtUseCaseTest extends UseCaseTest {
                     () -> verify(artRepository, times(1)).getByIdWithFetchOwner(command.artId()),
                     () -> verify(memberRepository, times(1)).getById(command.memberId()),
                     () -> verify(auctionRepository, times(1)).getByArtId(command.artId()),
-                    () -> verify(purchaseRepository, times(0)).save(any(Purchase.class))
+                    () -> verify(purchaseRepository, times(0)).save(any(Purchase.class)),
+                    () -> verify(pointRecordRepository, times(0)).saveAll(any())
             );
         }
 
@@ -302,6 +313,7 @@ class PurchaseArtUseCaseTest extends UseCaseTest {
                     () -> verify(memberRepository, times(1)).getById(command.memberId()),
                     () -> verify(auctionRepository, times(1)).getByArtId(command.artId()),
                     () -> verify(purchaseRepository, times(1)).save(any(Purchase.class)),
+                    () -> verify(pointRecordRepository, times(1)).saveAll(any()),
 
                     // Owner & buyer
                     () -> assertThat(owner.getTotalPoint()).isEqualTo(MEMBER_INIT_POINT + bidPrice),
