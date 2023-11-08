@@ -7,6 +7,7 @@ import com.sjiwon.anotherart.member.domain.repository.query.dto.MemberInformatio
 import com.sjiwon.anotherart.member.domain.repository.query.dto.MemberPointRecord;
 import com.sjiwon.anotherart.member.domain.repository.query.dto.PurchaseArts;
 import com.sjiwon.anotherart.member.domain.repository.query.dto.QMemberInformation;
+import com.sjiwon.anotherart.member.domain.repository.query.dto.QMemberPointRecord;
 import com.sjiwon.anotherart.member.domain.repository.query.dto.SoldArts;
 import com.sjiwon.anotherart.member.domain.repository.query.dto.WinningAuctionArts;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 import static com.sjiwon.anotherart.member.domain.model.QMember.member;
+import static com.sjiwon.anotherart.point.domain.model.QPointRecord.pointRecord;
 
 @Repository
 @AnotherArtReadOnlyTransactional
@@ -43,7 +45,16 @@ public class MemberInformationQueryRepositoryImpl implements MemberInformationQu
 
     @Override
     public List<MemberPointRecord> fetchPointRecords(final long memberId) {
-        return null;
+        return query
+                .select(new QMemberPointRecord(
+                        pointRecord.type,
+                        pointRecord.amount,
+                        pointRecord.createdAt
+                ))
+                .from(pointRecord)
+                .where(pointRecord.member.id.eq(memberId))
+                .orderBy(pointRecord.id.desc())
+                .fetch();
     }
 
     @Override

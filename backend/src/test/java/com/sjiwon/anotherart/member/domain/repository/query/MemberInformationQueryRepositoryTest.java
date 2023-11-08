@@ -6,6 +6,9 @@ import com.sjiwon.anotherart.common.RepositoryTest;
 import com.sjiwon.anotherart.member.domain.model.Member;
 import com.sjiwon.anotherart.member.domain.repository.MemberRepository;
 import com.sjiwon.anotherart.member.domain.repository.query.dto.MemberInformation;
+import com.sjiwon.anotherart.member.domain.repository.query.dto.MemberPointRecord;
+import com.sjiwon.anotherart.point.domain.model.PointRecord;
+import com.sjiwon.anotherart.point.domain.model.PointType;
 import com.sjiwon.anotherart.point.domain.repository.PointRecordRepository;
 import com.sjiwon.anotherart.purchase.domain.repository.PurchaseRepository;
 import jakarta.persistence.EntityManager;
@@ -15,6 +18,8 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
+
+import java.util.List;
 
 import static com.sjiwon.anotherart.common.fixture.MemberFixture.MEMBER_A;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -79,9 +84,81 @@ class MemberInformationQueryRepositoryTest extends RepositoryTest {
     @Nested
     @DisplayName("포인트 활용 내역 조회 Query")
     class FetchPointRecords {
+        private static final int INCREASE_AMOUNT = 100_000;
+        private static final int DECREASE_AMOUNT = 50_000;
+
         @Test
         @DisplayName("포인트 활용 내역을 조회한다")
         void success() {
+            // given
+            final Member member = memberRepository.save(MEMBER_A.toMember());
+            applyPointRecord(member, PointType.CHARGE, INCREASE_AMOUNT);
+            applyPointRecord(member, PointType.CHARGE, INCREASE_AMOUNT);
+            applyPointRecord(member, PointType.REFUND, DECREASE_AMOUNT);
+            applyPointRecord(member, PointType.CHARGE, INCREASE_AMOUNT);
+            applyPointRecord(member, PointType.PURCHASE, DECREASE_AMOUNT);
+            applyPointRecord(member, PointType.PURCHASE, DECREASE_AMOUNT);
+            applyPointRecord(member, PointType.CHARGE, INCREASE_AMOUNT);
+            applyPointRecord(member, PointType.CHARGE, INCREASE_AMOUNT);
+            applyPointRecord(member, PointType.PURCHASE, DECREASE_AMOUNT);
+            applyPointRecord(member, PointType.SOLD, INCREASE_AMOUNT);
+            applyPointRecord(member, PointType.SOLD, INCREASE_AMOUNT);
+
+            // when
+            final List<MemberPointRecord> result = sut.fetchPointRecords(member.getId());
+
+            // then
+            assertAll(
+                    () -> assertThat(result).hasSize(11),
+                    () -> assertThat(result)
+                            .map(MemberPointRecord::getPointType)
+                            .containsExactly(
+                                    PointType.SOLD.getDescription(),
+                                    PointType.SOLD.getDescription(),
+                                    PointType.PURCHASE.getDescription(),
+                                    PointType.CHARGE.getDescription(),
+                                    PointType.CHARGE.getDescription(),
+                                    PointType.PURCHASE.getDescription(),
+                                    PointType.PURCHASE.getDescription(),
+                                    PointType.CHARGE.getDescription(),
+                                    PointType.REFUND.getDescription(),
+                                    PointType.CHARGE.getDescription(),
+                                    PointType.CHARGE.getDescription()
+                            ),
+                    () -> assertThat(result)
+                            .map(MemberPointRecord::getAmount)
+                            .containsExactly(
+                                    INCREASE_AMOUNT,
+                                    INCREASE_AMOUNT,
+                                    DECREASE_AMOUNT,
+                                    INCREASE_AMOUNT,
+                                    INCREASE_AMOUNT,
+                                    DECREASE_AMOUNT,
+                                    DECREASE_AMOUNT,
+                                    INCREASE_AMOUNT,
+                                    DECREASE_AMOUNT,
+                                    INCREASE_AMOUNT,
+                                    INCREASE_AMOUNT
+                            ),
+                    () -> {
+                        final MemberInformation memberInformation = sut.fetchInformation(member.getId());
+                        assertThat(memberInformation.getTotalPoint()).isEqualTo(INCREASE_AMOUNT * 7 - DECREASE_AMOUNT * 4);
+                        assertThat(memberInformation.getAvailablePoint()).isEqualTo(INCREASE_AMOUNT * 7 - DECREASE_AMOUNT * 4);
+                    }
+            );
+        }
+
+        private void applyPointRecord(final Member member, final PointType type, final int amount) {
+            switch (type) {
+                case CHARGE, SOLD -> {
+                    member.increaseTotalPoint(amount);
+                    pointRecordRepository.save(PointRecord.addPointRecord(member, type, amount));
+                }
+                default -> {
+                    member.decreaseTotalPoint(amount);
+                    pointRecordRepository.save(PointRecord.addPointRecord(member, type, amount));
+                }
+            }
         }
     }
 
