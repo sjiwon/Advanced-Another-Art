@@ -37,14 +37,6 @@ public class PointRecord extends BaseEntity<PointRecord> {
     }
 
     public static PointRecord addPointRecord(final Member member, final PointType type, final int amount) {
-        if (type == PointType.CHARGE) {
-            member.increaseTotalPoint(amount);
-        }
-
-        if (type == PointType.REFUND) {
-            member.decreaseTotalPoint(amount);
-        }
-
         return new PointRecord(member, type, amount);
     }
 }

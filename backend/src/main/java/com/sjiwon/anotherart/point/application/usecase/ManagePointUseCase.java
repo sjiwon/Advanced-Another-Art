@@ -22,14 +22,14 @@ public class ManagePointUseCase {
     @AnotherArtWritableTransactional
     public void charge(final ChargePointCommand command) {
         final Member member = memberRepository.getById(command.memberId());
-        final PointRecord chargeRecord = PointRecord.addPointRecord(member, CHARGE, command.chargeAmount());
-        pointRecordRepository.save(chargeRecord);
+        member.increaseTotalPoint(command.chargeAmount());
+        pointRecordRepository.save(PointRecord.addPointRecord(member, CHARGE, command.chargeAmount()));
     }
 
     @AnotherArtWritableTransactional
     public void refund(final RefundPointCommand command) {
         final Member member = memberRepository.getById(command.memberId());
-        final PointRecord refundRecord = PointRecord.addPointRecord(member, REFUND, command.refundAmount());
-        pointRecordRepository.save(refundRecord);
+        member.decreaseTotalPoint(command.refundAmount());
+        pointRecordRepository.save(PointRecord.addPointRecord(member, REFUND, command.refundAmount()));
     }
 }
