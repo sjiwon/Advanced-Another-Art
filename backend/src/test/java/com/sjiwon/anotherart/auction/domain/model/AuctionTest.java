@@ -98,13 +98,12 @@ class AuctionTest {
             // given
             final Auction auctionA = Auction.createAuction(art, CLOSED_WEEK_2_AGO.toPeriod());
             final Auction auctionB = Auction.createAuction(art, OPEN_WEEK_1_LATER.toPeriod());
-            final int newBidPrice = auction.getHighestBidPrice() + 50_000;
 
             // when - then
-            assertThatThrownBy(() -> auctionA.applyNewBid(memberA, newBidPrice))
+            assertThatThrownBy(() -> auctionA.applyNewBid(memberA, auctionA.getHighestBidPrice() + 50_000))
                     .isInstanceOf(AnotherArtException.class)
                     .hasMessage(AuctionErrorCode.AUCTION_IS_NOT_IN_PROGRESS.getMessage());
-            assertThatThrownBy(() -> auctionB.applyNewBid(memberA, newBidPrice))
+            assertThatThrownBy(() -> auctionB.applyNewBid(memberA, auctionB.getHighestBidPrice() + 50_000))
                     .isInstanceOf(AnotherArtException.class)
                     .hasMessage(AuctionErrorCode.AUCTION_IS_NOT_IN_PROGRESS.getMessage());
         }

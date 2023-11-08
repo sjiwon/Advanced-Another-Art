@@ -38,7 +38,7 @@ public class PurchaseService {
 
     private Long processArtPurchase(final Art art, final Member buyer) {
         if (art.isAuctionType()) {
-            final Auction auction = auctionRepository.getByArtId(art.getId());
+            final Auction auction = auctionRepository.getByArtIdWithFetchOwnerAndBidder(art.getId());
             validateAuctionFinished(auction);
             validateHighestBidder(auction, buyer);
 
