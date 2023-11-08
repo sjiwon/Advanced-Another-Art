@@ -1,4 +1,4 @@
-package com.sjiwon.anotherart.purchase.service;
+package com.sjiwon.anotherart.purchase.application.usecase;
 
 import com.sjiwon.anotherart.art.domain.model.Art;
 import com.sjiwon.anotherart.art.domain.repository.ArtRepository;
@@ -7,8 +7,8 @@ import com.sjiwon.anotherart.auction.domain.repository.AuctionRepository;
 import com.sjiwon.anotherart.global.exception.AnotherArtException;
 import com.sjiwon.anotherart.member.domain.model.Member;
 import com.sjiwon.anotherart.member.domain.repository.MemberRepository;
-import com.sjiwon.anotherart.purchase.domain.Purchase;
-import com.sjiwon.anotherart.purchase.domain.PurchaseRepository;
+import com.sjiwon.anotherart.purchase.domain.model.Purchase;
+import com.sjiwon.anotherart.purchase.domain.repository.PurchaseRepository;
 import com.sjiwon.anotherart.purchase.exception.PurchaseErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;

@@ -1,4 +1,4 @@
-package com.sjiwon.anotherart.purchase.domain;
+package com.sjiwon.anotherart.purchase.domain.model;
 
 import com.sjiwon.anotherart.art.domain.model.Art;
 import com.sjiwon.anotherart.global.BaseEntity;

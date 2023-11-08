@@ -14,8 +14,8 @@
 //import com.sjiwon.anotherart.member.domain.repository.MemberRepository;
 //import com.sjiwon.anotherart.member.domain.repository.query.dto.MemberPointRecord;
 //import com.sjiwon.anotherart.member.domain.repository.query.dto.response.TradedArt;
-//import com.sjiwon.anotherart.purchase.domain.Purchase;
-//import com.sjiwon.anotherart.purchase.domain.PurchaseRepository;
+//import com.sjiwon.anotherart.purchase.domain.model.Purchase;
+//import com.sjiwon.anotherart.purchase.domain.repository.PurchaseRepository;
 //import jakarta.persistence.EntityManager;
 //import jakarta.persistence.PersistenceContext;
 //import org.junit.jupiter.api.BeforeEach;

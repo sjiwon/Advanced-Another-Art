@@ -13,8 +13,8 @@
 //import com.sjiwon.anotherart.favorite.domain.repository.FavoriteRepository;
 //import com.sjiwon.anotherart.member.domain.model.Member;
 //import com.sjiwon.anotherart.member.domain.repository.MemberRepository;
-//import com.sjiwon.anotherart.purchase.domain.Purchase;
-//import com.sjiwon.anotherart.purchase.domain.PurchaseRepository;
+//import com.sjiwon.anotherart.purchase.domain.model.Purchase;
+//import com.sjiwon.anotherart.purchase.domain.repository.PurchaseRepository;
 //import org.junit.jupiter.api.BeforeEach;
 //import org.junit.jupiter.api.DisplayName;
 //import org.junit.jupiter.api.Test;
