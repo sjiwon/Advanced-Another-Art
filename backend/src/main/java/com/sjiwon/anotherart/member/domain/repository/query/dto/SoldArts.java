@@ -3,6 +3,7 @@ package com.sjiwon.anotherart.member.domain.repository.query.dto;
 import com.querydsl.core.annotations.QueryProjection;
 import com.sjiwon.anotherart.art.domain.model.ArtName;
 import com.sjiwon.anotherart.art.domain.model.Description;
+import com.sjiwon.anotherart.art.domain.model.UploadImage;
 import com.sjiwon.anotherart.member.domain.model.Nickname;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -26,7 +27,7 @@ public class SoldArts {
             final Long artId,
             final ArtName artName,
             final Description artDescription,
-            final String artStorageUrl,
+            final UploadImage uploadImage,
             final Nickname buyerNickname,
             final String buyerSchool,
             final int soldPrice
@@ -34,13 +35,13 @@ public class SoldArts {
         this.artId = artId;
         this.artName = artName.getValue();
         this.artDescription = artDescription.getValue();
-        this.artStorageUrl = artStorageUrl;
+        this.artStorageUrl = uploadImage.getLink();
         this.buyerNickname = buyerNickname.getValue();
         this.buyerSchool = buyerSchool;
         this.soldPrice = soldPrice;
     }
 
-    private void applyHashtags(final List<String> artHashtags) {
+    public void applyHashtags(final List<String> artHashtags) {
         this.artHashtags = artHashtags;
     }
 }
