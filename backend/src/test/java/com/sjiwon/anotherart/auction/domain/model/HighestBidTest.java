@@ -124,16 +124,6 @@ class HighestBidTest {
             final int previousBidPrice = auction.getHighestBidPrice() + 50_000;
             highestBid.applyNewBid(memberA, previousBidPrice);
 
-            assertAll(
-                    // HighestBid Info
-                    () -> assertThat(highestBid.getBidder()).isEqualTo(memberA),
-                    () -> assertThat(highestBid.getBidPrice()).isEqualTo(previousBidPrice),
-
-                    // Bidders Info
-                    () -> assertThat(memberA.getTotalPoint()).isEqualTo(MEMBER_INIT_POINT),
-                    () -> assertThat(memberA.getAvailablePoint()).isEqualTo(MEMBER_INIT_POINT - previousBidPrice)
-            );
-
             // when
             final int newBidPrice = previousBidPrice + 50_000;
             highestBid.applyNewBid(memberB, newBidPrice);

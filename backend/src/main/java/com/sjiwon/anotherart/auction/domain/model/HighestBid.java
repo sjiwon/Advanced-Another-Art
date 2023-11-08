@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Embeddable
 public class HighestBid {
-    @ManyToOne(fetch = FetchType.EAGER) // always need
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "highest_bidder_id", referencedColumnName = "id")
     private Member bidder;
 

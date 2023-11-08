@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 
 import static com.sjiwon.anotherart.common.fixture.ArtFixture.AUCTION_1;
 import static com.sjiwon.anotherart.common.fixture.ArtFixture.AUCTION_2;
+import static com.sjiwon.anotherart.common.fixture.ArtFixture.AUCTION_3;
 import static com.sjiwon.anotherart.common.fixture.ArtFixture.GENERAL_1;
 import static com.sjiwon.anotherart.common.fixture.MemberFixture.MEMBER_A;
 import static com.sjiwon.anotherart.common.fixture.MemberFixture.MEMBER_B;
@@ -23,7 +24,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-@DisplayName("Auction 도메인 테스트")
+@DisplayName("Auction -> 도메인 [Auction] 테스트")
 class AuctionTest {
     private static final int MEMBER_INIT_POINT = 1_000_000;
 
@@ -33,20 +34,19 @@ class AuctionTest {
 
     @BeforeEach
     void setUp() {
-        // TODO Point 도메인 분리 후 리팩토링
         owner = MEMBER_A.toMember().apply(1L);
-//        owner.addPointRecords(CHARGE, MEMBER_INIT_POINT);
+        owner.increaseTotalPoint(MEMBER_INIT_POINT);
 
         memberA = MEMBER_B.toMember().apply(2L);
-//        memberA.addPointRecords(CHARGE, MEMBER_INIT_POINT);
+        memberA.increaseTotalPoint(MEMBER_INIT_POINT);
 
         memberB = MEMBER_C.toMember().apply(3L);
-//        memberB.addPointRecords(CHARGE, MEMBER_INIT_POINT);
+        memberB.increaseTotalPoint(MEMBER_INIT_POINT);
     }
 
     @Nested
     @DisplayName("Auction 생성")
-    class construct {
+    class Construct {
         @Test
         @DisplayName("경매 작품이 아니면 Auction을 생성할 수 없다")
         void throwExceptionByInvalidArtType() {
@@ -82,16 +82,14 @@ class AuctionTest {
 
     @Nested
     @DisplayName("경매 작품 입찰")
-    class applyNewBid {
+    class ApplyNewBid {
         private Art art;
         private Auction auction;
-        private int initBidPrice;
 
         @BeforeEach
         void setUp() {
             art = AUCTION_1.toArt(owner);
             auction = Auction.createAuction(art, OPEN_NOW.toPeriod());
-            initBidPrice = art.getPrice();
         }
 
         @Test
@@ -100,12 +98,13 @@ class AuctionTest {
             // given
             final Auction auctionA = Auction.createAuction(art, CLOSED_WEEK_2_AGO.toPeriod());
             final Auction auctionB = Auction.createAuction(art, OPEN_WEEK_1_LATER.toPeriod());
+            final int newBidPrice = auction.getHighestBidPrice() + 50_000;
 
             // when - then
-            assertThatThrownBy(() -> auctionA.applyNewBid(memberA, initBidPrice))
+            assertThatThrownBy(() -> auctionA.applyNewBid(memberA, newBidPrice))
                     .isInstanceOf(AnotherArtException.class)
                     .hasMessage(AuctionErrorCode.AUCTION_IS_NOT_IN_PROGRESS.getMessage());
-            assertThatThrownBy(() -> auctionB.applyNewBid(memberA, initBidPrice))
+            assertThatThrownBy(() -> auctionB.applyNewBid(memberA, newBidPrice))
                     .isInstanceOf(AnotherArtException.class)
                     .hasMessage(AuctionErrorCode.AUCTION_IS_NOT_IN_PROGRESS.getMessage());
         }
@@ -113,7 +112,11 @@ class AuctionTest {
         @Test
         @DisplayName("작품 소유자는 입찰을 진행할 수 없다")
         void throwExceptionByArtOwnerCannotBid() {
-            assertThatThrownBy(() -> auction.applyNewBid(owner, initBidPrice))
+            // given
+            final int newBidPrice = auction.getHighestBidPrice() + 50_000;
+
+            // when - then
+            assertThatThrownBy(() -> auction.applyNewBid(owner, newBidPrice))
                     .isInstanceOf(AnotherArtException.class)
                     .hasMessage(AuctionErrorCode.ART_OWNER_CANNOT_BID.getMessage());
         }
@@ -122,62 +125,74 @@ class AuctionTest {
         @DisplayName("최고 입찰자는 연속으로 입찰을 진행할 수 없다")
         void throwExceptionByHighestBidderCannotBidAgain() {
             // given
-            auction.applyNewBid(memberA, initBidPrice);
+            final int newBidPrice = auction.getHighestBidPrice() + 50_000;
+            auction.applyNewBid(memberA, newBidPrice);
 
             // when - then
-            assertThatThrownBy(() -> auction.applyNewBid(memberA, initBidPrice + 50_000))
+            assertThatThrownBy(() -> auction.applyNewBid(memberA, newBidPrice + 50_000))
                     .isInstanceOf(AnotherArtException.class)
                     .hasMessage(AuctionErrorCode.HIGHEST_BIDDER_CANNOT_BID_AGAIN.getMessage());
         }
 
         @Test
-        @DisplayName("입찰 금액이 부족하다면 입찰을 진행할 수 없다")
-        void throwExceptionByBidPriceIsNotEnough() {
-            // Case 1) HighestBidder가 존재하지 않는 경우
-            assertThatThrownBy(() -> auction.applyNewBid(memberA, initBidPrice - 1))
+        @DisplayName("입찰 금액이 부족하다면 입찰을 진행할 수 없다 -> 1) 최고 입찰자가 존재하는 경우")
+        void throwExceptionByBidPriceIsNotEnoughCaseA() {
+            // given
+            final int newBidPrice = auction.getHighestBidPrice() + 50_000;
+            auction.applyNewBid(memberA, newBidPrice);
+
+            // when - then
+            assertThatThrownBy(() -> auction.applyNewBid(memberB, newBidPrice - 10_000)) // 더 적은 금액
                     .isInstanceOf(AnotherArtException.class)
                     .hasMessage(AuctionErrorCode.BID_PRICE_IS_NOT_ENOUGH.getMessage());
+            assertThatThrownBy(() -> auction.applyNewBid(memberB, newBidPrice)) // 동일한 금액
+                    .isInstanceOf(AnotherArtException.class)
+                    .hasMessage(AuctionErrorCode.BID_PRICE_IS_NOT_ENOUGH.getMessage());
+        }
 
-            // Case 2) HighestBidder가 존재하는 경우
-            auction.applyNewBid(memberA, initBidPrice);
-            assertThatThrownBy(() -> auction.applyNewBid(memberB, initBidPrice))
+        @Test
+        @DisplayName("입찰 금액이 부족하다면 입찰을 진행할 수 없다 -> 2) 최고 입찰자가 존재하지 않는 경우")
+        void throwExceptionByBidPriceIsNotEnoughCaseB() {
+            assertThatThrownBy(() -> auction.applyNewBid(memberB, auction.getHighestBidPrice() - 10_000))
                     .isInstanceOf(AnotherArtException.class)
                     .hasMessage(AuctionErrorCode.BID_PRICE_IS_NOT_ENOUGH.getMessage());
         }
 
         @Test
         @DisplayName("입찰을 성공한다 [최고 입찰자 존재 X]")
-        void successCase1() {
+        void successA() {
             // when
-            auction.applyNewBid(memberA, initBidPrice);
+            final int newBidPrice = auction.getHighestBidPrice() + 50_000;
+            auction.applyNewBid(memberA, newBidPrice);
 
             // then
             assertAll(
-                    // Bid Info
+                    // HighestBid Info
                     () -> assertThat(auction.getAuctionRecords()).hasSize(1),
                     () -> assertThat(auction.getAuctionRecords())
                             .map(AuctionRecord::getBidder)
                             .containsExactly(memberA),
                     () -> assertThat(auction.getAuctionRecords())
                             .map(AuctionRecord::getBidPrice)
-                            .containsExactly(initBidPrice),
+                            .containsExactly(newBidPrice),
                     () -> assertThat(auction.getHighestBidder()).isEqualTo(memberA),
-                    () -> assertThat(auction.getHighestBidPrice()).isEqualTo(initBidPrice),
+                    () -> assertThat(auction.getHighestBidPrice()).isEqualTo(newBidPrice),
 
                     // Bidders Info
                     () -> assertThat(memberA.getTotalPoint()).isEqualTo(MEMBER_INIT_POINT),
-                    () -> assertThat(memberA.getAvailablePoint()).isEqualTo(MEMBER_INIT_POINT - initBidPrice)
+                    () -> assertThat(memberA.getAvailablePoint()).isEqualTo(MEMBER_INIT_POINT - newBidPrice)
             );
         }
 
         @Test
         @DisplayName("입찰을 성공한다 [최고 입찰자 존재 O]")
-        void successCase2() {
+        void successB() {
             // given
-            auction.applyNewBid(memberA, initBidPrice);
+            final int previousBidPrice = auction.getHighestBidPrice() + 50_000;
+            auction.applyNewBid(memberA, previousBidPrice);
 
             // when
-            final int newBidPrice = initBidPrice + 50_000;
+            final int newBidPrice = previousBidPrice + 50_000;
             auction.applyNewBid(memberB, newBidPrice);
 
             // then
@@ -189,13 +204,13 @@ class AuctionTest {
                             .containsExactly(memberA, memberB),
                     () -> assertThat(auction.getAuctionRecords())
                             .map(AuctionRecord::getBidPrice)
-                            .containsExactly(initBidPrice, newBidPrice),
+                            .containsExactly(previousBidPrice, newBidPrice),
                     () -> assertThat(auction.getHighestBidder()).isEqualTo(memberB),
                     () -> assertThat(auction.getHighestBidPrice()).isEqualTo(newBidPrice),
 
                     // Bidders Info
                     () -> assertThat(memberA.getTotalPoint()).isEqualTo(MEMBER_INIT_POINT),
-                    () -> assertThat(memberA.getAvailablePoint()).isEqualTo(MEMBER_INIT_POINT),
+                    () -> assertThat(memberA.getAvailablePoint()).isEqualTo(MEMBER_INIT_POINT - previousBidPrice + previousBidPrice),
                     () -> assertThat(memberB.getTotalPoint()).isEqualTo(MEMBER_INIT_POINT),
                     () -> assertThat(memberB.getAvailablePoint()).isEqualTo(MEMBER_INIT_POINT - newBidPrice)
             );
@@ -206,9 +221,8 @@ class AuctionTest {
     @DisplayName("최고 입찰자인지 판별한다")
     void isHighestBidder() {
         // given
-        final Art art = AUCTION_1.toArt(owner);
-        final Auction auction = Auction.createAuction(art, OPEN_NOW.toPeriod());
-        auction.applyNewBid(memberA, art.getPrice());
+        final Auction auction = Auction.createAuction(AUCTION_1.toArt(owner), OPEN_NOW.toPeriod());
+        auction.applyNewBid(memberA, auction.getHighestBidPrice());
 
         // when
         final boolean actual1 = auction.isHighestBidder(owner);
@@ -227,20 +241,20 @@ class AuctionTest {
     @DisplayName("경매가 종료되었는지 확인한다")
     void isAuctionFinished() {
         // given
-        final Art artA = AUCTION_1.toArt(owner);
-        final Art artB = AUCTION_2.toArt(owner);
-
-        final Auction auctionA = Auction.createAuction(artA, CLOSED_WEEK_1_AGO.toPeriod());
-        final Auction auctionB = Auction.createAuction(artB, OPEN_NOW.toPeriod());
+        final Auction auctionA = Auction.createAuction(AUCTION_1.toArt(owner), CLOSED_WEEK_1_AGO.toPeriod());
+        final Auction auctionB = Auction.createAuction(AUCTION_2.toArt(owner), OPEN_NOW.toPeriod());
+        final Auction auctionC = Auction.createAuction(AUCTION_3.toArt(owner), OPEN_WEEK_1_LATER.toPeriod());
 
         // when
         final boolean actual1 = auctionA.isFinished();
         final boolean actual2 = auctionB.isFinished();
+        final boolean actual3 = auctionC.isFinished();
 
         // then
         assertAll(
                 () -> assertThat(actual1).isTrue(),
-                () -> assertThat(actual2).isFalse()
+                () -> assertThat(actual2).isFalse(),
+                () -> assertThat(actual3).isFalse()
         );
     }
 }
