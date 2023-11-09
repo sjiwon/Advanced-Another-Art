@@ -167,7 +167,7 @@ public abstract class ArtDetailQueryRepositoryTestSupporter extends RepositoryTe
         auctionArts[8] = createArt(AUCTION_9, "Hello-AUCTION_9", members[0], members[2], members[5], members[7], members[8]);
         auctionArts[9] = createArt(AUCTION_10, "Hello-AUCTION_10", members[0], members[2], members[5], members[6], members[7], members[8], members[9]);
         auctionArts[10] = createArt(AUCTION_11, "Hello-AUCTION_11");
-        auctionArts[11] = createArt(AUCTION_12, "World-AUCTION_12", members[0], members[2], members[4], members[6]); // search non target
+        auctionArts[11] = createArt(AUCTION_12, "Hello-AUCTION_12", members[0], members[2], members[4], members[6]);
 
         generalArts[0] = createArt(GENERAL_1, "Hello-GENERAL_1", members[0], members[1]);
         generalArts[1] = createArt(GENERAL_2, "Hello-GENERAL_2", members[0], members[2], members[5], members[8]);
@@ -180,7 +180,7 @@ public abstract class ArtDetailQueryRepositoryTestSupporter extends RepositoryTe
         generalArts[8] = createArt(GENERAL_9, "Hello-GENERAL_9", members[5]);
         generalArts[9] = createArt(GENERAL_10, "Hello-GENERAL_10", members[0], members[2]);
         generalArts[10] = createArt(GENERAL_11, "Hello-GENERAL_11", members[0], members[2], members[3], members[6]);
-        generalArts[11] = createArt(GENERAL_12, "World-GENERAL_12", members[1], members[2], members[4], members[6], members[8]); // search non target
+        generalArts[11] = createArt(GENERAL_12, "Hello-GENERAL_12", members[1], members[2], members[4], members[6], members[8]);
 
         auctions[0] = createAuction(auctionArts[0], AUCTION_OPEN_NOW);
         auctions[1] = createAuction(auctionArts[1], AUCTION_OPEN_NOW); // closed
