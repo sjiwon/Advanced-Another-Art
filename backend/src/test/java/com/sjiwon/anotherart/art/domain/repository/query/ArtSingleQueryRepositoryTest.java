@@ -7,6 +7,7 @@ import com.sjiwon.anotherart.art.domain.repository.query.dto.GeneralArt;
 import com.sjiwon.anotherart.auction.domain.model.Auction;
 import com.sjiwon.anotherart.auction.domain.repository.AuctionRepository;
 import com.sjiwon.anotherart.common.RepositoryTest;
+import com.sjiwon.anotherart.common.fixture.MemberFixture;
 import com.sjiwon.anotherart.favorite.domain.model.Favorite;
 import com.sjiwon.anotherart.favorite.domain.repository.FavoriteRepository;
 import com.sjiwon.anotherart.member.domain.model.Member;
@@ -98,18 +99,13 @@ class ArtSingleQueryRepositoryTest extends RepositoryTest {
 
         @BeforeEach
         void setUp() {
-            members[0] = memberRepository.save(DUMMY_1.toMember());
-            members[1] = memberRepository.save(DUMMY_2.toMember());
-            members[2] = memberRepository.save(DUMMY_3.toMember());
-            members[3] = memberRepository.save(DUMMY_4.toMember());
-            members[4] = memberRepository.save(DUMMY_5.toMember());
-            members[0].increaseTotalPoint(MEMBER_INIT_POINT);
-            members[1].increaseTotalPoint(MEMBER_INIT_POINT);
-            members[2].increaseTotalPoint(MEMBER_INIT_POINT);
-            members[3].increaseTotalPoint(MEMBER_INIT_POINT);
-            members[4].increaseTotalPoint(MEMBER_INIT_POINT);
+            members[0] = createMember(DUMMY_1);
+            members[1] = createMember(DUMMY_2);
+            members[2] = createMember(DUMMY_3);
+            members[3] = createMember(DUMMY_4);
+            members[4] = createMember(DUMMY_5);
 
-            owner = memberRepository.save(MEMBER_A.toMember());
+            owner = createMember(MEMBER_A);
             art = artRepository.save(AUCTION_1.toArt(owner));
             auction = auctionRepository.save(AUCTION_OPEN_NOW.toAuction(art));
         }
@@ -211,16 +207,14 @@ class ArtSingleQueryRepositoryTest extends RepositoryTest {
 
         @BeforeEach
         void setUp() {
-            members[0] = memberRepository.save(DUMMY_1.toMember());
-            members[1] = memberRepository.save(DUMMY_2.toMember());
-            members[2] = memberRepository.save(DUMMY_3.toMember());
-            members[3] = memberRepository.save(DUMMY_4.toMember());
-            members[4] = memberRepository.save(DUMMY_5.toMember());
+            members[0] = createMember(DUMMY_1);
+            members[1] = createMember(DUMMY_2);
+            members[2] = createMember(DUMMY_3);
+            members[3] = createMember(DUMMY_4);
+            members[4] = createMember(DUMMY_5);
 
-            owner = memberRepository.save(MEMBER_A.toMember());
-            owner.increaseTotalPoint(MEMBER_INIT_POINT);
-            buyer = memberRepository.save(MEMBER_B.toMember());
-            buyer.increaseTotalPoint(MEMBER_INIT_POINT);
+            owner = createMember(MEMBER_A);
+            buyer = createMember(MEMBER_B);
 
             art = artRepository.save(GENERAL_1.toArt(owner));
         }
@@ -295,6 +289,12 @@ class ArtSingleQueryRepositoryTest extends RepositoryTest {
                     }
             );
         }
+    }
+
+    private Member createMember(final MemberFixture fixture) {
+        final Member member = memberRepository.save(fixture.toMember());
+        member.increaseTotalPoint(MEMBER_INIT_POINT);
+        return member;
     }
 
     private void like(final Art art, final Member member) {
