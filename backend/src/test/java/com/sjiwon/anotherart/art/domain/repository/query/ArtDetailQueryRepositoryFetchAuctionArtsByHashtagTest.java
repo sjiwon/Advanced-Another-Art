@@ -27,29 +27,29 @@ public class ArtDetailQueryRepositoryFetchAuctionArtsByHashtagTest extends ArtDe
             );
             assertThatAuctionArtsMatch(
                     result1.getContent(),
-                    List.of(),
+                    List.of(0, 1, 3, 4, 5, 6, 8, 9),
                     List.of(
-                            auctionArts[0].getPrice(),
-                            auctionArts[0].getPrice(),
-                            auctionArts[0].getPrice(),
-                            auctionArts[0].getPrice(),
-                            auctionArts[0].getPrice(),
-                            auctionArts[0].getPrice(),
-                            auctionArts[0].getPrice(),
-                            auctionArts[0].getPrice()
+                            auctionArts[0].getPrice() + 30_000,
+                            auctionArts[1].getPrice() + 70_000,
+                            auctionArts[3].getPrice(),
+                            auctionArts[4].getPrice(),
+                            auctionArts[5].getPrice() + 20_000,
+                            auctionArts[6].getPrice(),
+                            auctionArts[8].getPrice() + 50_000,
+                            auctionArts[9].getPrice() + 40_000
                     ),
-                    List.of(),
+                    List.of(3, 7, 0, 0, 2, 0, 5, 4),
                     List.of(
-                            List.of(),
-                            List.of(),
-                            List.of(),
-                            List.of(),
-                            List.of(),
-                            List.of(),
-                            List.of(),
-                            List.of()
+                            List.of(members[0], members[1], members[4], members[6], members[8]),
+                            List.of(members[2], members[5], members[6]),
+                            List.of(members[1], members[5]),
+                            List.of(members[5]),
+                            List.of(members[0], members[1], members[2], members[7]),
+                            List.of(members[0], members[2], members[7], members[9]),
+                            List.of(members[0], members[2], members[5], members[7], members[8]),
+                            List.of(members[0], members[2], members[5], members[6], members[7], members[8], members[9])
                     ),
-                    Arrays.asList()
+                    Arrays.asList(members[6], members[9], null, null, members[4], null, members[4], members[1])
             );
 
             final Page<AuctionArt> result2 = sut.fetchAuctionArtsByHashtag(auctionArtSearchConditions.get(0), pageable2);
@@ -59,17 +59,17 @@ public class ArtDetailQueryRepositoryFetchAuctionArtsByHashtagTest extends ArtDe
             );
             assertThatAuctionArtsMatch(
                     result2.getContent(),
-                    List.of(),
+                    List.of(10, 11),
                     List.of(
-                            auctionArts[0].getPrice(),
-                            auctionArts[0].getPrice()
+                            auctionArts[10].getPrice(),
+                            auctionArts[11].getPrice() + 90_000
                     ),
-                    List.of(),
+                    List.of(0, 9),
                     List.of(
                             List.of(),
-                            List.of()
+                            List.of(members[0], members[2], members[4], members[6])
                     ),
-                    Arrays.asList()
+                    Arrays.asList(null, members[7])
             );
         }
 
@@ -83,29 +83,29 @@ public class ArtDetailQueryRepositoryFetchAuctionArtsByHashtagTest extends ArtDe
             );
             assertThatAuctionArtsMatch(
                     result1.getContent(),
-                    List.of(),
+                    List.of(11, 10, 9, 8, 6, 5, 4, 3),
                     List.of(
-                            auctionArts[0].getPrice(),
-                            auctionArts[0].getPrice(),
-                            auctionArts[0].getPrice(),
-                            auctionArts[0].getPrice(),
-                            auctionArts[0].getPrice(),
-                            auctionArts[0].getPrice(),
-                            auctionArts[0].getPrice(),
-                            auctionArts[0].getPrice()
+                            auctionArts[11].getPrice() + 90_000,
+                            auctionArts[10].getPrice(),
+                            auctionArts[9].getPrice() + 40_000,
+                            auctionArts[8].getPrice() + 50_000,
+                            auctionArts[6].getPrice(),
+                            auctionArts[5].getPrice() + 20_000,
+                            auctionArts[4].getPrice(),
+                            auctionArts[3].getPrice()
                     ),
-                    List.of(),
+                    List.of(9, 0, 4, 5, 0, 2, 0, 0),
                     List.of(
+                            List.of(members[0], members[2], members[4], members[6]),
                             List.of(),
-                            List.of(),
-                            List.of(),
-                            List.of(),
-                            List.of(),
-                            List.of(),
-                            List.of(),
-                            List.of()
+                            List.of(members[0], members[2], members[5], members[6], members[7], members[8], members[9]),
+                            List.of(members[0], members[2], members[5], members[7], members[8]),
+                            List.of(members[0], members[2], members[7], members[9]),
+                            List.of(members[0], members[1], members[2], members[7]),
+                            List.of(members[5]),
+                            List.of(members[1], members[5])
                     ),
-                    Arrays.asList()
+                    Arrays.asList(members[7], null, members[1], members[4], null, members[4], null, null)
             );
 
             final Page<AuctionArt> result2 = sut.fetchAuctionArtsByHashtag(auctionArtSearchConditions.get(1), pageable2);
@@ -115,17 +115,17 @@ public class ArtDetailQueryRepositoryFetchAuctionArtsByHashtagTest extends ArtDe
             );
             assertThatAuctionArtsMatch(
                     result2.getContent(),
-                    List.of(),
+                    List.of(1, 0),
                     List.of(
-                            auctionArts[0].getPrice(),
-                            auctionArts[0].getPrice()
+                            auctionArts[1].getPrice() + 70_000,
+                            auctionArts[0].getPrice() + 30_000
                     ),
-                    List.of(),
+                    List.of(7, 3),
                     List.of(
-                            List.of(),
-                            List.of()
+                            List.of(members[2], members[5], members[6]),
+                            List.of(members[0], members[1], members[4], members[6], members[8])
                     ),
-                    Arrays.asList()
+                    Arrays.asList(members[9], members[6])
             );
         }
 
@@ -139,29 +139,29 @@ public class ArtDetailQueryRepositoryFetchAuctionArtsByHashtagTest extends ArtDe
             );
             assertThatAuctionArtsMatch(
                     result1.getContent(),
-                    List.of(),
+                    List.of(3, 0, 4, 6, 5, 1, 10, 9),
                     List.of(
-                            auctionArts[0].getPrice(),
-                            auctionArts[0].getPrice(),
-                            auctionArts[0].getPrice(),
-                            auctionArts[0].getPrice(),
-                            auctionArts[0].getPrice(),
-                            auctionArts[0].getPrice(),
-                            auctionArts[0].getPrice(),
-                            auctionArts[0].getPrice()
+                            auctionArts[3].getPrice(),
+                            auctionArts[0].getPrice() + 30_000,
+                            auctionArts[4].getPrice(),
+                            auctionArts[6].getPrice(),
+                            auctionArts[5].getPrice() + 20_000,
+                            auctionArts[1].getPrice() + 70_000,
+                            auctionArts[10].getPrice(),
+                            auctionArts[9].getPrice() + 40_000
                     ),
-                    List.of(),
+                    List.of(0, 3, 0, 0, 2, 7, 0, 4),
                     List.of(
+                            List.of(members[1], members[5]),
+                            List.of(members[0], members[1], members[4], members[6], members[8]),
+                            List.of(members[5]),
+                            List.of(members[0], members[2], members[7], members[9]),
+                            List.of(members[0], members[1], members[2], members[7]),
+                            List.of(members[2], members[5], members[6]),
                             List.of(),
-                            List.of(),
-                            List.of(),
-                            List.of(),
-                            List.of(),
-                            List.of(),
-                            List.of(),
-                            List.of()
+                            List.of(members[0], members[2], members[5], members[6], members[7], members[8], members[9])
                     ),
-                    Arrays.asList()
+                    Arrays.asList(null, members[6], null, null, members[4], members[9], null, members[1])
             );
 
             final Page<AuctionArt> result2 = sut.fetchAuctionArtsByHashtag(auctionArtSearchConditions.get(2), pageable2);
@@ -171,17 +171,17 @@ public class ArtDetailQueryRepositoryFetchAuctionArtsByHashtagTest extends ArtDe
             );
             assertThatAuctionArtsMatch(
                     result2.getContent(),
-                    List.of(),
+                    List.of(8, 11),
                     List.of(
-                            auctionArts[0].getPrice(),
-                            auctionArts[0].getPrice()
+                            auctionArts[8].getPrice() + 50_000,
+                            auctionArts[11].getPrice() + 90_000
                     ),
-                    List.of(),
+                    List.of(5, 9),
                     List.of(
-                            List.of(),
-                            List.of()
+                            List.of(members[0], members[2], members[5], members[7], members[8]),
+                            List.of(members[0], members[2], members[4], members[6])
                     ),
-                    Arrays.asList()
+                    Arrays.asList(members[4], members[7])
             );
         }
 
@@ -195,29 +195,29 @@ public class ArtDetailQueryRepositoryFetchAuctionArtsByHashtagTest extends ArtDe
             );
             assertThatAuctionArtsMatch(
                     result1.getContent(),
-                    List.of(),
+                    List.of(11, 9, 8, 10, 1, 5, 6, 4),
                     List.of(
-                            auctionArts[0].getPrice(),
-                            auctionArts[0].getPrice(),
-                            auctionArts[0].getPrice(),
-                            auctionArts[0].getPrice(),
-                            auctionArts[0].getPrice(),
-                            auctionArts[0].getPrice(),
-                            auctionArts[0].getPrice(),
-                            auctionArts[0].getPrice()
+                            auctionArts[11].getPrice() + 90_000,
+                            auctionArts[9].getPrice() + 40_000,
+                            auctionArts[8].getPrice() + 50_000,
+                            auctionArts[10].getPrice(),
+                            auctionArts[1].getPrice() + 70_000,
+                            auctionArts[5].getPrice() + 20_000,
+                            auctionArts[6].getPrice(),
+                            auctionArts[4].getPrice()
                     ),
-                    List.of(),
+                    List.of(9, 4, 5, 0, 7, 2, 0, 0),
                     List.of(
+                            List.of(members[0], members[2], members[4], members[6]),
+                            List.of(members[0], members[2], members[5], members[6], members[7], members[8], members[9]),
+                            List.of(members[0], members[2], members[5], members[7], members[8]),
                             List.of(),
-                            List.of(),
-                            List.of(),
-                            List.of(),
-                            List.of(),
-                            List.of(),
-                            List.of(),
-                            List.of()
+                            List.of(members[2], members[5], members[6]),
+                            List.of(members[0], members[1], members[2], members[7]),
+                            List.of(members[0], members[2], members[7], members[9]),
+                            List.of(members[5])
                     ),
-                    Arrays.asList()
+                    Arrays.asList(members[7], members[1], members[4], null, members[9], members[4], null, null)
             );
 
             final Page<AuctionArt> result2 = sut.fetchAuctionArtsByHashtag(auctionArtSearchConditions.get(3), pageable2);
@@ -227,17 +227,17 @@ public class ArtDetailQueryRepositoryFetchAuctionArtsByHashtagTest extends ArtDe
             );
             assertThatAuctionArtsMatch(
                     result2.getContent(),
-                    List.of(),
+                    List.of(3, 0),
                     List.of(
-                            auctionArts[0].getPrice(),
-                            auctionArts[0].getPrice()
+                            auctionArts[3].getPrice(),
+                            auctionArts[0].getPrice() + 30_000
                     ),
-                    List.of(),
+                    List.of(0, 3),
                     List.of(
-                            List.of(),
-                            List.of()
+                            List.of(members[1], members[5]),
+                            List.of(members[0], members[1], members[4], members[6], members[8])
                     ),
-                    Arrays.asList()
+                    Arrays.asList(null, members[6])
             );
         }
 
@@ -251,29 +251,29 @@ public class ArtDetailQueryRepositoryFetchAuctionArtsByHashtagTest extends ArtDe
             );
             assertThatAuctionArtsMatch(
                     result1.getContent(),
-                    List.of(),
+                    List.of(10, 6, 4, 3, 5, 0, 9, 8),
                     List.of(
-                            auctionArts[0].getPrice(),
-                            auctionArts[0].getPrice(),
-                            auctionArts[0].getPrice(),
-                            auctionArts[0].getPrice(),
-                            auctionArts[0].getPrice(),
-                            auctionArts[0].getPrice(),
-                            auctionArts[0].getPrice(),
-                            auctionArts[0].getPrice()
+                            auctionArts[10].getPrice(),
+                            auctionArts[6].getPrice(),
+                            auctionArts[4].getPrice(),
+                            auctionArts[3].getPrice(),
+                            auctionArts[5].getPrice() + 20_000,
+                            auctionArts[0].getPrice() + 30_000,
+                            auctionArts[9].getPrice() + 40_000,
+                            auctionArts[8].getPrice() + 50_000
                     ),
-                    List.of(),
+                    List.of(0, 0, 0, 0, 2, 3, 4, 5),
                     List.of(
                             List.of(),
-                            List.of(),
-                            List.of(),
-                            List.of(),
-                            List.of(),
-                            List.of(),
-                            List.of(),
-                            List.of()
+                            List.of(members[0], members[2], members[7], members[9]),
+                            List.of(members[5]),
+                            List.of(members[1], members[5]),
+                            List.of(members[0], members[1], members[2], members[7]),
+                            List.of(members[0], members[1], members[4], members[6], members[8]),
+                            List.of(members[0], members[2], members[5], members[6], members[7], members[8], members[9]),
+                            List.of(members[0], members[2], members[5], members[7], members[8])
                     ),
-                    Arrays.asList()
+                    Arrays.asList(null, null, null, null, members[4], members[6], members[1], members[4])
             );
 
             final Page<AuctionArt> result2 = sut.fetchAuctionArtsByHashtag(auctionArtSearchConditions.get(4), pageable2);
@@ -283,17 +283,17 @@ public class ArtDetailQueryRepositoryFetchAuctionArtsByHashtagTest extends ArtDe
             );
             assertThatAuctionArtsMatch(
                     result2.getContent(),
-                    List.of(),
+                    List.of(1, 11),
                     List.of(
-                            auctionArts[0].getPrice(),
-                            auctionArts[0].getPrice()
+                            auctionArts[1].getPrice() + 70_000,
+                            auctionArts[11].getPrice() + 90_000
                     ),
-                    List.of(),
+                    List.of(7, 9),
                     List.of(
-                            List.of(),
-                            List.of()
+                            List.of(members[2], members[5], members[6]),
+                            List.of(members[0], members[2], members[4], members[6])
                     ),
-                    Arrays.asList()
+                    Arrays.asList(members[9], members[7])
             );
         }
 
@@ -307,29 +307,29 @@ public class ArtDetailQueryRepositoryFetchAuctionArtsByHashtagTest extends ArtDe
             );
             assertThatAuctionArtsMatch(
                     result1.getContent(),
-                    List.of(),
+                    List.of(11, 1, 8, 9, 0, 5, 10, 6),
                     List.of(
-                            auctionArts[0].getPrice(),
-                            auctionArts[0].getPrice(),
-                            auctionArts[0].getPrice(),
-                            auctionArts[0].getPrice(),
-                            auctionArts[0].getPrice(),
-                            auctionArts[0].getPrice(),
-                            auctionArts[0].getPrice(),
-                            auctionArts[0].getPrice()
+                            auctionArts[11].getPrice() + 90_000,
+                            auctionArts[1].getPrice() + 70_000,
+                            auctionArts[8].getPrice() + 50_000,
+                            auctionArts[9].getPrice() + 40_000,
+                            auctionArts[0].getPrice() + 30_000,
+                            auctionArts[5].getPrice() + 20_000,
+                            auctionArts[10].getPrice(),
+                            auctionArts[6].getPrice()
                     ),
-                    List.of(),
+                    List.of(9, 7, 5, 4, 3, 2, 0, 0),
                     List.of(
+                            List.of(members[0], members[2], members[4], members[6]),
+                            List.of(members[2], members[5], members[6]),
+                            List.of(members[0], members[2], members[5], members[7], members[8]),
+                            List.of(members[0], members[2], members[5], members[6], members[7], members[8], members[9]),
+                            List.of(members[0], members[1], members[4], members[6], members[8]),
+                            List.of(members[0], members[1], members[2], members[7]),
                             List.of(),
-                            List.of(),
-                            List.of(),
-                            List.of(),
-                            List.of(),
-                            List.of(),
-                            List.of(),
-                            List.of()
+                            List.of(members[0], members[2], members[7], members[9])
                     ),
-                    Arrays.asList()
+                    Arrays.asList(members[7], members[9], members[4], members[1], members[6], members[4], null, null)
             );
 
             final Page<AuctionArt> result2 = sut.fetchAuctionArtsByHashtag(auctionArtSearchConditions.get(5), pageable2);
@@ -339,17 +339,17 @@ public class ArtDetailQueryRepositoryFetchAuctionArtsByHashtagTest extends ArtDe
             );
             assertThatAuctionArtsMatch(
                     result2.getContent(),
-                    List.of(),
+                    List.of(4, 3),
                     List.of(
-                            auctionArts[0].getPrice(),
-                            auctionArts[0].getPrice()
+                            auctionArts[4].getPrice(),
+                            auctionArts[3].getPrice()
                     ),
-                    List.of(),
+                    List.of(0, 0),
                     List.of(
-                            List.of(),
-                            List.of()
+                            List.of(members[5]),
+                            List.of(members[1], members[5])
                     ),
-                    Arrays.asList()
+                    Arrays.asList(null, null)
             );
         }
 
@@ -363,29 +363,29 @@ public class ArtDetailQueryRepositoryFetchAuctionArtsByHashtagTest extends ArtDe
             );
             assertThatAuctionArtsMatch(
                     result1.getContent(),
-                    List.of(),
+                    List.of(10, 4, 3, 1, 11, 6, 5, 8),
                     List.of(
-                            auctionArts[0].getPrice(),
-                            auctionArts[0].getPrice(),
-                            auctionArts[0].getPrice(),
-                            auctionArts[0].getPrice(),
-                            auctionArts[0].getPrice(),
-                            auctionArts[0].getPrice(),
-                            auctionArts[0].getPrice(),
-                            auctionArts[0].getPrice()
+                            auctionArts[10].getPrice(),
+                            auctionArts[4].getPrice(),
+                            auctionArts[3].getPrice(),
+                            auctionArts[1].getPrice() + 70_000,
+                            auctionArts[11].getPrice() + 90_000,
+                            auctionArts[6].getPrice(),
+                            auctionArts[5].getPrice() + 20_000,
+                            auctionArts[8].getPrice() + 50_000
                     ),
-                    List.of(),
+                    List.of(0, 0, 0, 7, 9, 0, 2, 5),
                     List.of(
                             List.of(),
-                            List.of(),
-                            List.of(),
-                            List.of(),
-                            List.of(),
-                            List.of(),
-                            List.of(),
-                            List.of()
+                            List.of(members[5]),
+                            List.of(members[1], members[5]),
+                            List.of(members[2], members[5], members[6]),
+                            List.of(members[0], members[2], members[4], members[6]),
+                            List.of(members[0], members[2], members[7], members[9]),
+                            List.of(members[0], members[1], members[2], members[7]),
+                            List.of(members[0], members[2], members[5], members[7], members[8])
                     ),
-                    Arrays.asList()
+                    Arrays.asList(null, null, null, members[9], members[7], null, members[4], members[4])
             );
 
             final Page<AuctionArt> result2 = sut.fetchAuctionArtsByHashtag(auctionArtSearchConditions.get(6), pageable2);
@@ -395,17 +395,17 @@ public class ArtDetailQueryRepositoryFetchAuctionArtsByHashtagTest extends ArtDe
             );
             assertThatAuctionArtsMatch(
                     result2.getContent(),
-                    List.of(),
+                    List.of(0, 9),
                     List.of(
-                            auctionArts[0].getPrice(),
-                            auctionArts[0].getPrice()
+                            auctionArts[0].getPrice() + 30_000,
+                            auctionArts[9].getPrice() + 40_000
                     ),
-                    List.of(),
+                    List.of(3, 4),
                     List.of(
-                            List.of(),
-                            List.of()
+                            List.of(members[0], members[1], members[4], members[6], members[8]),
+                            List.of(members[0], members[2], members[5], members[6], members[7], members[8], members[9])
                     ),
-                    Arrays.asList()
+                    Arrays.asList(members[6], members[1])
             );
         }
 
@@ -419,29 +419,29 @@ public class ArtDetailQueryRepositoryFetchAuctionArtsByHashtagTest extends ArtDe
             );
             assertThatAuctionArtsMatch(
                     result1.getContent(),
-                    List.of(),
+                    List.of(9, 8, 0, 11, 6, 5, 1, 3),
                     List.of(
-                            auctionArts[0].getPrice(),
-                            auctionArts[0].getPrice(),
-                            auctionArts[0].getPrice(),
-                            auctionArts[0].getPrice(),
-                            auctionArts[0].getPrice(),
-                            auctionArts[0].getPrice(),
-                            auctionArts[0].getPrice(),
-                            auctionArts[0].getPrice()
+                            auctionArts[9].getPrice() + 40_000,
+                            auctionArts[8].getPrice() + 50_000,
+                            auctionArts[0].getPrice() + 30_000,
+                            auctionArts[11].getPrice() + 90_000,
+                            auctionArts[6].getPrice(),
+                            auctionArts[5].getPrice() + 20_000,
+                            auctionArts[1].getPrice() + 70_000,
+                            auctionArts[3].getPrice()
                     ),
-                    List.of(),
+                    List.of(4, 5, 3, 9, 0, 2, 7, 0),
                     List.of(
-                            List.of(),
-                            List.of(),
-                            List.of(),
-                            List.of(),
-                            List.of(),
-                            List.of(),
-                            List.of(),
-                            List.of()
+                            List.of(members[0], members[2], members[5], members[6], members[7], members[8], members[9]),
+                            List.of(members[0], members[2], members[5], members[7], members[8]),
+                            List.of(members[0], members[1], members[4], members[6], members[8]),
+                            List.of(members[0], members[2], members[4], members[6]),
+                            List.of(members[0], members[2], members[7], members[9]),
+                            List.of(members[0], members[1], members[2], members[7]),
+                            List.of(members[2], members[5], members[6]),
+                            List.of(members[1], members[5])
                     ),
-                    Arrays.asList()
+                    Arrays.asList(members[1], members[4], members[6], members[7], null, members[4], members[9], null)
             );
 
             final Page<AuctionArt> result2 = sut.fetchAuctionArtsByHashtag(auctionArtSearchConditions.get(7), pageable2);
@@ -451,17 +451,17 @@ public class ArtDetailQueryRepositoryFetchAuctionArtsByHashtagTest extends ArtDe
             );
             assertThatAuctionArtsMatch(
                     result2.getContent(),
-                    List.of(),
+                    List.of(4, 10),
                     List.of(
-                            auctionArts[0].getPrice(),
-                            auctionArts[0].getPrice()
+                            auctionArts[4].getPrice(),
+                            auctionArts[10].getPrice()
                     ),
-                    List.of(),
+                    List.of(0, 0),
                     List.of(
-                            List.of(),
+                            List.of(members[5]),
                             List.of()
                     ),
-                    Arrays.asList()
+                    Arrays.asList(null, null)
             );
         }
     }

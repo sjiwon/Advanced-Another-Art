@@ -29,6 +29,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.CollectionUtils;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -105,7 +106,24 @@ public class ArtDetailQueryRepositoryImpl implements ArtDetailQueryRepository {
             final ArtDetailsSearchCondition condition,
             final Pageable pageable
     ) {
-        return null;
+        final List<Long> artIds = query
+                .select(hashtag.art.id)
+                .from(hashtag)
+                .where(artHashtagEq(condition.value()))
+                .fetch();
+        final List<AuctionArt> result = projectionAuctionArts(
+                condition.searchSortType(),
+                pageable,
+                Arrays.asList(artIdIn(artIds))
+        );
+        final Long totalCount = query
+                .select(art.id.count())
+                .from(art)
+                .innerJoin(auction).on(auction.art.id.eq(art.id))
+                .where(artIdIn(artIds))
+                .fetchOne();
+
+        return PageableExecutionUtils.getPage(result, pageable, () -> totalCount);
     }
 
     @Override
@@ -410,5 +428,13 @@ public class ArtDetailQueryRepositoryImpl implements ArtDetailQueryRepository {
         }
 
         return hashtag.name.eq(givenHashtag);
+    }
+
+    private BooleanExpression artIdIn(final List<Long> artIds) {
+        if (CollectionUtils.isEmpty(artIds)) {
+            return null;
+        }
+
+        return art.id.in(artIds);
     }
 }

@@ -156,31 +156,31 @@ public abstract class ArtDetailQueryRepositoryTestSupporter extends RepositoryTe
         members[8] = createMember(DUMMY_9);
         members[9] = createMember(DUMMY_10);
 
-        auctionArts[0] = createArt(AUCTION_1, "Hello-AUCTION_1", members[0], members[1], members[4], members[6], members[8]);
-        auctionArts[1] = createArt(AUCTION_2, "Hello-AUCTION_2", members[2], members[5], members[6]);
-        auctionArts[2] = createArt(AUCTION_3, "World-AUCTION_3", members[0], members[1], members[6], members[7], members[8], members[9]); // search non target
-        auctionArts[3] = createArt(AUCTION_4, "Hello-AUCTION_4", members[1], members[5]);
-        auctionArts[4] = createArt(AUCTION_5, "Hello-AUCTION_5", members[5]);
-        auctionArts[5] = createArt(AUCTION_6, "Hello-AUCTION_6", members[0], members[1], members[2], members[7]);
-        auctionArts[6] = createArt(AUCTION_7, "Hello-AUCTION_7", members[0], members[2], members[7], members[9]);
-        auctionArts[7] = createArt(AUCTION_8, "World-AUCTION_8", members[0], members[1], members[4]); // search non target
-        auctionArts[8] = createArt(AUCTION_9, "Hello-AUCTION_9", members[0], members[2], members[5], members[7], members[8]);
-        auctionArts[9] = createArt(AUCTION_10, "Hello-AUCTION_10", members[0], members[2], members[5], members[6], members[7], members[8], members[9]);
-        auctionArts[10] = createArt(AUCTION_11, "Hello-AUCTION_11");
-        auctionArts[11] = createArt(AUCTION_12, "Hello-AUCTION_12", members[0], members[2], members[4], members[6]);
+        auctionArts[0] = createArt(AUCTION_1, 1, "Hello", members[0], members[1], members[4], members[6], members[8]);
+        auctionArts[1] = createArt(AUCTION_2, 2, "Hello", members[2], members[5], members[6]);
+        auctionArts[2] = createArt(AUCTION_3, 3, "World", members[0], members[1], members[6], members[7], members[8], members[9]); // search non target
+        auctionArts[3] = createArt(AUCTION_4, 4, "Hello", members[1], members[5]);
+        auctionArts[4] = createArt(AUCTION_5, 5, "Hello", members[5]);
+        auctionArts[5] = createArt(AUCTION_6, 6, "Hello", members[0], members[1], members[2], members[7]);
+        auctionArts[6] = createArt(AUCTION_7, 7, "Hello", members[0], members[2], members[7], members[9]);
+        auctionArts[7] = createArt(AUCTION_8, 8, "World", members[0], members[1], members[4]); // search non target
+        auctionArts[8] = createArt(AUCTION_9, 9, "Hello", members[0], members[2], members[5], members[7], members[8]);
+        auctionArts[9] = createArt(AUCTION_10, 10, "Hello", members[0], members[2], members[5], members[6], members[7], members[8], members[9]);
+        auctionArts[10] = createArt(AUCTION_11, 11, "Hello");
+        auctionArts[11] = createArt(AUCTION_12, 12, "Hello", members[0], members[2], members[4], members[6]);
 
-        generalArts[0] = createArt(GENERAL_1, "Hello-GENERAL_1", members[0], members[1]);
-        generalArts[1] = createArt(GENERAL_2, "Hello-GENERAL_2", members[0], members[2], members[5], members[8]);
-        generalArts[2] = createArt(GENERAL_3, "World-GENERAL_3", members[1], members[3], members[4]); // search non target
-        generalArts[3] = createArt(GENERAL_4, "Hello-GENERAL_4");
-        generalArts[4] = createArt(GENERAL_5, "Hello-GENERAL_5", members[0], members[3], members[4], members[7], members[9]);
-        generalArts[5] = createArt(GENERAL_6, "Hello-GENERAL_6", members[1], members[2], members[4]);
-        generalArts[6] = createArt(GENERAL_7, "Hello-GENERAL_7", members[2], members[3], members[5], members[6], members[7], members[8], members[9]);
-        generalArts[7] = createArt(GENERAL_8, "World-GENERAL_8", members[1], members[3], members[5]); // search non target
-        generalArts[8] = createArt(GENERAL_9, "Hello-GENERAL_9", members[5]);
-        generalArts[9] = createArt(GENERAL_10, "Hello-GENERAL_10", members[0], members[2]);
-        generalArts[10] = createArt(GENERAL_11, "Hello-GENERAL_11", members[0], members[2], members[3], members[6]);
-        generalArts[11] = createArt(GENERAL_12, "Hello-GENERAL_12", members[1], members[2], members[4], members[6], members[8]);
+        generalArts[0] = createArt(GENERAL_1, 13, "Hello", members[0], members[1]);
+        generalArts[1] = createArt(GENERAL_2, 14, "Hello", members[0], members[2], members[5], members[8]);
+        generalArts[2] = createArt(GENERAL_3, 15, "World", members[1], members[3], members[4]); // search non target
+        generalArts[3] = createArt(GENERAL_4, 16, "Hello");
+        generalArts[4] = createArt(GENERAL_5, 17, "Hello", members[0], members[3], members[4], members[7], members[9]);
+        generalArts[5] = createArt(GENERAL_6, 18, "Hello", members[1], members[2], members[4]);
+        generalArts[6] = createArt(GENERAL_7, 19, "Hello", members[2], members[3], members[5], members[6], members[7], members[8], members[9]);
+        generalArts[7] = createArt(GENERAL_8, 20, "World", members[1], members[3], members[5]); // search non target
+        generalArts[8] = createArt(GENERAL_9, 21, "Hello", members[5]);
+        generalArts[9] = createArt(GENERAL_10, 22, "Hello", members[0], members[2]);
+        generalArts[10] = createArt(GENERAL_11, 23, "Hello", members[0], members[2], members[3], members[6]);
+        generalArts[11] = createArt(GENERAL_12, 24, "Hello", members[1], members[2], members[4], members[6], members[8]);
 
         auctions[0] = createAuction(auctionArts[0], AUCTION_OPEN_NOW);
         auctions[1] = createAuction(auctionArts[1], AUCTION_OPEN_NOW); // closed
@@ -271,8 +271,8 @@ public abstract class ArtDetailQueryRepositoryTestSupporter extends RepositoryTe
         return member;
     }
 
-    private Art createArt(final ArtFixture fixture, final String searchValue, final Member... likeMembers) {
-        final Art art = artRepository.save(fixture.toArt(owner, searchValue, Set.of(searchValue)));
+    private Art createArt(final ArtFixture fixture, final int index, final String searchValue, final Member... likeMembers) {
+        final Art art = artRepository.save(fixture.toArt(owner, searchValue + index, Set.of(searchValue)));
         for (final Member likeMember : likeMembers) {
             favoriteRepository.save(Favorite.favoriteMarking(art, likeMember));
         }
