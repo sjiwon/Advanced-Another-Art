@@ -97,9 +97,11 @@ public class ArtSingleQueryRepositoryImpl implements ArtSingleQueryRepository {
 
     private int getBidCount(final Long artId) {
         return query
-                .select(auctionRecord.count().intValue())
+                .select(auctionRecord.count())
                 .from(auctionRecord)
-                .where(auctionRecord.auction.art.id.eq(artId))
-                .fetchOne();
+                .innerJoin(auctionRecord.auction, auction)
+                .where(auction.art.id.eq(artId))
+                .fetchOne()
+                .intValue();
     }
 }

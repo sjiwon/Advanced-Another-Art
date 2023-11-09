@@ -4,7 +4,6 @@ import com.sjiwon.anotherart.art.domain.model.Art;
 import com.sjiwon.anotherart.art.domain.repository.ArtRepository;
 import com.sjiwon.anotherart.art.domain.repository.query.dto.AuctionArt;
 import com.sjiwon.anotherart.auction.domain.model.Auction;
-import com.sjiwon.anotherart.auction.domain.model.AuctionRecord;
 import com.sjiwon.anotherart.auction.domain.repository.AuctionRecordRepository;
 import com.sjiwon.anotherart.auction.domain.repository.AuctionRepository;
 import com.sjiwon.anotherart.common.RepositoryTest;
@@ -123,12 +122,12 @@ class ArtSingleQueryRepositoryTest extends RepositoryTest {
             assertThatAuctionArtMatch(
                     result1,
                     art.getPrice(),
-                    art,
+                    0,
                     List.of(),
                     null
             );
 
-            /* members[0] bid || members[0], members[4] like */
+            /* members[0] bid + members[0], members[4] like */
             final int newBidPrice1 = auction.getHighestBidPrice() + 50_000;
             bid(members[0], newBidPrice1);
             like(art, members[0]);
@@ -138,12 +137,12 @@ class ArtSingleQueryRepositoryTest extends RepositoryTest {
             assertThatAuctionArtMatch(
                     result2,
                     newBidPrice1,
-                    art,
+                    1,
                     List.of(members[0].getId(), members[4].getId()),
                     members[0]
             );
 
-            /* members[2] bid || members[1], members[2], members[3] like */
+            /* members[2] bid + members[1], members[2], members[3] like */
             final int newBidPrice2 = newBidPrice1 + 50_000;
             bid(members[2], newBidPrice2);
             like(art, members[1]);
@@ -154,7 +153,7 @@ class ArtSingleQueryRepositoryTest extends RepositoryTest {
             assertThatAuctionArtMatch(
                     result3,
                     newBidPrice2,
-                    art,
+                    2,
                     List.of(members[0].getId(), members[1].getId(), members[2].getId(), members[3].getId(), members[4].getId()),
                     members[2]
             );
@@ -167,7 +166,7 @@ class ArtSingleQueryRepositoryTest extends RepositoryTest {
             assertThatAuctionArtMatch(
                     result4,
                     newBidPrice2,
-                    art,
+                    2,
                     List.of(members[1].getId(), members[2].getId(), members[3].getId()),
                     members[2]
             );
@@ -175,19 +174,19 @@ class ArtSingleQueryRepositoryTest extends RepositoryTest {
 
         private void bid(final Member bidder, final int bidPrice) {
             auction.applyNewBid(bidder, bidPrice);
-            auctionRecordRepository.save(AuctionRecord.createAuctionRecord(auction, bidder, bidPrice));
         }
 
         private void assertThatAuctionArtMatch(
                 final AuctionArt auctionArt,
                 final int highestBidPrice,
-                final Art art,
+                final int bidCount,
                 final List<Long> likeMemberIds,
                 final Member highestBidder
         ) {
             assertAll(
                     () -> assertThat(auctionArt.getAuctionId()).isEqualTo(auction.getId()),
                     () -> assertThat(auctionArt.getHighestBidPrice()).isEqualTo(highestBidPrice),
+                    () -> assertThat(auctionArt.getBidCount()).isEqualTo(bidCount),
                     () -> assertThat(auctionArt.getArtId()).isEqualTo(art.getId()),
                     () -> assertThat(auctionArt.getHashtags()).containsExactlyInAnyOrderElementsOf(art.getHashtags()),
                     () -> assertThat(auctionArt.getLikeMembers()).containsExactlyInAnyOrderElementsOf(likeMemberIds),
