@@ -77,7 +77,19 @@ public class ArtDetailQueryRepositoryImpl implements ArtDetailQueryRepository {
             final ArtDetailsSearchCondition condition,
             final Pageable pageable
     ) {
-        return null;
+        final List<AuctionArt> result = projectionAuctionArts(
+                condition.searchSortType(),
+                pageable,
+                Arrays.asList(artKeywordEq(condition.value()))
+        );
+        final Long totalCount = query
+                .select(art.id.count())
+                .from(art)
+                .innerJoin(auction).on(auction.art.id.eq(art.id))
+                .where(artKeywordEq(condition.value()))
+                .fetchOne();
+
+        return PageableExecutionUtils.getPage(result, pageable, () -> totalCount);
     }
 
     @Override
