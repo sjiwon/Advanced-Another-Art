@@ -2,6 +2,8 @@ package com.sjiwon.anotherart.art.domain.repository.query;
 
 import com.sjiwon.anotherart.art.domain.model.Art;
 import com.sjiwon.anotherart.art.domain.repository.ArtRepository;
+import com.sjiwon.anotherart.art.domain.repository.query.dto.AuctionArt;
+import com.sjiwon.anotherart.art.domain.repository.query.dto.GeneralArt;
 import com.sjiwon.anotherart.art.utils.search.ActiveAuctionArtsSearchCondition;
 import com.sjiwon.anotherart.art.utils.search.ArtDetailsSearchCondition;
 import com.sjiwon.anotherart.auction.domain.model.Auction;
@@ -75,6 +77,8 @@ import static com.sjiwon.anotherart.common.fixture.MemberFixture.DUMMY_7;
 import static com.sjiwon.anotherart.common.fixture.MemberFixture.DUMMY_8;
 import static com.sjiwon.anotherart.common.fixture.MemberFixture.DUMMY_9;
 import static com.sjiwon.anotherart.common.fixture.MemberFixture.MEMBER_A;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 @Import(ArtDetailQueryRepositoryImpl.class)
 @DisplayName("Art -> ArtDetailQueryRepository 테스트")
@@ -341,6 +345,74 @@ class ArtDetailQueryRepositoryTest extends RepositoryTest {
         @Test
         @DisplayName("해시태그 기반 일반 작품 리스트를 조회한다 -> 6) 좋아요 횟수 내림차순")
         void likeDesc() {
+        }
+    }
+
+    private void assertThatAuctionArtsMatch(
+            final List<AuctionArt> result,
+            final List<Integer> artIndicies,
+            final List<Integer> highestBidPrices,
+            final List<Integer> bidCounts,
+            final List<List<Long>> likeMemberIds,
+            final List<Member> highestBidders
+    ) {
+        assertThat(result).hasSize(artIndicies.size());
+
+        for (int i = 0; i < result.size(); i++) {
+            final AuctionArt auctionArt = result.get(i);
+            final Auction auction = auctions[artIndicies.get(i)];
+            final Art art = auctionArts[artIndicies.get(i)];
+            final int highestBidPrice = highestBidPrices.get(i);
+            final int bidCount = bidCounts.get(i);
+            final List<Long> likeMembers = likeMemberIds.get(i);
+            final Member highestBidder = highestBidders.get(i);
+
+            assertAll(
+                    () -> assertThat(auctionArt.getAuctionId()).isEqualTo(auction.getId()),
+                    () -> assertThat(auctionArt.getHighestBidPrice()).isEqualTo(highestBidPrice),
+                    () -> assertThat(auctionArt.getBidCount()).isEqualTo(bidCount),
+                    () -> assertThat(auctionArt.getArtId()).isEqualTo(art.getId()),
+                    () -> assertThat(auctionArt.getHashtags()).containsExactlyInAnyOrderElementsOf(art.getHashtags()),
+                    () -> assertThat(auctionArt.getLikeMembers()).containsExactlyInAnyOrderElementsOf(likeMembers),
+                    () -> assertThat(auctionArt.getOwnerId()).isEqualTo(owner.getId()),
+                    () -> {
+                        if (highestBidder == null) {
+                            assertThat(auctionArt.getHighestBidderId()).isNull();
+                        } else {
+                            assertThat(auctionArt.getHighestBidderId()).isEqualTo(highestBidder.getId());
+                        }
+                    }
+            );
+        }
+    }
+
+    private void assertThatGeneralArtsMatch(
+            final List<GeneralArt> result,
+            final List<Integer> artIndicies,
+            final List<List<Long>> likeMemberIds,
+            final List<Member> buyers
+    ) {
+        assertThat(result).hasSize(artIndicies.size());
+
+        for (int i = 0; i < result.size(); i++) {
+            final GeneralArt generalArt = result.get(i);
+            final Art art = generalArts[artIndicies.get(i)];
+            final List<Long> likeMembers = likeMemberIds.get(i);
+            final Member buyer = buyers.get(i);
+
+            assertAll(
+                    () -> assertThat(generalArt.getArtId()).isEqualTo(art.getId()),
+                    () -> assertThat(generalArt.getHashtags()).containsExactlyInAnyOrderElementsOf(art.getHashtags()),
+                    () -> assertThat(generalArt.getLikeMembers()).containsExactlyInAnyOrderElementsOf(likeMembers),
+                    () -> assertThat(generalArt.getOwnerId()).isEqualTo(owner.getId()),
+                    () -> {
+                        if (buyer == null) {
+                            assertThat(generalArt.getBuyerId()).isNull();
+                        } else {
+                            assertThat(generalArt.getBuyerId()).isEqualTo(buyer.getId());
+                        }
+                    }
+            );
         }
     }
 
