@@ -11,7 +11,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
-// TODO 전체 Command 로직 리팩토링 후 Query 로직 한번에 구현
 @Repository
 @AnotherArtReadOnlyTransactional
 @RequiredArgsConstructor
@@ -35,7 +34,7 @@ public class ArtDetailQueryRepositoryImpl implements ArtDetailQueryRepository {
     }
 
     @Override
-    public Page<AuctionArt> fetchAuctionArtsByHashtag(
+    public Page<GeneralArt> fetchGeneralArtsByKeyword(
             final ArtDetailsSearchCondition condition,
             final Pageable pageable
     ) {
@@ -43,7 +42,7 @@ public class ArtDetailQueryRepositoryImpl implements ArtDetailQueryRepository {
     }
 
     @Override
-    public Page<GeneralArt> fetchGeneralArtsByKeyword(
+    public Page<AuctionArt> fetchAuctionArtsByHashtag(
             final ArtDetailsSearchCondition condition,
             final Pageable pageable
     ) {

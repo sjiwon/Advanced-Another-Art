@@ -46,7 +46,7 @@ public class ArtSearchApiController {
         return ResponseEntity.ok(response);
     }
 
-    @Operation(summary = "현재 경매 진행중인 작품 조회 Endpoint")
+    @Operation(summary = "현재 진행중인 경매 작품 리스트 조회 Endpoint")
     @GetMapping("/active-auction")
     public ResponseEntity<AuctionArtPagingResponse> getActiveAuctionArts(@ModelAttribute @Valid final ArtBasicSearchRequest request) {
         if (isNotSupportedSortType(request.sortType())) {
@@ -58,7 +58,7 @@ public class ArtSearchApiController {
         return ResponseEntity.ok(response);
     }
 
-    @Operation(summary = "키워드 기반 경매 작품 조회 Endpoint")
+    @Operation(summary = "키워드 기반 경매 작품 리스트 조회 Endpoint")
     @GetMapping("/auction/keyword")
     public ResponseEntity<AuctionArtPagingResponse> getAuctionArtsByKeyword(@ModelAttribute @Valid final ArtKeywordSearchRequest request) {
         if (isNotSupportedSortType(request.sortType())) {
@@ -70,7 +70,7 @@ public class ArtSearchApiController {
         return ResponseEntity.ok(response);
     }
 
-    @Operation(summary = "키워드 기반 일반 작품 조회 Endpoint")
+    @Operation(summary = "키워드 기반 일반 작품 리스트 조회 Endpoint")
     @GetMapping("/general/keyword")
     public ResponseEntity<GeneralArtPagingResponse> getGeneralArtsByKeyword(@ModelAttribute @Valid final ArtKeywordSearchRequest request) {
         if (isNotSupportedSortType(request.sortType())) {
@@ -82,7 +82,7 @@ public class ArtSearchApiController {
         return ResponseEntity.ok(response);
     }
 
-    @Operation(summary = "해시태그(객체 탐지) 기반 경매 작품 조회 Endpoint")
+    @Operation(summary = "해시태그(객체 탐지) 기반 경매 작품 리스트 조회 Endpoint")
     @GetMapping("/auction/hashtag")
     public ResponseEntity<AuctionArtPagingResponse> getAuctionArtsByHashtag(@ModelAttribute @Valid final ArtHashtagSearchRequest request) {
         if (isNotSupportedSortType(request.sortType())) {
@@ -94,7 +94,7 @@ public class ArtSearchApiController {
         return ResponseEntity.ok(response);
     }
 
-    @Operation(summary = "해시태그(객체 탐지) 기반 일반 작품 조회 Endpoint")
+    @Operation(summary = "해시태그(객체 탐지) 기반 일반 작품 리스트 조회 Endpoint")
     @GetMapping("/general/hashtag")
     public ResponseEntity<GeneralArtPagingResponse> getGeneralArtsByHashtag(@ModelAttribute @Valid final ArtHashtagSearchRequest request) {
         if (isNotSupportedSortType(request.sortType())) {
