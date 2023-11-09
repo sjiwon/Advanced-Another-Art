@@ -3,14 +3,15 @@ package com.sjiwon.anotherart.art.domain.repository.query;
 import com.sjiwon.anotherart.art.domain.model.Art;
 import com.sjiwon.anotherart.art.domain.repository.ArtRepository;
 import com.sjiwon.anotherart.art.domain.repository.query.dto.AuctionArt;
+import com.sjiwon.anotherart.art.domain.repository.query.dto.GeneralArt;
 import com.sjiwon.anotherart.auction.domain.model.Auction;
-import com.sjiwon.anotherart.auction.domain.repository.AuctionRecordRepository;
 import com.sjiwon.anotherart.auction.domain.repository.AuctionRepository;
 import com.sjiwon.anotherart.common.RepositoryTest;
 import com.sjiwon.anotherart.favorite.domain.model.Favorite;
 import com.sjiwon.anotherart.favorite.domain.repository.FavoriteRepository;
 import com.sjiwon.anotherart.member.domain.model.Member;
 import com.sjiwon.anotherart.member.domain.repository.MemberRepository;
+import com.sjiwon.anotherart.purchase.domain.model.Purchase;
 import com.sjiwon.anotherart.purchase.domain.repository.PurchaseRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -34,6 +35,7 @@ import static com.sjiwon.anotherart.common.fixture.MemberFixture.DUMMY_3;
 import static com.sjiwon.anotherart.common.fixture.MemberFixture.DUMMY_4;
 import static com.sjiwon.anotherart.common.fixture.MemberFixture.DUMMY_5;
 import static com.sjiwon.anotherart.common.fixture.MemberFixture.MEMBER_A;
+import static com.sjiwon.anotherart.common.fixture.MemberFixture.MEMBER_B;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
@@ -54,9 +56,6 @@ class ArtSingleQueryRepositoryTest extends RepositoryTest {
 
     @Autowired
     private AuctionRepository auctionRepository;
-
-    @Autowired
-    private AuctionRecordRepository auctionRecordRepository;
 
     @Autowired
     private PurchaseRepository purchaseRepository;
@@ -196,6 +195,102 @@ class ArtSingleQueryRepositoryTest extends RepositoryTest {
                             assertThat(auctionArt.getHighestBidderId()).isNull();
                         } else {
                             assertThat(auctionArt.getHighestBidderId()).isEqualTo(highestBidder.getId());
+                        }
+                    }
+            );
+        }
+    }
+
+    @Nested
+    @DisplayName("일반 작품 조회 Query")
+    class FetchGeneralArt {
+        private final Member[] members = new Member[5];
+        private Member owner;
+        private Member buyer;
+        private Art art;
+
+        @BeforeEach
+        void setUp() {
+            members[0] = memberRepository.save(DUMMY_1.toMember());
+            members[1] = memberRepository.save(DUMMY_2.toMember());
+            members[2] = memberRepository.save(DUMMY_3.toMember());
+            members[3] = memberRepository.save(DUMMY_4.toMember());
+            members[4] = memberRepository.save(DUMMY_5.toMember());
+
+            owner = memberRepository.save(MEMBER_A.toMember());
+            owner.increaseTotalPoint(MEMBER_INIT_POINT);
+            buyer = memberRepository.save(MEMBER_B.toMember());
+            buyer.increaseTotalPoint(MEMBER_INIT_POINT);
+
+            art = artRepository.save(GENERAL_1.toArt(owner));
+        }
+
+        @Test
+        @DisplayName("일반 작품을 조회한다")
+        void success() {
+            final GeneralArt result1 = sut.fetchGeneralArt(art.getId());
+            assertThatGeneralArtMatch(
+                    result1,
+                    List.of(),
+                    null
+            );
+
+            /* member[2], member[3] like */
+            like(art, members[2]);
+            like(art, members[3]);
+
+            final GeneralArt result2 = sut.fetchGeneralArt(art.getId());
+            assertThatGeneralArtMatch(
+                    result2,
+                    List.of(members[2].getId(), members[3].getId()),
+                    null
+            );
+
+            /* member[0], member[1], member[4] like + member[2] likeCancel */
+            like(art, members[0]);
+            like(art, members[1]);
+            like(art, members[4]);
+            likeCancel(art, members[2]);
+
+            final GeneralArt result3 = sut.fetchGeneralArt(art.getId());
+            assertThatGeneralArtMatch(
+                    result3,
+                    List.of(members[0].getId(), members[1].getId(), members[3].getId(), members[4].getId()),
+                    null
+            );
+
+            /* buyer buy + members[1], members[4] likeCancel */
+            purchase(buyer);
+            likeCancel(art, members[1]);
+            likeCancel(art, members[4]);
+
+            final GeneralArt result4 = sut.fetchGeneralArt(art.getId());
+            assertThatGeneralArtMatch(
+                    result4,
+                    List.of(members[0].getId(), members[3].getId()),
+                    buyer
+            );
+        }
+
+        private void purchase(final Member buyer) {
+            purchaseRepository.save(Purchase.purchaseGeneralArt(art, buyer));
+        }
+
+        private void assertThatGeneralArtMatch(
+                final GeneralArt generalArt,
+                final List<Long> likeMemberIds,
+                final Member buyer
+        ) {
+            assertAll(
+                    () -> assertThat(generalArt.getArtId()).isEqualTo(art.getId()),
+                    () -> assertThat(generalArt.getHashtags()).containsExactlyInAnyOrderElementsOf(art.getHashtags()),
+                    () -> assertThat(generalArt.getLikeMembers()).containsExactlyInAnyOrderElementsOf(likeMemberIds),
+                    () -> assertThat(generalArt.getOwnerId()).isEqualTo(owner.getId()),
+                    () -> {
+                        if (buyer == null) {
+                            assertThat(generalArt.getBuyerId()).isNull();
+                        } else {
+                            assertThat(generalArt.getBuyerId()).isEqualTo(buyer.getId());
                         }
                     }
             );

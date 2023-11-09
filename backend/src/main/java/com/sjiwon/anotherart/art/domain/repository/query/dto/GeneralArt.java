@@ -62,9 +62,16 @@ public class GeneralArt implements ArtDetails {
         this.ownerId = ownerId;
         this.ownerNickname = ownerNickname.getValue();
         this.ownerSchool = ownerSchool;
-        this.buyerId = buyerId;
-        this.buyerNickname = buyerNickname.getValue();
-        this.buyerSchool = buyerSchool;
+
+        if (buyerId != null) {
+            this.buyerId = buyerId;
+            this.buyerNickname = buyerNickname.getValue();
+            this.buyerSchool = buyerSchool;
+        } else {
+            this.buyerId = null;
+            this.buyerNickname = null;
+            this.buyerSchool = null;
+        }
     }
 
     public void applyHashtags(final List<String> hashtags) {
