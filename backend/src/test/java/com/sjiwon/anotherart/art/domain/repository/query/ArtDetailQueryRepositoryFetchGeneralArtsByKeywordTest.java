@@ -27,18 +27,18 @@ public class ArtDetailQueryRepositoryFetchGeneralArtsByKeywordTest extends ArtDe
             );
             assertThatGeneralArtsMatch(
                     result1.getContent(),
-                    List.of(),
+                    List.of(0, 1, 3, 4, 5, 6, 8, 9),
                     List.of(
+                            List.of(members[0], members[1]),
+                            List.of(members[0], members[2], members[5], members[8]),
                             List.of(),
-                            List.of(),
-                            List.of(),
-                            List.of(),
-                            List.of(),
-                            List.of(),
-                            List.of(),
-                            List.of()
+                            List.of(members[0], members[3], members[4], members[7], members[9]),
+                            List.of(members[1], members[2], members[4]),
+                            List.of(members[2], members[3], members[5], members[6], members[7], members[8], members[9]),
+                            List.of(members[5]),
+                            List.of(members[0], members[2])
                     ),
-                    Arrays.asList()
+                    Arrays.asList(members[3], members[4], members[3], members[1], null, members[9], null, members[7])
             );
 
             final Page<GeneralArt> result2 = sut.fetchGeneralArtsByKeyword(generalArtSearchConditions.get(0), pageable2);
@@ -48,12 +48,12 @@ public class ArtDetailQueryRepositoryFetchGeneralArtsByKeywordTest extends ArtDe
             );
             assertThatGeneralArtsMatch(
                     result2.getContent(),
-                    List.of(),
+                    List.of(10, 11),
                     List.of(
-                            List.of(),
-                            List.of()
+                            List.of(members[0], members[2], members[3], members[6]),
+                            List.of(members[1], members[2], members[4], members[6], members[8])
                     ),
-                    Arrays.asList()
+                    Arrays.asList(members[3], null)
             );
         }
 
@@ -67,18 +67,18 @@ public class ArtDetailQueryRepositoryFetchGeneralArtsByKeywordTest extends ArtDe
             );
             assertThatGeneralArtsMatch(
                     result1.getContent(),
-                    List.of(),
+                    List.of(11, 10, 9, 8, 6, 5, 4, 3),
                     List.of(
-                            List.of(),
-                            List.of(),
-                            List.of(),
-                            List.of(),
-                            List.of(),
-                            List.of(),
-                            List.of(),
+                            List.of(members[1], members[2], members[4], members[6], members[8]),
+                            List.of(members[0], members[2], members[3], members[6]),
+                            List.of(members[0], members[2]),
+                            List.of(members[5]),
+                            List.of(members[2], members[3], members[5], members[6], members[7], members[8], members[9]),
+                            List.of(members[1], members[2], members[4]),
+                            List.of(members[0], members[3], members[4], members[7], members[9]),
                             List.of()
                     ),
-                    Arrays.asList()
+                    Arrays.asList(null, members[3], members[7], null, members[9], null, members[1], members[3])
             );
 
             final Page<GeneralArt> result2 = sut.fetchGeneralArtsByKeyword(generalArtSearchConditions.get(1), pageable2);
@@ -88,12 +88,12 @@ public class ArtDetailQueryRepositoryFetchGeneralArtsByKeywordTest extends ArtDe
             );
             assertThatGeneralArtsMatch(
                     result2.getContent(),
-                    List.of(),
+                    List.of(1, 0),
                     List.of(
-                            List.of(),
-                            List.of()
+                            List.of(members[0], members[2], members[5], members[8]),
+                            List.of(members[0], members[1])
                     ),
-                    Arrays.asList()
+                    Arrays.asList(members[4], members[3])
             );
         }
 
@@ -107,18 +107,18 @@ public class ArtDetailQueryRepositoryFetchGeneralArtsByKeywordTest extends ArtDe
             );
             assertThatGeneralArtsMatch(
                     result1.getContent(),
-                    List.of(),
+                    List.of(0, 1, 3, 4, 5, 6, 8, 11),
                     List.of(
+                            List.of(members[0], members[1]),
+                            List.of(members[0], members[2], members[5], members[8]),
                             List.of(),
-                            List.of(),
-                            List.of(),
-                            List.of(),
-                            List.of(),
-                            List.of(),
-                            List.of(),
-                            List.of()
+                            List.of(members[0], members[3], members[4], members[7], members[9]),
+                            List.of(members[1], members[2], members[4]),
+                            List.of(members[2], members[3], members[5], members[6], members[7], members[8], members[9]),
+                            List.of(members[5]),
+                            List.of(members[1], members[2], members[4], members[6], members[8])
                     ),
-                    Arrays.asList()
+                    Arrays.asList(members[3], members[4], members[3], members[1], null, members[9], null, null)
             );
 
             final Page<GeneralArt> result2 = sut.fetchGeneralArtsByKeyword(generalArtSearchConditions.get(2), pageable2);
@@ -128,12 +128,12 @@ public class ArtDetailQueryRepositoryFetchGeneralArtsByKeywordTest extends ArtDe
             );
             assertThatGeneralArtsMatch(
                     result2.getContent(),
-                    List.of(),
+                    List.of(9, 10),
                     List.of(
-                            List.of(),
-                            List.of()
+                            List.of(members[0], members[2]),
+                            List.of(members[0], members[2], members[3], members[6])
                     ),
-                    Arrays.asList()
+                    Arrays.asList(members[7], members[3])
             );
         }
 
@@ -147,18 +147,18 @@ public class ArtDetailQueryRepositoryFetchGeneralArtsByKeywordTest extends ArtDe
             );
             assertThatGeneralArtsMatch(
                     result1.getContent(),
-                    List.of(),
+                    List.of(10, 11, 9, 8, 6, 5, 4, 3),
                     List.of(
-                            List.of(),
-                            List.of(),
-                            List.of(),
-                            List.of(),
-                            List.of(),
-                            List.of(),
-                            List.of(),
+                            List.of(members[0], members[2], members[3], members[6]),
+                            List.of(members[1], members[2], members[4], members[6], members[8]),
+                            List.of(members[0], members[2]),
+                            List.of(members[5]),
+                            List.of(members[2], members[3], members[5], members[6], members[7], members[8], members[9]),
+                            List.of(members[1], members[2], members[4]),
+                            List.of(members[0], members[3], members[4], members[7], members[9]),
                             List.of()
                     ),
-                    Arrays.asList()
+                    Arrays.asList(members[3], null, members[7], null, members[9], null, members[1], members[3])
             );
 
             final Page<GeneralArt> result2 = sut.fetchGeneralArtsByKeyword(generalArtSearchConditions.get(3), pageable2);
@@ -168,12 +168,12 @@ public class ArtDetailQueryRepositoryFetchGeneralArtsByKeywordTest extends ArtDe
             );
             assertThatGeneralArtsMatch(
                     result2.getContent(),
-                    List.of(),
+                    List.of(1, 0),
                     List.of(
-                            List.of(),
-                            List.of()
+                            List.of(members[0], members[2], members[5], members[8]),
+                            List.of(members[0], members[1])
                     ),
-                    Arrays.asList()
+                    Arrays.asList(members[4], members[3])
             );
         }
 
@@ -187,18 +187,18 @@ public class ArtDetailQueryRepositoryFetchGeneralArtsByKeywordTest extends ArtDe
             );
             assertThatGeneralArtsMatch(
                     result1.getContent(),
-                    List.of(),
+                    List.of(3, 8, 9, 0, 5, 10, 1, 11),
                     List.of(
                             List.of(),
-                            List.of(),
-                            List.of(),
-                            List.of(),
-                            List.of(),
-                            List.of(),
-                            List.of(),
-                            List.of()
+                            List.of(members[5]),
+                            List.of(members[0], members[2]),
+                            List.of(members[0], members[1]),
+                            List.of(members[1], members[2], members[4]),
+                            List.of(members[0], members[2], members[3], members[6]),
+                            List.of(members[0], members[2], members[5], members[8]),
+                            List.of(members[1], members[2], members[4], members[6], members[8])
                     ),
-                    Arrays.asList()
+                    Arrays.asList(members[3], null, members[7], members[3], null, members[3], members[4], null)
             );
 
             final Page<GeneralArt> result2 = sut.fetchGeneralArtsByKeyword(generalArtSearchConditions.get(4), pageable2);
@@ -208,12 +208,12 @@ public class ArtDetailQueryRepositoryFetchGeneralArtsByKeywordTest extends ArtDe
             );
             assertThatGeneralArtsMatch(
                     result2.getContent(),
-                    List.of(),
+                    List.of(4, 6),
                     List.of(
-                            List.of(),
-                            List.of()
+                            List.of(members[0], members[3], members[4], members[7], members[9]),
+                            List.of(members[2], members[3], members[5], members[6], members[7], members[8], members[9])
                     ),
-                    Arrays.asList()
+                    Arrays.asList(members[1], members[9])
             );
         }
 
@@ -227,18 +227,18 @@ public class ArtDetailQueryRepositoryFetchGeneralArtsByKeywordTest extends ArtDe
             );
             assertThatGeneralArtsMatch(
                     result1.getContent(),
-                    List.of(),
+                    List.of(6, 11, 4, 10, 1, 5, 9, 0),
                     List.of(
-                            List.of(),
-                            List.of(),
-                            List.of(),
-                            List.of(),
-                            List.of(),
-                            List.of(),
-                            List.of(),
-                            List.of()
+                            List.of(members[2], members[3], members[5], members[6], members[7], members[8], members[9]),
+                            List.of(members[1], members[2], members[4], members[6], members[8]),
+                            List.of(members[0], members[3], members[4], members[7], members[9]),
+                            List.of(members[0], members[2], members[3], members[6]),
+                            List.of(members[0], members[2], members[5], members[8]),
+                            List.of(members[1], members[2], members[4]),
+                            List.of(members[0], members[2]),
+                            List.of(members[0], members[1])
                     ),
-                    Arrays.asList()
+                    Arrays.asList(members[9], null, members[1], members[3], members[4], null, members[7], members[3])
             );
 
             final Page<GeneralArt> result2 = sut.fetchGeneralArtsByKeyword(generalArtSearchConditions.get(5), pageable2);
@@ -248,12 +248,12 @@ public class ArtDetailQueryRepositoryFetchGeneralArtsByKeywordTest extends ArtDe
             );
             assertThatGeneralArtsMatch(
                     result2.getContent(),
-                    List.of(),
+                    List.of(8, 3),
                     List.of(
-                            List.of(),
+                            List.of(members[5]),
                             List.of()
                     ),
-                    Arrays.asList()
+                    Arrays.asList(null, members[3])
             );
         }
     }
