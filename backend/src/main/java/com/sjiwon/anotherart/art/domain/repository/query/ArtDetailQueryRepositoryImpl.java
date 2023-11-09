@@ -138,7 +138,7 @@ public class ArtDetailQueryRepositoryImpl implements ArtDetailQueryRepository {
             final Pageable pageable
     ) {
         final List<Long> artIds = query
-                .select(hashtag.art.id)
+                .select(art.id)
                 .from(art)
                 .innerJoin(hashtag).on(hashtag.art.id.eq(art.id))
                 .where(
@@ -146,6 +146,7 @@ public class ArtDetailQueryRepositoryImpl implements ArtDetailQueryRepository {
                         artHashtagEq(condition.value())
                 )
                 .fetch();
+        System.out.println("해시태그 포함 ID = " + artIds);
         final List<AuctionArt> result = projectionAuctionArts(
                 condition.searchSortType(),
                 pageable,
@@ -166,7 +167,28 @@ public class ArtDetailQueryRepositoryImpl implements ArtDetailQueryRepository {
             final ArtDetailsSearchCondition condition,
             final Pageable pageable
     ) {
-        return null;
+        final List<Long> artIds = query
+                .select(art.id)
+                .from(art)
+                .innerJoin(hashtag).on(hashtag.art.id.eq(art.id))
+                .where(
+                        artTypeEq(GENERAL),
+                        artHashtagEq(condition.value())
+                )
+                .fetch();
+        System.out.println("해시태그 포함 ID = " + artIds);
+        final List<GeneralArt> result = projectionGeneralArts(
+                condition.searchSortType(),
+                pageable,
+                Arrays.asList(artIdIn(artIds))
+        );
+        final Long totalCount = query
+                .select(art.id.count())
+                .from(art)
+                .where(artIdIn(artIds))
+                .fetchOne();
+
+        return PageableExecutionUtils.getPage(result, pageable, () -> totalCount);
     }
 
     private List<AuctionArt> projectionAuctionArts(
