@@ -12,9 +12,9 @@ public interface ArtDetailQueryRepository {
 
     Page<AuctionArt> fetchAuctionArtsByKeyword(final ArtDetailsSearchCondition condition, final Pageable pageable);
 
-    Page<AuctionArt> fetchAuctionArtsByHashtag(final ArtDetailsSearchCondition condition, final Pageable pageable);
-
     Page<GeneralArt> fetchGeneralArtsByKeyword(final ArtDetailsSearchCondition condition, final Pageable pageable);
+
+    Page<AuctionArt> fetchAuctionArtsByHashtag(final ArtDetailsSearchCondition condition, final Pageable pageable);
 
     Page<GeneralArt> fetchGeneralArtsByHashtag(final ArtDetailsSearchCondition condition, final Pageable pageable);
 }

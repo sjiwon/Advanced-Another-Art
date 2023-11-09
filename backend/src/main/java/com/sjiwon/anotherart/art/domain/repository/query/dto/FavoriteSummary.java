@@ -2,11 +2,11 @@ package com.sjiwon.anotherart.art.domain.repository.query.dto;
 
 import com.querydsl.core.annotations.QueryProjection;
 
-public record SimpleAuction(
+public record FavoriteSummary(
         Long artId,
-        int bidCount
+        Long memberId
 ) {
     @QueryProjection
-    public SimpleAuction {
+    public FavoriteSummary {
     }
 }

@@ -6,6 +6,7 @@ import com.sjiwon.anotherart.art.domain.repository.ArtRepository;
 import com.sjiwon.anotherart.auction.domain.model.Auction;
 import com.sjiwon.anotherart.auction.domain.repository.AuctionRepository;
 import com.sjiwon.anotherart.common.RepositoryTest;
+import com.sjiwon.anotherart.common.fixture.MemberFixture;
 import com.sjiwon.anotherart.member.domain.model.Member;
 import com.sjiwon.anotherart.member.domain.repository.MemberRepository;
 import com.sjiwon.anotherart.member.domain.repository.query.dto.MemberInformation;
@@ -75,8 +76,7 @@ class MemberInformationQueryRepositoryTest extends RepositoryTest {
         @DisplayName("사용자 기본 정보를 조회한다")
         void success() {
             // given
-            final Member member = memberRepository.save(MEMBER_A.toMember());
-            member.increaseTotalPoint(MEMBER_INIT_POINT);
+            final Member member = createMember(MEMBER_A);
             member.decreaseAvailablePoint(40_000);
 
             // when
@@ -189,10 +189,9 @@ class MemberInformationQueryRepositoryTest extends RepositoryTest {
 
         @BeforeEach
         void setUp() {
-            bidder = memberRepository.save(MEMBER_A.toMember());
-            bidder.increaseTotalPoint(MEMBER_INIT_POINT);
+            bidder = createMember(MEMBER_A);
 
-            final Member owner = memberRepository.save(MEMBER_B.toMember());
+            final Member owner = createMember(MEMBER_B);
             artA = artRepository.save(AUCTION_1.toArt(owner));
             artB = artRepository.save(AUCTION_2.toArt(owner));
             artC = artRepository.save(AUCTION_3.toArt(owner));
@@ -269,12 +268,9 @@ class MemberInformationQueryRepositoryTest extends RepositoryTest {
 
         @BeforeEach
         void setUp() {
-            member = memberRepository.save(MEMBER_A.toMember());
-            member.increaseTotalPoint(MEMBER_INIT_POINT);
-            buyerA = memberRepository.save(MEMBER_B.toMember());
-            buyerA.increaseTotalPoint(MEMBER_INIT_POINT);
-            buyerB = memberRepository.save(MEMBER_C.toMember());
-            buyerB.increaseTotalPoint(MEMBER_INIT_POINT);
+            member = createMember(MEMBER_A);
+            buyerA = createMember(MEMBER_B);
+            buyerB = createMember(MEMBER_C);
 
             generalArtA = artRepository.save(GENERAL_1.toArt(member));
             generalArtB = artRepository.save(GENERAL_2.toArt(member));
@@ -521,5 +517,11 @@ class MemberInformationQueryRepositoryTest extends RepositoryTest {
                 );
             }
         }
+    }
+
+    private Member createMember(final MemberFixture fixture) {
+        final Member member = memberRepository.save(fixture.toMember());
+        member.increaseTotalPoint(MEMBER_INIT_POINT);
+        return member;
     }
 }
