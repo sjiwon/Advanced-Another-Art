@@ -2,11 +2,11 @@ package com.sjiwon.anotherart.art.domain.repository.query.dto;
 
 import com.querydsl.core.annotations.QueryProjection;
 
-public record SimpleHashtag(
+public record AuctionActivitySummary(
         Long artId,
-        String name
+        long bidCount
 ) {
     @QueryProjection
-    public SimpleHashtag {
+    public AuctionActivitySummary {
     }
 }

@@ -2,8 +2,8 @@ package com.sjiwon.anotherart.member.domain.repository.query;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.sjiwon.anotherart.art.domain.model.ArtType;
-import com.sjiwon.anotherart.art.domain.repository.query.dto.QSimpleHashtag;
-import com.sjiwon.anotherart.art.domain.repository.query.dto.SimpleHashtag;
+import com.sjiwon.anotherart.art.domain.repository.query.dto.HashtagSummary;
+import com.sjiwon.anotherart.art.domain.repository.query.dto.QHashtagSummary;
 import com.sjiwon.anotherart.global.annotation.AnotherArtReadOnlyTransactional;
 import com.sjiwon.anotherart.member.domain.model.QMember;
 import com.sjiwon.anotherart.member.domain.repository.query.dto.MemberInformation;
@@ -99,12 +99,12 @@ public class MemberInformationQueryRepositoryImpl implements MemberInformationQu
             final List<Long> artIds = result.stream()
                     .map(WinningAuctionArt::getArtId)
                     .toList();
-            final List<SimpleHashtag> simpleHashtags = getHashtags(artIds);
+            final List<HashtagSummary> hashtagSummaries = getHashtags(artIds);
 
             result.forEach(row -> {
-                final List<String> hashtags = simpleHashtags.stream()
+                final List<String> hashtags = hashtagSummaries.stream()
                         .filter(hashtag -> hashtag.artId().equals(row.getArtId()))
-                        .map(SimpleHashtag::name)
+                        .map(HashtagSummary::name)
                         .toList();
                 row.applyHashtags(hashtags);
             });
@@ -143,12 +143,12 @@ public class MemberInformationQueryRepositoryImpl implements MemberInformationQu
             final List<Long> artIds = result.stream()
                     .map(SoldArt::getArtId)
                     .toList();
-            final List<SimpleHashtag> simpleHashtags = getHashtags(artIds);
+            final List<HashtagSummary> hashtagSummaries = getHashtags(artIds);
 
             result.forEach(row -> {
-                final List<String> hashtags = simpleHashtags.stream()
+                final List<String> hashtags = hashtagSummaries.stream()
                         .filter(hashtag -> hashtag.artId().equals(row.getArtId()))
-                        .map(SimpleHashtag::name)
+                        .map(HashtagSummary::name)
                         .toList();
                 row.applyHashtags(hashtags);
             });
@@ -187,12 +187,12 @@ public class MemberInformationQueryRepositoryImpl implements MemberInformationQu
             final List<Long> artIds = result.stream()
                     .map(PurchaseArt::getArtId)
                     .toList();
-            final List<SimpleHashtag> simpleHashtags = getHashtags(artIds);
+            final List<HashtagSummary> hashtagSummaries = getHashtags(artIds);
 
             result.forEach(row -> {
-                final List<String> hashtags = simpleHashtags.stream()
+                final List<String> hashtags = hashtagSummaries.stream()
                         .filter(hashtag -> hashtag.artId().equals(row.getArtId()))
-                        .map(SimpleHashtag::name)
+                        .map(HashtagSummary::name)
                         .toList();
                 row.applyHashtags(hashtags);
             });
@@ -201,9 +201,9 @@ public class MemberInformationQueryRepositoryImpl implements MemberInformationQu
         return result;
     }
 
-    private List<SimpleHashtag> getHashtags(final List<Long> artIds) {
+    private List<HashtagSummary> getHashtags(final List<Long> artIds) {
         return query
-                .select(new QSimpleHashtag(
+                .select(new QHashtagSummary(
                         hashtag.art.id,
                         hashtag.name
                 ))
