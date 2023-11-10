@@ -41,7 +41,10 @@ public class RetrieveLoginIdUseCaseTest extends UseCaseTest {
     @Nested
     @DisplayName("인증번호 발송")
     class PprovideAuthCode {
-        private final AuthForRetrieveLoginIdCommand command = new AuthForRetrieveLoginIdCommand(member.getName(), member.getEmail().getValue());
+        private final AuthForRetrieveLoginIdCommand command = new AuthForRetrieveLoginIdCommand(
+                member.getName(),
+                member.getEmail().getValue()
+        );
 
         @Test
         @DisplayName("이름 + 이메일에 해당하는 사용자에게 아이디 찾기 인증번호를 발송한다")
@@ -69,7 +72,11 @@ public class RetrieveLoginIdUseCaseTest extends UseCaseTest {
     @DisplayName("인증번호 확인 후 로그인 아이디 제공")
     class GetLoginId {
         private static final String AUTH_CODE = "Hello";
-        private final ConfirmAuthCodeForLoginIdCommand command = new ConfirmAuthCodeForLoginIdCommand(member.getName(), member.getEmail().getValue(), AUTH_CODE);
+        private final ConfirmAuthCodeForLoginIdCommand command = new ConfirmAuthCodeForLoginIdCommand(
+                member.getName(),
+                member.getEmail().getValue(),
+                AUTH_CODE
+        );
 
         @Test
         @DisplayName("인증번호가 일치하지 않으면 사용자 인증에 실패한다")
@@ -89,7 +96,8 @@ public class RetrieveLoginIdUseCaseTest extends UseCaseTest {
 
             assertAll(
                     () -> verify(memberRepository, times(1)).getByNameAndEmail(command.name(), command.email()),
-                    () -> verify(mailAuthenticationProcessor, times(1)).verifyAuthCode(key, command.authCode())
+                    () -> verify(mailAuthenticationProcessor, times(1)).verifyAuthCode(key, command.authCode()),
+                    () -> verify(mailAuthenticationProcessor, times(0)).deleteAuthCode(key)
             );
         }
 
@@ -111,6 +119,7 @@ public class RetrieveLoginIdUseCaseTest extends UseCaseTest {
             assertAll(
                     () -> verify(memberRepository, times(1)).getByNameAndEmail(command.name(), command.email()),
                     () -> verify(mailAuthenticationProcessor, times(1)).verifyAuthCode(key, command.authCode()),
+                    () -> verify(mailAuthenticationProcessor, times(1)).deleteAuthCode(key),
                     () -> assertThat(loginId).isEqualTo(member.getLoginId())
             );
         }

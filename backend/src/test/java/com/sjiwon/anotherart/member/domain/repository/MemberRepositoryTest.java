@@ -55,6 +55,27 @@ class MemberRepositoryTest extends RepositoryTest {
     }
 
     @Test
+    @DisplayName("이름 + 이메일 + 로그인 아이디로 사용자를 조회한다")
+    void findByNameAndEmailAndLoginId() {
+        // given
+        final Member member = sut.save(MEMBER_A.toMember());
+
+        // when
+        final Optional<Member> emptyMember1 = sut.findByNameAndEmailAndLoginId("diff" + member.getName(), member.getEmail().getValue(), member.getLoginId());
+        final Optional<Member> emptyMember2 = sut.findByNameAndEmailAndLoginId(member.getName(), "diff" + member.getEmail().getValue(), member.getLoginId());
+        final Optional<Member> emptyMember3 = sut.findByNameAndEmailAndLoginId(member.getName(), member.getEmail().getValue(), "diff" + member.getLoginId());
+        final Member actualMember = sut.getByNameAndEmailAndLoginId(member.getName(), member.getEmail().getValue(), member.getLoginId());
+
+        // then
+        assertAll(
+                () -> assertThat(emptyMember1).isEmpty(),
+                () -> assertThat(emptyMember2).isEmpty(),
+                () -> assertThat(emptyMember3).isEmpty(),
+                () -> assertThat(actualMember).isEqualTo(member)
+        );
+    }
+
+    @Test
     @DisplayName("닉네임에 해당하는 사용자가 존재하는지 확인한다")
     void existsByNicknameValue() {
         // given

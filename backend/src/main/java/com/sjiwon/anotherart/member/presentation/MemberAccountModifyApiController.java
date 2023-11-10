@@ -3,10 +3,16 @@ package com.sjiwon.anotherart.member.presentation;
 import com.sjiwon.anotherart.global.dto.ResponseWrapper;
 import com.sjiwon.anotherart.member.application.usecase.ResetPasswordUseCase;
 import com.sjiwon.anotherart.member.application.usecase.RetrieveLoginIdUseCase;
+import com.sjiwon.anotherart.member.application.usecase.command.AuthForResetPasswordCommand;
 import com.sjiwon.anotherart.member.application.usecase.command.AuthForRetrieveLoginIdCommand;
 import com.sjiwon.anotherart.member.application.usecase.command.ConfirmAuthCodeForLoginIdCommand;
+import com.sjiwon.anotherart.member.application.usecase.command.ConfirmAuthCodeForResetPasswordCommand;
+import com.sjiwon.anotherart.member.application.usecase.command.ResetPasswordCommand;
 import com.sjiwon.anotherart.member.presentation.dto.request.ConfirmAuthCodeForLoginIdRequest;
-import com.sjiwon.anotherart.member.presentation.dto.request.ProvideAuthCodeRequest;
+import com.sjiwon.anotherart.member.presentation.dto.request.ConfirmAuthCodeForResetPasswordRequest;
+import com.sjiwon.anotherart.member.presentation.dto.request.ProvideAuthCodeForLoginIdRequest;
+import com.sjiwon.anotherart.member.presentation.dto.request.ProvideAuthCodeForResetPasswordRequest;
+import com.sjiwon.anotherart.member.presentation.dto.request.ResetPasswordRequest;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +23,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * TODO 아이디 찾기 & 비밀번호 재설정 프로세스 수정 <br>
+ * ## 아이디 찾기 & 비밀번호 재설정 프로세스 <br><br>
  * <p>
  * [아이디 찾기] <br>
  * 1. 이름 & 이메일로 인증번호 받기 API 요청 <br>
@@ -41,18 +47,54 @@ public class MemberAccountModifyApiController {
     private final ResetPasswordUseCase resetPasswordUseCase;
 
     @PostMapping("/retrieve-login-id")
-    public ResponseEntity<Void> provideAuthCode(@RequestBody @Valid final ProvideAuthCodeRequest request) {
+    public ResponseEntity<Void> provideAuthCodeForLoginId(
+            @RequestBody @Valid final ProvideAuthCodeForLoginIdRequest request
+    ) {
         retrieveLoginIdUseCase.provideAuthCode(new AuthForRetrieveLoginIdCommand(request.name(), request.email()));
         return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/retrieve-login-id/confirm")
-    public ResponseEntity<ResponseWrapper<String>> provideAuthCode(@RequestBody @Valid final ConfirmAuthCodeForLoginIdRequest request) {
+    public ResponseEntity<ResponseWrapper<String>> confirmAuthCodeForLoginId(
+            @RequestBody @Valid final ConfirmAuthCodeForLoginIdRequest request
+    ) {
         final String loginId = retrieveLoginIdUseCase.getLoginId(new ConfirmAuthCodeForLoginIdCommand(
                 request.name(),
                 request.email(),
                 request.authCode()
         ));
         return ResponseEntity.ok(ResponseWrapper.from(loginId));
+    }
+
+    @PostMapping("/reset-password/auth")
+    public ResponseEntity<Void> provideAuthCodeForResetPassword(
+            @RequestBody @Valid final ProvideAuthCodeForResetPasswordRequest request
+    ) {
+        resetPasswordUseCase.provideAuthCode(new AuthForResetPasswordCommand(request.name(), request.email(), request.loginId()));
+        return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/reset-password/auth/confirm")
+    public ResponseEntity<Void> confirmAuthCodeForResetPassword(
+            @RequestBody @Valid final ConfirmAuthCodeForResetPasswordRequest request
+    ) {
+        resetPasswordUseCase.confirmAuthCode(new ConfirmAuthCodeForResetPasswordCommand(
+                request.name(),
+                request.email(),
+                request.loginId(),
+                request.authCode()
+        ));
+        return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<Void> resetPassword(@RequestBody @Valid final ResetPasswordRequest request) {
+        resetPasswordUseCase.resetPassword(new ResetPasswordCommand(
+                request.name(),
+                request.email(),
+                request.loginId(),
+                request.password()
+        ));
+        return ResponseEntity.noContent().build();
     }
 }
