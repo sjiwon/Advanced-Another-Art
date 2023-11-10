@@ -44,6 +44,9 @@ spring:
       cloudfront:
         url: ${CLOUD_FRONT_URL}
 
+  thymeleaf:
+    cache: false
+
   mail:
     default-encoding: UTF-8
     host: smtp.gmail.com
