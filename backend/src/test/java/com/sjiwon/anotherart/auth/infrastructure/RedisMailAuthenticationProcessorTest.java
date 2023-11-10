@@ -1,5 +1,6 @@
 package com.sjiwon.anotherart.auth.infrastructure;
 
+import com.sjiwon.anotherart.auth.domain.AuthCodeGenerator;
 import com.sjiwon.anotherart.auth.domain.AuthKey;
 import com.sjiwon.anotherart.common.RedisTest;
 import com.sjiwon.anotherart.global.exception.AnotherArtException;
@@ -8,6 +9,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
@@ -30,8 +33,16 @@ public class RedisMailAuthenticationProcessorTest extends RedisTest {
 
     private ValueOperations<String, String> operations;
 
-    private final String email = "sjiwon4491@gmail.com";
-    private final String value = UUID.randomUUID().toString().substring(0, 8);
+    private static final String EMAIL = "sjiwon4491@gmail.com";
+    private static final String VALUE = UUID.randomUUID().toString().substring(0, 8);
+
+    @TestConfiguration
+    static class RedisMailAuthenticationProcessorTestConfig {
+        @Bean
+        public AuthCodeGenerator authCodeGenerator() {
+            return () -> VALUE;
+        }
+    }
 
     @BeforeEach
     void setUp() {
@@ -42,24 +53,27 @@ public class RedisMailAuthenticationProcessorTest extends RedisTest {
     @DisplayName("Redis에 인증번호를 저장한다")
     void storeAuthCode() {
         // given
-        final String key = AuthKey.LOGIN_AUTH_KEY.generateAuthKey(email);
+        final String key = AuthKey.LOGIN_AUTH_KEY.generateAuthKey(EMAIL);
 
         // when
-        sut.storeAuthCode(key, value);
+        final String result = sut.storeAuthCode(key);
 
         // then
-        assertThat(operations.get(key)).isEqualTo(value);
+        assertAll(
+                () -> assertThat(result).isEqualTo(VALUE),
+                () -> assertThat(operations.get(key)).isEqualTo(VALUE)
+        );
     }
 
     @Test
     @DisplayName("Redis에 저장된 인증번호와 요청 인증번호가 일치하는지 확인한다")
     void verifyAuthCode() {
         // given
-        final String key = AuthKey.PASSWORD_AUTH_KEY.generateAuthKey(email);
-        final String correct = value;
+        final String key = AuthKey.PASSWORD_AUTH_KEY.generateAuthKey(EMAIL);
+        final String correct = VALUE;
         final String wrong = "fake...";
 
-        sut.storeAuthCode(key, correct);
+        sut.storeAuthCode(key);
 
         // when - then
         assertAll(

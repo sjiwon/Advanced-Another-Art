@@ -1,7 +1,7 @@
 package com.sjiwon.anotherart.auth.application.adapter;
 
 public interface MailAuthenticationProcessor {
-    void storeAuthCode(final String key, final String value);
+    String storeAuthCode(final String key);
 
     void verifyAuthCode(final String key, final String value);
 }

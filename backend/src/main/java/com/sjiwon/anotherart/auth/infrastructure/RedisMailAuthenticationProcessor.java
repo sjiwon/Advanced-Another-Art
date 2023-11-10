@@ -1,6 +1,7 @@
 package com.sjiwon.anotherart.auth.infrastructure;
 
 import com.sjiwon.anotherart.auth.application.adapter.MailAuthenticationProcessor;
+import com.sjiwon.anotherart.auth.domain.AuthCodeGenerator;
 import com.sjiwon.anotherart.global.exception.AnotherArtException;
 import com.sjiwon.anotherart.global.security.exception.AuthErrorCode;
 import org.springframework.beans.factory.annotation.Value;
@@ -11,20 +12,25 @@ import java.util.concurrent.TimeUnit;
 
 @Component
 public class RedisMailAuthenticationProcessor implements MailAuthenticationProcessor {
+    private final AuthCodeGenerator authCodeGenerator;
     private final StringRedisTemplate stringRedisTemplate;
     private final long authTtl;
 
     public RedisMailAuthenticationProcessor(
+            final AuthCodeGenerator authCodeGenerator,
             final StringRedisTemplate stringRedisTemplate,
             @Value("${mail.auth.ttl}") final long authTtl
     ) {
+        this.authCodeGenerator = authCodeGenerator;
         this.stringRedisTemplate = stringRedisTemplate;
         this.authTtl = authTtl;
     }
 
     @Override
-    public void storeAuthCode(final String key, final String value) {
-        stringRedisTemplate.opsForValue().set(key, value, authTtl, TimeUnit.MILLISECONDS);
+    public String storeAuthCode(final String key) {
+        final String authCode = authCodeGenerator.get();
+        stringRedisTemplate.opsForValue().set(key, authCode, authTtl, TimeUnit.MILLISECONDS);
+        return authCode;
     }
 
     @Override
