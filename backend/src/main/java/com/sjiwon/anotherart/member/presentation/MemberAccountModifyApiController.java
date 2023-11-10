@@ -1,9 +1,18 @@
 package com.sjiwon.anotherart.member.presentation;
 
+import com.sjiwon.anotherart.global.dto.ResponseWrapper;
 import com.sjiwon.anotherart.member.application.usecase.ResetPasswordUseCase;
 import com.sjiwon.anotherart.member.application.usecase.RetrieveLoginIdUseCase;
+import com.sjiwon.anotherart.member.application.usecase.command.AuthForRetrieveLoginIdCommand;
+import com.sjiwon.anotherart.member.application.usecase.command.ConfirmAuthCodeForLoginIdCommand;
+import com.sjiwon.anotherart.member.presentation.dto.request.ConfirmAuthCodeForLoginIdRequest;
+import com.sjiwon.anotherart.member.presentation.dto.request.ProvideAuthCodeRequest;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -26,10 +35,24 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "사용자 계정 관련 정보 조회 & 수정 API")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/member")
+@RequestMapping("/api/members")
 public class MemberAccountModifyApiController {
     private final RetrieveLoginIdUseCase retrieveLoginIdUseCase;
     private final ResetPasswordUseCase resetPasswordUseCase;
 
-    // TODO 메일 전송 & Redis 인프라 구축 후 구현
+    @PostMapping("/retrieve-login-id")
+    public ResponseEntity<Void> provideAuthCode(@RequestBody @Valid final ProvideAuthCodeRequest request) {
+        retrieveLoginIdUseCase.provideAuthCode(new AuthForRetrieveLoginIdCommand(request.name(), request.email()));
+        return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/retrieve-login-id/confirm")
+    public ResponseEntity<ResponseWrapper<String>> provideAuthCode(@RequestBody @Valid final ConfirmAuthCodeForLoginIdRequest request) {
+        final String loginId = retrieveLoginIdUseCase.getLoginId(new ConfirmAuthCodeForLoginIdCommand(
+                request.name(),
+                request.email(),
+                request.authCode()
+        ));
+        return ResponseEntity.ok(ResponseWrapper.from(loginId));
+    }
 }
