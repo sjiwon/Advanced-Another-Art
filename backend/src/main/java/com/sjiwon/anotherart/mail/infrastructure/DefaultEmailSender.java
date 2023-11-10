@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.spring6.SpringTemplateEngine;
@@ -32,6 +33,7 @@ public class DefaultEmailSender implements EmailSender {
         this.serviceEmail = serviceEmail;
     }
 
+    @Async("emailAsyncExecutor")
     @Override
     public void sendAuthCodeForLoginId(final String targetEmail, final String authCode) {
         final Context context = new Context();
@@ -45,6 +47,7 @@ public class DefaultEmailSender implements EmailSender {
         );
     }
 
+    @Async("emailAsyncExecutor")
     @Override
     public void sendAuthCodeForPassword(final String targetEmail, final String authCode) {
         final Context context = new Context();
