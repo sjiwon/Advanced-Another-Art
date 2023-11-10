@@ -65,6 +65,10 @@ spring:
           starttls:
             enable: true
 
+mail:
+  auth:
+    ttl: 600000 # 초 단위 (기본 10분)
+
 cors:
   allowed-origin-patterns: http://localhost:8080 # Vue.js
 
