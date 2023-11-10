@@ -59,7 +59,6 @@ spring:
           charset: UTF-8
         transport:
           protocol: smtp
-        debug: true
         smtp:
           auth: true
           starttls:
@@ -87,7 +86,7 @@ springdoc:
 decorator:
   datasource:
     p6spy:
-      enable-logging: true
+      enable-logging: false
 
 slack:
   webhook:
