@@ -146,7 +146,6 @@ public class ArtDetailQueryRepositoryImpl implements ArtDetailQueryRepository {
                         artHashtagEq(condition.value())
                 )
                 .fetch();
-        System.out.println("해시태그 포함 ID = " + artIds);
         final List<AuctionArt> result = projectionAuctionArts(
                 condition.searchSortType(),
                 pageable,
@@ -176,7 +175,6 @@ public class ArtDetailQueryRepositoryImpl implements ArtDetailQueryRepository {
                         artHashtagEq(condition.value())
                 )
                 .fetch();
-        System.out.println("해시태그 포함 ID = " + artIds);
         final List<GeneralArt> result = projectionGeneralArts(
                 condition.searchSortType(),
                 pageable,
