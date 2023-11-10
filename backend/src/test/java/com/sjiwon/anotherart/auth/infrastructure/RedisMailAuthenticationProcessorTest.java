@@ -83,4 +83,20 @@ public class RedisMailAuthenticationProcessorTest extends RedisTest {
                         .hasMessage(AuthErrorCode.INVALID_AUTH_CODE.getMessage())
         );
     }
+
+    @Test
+    @DisplayName("인증 완료 후 Redis에 저장된 인증번호를 제거한다")
+    void deleteAuthCode() {
+        // given
+        final String key = AuthKey.PASSWORD_AUTH_KEY.generateAuthKey(EMAIL);
+
+        sut.storeAuthCode(key);
+        assertThat(operations.get(key)).isEqualTo(VALUE);
+
+        // when
+        sut.deleteAuthCode(key);
+
+        // then
+        assertThat(operations.get(key)).isNull();
+    }
 }

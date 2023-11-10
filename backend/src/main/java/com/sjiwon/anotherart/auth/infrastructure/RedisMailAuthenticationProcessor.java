@@ -41,4 +41,9 @@ public class RedisMailAuthenticationProcessor implements MailAuthenticationProce
             throw AnotherArtException.type(AuthErrorCode.INVALID_AUTH_CODE);
         }
     }
+
+    @Override
+    public void deleteAuthCode(final String key) {
+        stringRedisTemplate.delete(key);
+    }
 }
