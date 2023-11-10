@@ -26,6 +26,20 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
                 .orElseThrow(() -> AnotherArtException.type(MemberErrorCode.MEMBER_NOT_FOUND));
     }
 
+    @Query("SELECT m" +
+            " FROM Member m" +
+            " WHERE m.name = :name AND m.email.value = :email AND m.loginId = :loginId")
+    Optional<Member> findByNameAndEmailAndLoginId(
+            @Param("name") final String name,
+            @Param("email") final String email,
+            @Param("loginId") final String loginId
+    );
+
+    default Member getByNameAndEmailAndLoginId(final String name, final String email, final String loginId) {
+        return findByNameAndEmailAndLoginId(name, email, loginId)
+                .orElseThrow(() -> AnotherArtException.type(MemberErrorCode.MEMBER_NOT_FOUND));
+    }
+
     @Query("SELECT m.id" +
             " FROM Member m" +
             " WHERE m.nickname.value = :nickname")

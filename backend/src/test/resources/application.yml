@@ -27,6 +27,31 @@ spring:
       cloudfront:
         url: https://cloudfront-domain
 
+  thymeleaf:
+    cache: false
+
+  mail:
+    default-encoding: UTF-8
+    host: smtp.gmail.com
+    port: 587
+    username: username
+    password: password
+    properties:
+      mail:
+        mime:
+          charset: UTF-8
+        transport:
+          protocol: smtp
+        debug: true
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+mail:
+  auth:
+    ttl: 600000 # ms 단위 (기본 10분)
+
 cors:
   allowed-origin-patterns: http://localhost:8080
 
