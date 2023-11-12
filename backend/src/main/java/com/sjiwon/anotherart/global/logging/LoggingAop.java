@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 @Aspect
 @Component
 @RequiredArgsConstructor
-public class LoggingAspect {
+public class LoggingAop {
     private final LoggingTracer loggingTracer;
 
     @Pointcut("execution(public * com.sjiwon.anotherart..*(..))")
