@@ -4,8 +4,8 @@ import com.sjiwon.anotherart.art.domain.model.Art;
 import com.sjiwon.anotherart.art.domain.repository.ArtRepository;
 import com.sjiwon.anotherart.auction.domain.model.Auction;
 import com.sjiwon.anotherart.auction.domain.repository.AuctionRepository;
-import com.sjiwon.anotherart.global.annotation.AnotherArtWritableTransactional;
 import com.sjiwon.anotherart.global.exception.AnotherArtException;
+import com.sjiwon.anotherart.global.lock.DistributedLock;
 import com.sjiwon.anotherart.member.domain.model.Member;
 import com.sjiwon.anotherart.member.domain.repository.MemberRepository;
 import com.sjiwon.anotherart.point.domain.model.PointRecord;
@@ -29,8 +29,11 @@ public class PurchaseArtUseCase {
     private final PointRecordRepository pointRecordRepository;
     private final PurchaseRepository purchaseRepository;
 
-    // TODO need `Concurrency Control`
-    @AnotherArtWritableTransactional
+    @DistributedLock(
+            keyPrefix = "ART:",
+            keySuffix = "#command.artId",
+            withInTransaction = true
+    )
     public void invoke(final PurchaseArtCommand command) {
         final Art art = artRepository.getByIdWithFetchOwner(command.artId());
         final Member buyer = memberRepository.getById(command.memberId());

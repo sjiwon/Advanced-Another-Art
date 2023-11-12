@@ -15,6 +15,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -33,10 +34,11 @@ import static com.sjiwon.anotherart.common.fixture.MemberFixture.MEMBER_A;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
+@Tag("Concurrency")
 @DisplayName("Auction -> 경매 작품 입찰 동시성 테스트")
 public class BidUseCaseConcurrencyTest extends IntegrateTest {
     @Autowired
-    private BidFacade sut;
+    private BidUseCase sut;
 
     @Autowired
     private MemberRepository memberRepository;
@@ -119,6 +121,8 @@ public class BidUseCaseConcurrencyTest extends IntegrateTest {
         final List<Member> members = memberRepository.findAll();
 
         assertAll(
+                () -> assertThat(successCount.get()).isEqualTo(1),
+                () -> assertThat(failCount.get()).isEqualTo(9),
                 () -> assertThat(auctionRecords).hasSize(1),
                 () -> assertThat(findAuction.getHighestBid().getBidder()).isNotNull(),
                 () -> assertThat(findAuction.getHighestBid().getBidPrice()).isEqualTo(bidPrice),
