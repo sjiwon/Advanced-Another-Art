@@ -15,7 +15,6 @@ public class BidUseCase {
     private final AuctionRepository auctionRepository;
     private final MemberRepository memberRepository;
 
-    // TODO need `Concurrency Control`
     @AnotherArtWritableTransactional
     public void invoke(final BidCommand command) {
         final Auction auction = auctionRepository.getByIdWithFetchBidder(command.auctionId());
