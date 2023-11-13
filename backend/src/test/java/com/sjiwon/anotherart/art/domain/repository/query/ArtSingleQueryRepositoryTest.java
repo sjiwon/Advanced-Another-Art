@@ -292,9 +292,9 @@ class ArtSingleQueryRepositoryTest extends RepositoryTest {
     }
 
     private Member createMember(final MemberFixture fixture) {
-        final Member member = memberRepository.save(fixture.toMember());
+        final Member member = fixture.toMember();
         member.increaseTotalPoint(MEMBER_INIT_POINT);
-        return member;
+        return memberRepository.save(member);
     }
 
     private void like(final Art art, final Member member) {

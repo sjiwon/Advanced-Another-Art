@@ -266,9 +266,9 @@ public abstract class ArtDetailQueryRepositoryTestSupporter extends RepositoryTe
     }
 
     private Member createMember(final MemberFixture fixture) {
-        final Member member = memberRepository.save(fixture.toMember());
+        final Member member = fixture.toMember();
         member.increaseTotalPoint(MEMBER_INIT_POINT);
-        return member;
+        return memberRepository.save(member);
     }
 
     private Art createArt(final ArtFixture fixture, final int index, final String searchValue, final Member... likeMembers) {

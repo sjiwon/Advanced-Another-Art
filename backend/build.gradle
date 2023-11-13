@@ -55,6 +55,7 @@ dependencies {
 
     // Redis
     implementation "org.springframework.boot:spring-boot-starter-data-redis"
+    implementation "org.redisson:redisson-spring-boot-starter:3.24.3"
 
     // AWS
     implementation "io.awspring.cloud:spring-cloud-aws-starter:3.0.1"

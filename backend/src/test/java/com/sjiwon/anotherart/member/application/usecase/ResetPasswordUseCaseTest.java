@@ -52,7 +52,7 @@ public class ResetPasswordUseCaseTest {
         );
 
         @Test
-        @DisplayName("이름 + 이메일 + 로그인 아이디에 해당하는 사용자에게 아이디 찾기 인증번호를 발송한다")
+        @DisplayName("이름 + 이메일 + 로그인 아이디에 해당하는 사용자에게 비밀번호 재설정 인증번호를 발송한다")
         void success() {
             // given
             given(memberRepository.getByNameAndEmailAndLoginId(command.name(), command.email(), command.loginId())).willReturn(member);
@@ -68,7 +68,7 @@ public class ResetPasswordUseCaseTest {
             assertAll(
                     () -> verify(memberRepository, times(1)).getByNameAndEmailAndLoginId(command.name(), command.email(), command.loginId()),
                     () -> verify(mailAuthenticationProcessor, times(1)).storeAuthCode(key),
-                    () -> verify(emailSender, times(1)).sendAuthCodeForLoginId(member.getEmail().getValue(), authCode)
+                    () -> verify(emailSender, times(1)).sendAuthCodeForPassword(member.getEmail().getValue(), authCode)
             );
         }
     }
