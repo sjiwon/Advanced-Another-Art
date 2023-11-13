@@ -21,7 +21,12 @@
 
 ## 🔥 챌린지
 
-> TBU..
+- [이전 API의 보안 문제를 개선하기 위해서 Redis를 활용한 메일 인증 프로세스 적용기](https://sjiwon-dev.tistory.com/31)
+- [비동기를 활용한 인증 메일 전송이 포함된 로직 성능 개선](https://sjiwon-dev.tistory.com/32)
+- 경매 입찰 & 작품 구매 동시성 처리
+  - [DB Lock 적용기](https://sjiwon-dev.tistory.com/33)
+  - [MySQL Named Lock 적용기](https://sjiwon-dev.tistory.com/34)
+  - [Redis Lock 적용기](https://sjiwon-dev.tistory.com/35)
 
 <br>
 
