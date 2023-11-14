@@ -11,16 +11,10 @@ on:
     paths:
       - backend/**
 
-permissions: write-all
-
 jobs:
-  buildAndTest:
-    name: Backend(SpringBoot) Build & Test
+  build-and-test:
+    name: Backend Build & Test
     runs-on: ubuntu-latest
-
-    defaults:
-      run:
-        working-directory: ./backend
 
     steps:
       - name: Repository를 가져온다
@@ -32,31 +26,20 @@ jobs:
           distribution: 'temurin'
           java-version: 17
 
+      - name: Gradle 정보를 캐싱한다
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
       - name: Timezone을 Asia/Seoul로 설정한다
         uses: zcong1993/setup-timezone@master
         with:
           timezone: Asia/Seoul
-
-      - name: Github Action Secrets에 등록된 정보들을 가져온다
-        env:
-          EXTERNAL_CONFIG: ${{ secrets.BE_EXTERNAL_CONFIG }}
-          LOCAL_DATASOURCE: ${{ secrets.BE_LOCAL_DATASOURCE }}
-          PROD_DATASOURCE: ${{ secrets.BE_PROD_DATASOURCE }}
-        run: mkdir -p ./backend/src/main/resources/security &&
-          echo $EXTERNAL_CONFIG | base64 --decode > ./backend/src/main/resources/security/application-external.yml &&
-          echo $LOCAL_DATASOURCE | base64 --decode > ./backend/src/main/resources/security/application-local-datasource.yml &&
-          echo $PROD_DATASOURCE | base64 --decode > ./backend/src/main/resources/security/application-prod-datasource.yml
-
-      - name: 테스트시 필요한 Local Redis에 대한 Action을 가져온다
-        uses: supercharge/redis-github-action@1.2.0
-        with:
-          redis-version: 6
-
-      - name: Redis Client를 설치한다
-        run: sudo apt-get install -y redis-tools
-
-      - name: Redis Ping 테스트를 진행한다
-        run: redis-cli ping
 
       - name: Gradle 명령 실행을 위한 권한을 부여한다
         run: chmod +x gradlew

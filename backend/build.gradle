@@ -60,6 +60,7 @@ dependencies {
     // AWS
     implementation "io.awspring.cloud:spring-cloud-aws-starter:3.0.1"
     implementation "io.awspring.cloud:spring-cloud-aws-starter-s3:3.0.1"
+    implementation "io.awspring.cloud:spring-cloud-aws-starter-ses:3.0.1"
     implementation "ca.pjer:logback-awslogs-appender:1.6.0" // CloudWatch Logging with Logback
 
     // JWT
@@ -92,9 +93,6 @@ dependencies {
     // Test
     testImplementation "org.springframework.boot:spring-boot-starter-test"
     testImplementation "org.springframework.security:spring-security-test"
-
-    // RestAssured (E2E Test)
-    testImplementation "io.rest-assured:rest-assured:5.3.2"
 
     // TestContainers
     testImplementation "org.springframework.boot:spring-boot-testcontainers"
