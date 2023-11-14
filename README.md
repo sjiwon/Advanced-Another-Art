@@ -1,6 +1,17 @@
-# Advanced Another Art
+# Advanced Another Art `Backend` (Refactoring)
 
-> [Origin Project 바로가기](https://github.com/yumyeonghan/Another_Art)
+> [Origin Project 바로가기](https://github.com/yumyeonghan/Another_Art) <br>
+> - 백엔드 위주 리팩토링
+
+## 목차
+
+1. [소개](#-소개)
+2. [서비스 화면](#-서비스-화면)
+3. [주요 챌린지](#-주요-챌린지)
+4. [기술 스택](#-기술-스택)
+5. [CI/CD Pipeline](#-cicd-pipeline)
+6. [백엔드 요청 흐름도](#-백엔드-요청-흐름도)
+7. [모니터링 구조도](#-모니터링-구조도)
 
 <br>
 
@@ -19,7 +30,7 @@
 
 <br>
 
-## 🔥 챌린지
+## 🔥 주요 챌린지
 
 - [이전 API의 보안 문제를 개선하기 위해서 Redis를 활용한 메일 인증 프로세스 적용기](https://sjiwon-dev.tistory.com/31)
 - [비동기를 활용한 인증 메일 전송이 포함된 로직 성능 개선](https://sjiwon-dev.tistory.com/32)
@@ -30,36 +41,42 @@
 
 <br>
 
-## 🛠 Tech Stacks
-
-### Frontend
-
-> TBU..
+## 🛠 기술 스택
 
 ### Backend
 
-> TBU..
+![Tech Stack - Backend](https://github.com/sjiwon/Advanced-Another-Art/assets/51479381/7ca09bd5-134c-4c29-9d57-ef72b19d8d0a)
 
 ### Infra
 
-> TBU..
+![Tech Stack - Infra](https://github.com/sjiwon/Advanced-Another-Art/assets/51479381/337aa49b-f46e-4eb1-b23c-6c87c97c7431)
 
 <br>
 
-## ⚙️ Infrastructure
+## 🚀 CI/CD Pipeline
 
-> TBU..
+![CI-CD Pipeline](https://github.com/sjiwon/Advanced-Another-Art/assets/51479381/6e2907f5-4457-405a-9138-6949667866dc)
 
 <br>
 
-## 🔀 CI/CD Pipeline
-### Frontend CI/CD
+## 🛒 백엔드 요청 흐름도
 
-> TBU..
+> Backend 위주의 리팩토링이기 때문에 Backend 요청 흐름만 명시
+> - 아래 흐름도에서 DNS Resolving 흐름은 생략
 
-### Backend CI/CD
+### 작품 이미지 업로드/요청 흐름도
 
-> TBU..
+![작품 이미지 업로드, 요청 흐름도](https://github.com/sjiwon/Advanced-Another-Art/assets/51479381/dfc0e5a8-494d-404c-a22d-41d00010e04d)
 
+### 서버 API 호출 흐름도
 
+![서버 API 호출 흐름도](https://github.com/sjiwon/Advanced-Another-Art/assets/51479381/f7401d1d-54b6-4f25-8eae-ed27d1e2573c)
+
+<br>
+
+## 💻 모니터링 구조도
+
+![모니터링 구조도](https://github.com/sjiwon/Advanced-Another-Art/assets/51479381/a8b400bf-38b0-4dfc-9d8d-25c169ad28e0)
+
+<br>
 
