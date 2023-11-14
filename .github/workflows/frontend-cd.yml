@@ -7,9 +7,18 @@ on:
     paths:
       - frontend/**
 
+env:
+  SUBMODULE_TOKEN: ${{ secrets.SUBMODULE_TOKEN }}
+  AWS_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY }}
+  AWS_SECRET_KEY: ${{ secrets.AWS_SECRET_KEY }}
+  AWS_REGION: ${{ secrets.AWS_REGION }}
+  ZIP_FILE: spring-build-${{ github.run_number }}.zip
+  S3_BUCKET: ${{ secrets.FRONTEND_S3_BUCKET }}
+  S3_DEPLOY_RESOURCE_FOLDER: ${{ secrets.FRONTEND_S3_DEPLOY_RESOURCE_FOLDER }}
+
 jobs:
-  buildAndDeploy:
-    name: Frontend(Vue.js) Build & Push To Cloud Server
+  build-and-deploy:
+    name: Frontend Build & Deploy
     runs-on: ubuntu-latest
 
     defaults:
@@ -19,11 +28,9 @@ jobs:
     steps:
       - name: Repository를 가져온다
         uses: actions/checkout@v3
-
-      - name: Github Action Secrets에 등록된 정보들을 가져온다
-        env:
-          ENV_VALUE: ${{ secrets.FE_ENV_VALUE }}
-        run: echo $ENV_VALUE | base64 --decode > .env
+        with:
+          token: ${{ env.SUBMODULE_TOKEN }}
+          submodules: true
 
       - name: node_modules 캐싱 여부를 확인한다
         uses: actions/cache@v3
@@ -38,26 +45,16 @@ jobs:
         if: steps.npm-cache.outputs.cache-hit != 'true'
         run: echo 'npm cache missed!' && npm install -f
 
-      - name: Vue.js Build를 진행한다
+      - name: Build를 진행한다
         run: npm run build
-
-      - name: NCP Server로 빌드 파일을 전송한다
-        uses: appleboy/scp-action@master
+      
+      - name: AWS 인증을 진행한다
+        uses: aws-actions/configure-aws-credentials@v4
         with:
-          username: ${{ secrets.FE_SSH_USERNAME }}
-          password: ${{ secrets.FE_SSH_PASSWORD }}
-          host: ${{ secrets.FE_SSH_HOST }}
-          port: ${{ secrets.FE_SSH_PORT }}
-          source: "./frontend/dist"
-          target: "/app"
+          aws-access-key-id: ${{ env.AWS_ACCESS_KEY }}
+          aws-secret-access-key: ${{ env.AWS_SECRET_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
 
-      - name: NCP Server에 SSH 접속 후 빌드 파일을 Nginx로 옮긴다
-        uses: appleboy/ssh-action@master
-        with:
-          username: ${{ secrets.FE_SSH_USERNAME }}
-          password: ${{ secrets.FE_SSH_PASSWORD }}
-          host: ${{ secrets.FE_SSH_HOST }}
-          port: ${{ secrets.FE_SSH_PORT }}
-          script: |
-            sudo rm -rf /usr/share/nginx/html/*
-            sudo mv /app/frontend/dist/* /usr/share/nginx/html/
+      - name: Build File을 S3로 전송한다
+        run: |
+          aws s3 cp --recursive --region ${{ env.AWS_REGION }} ./frontend/dist s3://${{ env.FRONTEND_S3_BUCKET }}/${{ env.FRONTEND_S3_DEPLOY_RESOURCE_FOLDER }}
