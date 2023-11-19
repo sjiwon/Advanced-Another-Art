@@ -1,5 +1,5 @@
-import { createStore } from 'vuex'
-import { createVuexPersistedState } from 'vue-persistedstate'
+import {createStore} from 'vuex'
+import {createVuexPersistedState} from 'vue-persistedstate'
 
 import memberStore from '@/store/modules/member.js'
 import mainPageSearch from '@/store/modules/mainPageSearch.js'

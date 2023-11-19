@@ -1,5 +1,5 @@
 import Axios from 'axios'
-import { accessTokenProvider, refreshTokenProvider } from '@/utils/token'
+import {accessTokenProvider, refreshTokenProvider} from '@/utils/token'
 
 const axios = Axios.create({
   baseURL: process.env.VUE_APP_API_URL,
