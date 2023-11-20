@@ -38,7 +38,7 @@ export default {
     async fetchData() {
       try {
         const memberId = this.$store.getters['memberStore/getMemberId']
-        const response = await this.axiosWithAccessToken.get(`/api/members/${memberId}/points`)
+        const response = await this.axios.get(`/api/members/${memberId}/points`)
         const fetchDataList = response.data.result
         this.pointHistoryData = []
         // for (let i = fetchDataList.length - 1; i >= 0; i--) {

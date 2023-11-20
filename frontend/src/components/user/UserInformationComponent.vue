@@ -198,7 +198,7 @@ export default {
     async fetchData() {
       try {
         const memberId = this.$store.getters['memberStore/getMemberId']
-        const response = await this.axiosWithAccessToken.get(`/api/members/${memberId}`)
+        const response = await this.axios.get(`/api/members/${memberId}`)
         this.currentUser = response.data
       } catch (err) {
         alert(err.response.data.message)
@@ -243,7 +243,7 @@ export default {
         }
 
         const memberId = this.$store.getters['memberStore/getMemberId']
-        await this.axiosWithAccessToken.patch(`/api/members/${memberId}/nickname`, changeNicknameRequest)
+        await this.axios.patch(`/api/members/${memberId}/nickname`, changeNicknameRequest)
         alert('닉네임 변경이 완료되었습니다')
         this.$router.go()
       } catch (err) {
@@ -255,7 +255,7 @@ export default {
         const changePasswordRequest = {
           'changePassword': this.changePassword
         }
-        await this.axiosWithAccessToken.patch('/api/member/password', changePasswordRequest)
+        await this.axios.patch('/api/member/password', changePasswordRequest)
         alert('비밀번호 변경이 완료되었습니다\n로그인 페이지로 이동합니다')
         this.$store.commit('memberStore/reset')
         this.$router.push('/login')

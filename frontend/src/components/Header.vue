@@ -176,7 +176,7 @@ export default {
     },
     async logout() {
       try {
-        await this.axiosWithAccessToken.post('/api/logout')
+        await this.axios.post('/api/logout')
         alert('로그아웃이 완료되었습니다')
         this.$store.commit('memberStore/reset')
         this.$router.push('/')

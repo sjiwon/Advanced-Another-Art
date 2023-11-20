@@ -52,7 +52,7 @@ export default {
     async fetchData() {
       try {
         const memberId = this.$store.getters['memberStore/getMemberId']
-        const response = await this.axiosWithAccessToken.get(`/api/members/${memberId}/arts/sold`)
+        const response = await this.axios.get(`/api/members/${memberId}/arts/sold`)
         this.auctionArtFechDataList = response.data.tradedAuctions
         this.generalArtFechDataList = response.data.tradedGenerals
       } catch (err) {

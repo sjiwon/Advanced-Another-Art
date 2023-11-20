@@ -167,7 +167,7 @@ export default {
       const check = confirm('작품을 정말 삭제하시겠습니까?')
       if (check) {
         try {
-          await this.axiosWithAccessToken.delete(`/api/arts/${this.auctionArt.art.id}`)
+          await this.axios.delete(`/api/arts/${this.auctionArt.art.id}`)
           alert('작품이 삭제되었습니다')
           this.$router.push('/')
         } catch (err) {
@@ -177,7 +177,7 @@ export default {
     },
     async likeMarking() {
       try {
-        await this.axiosWithAccessToken.post(`/api/arts/${this.auctionArt.art.id}/like`)
+        await this.axios.post(`/api/arts/${this.auctionArt.art.id}/like`)
         this.$router.go()
       } catch (err) {
         alert(err.response.data.message)
@@ -185,7 +185,7 @@ export default {
     },
     async likeCancel() {
       try {
-        await this.axiosWithAccessToken.delete(`/api/arts/${this.auctionArt.art.id}/like`)
+        await this.axios.delete(`/api/arts/${this.auctionArt.art.id}/like`)
         this.$router.go()
       } catch (err) {
         alert(err.response.data.message)
@@ -198,7 +198,7 @@ export default {
           const bidRequest = {
             bidPrice: this.bidAmount
           }
-          await this.axiosWithAccessToken.post(`/api/auctions/${this.auctionArt.auction.id}/bid`, bidRequest)
+          await this.axios.post(`/api/auctions/${this.auctionArt.auction.id}/bid`, bidRequest)
           alert('입찰에 성공했습니다')
           this.$router.go()
         } catch (err) {
@@ -210,7 +210,7 @@ export default {
       const check = confirm('구매를 확정시겠습니까?')
       if(check) {
         try {
-          await this.axiosWithAccessToken.post(`/api/arts/${this.auctionArt.art.id}/purchase`);
+          await this.axios.post(`/api/arts/${this.auctionArt.art.id}/purchase`);
           alert('구매가 완료되었습니다')
           this.$router.push('/')
         } catch (err) {

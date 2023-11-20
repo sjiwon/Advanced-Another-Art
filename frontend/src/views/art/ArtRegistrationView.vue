@@ -219,7 +219,7 @@ export default {
       }
 
       try {
-        await this.axiosWithAccessToken.get(`/api/art/check-duplicates?resource=name&value=${name}`)
+        await this.axios.get(`/api/art/check-duplicates?resource=name&value=${name}`)
         alert('사용 가능한 작품명입니다.')
         this.duplicateApiCheck.nameCheck = true
         this.duplicateApiCheck.nameDisabled = true
@@ -310,7 +310,7 @@ export default {
         formData.append('auctionStartDate', this.registerData.startDate)
         formData.append('auctionEndDate', this.registerData.endDate)
 
-        await this.axiosWithAccessToken.post('/api/art', formData, {
+        await this.axios.post('/api/art', formData, {
           headers: {
             'Content-Type': 'multipart/form-data'
           }
