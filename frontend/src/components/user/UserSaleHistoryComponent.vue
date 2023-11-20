@@ -2,10 +2,12 @@
   <div>
     <h2 class="text-center mb-4 fw-bold text-black">판매한 작품</h2>
     <div class="btn-group" style="border: none; margin-left: 20px;" role="group">
-      <b-button :class="{ selectedBackgroundColor: isAuctionSelected, notSelectedBackground: isGeneralSelected }" @click="changeSaleType('auction')">
+      <b-button :class="{ selectedBackgroundColor: isAuctionSelected, notSelectedBackground: isGeneralSelected }"
+                @click="changeSaleType('auction')">
         경매 작품
       </b-button>
-      <b-button :class="{ selectedBackgroundColor: isGeneralSelected, notSelectedBackground: isAuctionSelected }" @click="changeSaleType('general')">
+      <b-button :class="{ selectedBackgroundColor: isGeneralSelected, notSelectedBackground: isAuctionSelected }"
+                @click="changeSaleType('general')">
         일반 작품
       </b-button>
     </div>
@@ -13,10 +15,12 @@
     <div class="album py-5">
       <div class="container">
         <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
-          <div v-if="isAuctionSelected === true && isGeneralSelected === false" v-for="(art, index) in auctionArtFechDataList" :key="index">
+          <div v-if="isAuctionSelected === true && isGeneralSelected === false"
+               v-for="(art, index) in auctionArtFechDataList" :key="index">
             <SimpleSaleAuctionArtComponent :auction-art="art"/>
           </div>
-          <div v-if="isAuctionSelected === false && isGeneralSelected === true" v-for="(art, index) in generalArtFechDataList" :key="index">
+          <div v-if="isAuctionSelected === false && isGeneralSelected === true"
+               v-for="(art, index) in generalArtFechDataList" :key="index">
             <SimpleSaleGeneralArtComponent :general-art="art"/>
           </div>
         </div>
@@ -28,6 +32,7 @@
 <script>
 import SimpleSaleAuctionArtComponent from '@/components/art/SimpleSaleAuctionArtComponent.vue'
 import SimpleSaleGeneralArtComponent from '@/components/art/SimpleSaleGeneralArtComponent.vue'
+import {API_PATH} from "@/apis/api";
 
 export default {
   name: 'UserSaleHistoryComponent',
@@ -51,10 +56,9 @@ export default {
   methods: {
     async fetchData() {
       try {
-        const memberId = this.$store.getters['memberStore/getMemberId']
-        const response = await this.axios.get(`/api/members/${memberId}/arts/sold`)
-        this.auctionArtFechDataList = response.data.tradedAuctions
-        this.generalArtFechDataList = response.data.tradedGenerals
+        const response = await this.axios.get(API_PATH.MEMBER.GET_SOLD_ARTS)
+        this.auctionArtFechDataList = response.data.auctionArts
+        this.generalArtFechDataList = response.data.generalArts
       } catch (err) {
         alert(err.response.data.message)
       }
