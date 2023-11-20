@@ -27,19 +27,29 @@ export const API_PATH = {
   ART: {
     DUPLICATE_NAME: `/api/arts/duplicate/name`, // 작품명 중복체크
     REGISTER: `/api/arts`, // 작품 등록
-    UPDATE: `/api/arts/{artId}`, // 작품 수정
-    DELETE: `/api/arts/{artId}`, // 작품 삭제
-    GET_SINGLE_ART: `/api/arts/{artId}`, // 작품 단건 조회
-    GET_ACTIVE_AUCTION_ARTS: `/api/arts/active-auction`, // 현재 진행중인 경매 작품 리스트 조회
-    GET_AUCTION_ARTS_BY_KEYWORD: `/api/arts/auction/keyword`, // 키워드 기반 경매 작품 리스트 조회
-    GET_GENERAL_ARTS_BY_KEYWORD: `/api/arts/general/keyword`, // 키워드 기반 일반 작품 리스트 조회
-    GET_AUCTION_ARTS_BY_HASHTAG: `/api/arts/auction/hashtag`, // 해시태그(객체 탐지) 기반 경매 작품 리스트 조회
-    GET_GENERAL_ARTS_BY_HASHTAG: `/api/arts/general/hashtag`, // 해시태그(객체 탐지) 기반 일반 작품 리스트 조회
-    LIKE_MARKING: `/api/arts/{artId}/like`, // 작품 좋아요 등록
-    LIKE_CANCELLATION: `/api/arts/{artId}/like`, // 작품 좋아요 취소
-    PURCHASE: `/api/arts/{artId}/purchase`, // 작품 구매
+    UPDATE: (artId) => `/api/arts/${artId}`, // 작품 수정
+    DELETE: (artId) => `/api/arts/${artId}`, // 작품 삭제
+    GET_SINGLE_ART: (artId) => `/api/arts/${artId}`, // 작품 단건 조회
+    GET_ACTIVE_AUCTION_ARTS: (sortType, page) => {
+      return `/api/arts/active-auction?sortType=${sortType}&page=${page}` // 현재 진행중인 경매 작품 리스트 조회
+    },
+    GET_AUCTION_ARTS_BY_KEYWORD: (sortType, page, artType, keyword) => {
+      return `/api/arts/auction/keyword?sortType=${sortType}&page=${page}&artType=${artType}&keyword=${keyword}` // 키워드 기반 경매 작품 리스트 조회
+    },
+    GET_GENERAL_ARTS_BY_KEYWORD: (sortType, page, artType, keyword) => {
+      return `/api/arts/general/keyword?sortType=${sortType}&page=${page}&artType=${artType}&keyword=${keyword}` // 키워드 기반 일반 작품 리스트 조회
+    },
+    GET_AUCTION_ARTS_BY_HASHTAG: (sortType, page, artType, hashtag) => {
+      return `/api/arts/auction/hashtag?sortType=${sortType}&page=${page}&artType=${artType}&hashtag=${hashtag}` // 해시태그(객체 탐지) 기반 경매 작품 리스트 조회
+    },
+    GET_GENERAL_ARTS_BY_HASHTAG: (sortType, page, artType, hashtag) => {
+      return `/api/arts/general/hashtag?sortType=${sortType}&page=${page}&artType=${artType}&hashtag=${hashtag}` // 해시태그(객체 탐지) 기반 일반 작품 리스트 조회
+    },
+    LIKE_MARKING: (artId) => `/api/arts/${artId}/like`, // 작품 좋아요 등록
+    LIKE_CANCELLATION: (artId) => `/api/arts/${artId}/like`, // 작품 좋아요 취소
+    PURCHASE: (artId) => `/api/arts/${artId}/purchase`, // 작품 구매
   },
   AUCTION: {
-    BID: `/api/auctions/{auctionId}/bid` // 경매 작품 입찰
+    BID: (auctionId) => `/api/auctions/${auctionId}/bid` // 경매 작품 입찰
   },
 };

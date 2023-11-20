@@ -94,7 +94,7 @@ export default {
     async fetchData() {
       try {
         const {sortType, page} = this.$store.getters['mainPageSearch/getMainPageCriteria']
-        const response = await this.axios.get(API_PATH.ART.GET_ACTIVE_AUCTION_ARTS + `?sortType=${sortType}&page=${page}`)
+        const response = await this.axios.get(API_PATH.ART.GET_ACTIVE_AUCTION_ARTS(sortType, page))
 
         this.fetchDataList = [...response.data.result]
         this.pagination = response.data.pagination
