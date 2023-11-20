@@ -33,18 +33,10 @@ export const API_PATH = {
     GET_ACTIVE_AUCTION_ARTS: (sortType, page) => {
       return `/api/arts/active-auction?sortType=${sortType}&page=${page}` // 현재 진행중인 경매 작품 리스트 조회
     },
-    GET_AUCTION_ARTS_BY_KEYWORD: (sortType, page, artType, keyword) => {
-      return `/api/arts/auction/keyword?sortType=${sortType}&page=${page}&artType=${artType}&keyword=${keyword}` // 키워드 기반 경매 작품 리스트 조회
-    },
-    GET_GENERAL_ARTS_BY_KEYWORD: (sortType, page, artType, keyword) => {
-      return `/api/arts/general/keyword?sortType=${sortType}&page=${page}&artType=${artType}&keyword=${keyword}` // 키워드 기반 일반 작품 리스트 조회
-    },
-    GET_AUCTION_ARTS_BY_HASHTAG: (sortType, page, artType, hashtag) => {
-      return `/api/arts/auction/hashtag?sortType=${sortType}&page=${page}&artType=${artType}&hashtag=${hashtag}` // 해시태그(객체 탐지) 기반 경매 작품 리스트 조회
-    },
-    GET_GENERAL_ARTS_BY_HASHTAG: (sortType, page, artType, hashtag) => {
-      return `/api/arts/general/hashtag?sortType=${sortType}&page=${page}&artType=${artType}&hashtag=${hashtag}` // 해시태그(객체 탐지) 기반 일반 작품 리스트 조회
-    },
+    GET_AUCTION_ARTS_BY_KEYWORD: `/api/arts/auction/keyword`,
+    GET_GENERAL_ARTS_BY_KEYWORD: `/api/arts/general/keyword`,
+    GET_AUCTION_ARTS_BY_HASHTAG: `/api/arts/auction/hashtag`,
+    GET_GENERAL_ARTS_BY_HASHTAG: `/api/arts/general/hashtag`,
     LIKE_MARKING: (artId) => `/api/arts/${artId}/like`, // 작품 좋아요 등록
     LIKE_CANCELLATION: (artId) => `/api/arts/${artId}/like`, // 작품 좋아요 취소
     PURCHASE: (artId) => `/api/arts/${artId}/purchase`, // 작품 구매
