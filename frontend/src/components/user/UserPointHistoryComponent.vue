@@ -14,6 +14,7 @@
 
 <script>
 import dayjs from 'dayjs'
+import {API_PATH} from "@/apis/api";
 
 export default {
   name: 'UserPointHistoryComponent',
@@ -21,10 +22,10 @@ export default {
   data() {
     return {
       columns: [
-        { key: 'index', label: 'Index', sortable: true },
-        { key: 'pointType', label: 'Point Type', sortable: false },
-        { key: 'dealAmount', label: 'Deal Amount', sortable: false },
-        { key: 'recordDate', label: 'Record Date', sortable: true }
+        {key: 'index', label: 'Index', sortable: true},
+        {key: 'pointType', label: '포인트 타입', sortable: false},
+        {key: 'dealAmount', label: '거래량', sortable: false},
+        {key: 'recordDate', label: '거래 날짜', sortable: true}
       ],
       pointHistoryData: []
     }
@@ -37,11 +38,10 @@ export default {
   methods: {
     async fetchData() {
       try {
-        const memberId = this.$store.getters['memberStore/getMemberId']
-        const response = await this.axios.get(`/api/members/${memberId}/points`)
+        const response = await this.axios.get(API_PATH.MEMBER.GET_POINT_RECORDS)
         const fetchDataList = response.data.result
+
         this.pointHistoryData = []
-        // for (let i = fetchDataList.length - 1; i >= 0; i--) {
         for (let i = 0; i < fetchDataList.length; i++) {
           const jsonData = {
             index: fetchDataList.length - i,
