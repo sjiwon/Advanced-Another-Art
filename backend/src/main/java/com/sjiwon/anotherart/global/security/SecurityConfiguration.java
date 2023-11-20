@@ -17,6 +17,7 @@ import com.sjiwon.anotherart.global.security.provider.CustomUserDetailsService;
 import com.sjiwon.anotherart.member.domain.repository.MemberRepository;
 import com.sjiwon.anotherart.token.domain.service.TokenIssuer;
 import com.sjiwon.anotherart.token.utils.TokenProvider;
+import com.sjiwon.anotherart.token.utils.TokenResponseWriter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
@@ -55,11 +56,12 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SecurityConfiguration {
     private final AuthenticationConfiguration authenticationConfiguration;
+    private final CorsProperties corsProperties;
     private final ObjectMapper objectMapper;
     private final MemberRepository memberRepository;
     private final TokenProvider tokenProvider;
     private final TokenIssuer tokenIssuer;
-    private final CorsProperties corsProperties;
+    private final TokenResponseWriter tokenResponseWriter;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -98,7 +100,7 @@ public class SecurityConfiguration {
 
     @Bean
     public AuthenticationSuccessHandler ajaxAuthenticationSuccessHandler() {
-        return new AjaxAuthenticationSuccessHandler(tokenIssuer, objectMapper);
+        return new AjaxAuthenticationSuccessHandler(tokenIssuer, tokenResponseWriter, objectMapper);
     }
 
     @Bean
@@ -170,13 +172,11 @@ public class SecurityConfiguration {
                         // Auth
                         .requestMatchers("/api/login").permitAll()
                         .requestMatchers("/api/logout").hasRole("USER")
+                        .requestMatchers("/api/token/reissue").permitAll()
 
                         // Member
                         .requestMatchers("/api/members/me/**").hasRole("USER")
                         .requestMatchers("/api/members/**").permitAll()
-
-                        // Token
-                        .requestMatchers("/api/token/**").hasRole("USER")
 
                         // Art
                         .requestMatchers(HttpMethod.GET, "/api/arts/**").permitAll()
