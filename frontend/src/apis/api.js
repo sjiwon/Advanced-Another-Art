@@ -30,11 +30,11 @@ export const API_PATH = {
     UPDATE: `/api/arts/{artId}`, // 작품 수정
     DELETE: `/api/arts/{artId}`, // 작품 삭제
     GET_SINGLE_ART: `/api/arts/{artId}`, // 작품 단건 조회
-    GET_ACTIVE_AUCTION_ARTS: `/api/arts/{artId}/active-auction`, // 현재 진행중인 경매 작품 리스트 조회
-    GET_AUCTION_ARTS_BY_KEYWORD: `/api/arts/{artId}/auction/keyword`, // 키워드 기반 경매 작품 리스트 조회
-    GET_GENERAL_ARTS_BY_KEYWORD: `/api/arts/{artId}/general/keyword`, // 키워드 기반 일반 작품 리스트 조회
-    GET_AUCTION_ARTS_BY_HASHTAG: `/api/arts/{artId}/auction/hashtag`, // 해시태그(객체 탐지) 기반 경매 작품 리스트 조회
-    GET_GENERAL_ARTS_BY_HASHTAG: `/api/arts/{artId}/general/hashtag`, // 해시태그(객체 탐지) 기반 일반 작품 리스트 조회
+    GET_ACTIVE_AUCTION_ARTS: `/api/arts/active-auction`, // 현재 진행중인 경매 작품 리스트 조회
+    GET_AUCTION_ARTS_BY_KEYWORD: `/api/arts/auction/keyword`, // 키워드 기반 경매 작품 리스트 조회
+    GET_GENERAL_ARTS_BY_KEYWORD: `/api/arts/general/keyword`, // 키워드 기반 일반 작품 리스트 조회
+    GET_AUCTION_ARTS_BY_HASHTAG: `/api/arts/auction/hashtag`, // 해시태그(객체 탐지) 기반 경매 작품 리스트 조회
+    GET_GENERAL_ARTS_BY_HASHTAG: `/api/arts/general/hashtag`, // 해시태그(객체 탐지) 기반 일반 작품 리스트 조회
     LIKE_MARKING: `/api/arts/{artId}/like`, // 작품 좋아요 등록
     LIKE_CANCELLATION: `/api/arts/{artId}/like`, // 작품 좋아요 취소
     PURCHASE: `/api/arts/{artId}/purchase`, // 작품 구매

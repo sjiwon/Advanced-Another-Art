@@ -23,7 +23,7 @@
       <div class="container">
         <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-3">
           <div v-for="(art, index) in fetchDataList" :key="index">
-            <AuctionArtComponent :auction-art="art" />
+            <AuctionArtComponent :auction-art="art"/>
           </div>
         </div>
       </div>
@@ -31,13 +31,13 @@
 
     <!-- Pagination -->
     <ul class="pagination justify-content-center pagination-circle">
-      <li v-if="pagination.prev === true" class="page-item">
+      <li v-if="pagination.prevExists === true" class="page-item">
         <b-button class="page-link" @click="moveToPreviousPage()">Previous</b-button>
       </li>
       <li v-for="(index) in range" :key="index" :class="checkActive(pagination.currentPage, index)" class="page-item">
         <b-button class="page-link" @click="moveToIndexPage(index)">{{ index }}</b-button>
       </li>
-      <li v-if="pagination.next === true" class="page-item">
+      <li v-if="pagination.nextExists === true" class="page-item">
         <b-button class="page-link" @click="moveToNextPage()">Next</b-button>
       </li>
     </ul>
@@ -46,6 +46,7 @@
 
 <script>
 import AuctionArtComponent from '@/components/art/AuctionArtComponent.vue'
+import {API_PATH} from "@/apis/api";
 
 export default {
   name: 'MainView',
@@ -92,8 +93,8 @@ export default {
     },
     async fetchData() {
       try {
-        const { sortType, page } = this.$store.getters['mainPageSearch/getMainPageCriteria']
-        const response = await this.axios.get(`/api/arts?sortType=${sortType}&page=${page}`)
+        const {sortType, page} = this.$store.getters['mainPageSearch/getMainPageCriteria']
+        const response = await this.axios.get(API_PATH.ART.GET_ACTIVE_AUCTION_ARTS + `?sortType=${sortType}&page=${page}`)
 
         this.fetchDataList = [...response.data.result]
         this.pagination = response.data.pagination
