@@ -7,27 +7,37 @@ import ArtSearchView from '@/views/art/ArtSearchView.vue'
 import store from '@/store'
 
 const routes = [
-  { path: '/', name: 'MainView', component: MainView, meta: { requiresAuth: false } },
-  { path: '/login', name: 'LoginView', component: LoginView, meta: { requiresAuth: false } },
+  {path: '/', name: 'MainView', component: MainView, meta: {requiresAuth: false}},
+  {path: '/login', name: 'LoginView', component: LoginView, meta: {requiresAuth: false}},
   {
     path: '/find-id',
     name: 'FindIdView',
     component: () => import(/* webpackChunkName: "findId", webpackPrefetch: true */ '@/views/user/FindIdView.vue'),
-    meta: { requiresAuth: false }
+    meta: {requiresAuth: false}
   },
   {
     path: '/change-password',
     name: 'ChangePasswordView',
     component: () => import(/* webpackChunkName: "changePassword", webpackPrefetch: true */ '@/views/user/ChangePasswordView.vue'),
-    meta: { requiresAuth: false }
+    meta: {requiresAuth: false}
   },
-  { path: '/signup', name: 'SignUpView', component: SignUpView, meta: { requiresAuth: false } },
-  { path: '/search', name: 'ArtSearchView', component: ArtSearchView, meta: { requiresAuth: false } },
+  {
+    path: '/signup',
+    name: 'SignUpView',
+    component: SignUpView,
+    meta: {requiresAuth: false}
+  },
+  {
+    path: '/search',
+    name: 'ArtSearchView',
+    component: ArtSearchView,
+    meta: {requiresAuth: false}
+  },
   {
     path: '/mypage',
     name: 'MyPageView',
     component: () => import(/* webpackChunkName: "userInfo", webpackPrefetch: true */ '@/views/user/MyPageView.vue'),
-    meta: { requiresAuth: true },
+    meta: {requiresAuth: true},
     children: [
       {
         path: '',
@@ -65,10 +75,19 @@ const routes = [
     path: '/art/register',
     name: 'ArtRegistrationView',
     component: () => import(/* webpackChunkName: "artRegistration", webpackPrefetch: true */ '@/views/art/ArtRegistrationView.vue'),
-    meta: { requiresAuth: true }
+    meta: {requiresAuth: true}
   },
-  { path: '/art', name: 'ArtDetailView', component: () => import('@/views/art/ArtDetailView.vue'), meta: { requiresAuth: false } },
-  { path: '/:catchAll(.*)', redirect: '/', meta: { requiresAuth: false } }
+  {
+    path: '/art',
+    name: 'ArtDetailView',
+    component: () => import('@/views/art/ArtDetailView.vue'),
+    meta: {requiresAuth: false}
+  },
+  {
+    path: '/:catchAll(.*)',
+    redirect: '/',
+    meta: {requiresAuth: false}
+  }
 ]
 
 const router = createRouter({
