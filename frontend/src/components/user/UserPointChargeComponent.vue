@@ -7,12 +7,15 @@
           <p>현재 포인트 | <span style="font-size: 15px; font-weight: bold;">{{ currentUser.totalPoint }}포인트</span></p>
         </div>
         <div class="text-center">
-          <p>충전 후 포인트 | <span style="font-size: 15px; font-weight: bold;">{{ resultPoint + importRequestData.amount }}포인트</span></p>
+          <p>충전 후 포인트 | <span style="font-size: 15px; font-weight: bold;">{{
+              resultPoint + importRequestData.amount
+            }}포인트</span></p>
         </div>
       </div>
 
       <div class="col-md-6 mx-auto p-md-2">
-        <input type="number" class="form-control form-control-lg p-2" v-model="importRequestData.amount" :disabled="isAutoIncrease"/>
+        <input type="number" class="form-control form-control-lg p-2" v-model="importRequestData.amount"
+               :disabled="isAutoIncrease"/>
       </div>
 
       <div class="col-md-10 offset-md-3 mx-auto">
@@ -37,7 +40,7 @@
 </template>
 
 <script>
-const { IMP } = window
+const {IMP} = window
 
 export default {
   name: 'UserPointChargeComponent',
@@ -89,8 +92,7 @@ export default {
   methods: {
     async fetchData() {
       try {
-        const memberId = this.$store.getters['memberStore/getMemberId']
-        const response = await this.axios.get(`/api/members/${memberId}`)
+        const response = await this.axios.get(API_PATH.MEMBER.GET_INFORMATION)
         this.currentUser = response.data
 
         this.resultPoint = this.currentUser.totalPoint
@@ -114,24 +116,23 @@ export default {
     requestPay() {
       IMP.init('imp36060541')
       IMP.request_pay(this.importRequestData, async (response) => {
-        if (response.success) {
-          try {
-            const chargeRequest = {
-              chargeAmount: this.importRequestData.amount
-            }
+          if (response.success) {
+            try {
+              const chargeRequest = {
+                chargeAmount: this.importRequestData.amount
+              }
 
-            const memberId = this.$store.getters['memberStore/getMemberId']
-            await this.axios.post(`/api/members/${memberId}/point/charge`, chargeRequest)
-            alert('충전이 완료되었습니다')
-            this.$router.push('/mypage/point/history')
-          } catch (err) {
-            alert(err.response.data.message)
+              await this.axios.post(API_PATH.MEMBER.CHARGE_POINT, chargeRequest)
+              alert('충전이 완료되었습니다')
+              this.$router.push('/mypage/point/history')
+            } catch (err) {
+              alert(err.response.data.message)
+            }
+          } else {
+            const msg = `충전에 실패하였습니다\n- ${response.error_msg}`
+            alert(msg)
           }
-        } else {
-          const msg = `충전에 실패하였습니다\n- ${response.error_msg}`
-          alert(msg)
         }
-      }
       )
     }
   }
