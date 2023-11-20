@@ -156,7 +156,7 @@ public class SecurityConfiguration {
     public WebSecurityCustomizer webSecurityCustomizer() {
         return web -> web.ignoring()
                 .requestMatchers(PathRequest.toStaticResources().atCommonLocations())
-                .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/actuator/**");
+                .requestMatchers("/swagger", "/swagger-ui/**", "/v3/api-docs/**", "/actuator/**");
     }
 
     @Bean
