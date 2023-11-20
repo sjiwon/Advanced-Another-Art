@@ -42,6 +42,8 @@
 </template>
 
 <script>
+import {API_PATH} from "@/apis/api";
+
 export default {
   name: 'LoginView',
 
@@ -74,7 +76,7 @@ export default {
       }
 
       try {
-        const response = await this.axios.post('/api/login', this.loginData)
+        const response = await this.axios.post(API_PATH.MEMBER.LOGIN, this.loginData)
         this.$store.commit('memberStore/loginSuccess', response.data)
         alert('로그인에 성공하였습니다')
         this.$router.push('/')
