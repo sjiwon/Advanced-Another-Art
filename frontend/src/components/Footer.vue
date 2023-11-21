@@ -3,7 +3,9 @@
     <div class="text-center p-3">
       <span class="text-black" :style="copyrightFontSize">© Copyright 2023. AnotherArt</span><br>
       <span class="text-black" :style="descriptionFontSize">
-        <a href="https://github.com/sjiwon/Advanced-Another-Art"><font-awesome-icon icon="fa-brands fa-github" :style="textColor"/> <b :style="textColor">Seo Ji Won</b></a> Refactored
+        <a href="https://github.com/sjiwon/Advanced-Another-Art"><font-awesome-icon icon="fa-brands fa-github"
+                                                                                    :style="textColor"/> <b
+          :style="textColor">Seo Ji Won</b></a> Refactored
       </span>
     </div>
   </footer>

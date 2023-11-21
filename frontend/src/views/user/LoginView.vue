@@ -9,13 +9,15 @@
         <div class="row g-3">
           <div class="col-md-6 offset-md-3">
             <div class="form-floating">
-              <input type="text" class="form-control" placeholder="ID" v-model="loginData.loginId" @keyup.enter="login()" autofocus>
+              <input type="text" class="form-control" placeholder="ID" v-model="loginData.loginId"
+                     @keyup.enter="login()" autofocus>
               <label for="loginId">ID</label>
             </div>
           </div>
           <div class="col-md-6 offset-md-3">
             <div class="form-floating">
-              <input type="password" class="form-control" placeholder="Password" v-model="loginData.loginPassword" @keyup.enter="login()">
+              <input type="password" class="form-control" placeholder="Password" v-model="loginData.loginPassword"
+                     @keyup.enter="login()">
               <label for="loginPassword">Password</label>
             </div>
           </div>
@@ -32,13 +34,16 @@
           <b-button @click="$router.push('/find-id')">아이디 찾기</b-button>
           <b-button @click="$router.push('/change-password')">비밀번호 재설정</b-button>
           <b-button @click="$router.push('/signup')">회원가입</b-button>
-        </div><br>
+        </div>
+        <br>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import {API_PATH} from "@/apis/api";
+
 export default {
   name: 'LoginView',
 
@@ -61,7 +66,7 @@ export default {
 
   methods: {
     validateLoginRequest() {
-      const { loginId, loginPassword } = this.loginData
+      const {loginId, loginPassword} = this.loginData
       return (loginId !== '') && (loginPassword !== '')
     },
     async login() {
@@ -71,8 +76,13 @@ export default {
       }
 
       try {
-        const response = await this.axios.post('/api/login', this.loginData)
-        this.$store.commit('memberStore/loginSuccess', response.data)
+        const response = await this.axios.post(API_PATH.MEMBER.LOGIN, this.loginData)
+        const loginResponse = {
+          'memberId': response.data.id,
+          'nickname': response.data.nickname,
+          'accessToken': response.headers.get('Authorization').split(' ')[1]
+        }
+        this.$store.commit('memberStore/loginSuccess', loginResponse)
         alert('로그인에 성공하였습니다')
         this.$router.push('/')
       } catch (err) {

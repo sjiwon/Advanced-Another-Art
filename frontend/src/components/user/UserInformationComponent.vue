@@ -1,4 +1,4 @@
-ㅜ<template>
+<template>
   <div>
     <h2 class="text-center mb-4 fw-bold text-black">내 정보</h2>
     <div :style="divCss">
@@ -39,7 +39,9 @@
 
     <div class="row" :style="divCss">
       <div class="col-12">
-        <p :style="textCss">주소 -> <span :style="infoCss">[{{ currentUser.address.postcode }}] {{ currentUser.address.defaultAddress }} {{ currentUser.address.detailAddress }}</span></p>
+        <p :style="textCss">주소 -> <span :style="infoCss">[{{
+            currentUser.address.postcode
+          }}] {{ currentUser.address.defaultAddress }} {{ currentUser.address.detailAddress }}</span></p>
       </div>
     </div>
 
@@ -86,17 +88,24 @@
           <div class="modal-body">
             <div class="row g-3">
               <div class="input-group rounded">
-                <input type="password" class="form-control" placeholder="변경할 비밀번호를 입력해주세요..." v-model="changePassword" @keyup="passwordTracker()"><br>
+                <input type="password" class="form-control" placeholder="변경할 비밀번호를 입력해주세요..." v-model="changePassword"
+                       @keyup="passwordTracker()"><br>
               </div>
-              <p v-show="passwordCheck.isNotMeetCondition" :style="passwordCheck.errorCss">{{ passwordCheck.errorMessage }}</p>
-              <p v-show="passwordCheck.isMeetCondition" :style="passwordCheck.successCss">{{ passwordCheck.successMessage }}</p>
+              <p v-show="passwordCheck.isNotMeetCondition" :style="passwordCheck.errorCss">{{
+                  passwordCheck.errorMessage
+                }}</p>
+              <p v-show="passwordCheck.isMeetCondition" :style="passwordCheck.successCss">
+                {{ passwordCheck.successMessage }}</p>
 
               <div class="input-group rounded">
-                <input type="password" class="form-control" placeholder="비밀번호 확인란을 입력해주세요..." :disabled="passwordVerification.isDisabled" required v-model="passwordVerificationToken"
+                <input type="password" class="form-control" placeholder="비밀번호 확인란을 입력해주세요..."
+                       :disabled="passwordVerification.isDisabled" required v-model="passwordVerificationToken"
                        @keyup="passwordVerificationTracker()"/><br>
               </div>
-              <p v-show="passwordVerification.isNotMatchExactly" :style="passwordVerification.errorCss">{{ passwordVerification.errorMessage }}</p>
-              <p v-show="passwordVerification.isMatchExactly" :style="passwordVerification.successCss">{{ passwordVerification.successMessage }}</p>
+              <p v-show="passwordVerification.isNotMatchExactly" :style="passwordVerification.errorCss">
+                {{ passwordVerification.errorMessage }}</p>
+              <p v-show="passwordVerification.isMatchExactly" :style="passwordVerification.successCss">
+                {{ passwordVerification.successMessage }}</p>
 
               <div class="text-center mt-4">
                 <b-button @click="changePasswordProcess()" variant="primary" data-bs-dismiss="modal">변경하기</b-button>
@@ -110,6 +119,8 @@
 </template>
 
 <script>
+import {API_PATH} from "@/apis/api";
+
 export default {
   name: 'UserInformationComponent',
   components: {},
@@ -197,8 +208,7 @@ export default {
   methods: {
     async fetchData() {
       try {
-        const memberId = this.$store.getters['memberStore/getMemberId']
-        const response = await this.axiosWithAccessToken.get(`/api/members/${memberId}`)
+        const response = await this.axios.get(API_PATH.MEMBER.GET_INFORMATION)
         this.currentUser = response.data
       } catch (err) {
         alert(err.response.data.message)
@@ -238,12 +248,7 @@ export default {
     },
     async changeNicknameProcess() {
       try {
-        const changeNicknameRequest = {
-          'value': this.changeNickname
-        }
-
-        const memberId = this.$store.getters['memberStore/getMemberId']
-        await this.axiosWithAccessToken.patch(`/api/members/${memberId}/nickname`, changeNicknameRequest)
+        await this.axios.patch(API_PATH.MEMBER.UPDATE_NICKNAME, {'value': this.changeNickname})
         alert('닉네임 변경이 완료되었습니다')
         this.$router.go()
       } catch (err) {
@@ -252,10 +257,7 @@ export default {
     },
     async changePasswordProcess() {
       try {
-        const changePasswordRequest = {
-          'changePassword': this.changePassword
-        }
-        await this.axiosWithAccessToken.patch('/api/member/password', changePasswordRequest)
+        await this.axios.patch(API_PATH.MEMBER.UPDATE_PASSWORD, {'value': this.changePassword})
         alert('비밀번호 변경이 완료되었습니다\n로그인 페이지로 이동합니다')
         this.$store.commit('memberStore/reset')
         this.$router.push('/login')

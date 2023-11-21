@@ -15,11 +15,15 @@
             <div class="mb-6">
               <h4><label for="artworkType" class="form-label">판매 유형</label></h4>
               <div class="btn-group" style="border: none;" role="group">
-                <b-button :class="{ selectedBackgroundColor: isAuctionSelected, notSelectedBackground: isGeneralSelected }" @click="changeArtType('auction')">
+                <b-button
+                  :class="{ selectedBackgroundColor: isAuctionSelected, notSelectedBackground: isGeneralSelected }"
+                  @click="changeArtType('auction')">
                   <font-awesome-icon icon="fa-solid fa-gavel" style="height: 20px; margin-top: 10px;"/>
                   <h5>경매 작품</h5>
                 </b-button>
-                <b-button :class="{ selectedBackgroundColor: isGeneralSelected, notSelectedBackground: isAuctionSelected }" @click="changeArtType('general')">
+                <b-button
+                  :class="{ selectedBackgroundColor: isGeneralSelected, notSelectedBackground: isAuctionSelected }"
+                  @click="changeArtType('general')">
                   <font-awesome-icon icon="fa-solid fa-won-sign" style="height: 20px; margin-top: 10px;"/>
                   <h5>일반 작품</h5>
                 </b-button>
@@ -32,10 +36,13 @@
               <div class="col-md-12 row">
                 <h4><label for="name" class="form-label">작품명</label></h4>
                 <div class="col-md-8 mb-2">
-                  <input type="text" class="form-control p-3" placeholder="작품명" v-model="registerData.name" @keyup="currentNameApiState()" required/>
+                  <input type="text" class="form-control p-3" placeholder="작품명" v-model="registerData.name"
+                         @keyup="currentNameApiState()" required/>
                 </div>
                 <div class="col-md-4">
-                  <b-button variant="outline-info" class="form-control p-3 mt-1" :disabled="duplicateApiCheck.nameDisabled" @click="nameDuplicateCheck()">중복 체크</b-button>
+                  <b-button variant="outline-info" class="form-control p-3 mt-1"
+                            :disabled="duplicateApiCheck.nameDisabled" @click="nameDuplicateCheck()">중복 체크
+                  </b-button>
                 </div>
               </div>
             </div>
@@ -53,7 +60,8 @@
               <div class="row">
                 <div class="col-md-12">
                   <div class="form-floating">
-                    <textarea class="form-control p-3" style="height: 150px;" v-model="registerData.description" required></textarea>
+                    <textarea class="form-control p-3" style="height: 150px;" v-model="registerData.description"
+                              required></textarea>
                   </div>
                 </div>
               </div>
@@ -74,7 +82,8 @@
                 <h4><label for="" class="form-label">경매 시작 날짜</label></h4>
                 <div class="row">
                   <div class="col-md-12">
-                    <input type="text" onfocus="(this.type='datetime-local')" class="form-control p-3" placeholder="경매 시작 날짜" v-model="registerData.startDate" required>
+                    <input type="text" onfocus="(this.type='datetime-local')" class="form-control p-3"
+                           placeholder="경매 시작 날짜" v-model="registerData.startDate" required>
                   </div>
                 </div>
               </div>
@@ -83,7 +92,8 @@
                 <h4><label for="" class="form-label">경매 종료 날짜</label></h4>
                 <div class="row">
                   <div class="col-md-12">
-                    <input type="text" onfocus="(this.type='datetime-local')" class="form-control p-3" placeholder="경매 종료 날짜" v-model="registerData.endDate" required>
+                    <input type="text" onfocus="(this.type='datetime-local')" class="form-control p-3"
+                           placeholder="경매 종료 날짜" v-model="registerData.endDate" required>
                   </div>
                 </div>
               </div>
@@ -95,7 +105,8 @@
                   <font-awesome-icon icon="fa-solid fa-sack-dollar" style="height: 30px; margin-left: 10px;"/>
                 </h4>
                 <div class="col-md-12">
-                  <input type="number" class="form-control form-control-lg p-3" min="1000" v-model="registerData.price" required/>
+                  <input type="number" class="form-control form-control-lg p-3" min="1000" v-model="registerData.price"
+                         required/>
                 </div>
               </div>
             </div>
@@ -139,7 +150,8 @@
           <hr class="my-4 col-md-12 offset-md-0 border border-1 border-dark" style="opacity: 0.1;">
         </div>
         <div class="row">
-          <b-button @click="artRegistrationProcess()" variant="primary" class="form-control-lg form-control">작품 등록</b-button>
+          <b-button @click="artRegistrationProcess()" variant="primary" class="form-control-lg form-control">작품 등록
+          </b-button>
         </div>
       </div>
     </div>
@@ -147,6 +159,8 @@
 </template>
 
 <script>
+import {API_PATH} from "@/apis/api";
+
 export default {
   name: 'ArtRegistrationView',
   components: {},
@@ -219,12 +233,14 @@ export default {
       }
 
       try {
-        await this.axiosWithAccessToken.get(`/api/art/check-duplicates?resource=name&value=${name}`)
+        await this.axios.post(API_PATH.ART.DUPLICATE_NAME, {'value': name})
         alert('사용 가능한 작품명입니다.')
         this.duplicateApiCheck.nameCheck = true
         this.duplicateApiCheck.nameDisabled = true
       } catch (err) {
         alert(err.response.data.message)
+        this.duplicateApiCheck.nameCheck = false
+        this.duplicateApiCheck.nameDisabled = false
       }
     },
 
@@ -310,7 +326,7 @@ export default {
         formData.append('auctionStartDate', this.registerData.startDate)
         formData.append('auctionEndDate', this.registerData.endDate)
 
-        await this.axiosWithAccessToken.post('/api/art', formData, {
+        await this.axios.post(API_PATH.ART.REGISTER, formData, {
           headers: {
             'Content-Type': 'multipart/form-data'
           }

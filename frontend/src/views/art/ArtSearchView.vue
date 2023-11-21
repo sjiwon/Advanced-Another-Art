@@ -2,7 +2,8 @@
   <div class="container">
     <!-- DropDown 메뉴 -->
     <div class="clearfix text-center">
-      <b-dropdown v-if="$store.getters['detailSearch/isCurrentRequestEqualsAuctionArt'] === true" size="lg" v-model:text="sortType.defaultSort" split variant="outline-secondary">
+      <b-dropdown v-if="$store.getters['detailSearch/isCurrentRequestEqualsAuctionArt'] === true" size="lg"
+                  v-model:text="sortType.defaultSort" split variant="outline-secondary">
         <b-dropdown-item @click="changeToAuctionDateDESC()">{{ sortType.auction.dateDESC }}</b-dropdown-item>
         <b-dropdown-item @click="changeToAuctionDateASC()">{{ sortType.auction.dateASC }}</b-dropdown-item>
         <b-dropdown-divider></b-dropdown-divider>
@@ -15,7 +16,8 @@
         <b-dropdown-item @click="changeToAuctionLikeDESC()">{{ sortType.auction.likeDESC }}</b-dropdown-item>
         <b-dropdown-item @click="changeToAuctionLikeASC()">{{ sortType.auction.likeASC }}</b-dropdown-item>
       </b-dropdown>
-      <b-dropdown v-if="$store.getters['detailSearch/isCurrentRequestEqualsGeneralArt'] === true" size="lg" v-model:text="sortType.defaultSort" split variant="outline-secondary">
+      <b-dropdown v-if="$store.getters['detailSearch/isCurrentRequestEqualsGeneralArt'] === true" size="lg"
+                  v-model:text="sortType.defaultSort" split variant="outline-secondary">
         <b-dropdown-item @click="changeToGeneralDateDESC()">{{ sortType.general.dateDESC }}</b-dropdown-item>
         <b-dropdown-item @click="changeToGeneralDateASC()">{{ sortType.general.dateASC }}</b-dropdown-item>
         <b-dropdown-divider></b-dropdown-divider>
@@ -32,8 +34,10 @@
       <div class="container">
         <div class="row row-cols-sm-2 row-cols-md-4 g-4">
           <div v-for="(art, index) in fetchDataList" :key="index">
-            <AuctionArtSearchComponent v-if="$store.getters['detailSearch/isCurrentRequestEqualsAuctionArt'] === true" :auction-art="art"/>
-            <GeneralArtSearchComponent v-if="$store.getters['detailSearch/isCurrentRequestEqualsGeneralArt'] === true" :general-art="art"/>
+            <AuctionArtSearchComponent v-if="$store.getters['detailSearch/isCurrentRequestEqualsAuctionArt'] === true"
+                                       :auction-art="art"/>
+            <GeneralArtSearchComponent v-if="$store.getters['detailSearch/isCurrentRequestEqualsGeneralArt'] === true"
+                                       :general-art="art"/>
           </div>
         </div>
       </div>
@@ -41,17 +45,29 @@
 
     <!-- Pagination -->
     <ul class="pagination justify-content-center pagination-circle">
-      <li v-if="pagination.prev === true" class="page-item">
-        <b-button v-if="$store.getters['detailSearch/isCurrentRequestEqualsKeyword']" class="page-link" @click="moveToPreviousPageWithKeywordSearch()">Previous</b-button>
-        <b-button v-if="$store.getters['detailSearch/isCurrentRequestEqualsHashtag']" class="page-link" @click="moveToPreviousPageWithHashtagSearch()">Previous</b-button>
+      <li v-if="pagination.prevExists === true" class="page-item">
+        <b-button v-if="$store.getters['detailSearch/isCurrentRequestEqualsKeyword']" class="page-link"
+                  @click="moveToPreviousPageWithKeywordSearch()">Previous
+        </b-button>
+        <b-button v-if="$store.getters['detailSearch/isCurrentRequestEqualsHashtag']" class="page-link"
+                  @click="moveToPreviousPageWithHashtagSearch()">Previous
+        </b-button>
       </li>
       <li v-for="(index) in range" :key="index" :class="checkActive(pagination.currentPage, index)" class="page-item">
-        <b-button v-if="$store.getters['detailSearch/isCurrentRequestEqualsKeyword']" class="page-link" @click="moveToIndexPageWithKeywordSearch(index)">{{ index }}</b-button>
-        <b-button v-if="$store.getters['detailSearch/isCurrentRequestEqualsHashtag']" class="page-link" @click="moveToIndexPageWithHashtagSearch(index)">{{ index }}</b-button>
+        <b-button v-if="$store.getters['detailSearch/isCurrentRequestEqualsKeyword']" class="page-link"
+                  @click="moveToIndexPageWithKeywordSearch(index)">{{ index }}
+        </b-button>
+        <b-button v-if="$store.getters['detailSearch/isCurrentRequestEqualsHashtag']" class="page-link"
+                  @click="moveToIndexPageWithHashtagSearch(index)">{{ index }}
+        </b-button>
       </li>
-      <li v-if="pagination.next === true" class="page-item">
-        <b-button v-if="$store.getters['detailSearch/isCurrentRequestEqualsKeyword']" class="page-link" @click="moveToNextPageWithKeywordSearch()">Next</b-button>
-        <b-button v-if="$store.getters['detailSearch/isCurrentRequestEqualsHashtag']" class="page-link" @click="moveToNextPageWithHashtagSearch()">Next</b-button>
+      <li v-if="pagination.nextExists === true" class="page-item">
+        <b-button v-if="$store.getters['detailSearch/isCurrentRequestEqualsKeyword']" class="page-link"
+                  @click="moveToNextPageWithKeywordSearch()">Next
+        </b-button>
+        <b-button v-if="$store.getters['detailSearch/isCurrentRequestEqualsHashtag']" class="page-link"
+                  @click="moveToNextPageWithHashtagSearch()">Next
+        </b-button>
       </li>
     </ul>
   </div>
@@ -119,20 +135,18 @@ export default {
     async fetchData() {
       try {
         let response
-        if (this.$store.getters['detailSearch/isCurrentRequestEqualsKeyword']) {
-          response = await this.axios.get(
-            '/api/arts/keyword',
-            {
-              params: this.$store.getters['detailSearch/getKeywordSearchCriteria']
-            }
-          )
-        } else if (this.$store.getters['detailSearch/isCurrentRequestEqualsHashtag']) {
-          response = await this.axios.get(
-            '/api/arts/hashtag',
-            {
-              params: this.$store.getters['detailSearch/getHashtagSearchCriteria']
-            }
-          )
+        if (this.$store.getters['detailSearch/isCurrentRequestEqualsAuctionArt']) {
+          if (this.$store.getters['detailSearch/isCurrentRequestEqualsKeyword']) {
+            response = await this.axios.get(API_PATH.ART.GET_AUCTION_ARTS_BY_KEYWORD, {params: this.$store.getters['detailSearch/getKeywordSearchCriteria']});
+          } else {
+            response = await this.axios.get(API_PATH.ART.GET_AUCTION_ARTS_BY_HASHTAG, {params: this.$store.getters['detailSearch/getHashtagSearchCriteria']});
+          }
+        } else {
+          if (this.$store.getters['detailSearch/isCurrentRequestEqualsKeyword']) {
+            response = await this.axios.get(API_PATH.ART.GET_GENERAL_ARTS_BY_KEYWORD, {params: this.$store.getters['detailSearch/getKeywordSearchCriteria']});
+          } else {
+            response = await this.axios.get(API_PATH.ART.GET_GENERAL_ARTS_BY_HASHTAG, {params: this.$store.getters['detailSearch/getHashtagSearchCriteria']});
+          }
         }
 
         this.fetchDataList = [...response.data.result]

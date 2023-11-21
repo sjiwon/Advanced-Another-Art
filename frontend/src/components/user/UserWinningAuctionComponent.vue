@@ -15,6 +15,7 @@
 
 <script>
 import SimpleWinningAuctionArtComponent from '@/components/art/SimpleWinningAuctionArtComponent.vue'
+import {API_PATH} from "@/apis/api";
 
 export default {
   name: 'UserWinningAuctionComponent',
@@ -34,8 +35,7 @@ export default {
   methods: {
     async fetchData() {
       try {
-        const memberId = this.$store.getters['memberStore/getMemberId']
-        const response = await this.axiosWithAccessToken.get(`/api/members/${memberId}/winning-auctions`)
+        const response = await this.axios.get(API_PATH.MEMBER.GET_WINNING_AUCTION_ARTS)
         this.fetchDataList = response.data.result
       } catch (err) {
         alert(err.response.data.message)
