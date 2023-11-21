@@ -1,5 +1,6 @@
 package com.sjiwon.anotherart.token.presentation;
 
+import com.sjiwon.anotherart.global.resolver.ExtractPayload;
 import com.sjiwon.anotherart.token.application.usecase.ReissueTokenUseCase;
 import com.sjiwon.anotherart.token.application.usecase.command.ReissueTokenCommand;
 import com.sjiwon.anotherart.token.domain.model.AuthToken;
@@ -27,10 +28,11 @@ public class TokenReissueApiController {
     @Operation(summary = "RefreshToken을 통한 토큰 재발급 EndPoint")
     @PostMapping
     public ResponseEntity<Void> reissueTokens(
+            @ExtractPayload final Long memberId,
             @CookieValue(REFRESH_TOKEN_COOKIE) final String refreshToken,
             final HttpServletResponse response
     ) {
-        final AuthToken authToken = reissueTokenUseCase.reissueTokens(new ReissueTokenCommand(refreshToken));
+        final AuthToken authToken = reissueTokenUseCase.reissueTokens(new ReissueTokenCommand(memberId, refreshToken));
         tokenResponseWriter.applyAccessToken(response, authToken.accessToken());
         tokenResponseWriter.applyRefreshToken(response, authToken.refreshToken());
         return ResponseEntity.noContent().build();

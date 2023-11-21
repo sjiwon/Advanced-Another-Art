@@ -5,21 +5,17 @@ import com.sjiwon.anotherart.token.application.usecase.command.ReissueTokenComma
 import com.sjiwon.anotherart.token.domain.model.AuthToken;
 import com.sjiwon.anotherart.token.domain.service.TokenIssuer;
 import com.sjiwon.anotherart.token.exception.TokenErrorCode;
-import com.sjiwon.anotherart.token.utils.TokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
 public class ReissueTokenUseCase {
-    private final TokenProvider tokenProvider;
     private final TokenIssuer tokenIssuer;
 
     public AuthToken reissueTokens(final ReissueTokenCommand command) {
-        final Long memberId = tokenProvider.getId(command.refreshToken());
-        validateMemberToken(memberId, command.refreshToken());
-
-        return tokenIssuer.reissueAuthorityToken(memberId);
+        validateMemberToken(command.memberId(), command.refreshToken());
+        return tokenIssuer.reissueAuthorityToken(command.memberId());
     }
 
     private void validateMemberToken(final Long memberId, final String refreshToken) {

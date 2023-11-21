@@ -1,14 +1,12 @@
 package com.sjiwon.anotherart.token.application.usecase;
 
 import com.sjiwon.anotherart.common.UseCaseTest;
-import com.sjiwon.anotherart.common.mock.stub.StubTokenProvider;
 import com.sjiwon.anotherart.global.exception.AnotherArtException;
 import com.sjiwon.anotherart.member.domain.model.Member;
 import com.sjiwon.anotherart.token.application.usecase.command.ReissueTokenCommand;
 import com.sjiwon.anotherart.token.domain.model.AuthToken;
 import com.sjiwon.anotherart.token.domain.service.TokenIssuer;
 import com.sjiwon.anotherart.token.exception.TokenErrorCode;
-import com.sjiwon.anotherart.token.utils.TokenProvider;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -23,12 +21,11 @@ import static org.mockito.Mockito.mock;
 
 @DisplayName("Token -> ReissueTokenUseCase 테스트")
 class ReissueTokenUseCaseTest extends UseCaseTest {
-    private final TokenProvider tokenProvider = new StubTokenProvider();
     private final TokenIssuer tokenIssuer = mock(TokenIssuer.class);
-    private final ReissueTokenUseCase sut = new ReissueTokenUseCase(tokenProvider, tokenIssuer);
+    private final ReissueTokenUseCase sut = new ReissueTokenUseCase(tokenIssuer);
 
     private final Member member = MEMBER_A.toMember().apply(1L);
-    private final ReissueTokenCommand command = new ReissueTokenCommand(REFRESH_TOKEN);
+    private final ReissueTokenCommand command = new ReissueTokenCommand(member.getId(), REFRESH_TOKEN);
 
     @Test
     @DisplayName("RefreshToken이 유효하지 않으면 토큰 재발급에 실패한다")
