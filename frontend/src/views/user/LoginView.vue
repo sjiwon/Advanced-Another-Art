@@ -80,7 +80,7 @@ export default {
         const loginResponse = {
           'memberId': response.data.id,
           'nickname': response.data.nickname,
-          'accessToken': response.headers.get('Authorization')
+          'accessToken': response.headers.get('Authorization').split(' ')[1]
         }
         this.$store.commit('memberStore/loginSuccess', loginResponse)
         alert('로그인에 성공하였습니다')
