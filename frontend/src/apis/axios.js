@@ -43,12 +43,15 @@ axios.interceptors.response.use(
         })
         .catch(() => {
           alert('권한이 없습니다.\n로그인 페이지로 이동합니다.')
+          this.$store.commit('memberStore/reset')
           window.location.href = '/login'
         })
     } else if (error.response.data.errorCode === 'AUTH_003' || error.response.data.errorCode === 'AUTH_004') {
       alert('권한이 없습니다.\n로그인 페이지로 이동합니다.')
+      this.$store.commit('memberStore/reset')
       window.location.href = '/login'
     } else {
+      this.$store.commit('memberStore/reset')
       return Promise.reject(error)
     }
   }
