@@ -26,21 +26,6 @@ axios.interceptors.request.use(
   }
 )
 
-axiosWithRefreshToken.interceptors.request.use(
-  config => {
-    const refreshToken = refreshTokenProvider.get()
-
-    if (config.headers && refreshToken) {
-      config.headers.Authorization = `Bearer ${refreshToken}`
-    }
-
-    return config
-  },
-  (error) => {
-    return Promise.reject(error)
-  }
-)
-
 // Response Interceptor
 axios.interceptors.response.use(
   response => {
