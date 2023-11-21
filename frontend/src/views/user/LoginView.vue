@@ -77,7 +77,12 @@ export default {
 
       try {
         const response = await this.axios.post(API_PATH.MEMBER.LOGIN, this.loginData)
-        this.$store.commit('memberStore/loginSuccess', response.data)
+        const loginResponse = {
+          'memberId': response.data.id,
+          'nickname': response.data.nickname,
+          'accessToken': response.headers.get('Authorization')
+        }
+        this.$store.commit('memberStore/loginSuccess', loginResponse)
         alert('로그인에 성공하였습니다')
         this.$router.push('/')
       } catch (err) {

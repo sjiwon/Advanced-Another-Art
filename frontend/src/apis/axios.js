@@ -1,4 +1,5 @@
 import Axios from 'axios'
+import {accessTokenProvider} from '@/utils/token'
 
 const axios = Axios.create({
   baseURL: process.env.SERVER_API_URL,
@@ -8,6 +9,22 @@ const axios = Axios.create({
   },
   withCredentials: true
 })
+
+// Request Interceptor
+axios.interceptors.request.use(
+  config => {
+    const accessToken = accessTokenProvider.get()
+
+    if (config.headers && accessToken) {
+      config.headers.Authorization = `Bearer ${accessToken}`
+    }
+
+    return config
+  },
+  (error) => {
+    return Promise.reject(error)
+  }
+)
 
 // Response Interceptor
 axios.interceptors.response.use(
@@ -21,6 +38,7 @@ axios.interceptors.response.use(
       axios // 토큰 재발급
         .post('/api/token/reissue')
         .then(response => {
+          accessTokenProvider.set(response.headers.get('Authorization'))
           return axios.request(originalConfig)
         })
         .catch(() => {
