@@ -14,10 +14,13 @@
           <div class="col-md-6 offset-md-3">
             <div class="row">
               <div class="col-md-8 mb-2">
-                <input type="text" class="form-control p-3" placeholder="닉네임" required v-model="checkInputData.nickname" @keyup="currentNicknameApiState()"/>
+                <input type="text" class="form-control p-3" placeholder="닉네임" required v-model="checkInputData.nickname"
+                       @keyup="currentNicknameApiState()"/>
               </div>
               <div class="col-md-4">
-                <b-button variant="outline-info" class="form-control p-3 mt-1" :disabled="duplicateApiCheck.nickNameDisabled" @click="nickNameDuplicateCheck()">중복 체크</b-button>
+                <b-button variant="outline-info" class="form-control p-3 mt-1"
+                          :disabled="duplicateApiCheck.nickNameDisabled" @click="nickNameDuplicateCheck()">중복 체크
+                </b-button>
               </div>
             </div>
           </div>
@@ -25,10 +28,13 @@
           <div class="col-md-6 offset-md-3">
             <div class="row">
               <div class="col-md-8 mb-2">
-                <input type="text" class="form-control p-3" placeholder="전화번호" required min="10" max="11" v-model="checkInputData.phone" @keyup="currentPhoneNumberApiState()"/>
+                <input type="text" class="form-control p-3" placeholder="전화번호" required min="12" max="13"
+                       v-model="checkInputData.phone" @keyup="currentPhoneNumberApiState()"/>
               </div>
               <div class="col-md-4">
-                <b-button variant="outline-info" class="form-control p-3 mt-1" :disabled="duplicateApiCheck.phoneDisabled" @click="phoneDuplicateCheck()">중복 체크</b-button>
+                <b-button variant="outline-info" class="form-control p-3 mt-1"
+                          :disabled="duplicateApiCheck.phoneDisabled" @click="phoneDuplicateCheck()">중복 체크
+                </b-button>
               </div>
             </div>
           </div>
@@ -42,25 +48,36 @@
           <div class="col-md-6 offset-md-3">
             <div class="row">
               <div class="col-md-8 mb-2">
-                <input type="text" class="form-control p-3" placeholder="아이디" required v-model="checkInputData.loginId" @keyup="currentLoginIdApiState()"/>
+                <input type="text" class="form-control p-3" placeholder="아이디" required v-model="checkInputData.loginId"
+                       @keyup="currentLoginIdApiState()"/>
               </div>
               <div class="col-md-4">
-                <b-button variant="outline-info" class="form-control p-3 mt-1" :disabled="duplicateApiCheck.loginIdDisabled" @click="loginIdDuplicateCheck()">중복 체크</b-button>
+                <b-button variant="outline-info" class="form-control p-3 mt-1"
+                          :disabled="duplicateApiCheck.loginIdDisabled" @click="loginIdDuplicateCheck()">중복 체크
+                </b-button>
               </div>
             </div>
           </div>
 
           <div class="col-md-6 offset-md-3">
-            <input type="password" class="form-control p-3" placeholder="비밀번호" required v-model="checkInputData.password" @keyup="passwordTracker()"/>
-            <p v-show="passwordCheck.isNotMeetCondition" :style="passwordCheck.errorCss">{{ passwordCheck.errorMessage }}</p>
-            <p v-show="passwordCheck.isMeetCondition" :style="passwordCheck.successCss">{{ passwordCheck.successMessage }}</p>
+            <input type="password" class="form-control p-3" placeholder="비밀번호" required
+                   v-model="checkInputData.password" @keyup="passwordTracker()"/>
+            <p v-show="passwordCheck.isNotMeetCondition" :style="passwordCheck.errorCss">{{
+                passwordCheck.errorMessage
+              }}</p>
+            <p v-show="passwordCheck.isMeetCondition" :style="passwordCheck.successCss">{{
+                passwordCheck.successMessage
+              }}</p>
           </div>
 
           <div class="col-md-6 offset-md-3">
-            <input type="password" class="form-control p-3" placeholder="비밀번호 확인" :disabled="passwordVerification.isDisabled" required v-model="passwordVerificationToken"
+            <input type="password" class="form-control p-3" placeholder="비밀번호 확인"
+                   :disabled="passwordVerification.isDisabled" required v-model="passwordVerificationToken"
                    @keyup="passwordVerificationTracker()"/>
-            <p v-show="passwordVerification.isNotMatchExactly" :style="passwordVerification.errorCss">{{ passwordVerification.errorMessage }}</p>
-            <p v-show="passwordVerification.isMatchExactly" :style="passwordVerification.successCss">{{ passwordVerification.successMessage }}</p>
+            <p v-show="passwordVerification.isNotMatchExactly" :style="passwordVerification.errorCss">
+              {{ passwordVerification.errorMessage }}</p>
+            <p v-show="passwordVerification.isMatchExactly" :style="passwordVerification.successCss">
+              {{ passwordVerification.successMessage }}</p>
           </div>
         </div>
 
@@ -72,7 +89,8 @@
           <div class="col-md-6 offset-md-3">
             <div class="row">
               <div class="col-md-8 mb-2">
-                <input type="search" class="form-control p-3" placeholder="재학중인 학교명" required disabled :style="css.backGroundWhite" v-model="currentSelectSchool"/>
+                <input type="search" class="form-control p-3" placeholder="재학중인 학교명" required disabled
+                       :style="css.backGroundWhite" v-model="currentSelectSchool"/>
               </div>
               <div class="col-md-4">
                 <b-button variant="secondary" class="form-control p-3 mt-1" v-b-modal.schoolModal>학교 찾기</b-button>
@@ -80,7 +98,8 @@
             </div>
           </div>
           <!-- 학교 찾기 모달창 -->
-          <div class="modal fade" id="schoolModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+          <div class="modal fade" id="schoolModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+               aria-labelledby="staticBackdropLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
               <div class="modal-content h-598">
                 <div class="modal-header">
@@ -89,13 +108,15 @@
                 </div>
                 <div class="modal-body">
                   <div class="input-group rounded text-center">
-                    <input type="search" class="form-control rounded" placeholder="학교 이름을 입력하세요" autofocus @keyup.enter="schoolSearch(aboutSchool.univSearchKeyword)"
+                    <input type="search" class="form-control rounded" placeholder="학교 이름을 입력하세요" autofocus
+                           @keyup.enter="schoolSearch(aboutSchool.univSearchKeyword)"
                            v-model="aboutSchool.univSearchKeyword"/>
                     <b-button variant="primary" @click="schoolSearch(aboutSchool.univSearchKeyword)">검색</b-button>
                   </div>
                   <div v-for="(univ, index) in aboutSchool.univSearchResult" :key="index" class="mt-3">
                     <b-button class="btn btn-outline-dark pt-3" style="width: 450px; background-color: white"
-                              @click="selectSchool(univ.schoolName, univ.campusName, univ.region)" data-bs-dismiss="modal" aria-label="Close">
+                              @click="selectSchool(univ.schoolName, univ.campusName, univ.region)"
+                              data-bs-dismiss="modal" aria-label="Close">
                       <h5>{{ univ.schoolName }} <small>({{ univ.campusName }} - {{ univ.region }})</small></h5>
                       <span>{{ univ.adres }}</span>
                     </b-button>
@@ -108,12 +129,17 @@
           <div class="col-md-6 offset-md-3">
             <div class="row">
               <div class="col-md-8 mb-2">
-                <input type="text" class="form-control p-3" placeholder="이메일" required v-model="checkInputData.email" @keyup="emailTracker()"/>
+                <input type="text" class="form-control p-3" placeholder="이메일" required v-model="checkInputData.email"
+                       @keyup="emailTracker()"/>
                 <p v-show="emailCheck.isNotMeetCondition" :style="emailCheck.errorCss">{{ emailCheck.errorMessage }}</p>
-                <p v-show="emailCheck.isMeetCondition" :style="emailCheck.successCss">{{ emailCheck.successMessage }}</p>
+                <p v-show="emailCheck.isMeetCondition" :style="emailCheck.successCss">{{
+                    emailCheck.successMessage
+                  }}</p>
               </div>
               <div class="col-md-4">
-                <b-button variant="outline-info" class="form-control p-3 mt-1" :disabled="duplicateApiCheck.emailDisabled" @click="emailDuplicateCheck()">중복 체크</b-button>
+                <b-button variant="outline-info" class="form-control p-3 mt-1"
+                          :disabled="duplicateApiCheck.emailDisabled" @click="emailDuplicateCheck()">중복 체크
+                </b-button>
               </div>
             </div>
           </div>
@@ -127,15 +153,19 @@
           <div class="col-md-6 offset-md-3">
             <div class="row">
               <div class="col-md-8 mb-2">
-                <input type="text" class="form-control p-3" placeholder="우편 번호" required disabled :style="css.backGroundWhite" v-model="checkInputData.postcode"/>
+                <input type="text" class="form-control p-3" placeholder="우편 번호" required disabled
+                       :style="css.backGroundWhite" v-model="checkInputData.postcode"/>
               </div>
               <div class="col-md-4 mb-2">
                 <b-button @click="searchAddress()" variant="secondary" class="form-control p-3 mt-1">주소 검색</b-button>
               </div>
             </div>
-            <input type="text" class="form-control p-3" placeholder="주소" required disabled :style="css.addressMarginWithBackgroundWhite" v-model="checkInputData.defaultAddress"/>
-            <input type="text" class="form-control p-3" placeholder="상세 주소" required :style="css.addressMarginWithBackgroundWhite" v-model="checkInputData.detailAddress"/>
-            <input type="text" class="form-control p-3" placeholder="참고 항목" :style="css.addressMarginWithBackgroundWhite" v-model="checkInputData.extraAddress"/>
+            <input type="text" class="form-control p-3" placeholder="주소" required disabled
+                   :style="css.addressMarginWithBackgroundWhite" v-model="checkInputData.defaultAddress"/>
+            <input type="text" class="form-control p-3" placeholder="상세 주소" required
+                   :style="css.addressMarginWithBackgroundWhite" v-model="checkInputData.detailAddress"/>
+            <input type="text" class="form-control p-3" placeholder="참고 항목"
+                   :style="css.addressMarginWithBackgroundWhite" v-model="checkInputData.extraAddress"/>
           </div>
         </div>
 
@@ -152,6 +182,8 @@
 </template>
 
 <script>
+import {API_PATH} from "@/apis/api";
+
 export default {
   name: 'SignUpView',
   components: {},
@@ -271,7 +303,7 @@ export default {
       }
 
       try {
-        await this.axios.get(`/api/member/check-duplicates?resource=nickname&value=${nickname}`)
+        await this.axios.post(API_PATH.MEMBER.DUPLICATE_NICKNAME, {'value': nickname})
         alert('사용 가능한 닉네임입니다')
         this.duplicateApiCheck.nickNameDisabled = true
         this.duplicateApiCheck.nicknameCheck = true
@@ -291,7 +323,7 @@ export default {
       }
 
       try {
-        await this.axios.get(`/api/member/check-duplicates?resource=phone&value=${phone}`)
+        await this.axios.post(API_PATH.MEMBER.DUPLICATE_PHONE, {'value': phone})
         alert('사용 가능한 전화번호입니다')
         this.duplicateApiCheck.phoneDisabled = true
         this.duplicateApiCheck.phoneCheck = true
@@ -311,7 +343,7 @@ export default {
       }
 
       try {
-        await this.axios.get(`/api/member/check-duplicates?resource=loginId&value=${loginId}`)
+        await this.axios.post(API_PATH.MEMBER.DUPLICATE_LOGIN_ID, {'value': loginId})
         alert('사용 가능한 아이디입니다')
         this.duplicateApiCheck.loginIdDisabled = true
         this.duplicateApiCheck.loginIdCheck = true
@@ -327,7 +359,7 @@ export default {
       }
 
       try {
-        await this.axios.get(`/api/member/check-duplicates?resource=email&value=${email}`)
+        await this.axios.post(API_PATH.MEMBER.DUPLICATE_EMAIL, {'value': email})
         alert('사용 가능한 이메일입니다')
         this.duplicateApiCheck.emailDisabled = true
         this.duplicateApiCheck.emailCheck = true
@@ -509,7 +541,7 @@ export default {
           defaultAddress: this.checkInputData.defaultAddress,
           detailAddress: this.checkInputData.detailAddress + ' ' + this.checkInputData.extraAddress
         }
-        await this.axios.post('/api/member', signUpData)
+        await this.axios.post(API_PATH.MEMBER.SIGN_UP, signUpData)
         alert('회원가입이 완료되었습니다')
         this.$router.push('/')
       } catch (err) {

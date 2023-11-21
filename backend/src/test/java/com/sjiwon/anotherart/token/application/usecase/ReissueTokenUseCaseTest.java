@@ -31,7 +31,7 @@ class ReissueTokenUseCaseTest extends UseCaseTest {
     @DisplayName("RefreshToken이 유효하지 않으면 토큰 재발급에 실패한다")
     void throwExceptionByInvalidRefreshToken() {
         // given
-        given(tokenIssuer.isMemberRefreshToken(command.memberId(), command.refreshToken())).willReturn(false);
+        given(tokenIssuer.isMemberRefreshToken(member.getId(), command.refreshToken())).willReturn(false);
 
         // when - then
         assertThatThrownBy(() -> sut.reissueTokens(command))
@@ -43,10 +43,10 @@ class ReissueTokenUseCaseTest extends UseCaseTest {
     @DisplayName("유효성이 확인된 RefreshToken을 통해서 새로운 AccessToken과 RefreshToken을 재발급받는다")
     void reissueSuccess() {
         // given
-        given(tokenIssuer.isMemberRefreshToken(command.memberId(), command.refreshToken())).willReturn(true);
+        given(tokenIssuer.isMemberRefreshToken(member.getId(), command.refreshToken())).willReturn(true);
 
         final AuthToken authToken = new AuthToken(ACCESS_TOKEN, REFRESH_TOKEN);
-        given(tokenIssuer.reissueAuthorityToken(command.memberId())).willReturn(authToken);
+        given(tokenIssuer.reissueAuthorityToken(member.getId())).willReturn(authToken);
 
         // when
         final AuthToken result = sut.reissueTokens(command);

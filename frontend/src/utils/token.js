@@ -9,13 +9,4 @@ const accessTokenProvider = {
   }
 }
 
-const refreshTokenProvider = {
-  get: () => {
-    return store.getters['memberStore/getRefreshToken'] ?? ''
-  },
-  set: (refreshToken) => {
-    store.commit('memberStore/updateRefreshToken', refreshToken)
-  }
-}
-
-export { accessTokenProvider, refreshTokenProvider }
+export {accessTokenProvider}

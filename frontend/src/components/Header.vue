@@ -4,10 +4,12 @@
       <div class="container">
         <div class="d-flex flex-wrap align-items-center justify-content-center py-md-3" :style="css.barStyle">
           <div class="nav col-12 col-lg-auto me-lg-auto justify-content-center">
-            <b-link @click="moveToInitPage()" class="d-flex align-items-center mb-2 mb-lg-0 text-dark text-decoration-none">
+            <b-link @click="moveToInitPage()"
+                    class="d-flex align-items-center mb-2 mb-lg-0 text-dark text-decoration-none">
               <b-img rounded="circle" :src="css.headerImage" :style="css.headerImageStyle" alt=""></b-img>
             </b-link>
-            <b-link @click="moveToInitPage()" :style="css.titleLinkStyle"><span :style="css.titleStyle">Another Art</span></b-link>
+            <b-link @click="moveToInitPage()" :style="css.titleLinkStyle"><span
+              :style="css.titleStyle">Another Art</span></b-link>
           </div>
 
           <div class="nav col-12 col-lg-auto me-lg-auto justify-content-center">
@@ -59,14 +61,17 @@
               <p class="text-center"><b>{{ getMemberNickname }}님</b> 환영합니다</p>
               <b-dropdown variant="primary" right split text="Menu">
                 <b-dropdown-item @click="$router.push('/art/register')">
-                  <font-awesome-icon icon="fa-solid fa-paintbrush" style="margin-right: 5px;"/> 작품 등록
+                  <font-awesome-icon icon="fa-solid fa-paintbrush" style="margin-right: 5px;"/>
+                  작품 등록
                 </b-dropdown-item>
                 <b-dropdown-item @click="$router.push('/mypage')">
-                  <font-awesome-icon icon="fa-solid fa-circle-user" style="margin-right: 5px;"/> 마이 페이지
+                  <font-awesome-icon icon="fa-solid fa-circle-user" style="margin-right: 5px;"/>
+                  마이 페이지
                 </b-dropdown-item>
                 <b-dropdown-divider></b-dropdown-divider>
                 <b-dropdown-item @click="logout()">
-                  <font-awesome-icon icon="fa-solid fa-right-from-bracket" style="margin-right: 5px;"/> 로그아웃
+                  <font-awesome-icon icon="fa-solid fa-right-from-bracket" style="margin-right: 5px;"/>
+                  로그아웃
                 </b-dropdown-item>
               </b-dropdown>
             </div>
@@ -79,6 +84,7 @@
 
 <script>
 import * as tmImage from '@teachablemachine/image'
+import {API_PATH} from "@/apis/api";
 
 // the link to your model provided by Teachable Machine export panel
 const URL = 'https://teachablemachine.withgoogle.com/models/cWFTIou2L/'
@@ -176,7 +182,7 @@ export default {
     },
     async logout() {
       try {
-        await this.axiosWithAccessToken.post('/api/logout')
+        await this.axios.post(API_PATH.MEMBER.LOGOUT)
         alert('로그아웃이 완료되었습니다')
         this.$store.commit('memberStore/reset')
         this.$router.push('/')

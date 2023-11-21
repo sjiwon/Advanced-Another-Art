@@ -1,37 +1,37 @@
 <template>
   <div class="col">
-    <div v-if="generalArt.art.status === '판매중'">
+    <div v-if="generalArt.artStatus === '판매중'">
       <div class="card border-black-50">
         <div>
           <a>
-            <img :src="`${generalArt.art.storageName}`"
-                 @click="goToDetailPage(generalArt.art.id, generalArt.art.name)"
+            <img :src="`${generalArt.artStorageUrl}`"
+                 @click="goToDetailPage(generalArt.artId, generalArt.artName)"
                  alt="" style="width: 100%; height: 200px; margin-bottom: 10px; cursor: pointer;">
           </a>
         </div>
         <div class="card-header">
-          <h3>{{ generalArt.art.name }}</h3>
+          <h3>{{ generalArt.artName }}</h3>
           <h6>
-            {{ generalArt.owner.nickname }}
-            <small style="font-size: 12px;">({{ generalArt.owner.school }})</small>
+            {{ generalArt.ownerNickname }}
+            <small style="font-size: 12px;">({{ generalArt.ownerSchool }})</small>
           </h6>
         </div>
         <div class="card-body">
           <p>
             <b>가격</b><br>
-            <small>{{ generalArt.art.price }}원</small>
+            <small>{{ generalArt.artPrice }}원</small>
           </p>
           <p>
             <b>작품 찜 횟수</b><br>
-            <small>{{ generalArt.art.likeMembers.length }}회</small>
+            <small>{{ generalArt.likeMembers.length }}회</small>
           </p>
           <p>
             <b>작품 등록 날짜</b><br>
-            <small>{{ translateLocalDateTime(generalArt.art.registrationDate) }}</small>
+            <small>{{ translateLocalDateTime(generalArt.artRegistrationDate) }}</small>
           </p>
         </div>
         <div class="card-footer">
-          <span class="product_tag" v-for="(tag, index) in generalArt.art.hashtags" :key="index">#{{ tag }}</span>
+          <span class="product_tag" v-for="(tag, index) in generalArt.hashtags" :key="index">#{{ tag }}</span>
         </div>
       </div>
     </div>
@@ -40,34 +40,36 @@
       <div class="card border-black-50">
         <div>
           <a>
-            <img :src="`${generalArt.art.storageName}`"
-                 @click="goToDetailPage(generalArt.art.id, generalArt.art.name)"
+            <img :src="`${generalArt.artStorageUrl}`"
+                 @click="goToDetailPage(generalArt.artId, generalArt.artName)"
                  alt="" style="width: 100%; height: 200px; margin-bottom: 10px; cursor: pointer;" :style="applyOpacity">
           </a>
         </div>
         <div class="card-header">
-          <h3 :style="applyOpacity">{{ generalArt.art.name }} <b style="color: red; font-size: 18px;" :style="applyOpacity">(판매 완료)</b></h3>
+          <h3 :style="applyOpacity">{{ generalArt.artName }} <b style="color: red; font-size: 18px;"
+                                                                :style="applyOpacity">(판매 완료)</b></h3>
           <h6 :style="applyOpacity">
-            {{ generalArt.owner.nickname }}
-            <small style="font-size: 12px;" :style="applyOpacity">({{ generalArt.owner.school }})</small>
+            {{ generalArt.ownerNickname }}
+            <small style="font-size: 12px;" :style="applyOpacity">({{ generalArt.ownerSchool }})</small>
           </h6>
         </div>
         <div class="card-body">
           <p>
             <b :style="applyOpacity">가격</b><br>
-            <small :style="applyOpacity">{{ generalArt.art.price }}원</small>
+            <small :style="applyOpacity">{{ generalArt.artPrice }}원</small>
           </p>
           <p>
             <b :style="applyOpacity">작품 찜 횟수</b><br>
-            <small :style="applyOpacity">{{ generalArt.art.likeMembers.length }}회</small>
+            <small :style="applyOpacity">{{ generalArt.likeMembers.length }}회</small>
           </p>
           <p>
             <b :style="applyOpacity">작품 등록 날짜</b><br>
-            <small :style="applyOpacity">{{ translateLocalDateTime(generalArt.art.registrationDate) }}</small>
+            <small :style="applyOpacity">{{ translateLocalDateTime(generalArt.artRegistrationDate) }}</small>
           </p>
         </div>
         <div class="card-footer">
-          <span :style="applyOpacity" class="product_tag" v-for="(tag, index) in generalArt.art.hashtags" :key="index">#{{ tag }}</span>
+          <span :style="applyOpacity" class="product_tag" v-for="(tag, index) in generalArt.hashtags"
+                :key="index">#{{ tag }}</span>
         </div>
       </div>
     </div>
