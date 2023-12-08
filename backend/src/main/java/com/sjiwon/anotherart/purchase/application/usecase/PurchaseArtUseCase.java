@@ -46,15 +46,11 @@ public class PurchaseArtUseCase {
             final Auction auction = auctionRepository.getByArtId(art.getId());
             validateAuctionArtIsPurchasable(auction, buyer);
 
-            final Purchase purchaseAuctionArt = Purchase.purchaseAuctionArt(art, buyer, auction.getHighestBidPrice());
-            purchaseRepository.save(purchaseAuctionArt);
-
-            applyPointRecordOfOwnerAndBuyer(art.getOwner(), buyer, auction.getHighestBidPrice());
+            final Purchase purchase = Purchase.purchaseAuctionArt(art, buyer, auction.getHighestBidPrice());
+            doPurchase(purchase, art.getOwner(), buyer);
         } else {
-            final Purchase purchaseGeneralArt = Purchase.purchaseGeneralArt(art, buyer);
-            purchaseRepository.save(purchaseGeneralArt);
-
-            applyPointRecordOfOwnerAndBuyer(art.getOwner(), buyer, art.getPrice());
+            final Purchase purchase = Purchase.purchaseGeneralArt(art, buyer);
+            doPurchase(purchase, art.getOwner(), buyer);
         }
     }
 
@@ -68,10 +64,11 @@ public class PurchaseArtUseCase {
         }
     }
 
-    private void applyPointRecordOfOwnerAndBuyer(final Member owner, final Member buyer, final int amount) {
+    private void doPurchase(final Purchase purchase, final Member owner, final Member buyer) {
+        purchaseRepository.save(purchase);
         pointRecordRepository.saveAll(List.of(
-                PointRecord.addPointRecord(owner, PointType.SOLD, amount),
-                PointRecord.addPointRecord(buyer, PointType.PURCHASE, amount)
+                PointRecord.addPointRecord(owner, PointType.SOLD, purchase.getPrice()),
+                PointRecord.addPointRecord(buyer, PointType.PURCHASE, purchase.getPrice())
         ));
     }
 }
