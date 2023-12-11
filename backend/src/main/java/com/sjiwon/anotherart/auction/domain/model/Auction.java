@@ -13,6 +13,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.Version;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -31,6 +32,9 @@ public class Auction extends BaseEntity<Auction> {
 
     @Embedded
     private HighestBid highestBid;
+
+    @Version
+    private long version;
 
     @OneToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "art_id", referencedColumnName = "id", nullable = false, updatable = false)

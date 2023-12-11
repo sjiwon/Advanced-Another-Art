@@ -8,6 +8,7 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Method;
@@ -34,27 +35,55 @@ public class DistributedLockAop {
         );
         final RLock lock = redissonClient.getLock(key);
 
-        try {
-            acquireLock(lock, distributedLock);
+        int currentRetry = 0;
+        while (true) {
+            try {
+                if (tryMaximum(currentRetry++, distributedLock, method)) {
+                    throw new RuntimeException("Retry Exception...");
+                }
 
-            log.info(
-                    "Thread[{}] -> [{}] lock acquired with in transaction : {}",
-                    Thread.currentThread().getName(),
-                    lock.getName(),
-                    distributedLock.withInTransaction()
-            );
+                acquireLock(lock, distributedLock);
 
-            if (distributedLock.withInTransaction()) {
-                return aopWithTransactional.proceed(joinPoint);
+                log.info(
+                        "Thread[{}] -> [{}] lock acquired with in transaction = {}",
+                        Thread.currentThread().getName(),
+                        lock.getName(),
+                        distributedLock.withInTransaction()
+                );
+
+                if (distributedLock.withInTransaction()) {
+                    return aopWithTransactional.proceed(joinPoint);
+                }
+                return joinPoint.proceed();
+            } catch (final ObjectOptimisticLockingFailureException e) {
+                log.info(
+                        "[{}] Optimistic Lock Version Miss... -> retry = {}, maxRetry = {}, withInTransaction = {}",
+                        Thread.currentThread().getName(),
+                        currentRetry,
+                        distributedLock.withRetry(),
+                        distributedLock.withInTransaction()
+                );
+                try {
+                    Thread.sleep(100);
+                } catch (final InterruptedException ex) {
+                    throw new RuntimeException(ex);
+                }
+            } catch (final InterruptedException e) {
+                throw new RuntimeException("Interrupt occurred when acquire lock...", e);
+            } catch (final Throwable e) {
+                throw new RuntimeException(e);
+            } finally {
+                release(lock);
             }
-            return joinPoint.proceed();
-        } catch (final InterruptedException e) {
-            throw new RuntimeException("Interrupt occurred when acquire lock...", e);
-        } catch (final Throwable e) {
-            throw new RuntimeException(e);
-        } finally {
-            release(lock);
         }
+    }
+
+    private boolean tryMaximum(final int currentRetry, final DistributedLock distributedLock, final Method method) {
+        if (distributedLock.withRetry() != -1 && distributedLock.withRetry() == currentRetry) {
+            log.error("Retry Exception... -> method = {}", method);
+            return true;
+        }
+        return false;
     }
 
     private void acquireLock(final RLock lock, final DistributedLock distributedLock) throws InterruptedException {
@@ -77,7 +106,8 @@ public class DistributedLockAop {
             }
         } else {
             log.error(
-                    "Alreay unlock or timeout... -> isLocked = {} || isHeldByCurrentThread = {}",
+                    "[{}] Alreay unlock or timeout... -> isLocked = {} || isHeldByCurrentThread = {}",
+                    Thread.currentThread().getName(),
                     lock.isLocked(),
                     lock.isHeldByCurrentThread()
             );

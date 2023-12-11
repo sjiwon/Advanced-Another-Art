@@ -20,4 +20,9 @@ public @interface DistributedLock {
     TimeUnit timeUnit() default TimeUnit.MILLISECONDS;
 
     boolean withInTransaction() default false;
+
+    /**
+     * 분산락 Timeout을 고려한 Optimistic Lock Retry
+     */
+    int withRetry() default -1;
 }

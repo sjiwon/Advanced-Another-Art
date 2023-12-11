@@ -18,7 +18,8 @@ public class BidUseCase {
     @DistributedLock(
             keyPrefix = "AUCTION:",
             keySuffix = "#command.auctionId",
-            withInTransaction = true
+            withInTransaction = true,
+            withRetry = 3
     )
     public void invoke(final BidCommand command) {
         final Auction auction = auctionRepository.getByIdWithFetchBidder(command.auctionId());
