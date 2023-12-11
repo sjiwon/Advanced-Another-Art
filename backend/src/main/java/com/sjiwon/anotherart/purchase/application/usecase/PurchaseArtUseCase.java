@@ -16,6 +16,7 @@ import com.sjiwon.anotherart.purchase.domain.model.Purchase;
 import com.sjiwon.anotherart.purchase.domain.repository.PurchaseRepository;
 import com.sjiwon.anotherart.purchase.exception.PurchaseErrorCode;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -65,10 +66,15 @@ public class PurchaseArtUseCase {
     }
 
     private void doPurchase(final Purchase purchase, final Member owner, final Member buyer) {
-        purchaseRepository.save(purchase);
-        pointRecordRepository.saveAll(List.of(
-                PointRecord.addPointRecord(owner, PointType.SOLD, purchase.getPrice()),
-                PointRecord.addPointRecord(buyer, PointType.PURCHASE, purchase.getPrice())
-        ));
+        try {
+            purchaseRepository.save(purchase);
+            pointRecordRepository.saveAll(List.of(
+                    PointRecord.addPointRecord(owner, PointType.SOLD, purchase.getPrice()),
+                    PointRecord.addPointRecord(buyer, PointType.PURCHASE, purchase.getPrice())
+            ));
+        } catch (final DataIntegrityViolationException e) {
+            // Redis Timeout 발생 시 일반 작품 구매 동시 Insert에 대한 Unique Constraint
+            throw AnotherArtException.type(PurchaseErrorCode.ALREADY_SOLD);
+        }
     }
 }
