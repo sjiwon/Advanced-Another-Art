@@ -18,11 +18,11 @@ import java.io.IOException;
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
-public class AjaxAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
+public class JsonAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
     private static final AntPathRequestMatcher DEFAULT_AJAX_LOGIN_URL = new AntPathRequestMatcher("/api/login", "POST");
     private final ObjectMapper objectMapper;
 
-    public AjaxAuthenticationFilter(final ObjectMapper objectMapper) {
+    public JsonAuthenticationFilter(final ObjectMapper objectMapper) {
         super(DEFAULT_AJAX_LOGIN_URL);
         this.objectMapper = objectMapper;
     }

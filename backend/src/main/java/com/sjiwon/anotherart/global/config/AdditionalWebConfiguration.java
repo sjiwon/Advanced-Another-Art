@@ -1,8 +1,8 @@
 package com.sjiwon.anotherart.global.config;
 
+import com.sjiwon.anotherart.global.annotation.AuthArgumentResolver;
+import com.sjiwon.anotherart.global.annotation.ExtractTokenArgumentResolver;
 import com.sjiwon.anotherart.global.interceptor.RequestLogInterceptor;
-import com.sjiwon.anotherart.global.resolver.ExtractPayloadArgumentResolver;
-import com.sjiwon.anotherart.global.resolver.ExtractTokenArgumentResolver;
 import com.sjiwon.anotherart.token.utils.TokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
@@ -27,7 +27,7 @@ public class AdditionalWebConfiguration implements WebMvcConfigurer {
 
     @Override
     public void addArgumentResolvers(final List<HandlerMethodArgumentResolver> resolvers) {
-        resolvers.add(new ExtractTokenArgumentResolver());
-        resolvers.add(new ExtractPayloadArgumentResolver(tokenProvider));
+        resolvers.add(new AuthArgumentResolver());
+        resolvers.add(new ExtractTokenArgumentResolver(tokenProvider));
     }
 }

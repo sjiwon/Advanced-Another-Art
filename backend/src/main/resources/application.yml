@@ -40,9 +40,9 @@ spring:
       region:
         static: ap-northeast-2
       s3:
-        bucket: ${S3_BUCKET}
+        bucket: ${S3_BUCKET:s3-bucket}
       cloudfront:
-        url: ${CLOUD_FRONT_URL}
+        url: ${CLOUD_FRONT_URL:cloud-front-url}
 
   thymeleaf:
     cache: false
@@ -51,8 +51,8 @@ spring:
     default-encoding: UTF-8
     host: smtp.gmail.com
     port: 587
-    username: ${GOOGLE_EMAIL}
-    password: ${GOOGLE_APP_PASSWORD}
+    username: ${GOOGLE_EMAIL:google-email}
+    password: ${GOOGLE_APP_PASSWORD:google-app-password}
     properties:
       mail:
         mime:
@@ -90,7 +90,7 @@ decorator:
 
 slack:
   webhook:
-    url: ${SLACK_WEBHOOK_URL}
+    url: ${SLACK_WEBHOOK_URL:slack-webhook-url}
 
 logging:
   config: classpath:logback/logback-local.xml

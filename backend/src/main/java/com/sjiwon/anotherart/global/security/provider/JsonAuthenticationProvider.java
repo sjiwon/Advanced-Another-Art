@@ -12,7 +12,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 @RequiredArgsConstructor
-public class AjaxAuthenticationProvider implements AuthenticationProvider {
+public class JsonAuthenticationProvider implements AuthenticationProvider {
     private final UserDetailsService userDetailsService;
     private final PasswordEncoder passwordEncoder;
 
@@ -23,18 +23,23 @@ public class AjaxAuthenticationProvider implements AuthenticationProvider {
 
         final UserDetails userDetails = userDetailsService.loadUserByUsername(username);
         validatePassword(password, userDetails);
-
-        return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+        return createAuthenticationSuccessToken(userDetails);
     }
 
     private void validatePassword(final String rawPassword, final UserDetails userDetails) {
-        if (isInvalidPassword(rawPassword, userDetails)) {
+        if (isNotCorrectPassword(rawPassword, userDetails)) {
             throw new BadCredentialsException(MemberErrorCode.INVALID_PASSWORD.getMessage());
         }
     }
 
-    private boolean isInvalidPassword(final String rawPassword, final UserDetails userDetails) {
+    private boolean isNotCorrectPassword(final String rawPassword, final UserDetails userDetails) {
         return userDetails == null || !passwordEncoder.matches(rawPassword, userDetails.getPassword());
+    }
+
+    private Authentication createAuthenticationSuccessToken(final UserDetails userDetails) {
+        final UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+        token.eraseCredentials();
+        return token;
     }
 
     @Override

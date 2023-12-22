@@ -15,12 +15,10 @@ import com.sjiwon.anotherart.file.utils.converter.FileConverter;
 import com.sjiwon.anotherart.global.exception.AnotherArtException;
 import com.sjiwon.anotherart.member.domain.model.Member;
 import com.sjiwon.anotherart.member.domain.repository.MemberRepository;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
 import java.time.LocalDateTime;
 
 import static com.sjiwon.anotherart.common.fixture.ArtFixture.AUCTION_1;
@@ -53,12 +51,7 @@ public class RegisterArtUseCaseTest extends UseCaseTest {
     );
 
     private final Member owner = MEMBER_A.toMember().apply(1L);
-    private RawFileData file;
-
-    @BeforeEach
-    void setUp() throws IOException {
-        file = FileConverter.convertImageFile(createSingleMockMultipartFile("1.png", "image/png"));
-    }
+    private final RawFileData file = FileConverter.convertImageFile(createSingleMockMultipartFile("1.png", "image/png"));
 
     @Nested
     @DisplayName("일반 작품 등록")

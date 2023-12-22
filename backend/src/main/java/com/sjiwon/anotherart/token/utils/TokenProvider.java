@@ -7,5 +7,5 @@ public interface TokenProvider {
 
     Long getId(final String token);
 
-    boolean isTokenValid(final String token);
+    void validateToken(final String token);
 }

@@ -1,6 +1,6 @@
 package com.sjiwon.anotherart.member.presentation;
 
-import com.sjiwon.anotherart.global.resolver.ExtractPayload;
+import com.sjiwon.anotherart.global.annotation.Auth;
 import com.sjiwon.anotherart.member.application.usecase.UpdateMemberResourceUseCase;
 import com.sjiwon.anotherart.member.application.usecase.command.UpdateAddressCommand;
 import com.sjiwon.anotherart.member.application.usecase.command.UpdateNicknameCommand;
@@ -8,6 +8,7 @@ import com.sjiwon.anotherart.member.application.usecase.command.UpdatePasswordCo
 import com.sjiwon.anotherart.member.presentation.dto.request.UpdateAddressRequest;
 import com.sjiwon.anotherart.member.presentation.dto.request.UpdateNicknameRequest;
 import com.sjiwon.anotherart.member.presentation.dto.request.UpdatePasswordRequest;
+import com.sjiwon.anotherart.token.domain.model.Authenticated;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -28,21 +29,21 @@ public class MemberModifyApiController {
     @Operation(summary = "닉네임 수정 EndPoint")
     @PatchMapping("/nickname")
     public ResponseEntity<Void> updateNickname(
-            @ExtractPayload final Long memberId,
+            @Auth final Authenticated authenticated,
             @RequestBody @Valid final UpdateNicknameRequest request
     ) {
-        updateMemberResourceUseCase.updateNickname(new UpdateNicknameCommand(memberId, request.value()));
+        updateMemberResourceUseCase.updateNickname(new UpdateNicknameCommand(authenticated.id(), request.value()));
         return ResponseEntity.noContent().build();
     }
 
     @Operation(summary = "주소 수정 EndPoint")
     @PatchMapping("/address")
     public ResponseEntity<Void> updateAddress(
-            @ExtractPayload final Long memberId,
+            @Auth final Authenticated authenticated,
             @RequestBody @Valid final UpdateAddressRequest request
     ) {
         updateMemberResourceUseCase.updateAddress(new UpdateAddressCommand(
-                memberId,
+                authenticated.id(),
                 request.postcode(),
                 request.defaultAddress(),
                 request.detailAddress()
@@ -53,10 +54,10 @@ public class MemberModifyApiController {
     @Operation(summary = "비밀번호 수정 EndPoint")
     @PatchMapping("/password")
     public ResponseEntity<Void> updatePassword(
-            @ExtractPayload final Long memberId,
+            @Auth final Authenticated authenticated,
             @RequestBody @Valid final UpdatePasswordRequest request
     ) {
-        updateMemberResourceUseCase.updatePassword(new UpdatePasswordCommand(memberId, request.value()));
+        updateMemberResourceUseCase.updatePassword(new UpdatePasswordCommand(authenticated.id(), request.value()));
         return ResponseEntity.noContent().build();
     }
 }

@@ -1,5 +1,6 @@
 package com.sjiwon.anotherart.token.utils;
 
+import com.sjiwon.anotherart.token.exception.InvalidTokenException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jws;
@@ -70,18 +71,21 @@ public class JwtTokenProvider implements TokenProvider {
     }
 
     @Override
-    public boolean isTokenValid(final String token) {
+    public void validateToken(final String token) {
         try {
             final Jws<Claims> claims = getClaims(token);
             final Date expiredDate = claims.getBody().getExpiration();
             final Date now = new Date();
-            return expiredDate.after(now);
+
+            if (expiredDate.before(now)) {
+                throw new InvalidTokenException();
+            }
         } catch (final ExpiredJwtException |
                        SecurityException |
                        MalformedJwtException |
                        UnsupportedJwtException |
                        IllegalArgumentException e) {
-            return false;
+            throw new InvalidTokenException();
         }
     }
 

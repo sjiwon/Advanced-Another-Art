@@ -1,12 +1,13 @@
 package com.sjiwon.anotherart.point.presentation;
 
 
-import com.sjiwon.anotherart.global.resolver.ExtractPayload;
+import com.sjiwon.anotherart.global.annotation.Auth;
 import com.sjiwon.anotherart.point.application.usecase.ManagePointUseCase;
 import com.sjiwon.anotherart.point.application.usecase.command.ChargePointCommand;
 import com.sjiwon.anotherart.point.application.usecase.command.RefundPointCommand;
 import com.sjiwon.anotherart.point.presentation.dto.request.ChargePointRequest;
 import com.sjiwon.anotherart.point.presentation.dto.request.RefundPointRequest;
+import com.sjiwon.anotherart.token.domain.model.Authenticated;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -27,20 +28,20 @@ public class PointManageApiController {
     @Operation(summary = "포인트 충전 Endpoint")
     @PostMapping("/charge")
     public ResponseEntity<Void> chargePoint(
-            @ExtractPayload final Long memberId,
+            @Auth final Authenticated authenticated,
             @RequestBody @Valid final ChargePointRequest request
     ) {
-        managePointUseCase.charge(new ChargePointCommand(memberId, request.chargeAmount()));
+        managePointUseCase.charge(new ChargePointCommand(authenticated.id(), request.chargeAmount()));
         return ResponseEntity.noContent().build();
     }
 
     @Operation(summary = "포인트 환불 Endpoint")
     @PostMapping("/refund")
     public ResponseEntity<Void> refundPoint(
-            @ExtractPayload final Long memberId,
+            @Auth final Authenticated authenticated,
             @RequestBody @Valid final RefundPointRequest request
     ) {
-        managePointUseCase.refund(new RefundPointCommand(memberId, request.refundAmount()));
+        managePointUseCase.refund(new RefundPointCommand(authenticated.id(), request.refundAmount()));
         return ResponseEntity.noContent().build();
     }
 }

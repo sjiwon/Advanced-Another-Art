@@ -1,12 +1,15 @@
 package com.sjiwon.anotherart.token.utils;
 
 import com.sjiwon.anotherart.member.domain.model.Member;
+import com.sjiwon.anotherart.token.exception.InvalidTokenException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static com.sjiwon.anotherart.common.fixture.MemberFixture.MEMBER_A;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 @DisplayName("Token -> JwtTokenProvider 테스트")
 class JwtTokenProviderTest {
@@ -47,15 +50,10 @@ class JwtTokenProviderTest {
         final String validToken = validProvider.createAccessToken(member.getId());
         final String invalidToken = invalidProvider.createAccessToken(member.getId());
 
-        // when
-        final boolean actual1 = validProvider.isTokenValid(validToken);
-        final boolean actual2 = invalidProvider.isTokenValid(invalidToken);
-
-        // then
-        assertAll(
-                () -> assertThat(actual1).isTrue(),
-                () -> assertThat(actual2).isFalse()
-        );
+        // when - then
+        assertDoesNotThrow(() -> validProvider.validateToken(validToken));
+        assertThatThrownBy(() -> invalidProvider.validateToken(invalidToken))
+                .isInstanceOf(InvalidTokenException.class);
     }
 
     @Test
@@ -64,10 +62,8 @@ class JwtTokenProviderTest {
         // given
         final String forgedToken = validProvider.createAccessToken(member.getId()) + "hacked";
 
-        // when
-        final boolean actual = validProvider.isTokenValid(forgedToken);
-
-        // then
-        assertThat(actual).isFalse();
+        // when - then
+        assertThatThrownBy(() -> validProvider.validateToken(forgedToken))
+                .isInstanceOf(InvalidTokenException.class);
     }
 }

@@ -1,6 +1,6 @@
 package com.sjiwon.anotherart.global.security.principal;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.sjiwon.anotherart.member.domain.model.Member;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -13,9 +13,20 @@ public record MemberPrincipal(
         String name,
         String nickname,
         String loginId,
-        @JsonIgnore String password,
+        String password,
         String role
 ) implements UserDetails {
+    public MemberPrincipal(final Member member) {
+        this(
+                member.getId(),
+                member.getName(),
+                member.getNickname().getValue(),
+                member.getLoginId(),
+                member.getPassword().getValue(),
+                member.getRole().getAuthority()
+        );
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         final Collection<GrantedAuthority> authorities = new ArrayList<>();

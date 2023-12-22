@@ -10,21 +10,13 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 @RequiredArgsConstructor
-public class CustomUserDetailsService implements UserDetailsService {
+public class RdbUserDetailsService implements UserDetailsService {
     private final MemberRepository memberRepository;
 
     @Override
     public UserDetails loadUserByUsername(final String loginId) throws UsernameNotFoundException {
         final Member member = memberRepository.findByLoginId(loginId)
                 .orElseThrow(() -> new UsernameNotFoundException(MemberErrorCode.MEMBER_NOT_FOUND.getMessage()));
-
-        return new MemberPrincipal(
-                member.getId(),
-                member.getName(),
-                member.getNickname().getValue(),
-                member.getLoginId(),
-                member.getPassword().getValue(),
-                member.getRole().getAuthority()
-        );
+        return new MemberPrincipal(member);
     }
 }

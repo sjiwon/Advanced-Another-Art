@@ -8,8 +8,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-
 import static com.sjiwon.anotherart.common.utils.FileMockingUtils.createSingleMockMultipartFile;
 import static com.sjiwon.anotherart.file.domain.model.FileExtension.PNG;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -32,7 +30,7 @@ public class FileConverterTest {
 
     @Test
     @DisplayName("MultipartFile -> RawFileData로 Converting한다")
-    void success() throws IOException {
+    void success() {
         // given
         final MultipartFile file = createSingleMockMultipartFile("1.png", "image/png");
 

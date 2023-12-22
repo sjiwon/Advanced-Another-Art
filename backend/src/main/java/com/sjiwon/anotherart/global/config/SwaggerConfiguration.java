@@ -1,7 +1,7 @@
 package com.sjiwon.anotherart.global.config;
 
-import com.sjiwon.anotherart.global.resolver.ExtractPayload;
-import com.sjiwon.anotherart.global.resolver.ExtractToken;
+import com.sjiwon.anotherart.global.annotation.Auth;
+import com.sjiwon.anotherart.global.annotation.ExtractToken;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.info.Contact;
 import io.swagger.v3.oas.annotations.info.Info;
@@ -40,8 +40,8 @@ public class SwaggerConfiguration {
         SpringDocUtils
                 .getConfig()
                 .addAnnotationsToIgnore(
-                        ExtractToken.class,
-                        ExtractPayload.class
+                        Auth.class,
+                        ExtractToken.class
                 );
     }
 

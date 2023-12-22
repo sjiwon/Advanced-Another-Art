@@ -3,7 +3,8 @@ package com.sjiwon.anotherart.favorite.presentation;
 import com.sjiwon.anotherart.favorite.application.usecase.ManageFavoriteUseCase;
 import com.sjiwon.anotherart.favorite.application.usecase.command.CancelArtLikeCommand;
 import com.sjiwon.anotherart.favorite.application.usecase.command.MarkArtLikeCommand;
-import com.sjiwon.anotherart.global.resolver.ExtractPayload;
+import com.sjiwon.anotherart.global.annotation.Auth;
+import com.sjiwon.anotherart.token.domain.model.Authenticated;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -24,20 +25,20 @@ public class FavoriteApiController {
     @Operation(summary = "작품 좋아요 Endpoint")
     @PostMapping
     public ResponseEntity<Void> likeMarking(
-            @ExtractPayload final Long memberId,
+            @Auth final Authenticated authenticated,
             @PathVariable final Long artId
     ) {
-        manageFavoriteUseCase.markLike(new MarkArtLikeCommand(memberId, artId));
+        manageFavoriteUseCase.markLike(new MarkArtLikeCommand(authenticated.id(), artId));
         return ResponseEntity.noContent().build();
     }
 
     @Operation(summary = "작품 좋아요 취소 Endpoint")
     @DeleteMapping
     public ResponseEntity<Void> likeCancellation(
-            @ExtractPayload final Long memberId,
+            @Auth final Authenticated authenticated,
             @PathVariable final Long artId
     ) {
-        manageFavoriteUseCase.cancelLike(new CancelArtLikeCommand(memberId, artId));
+        manageFavoriteUseCase.cancelLike(new CancelArtLikeCommand(authenticated.id(), artId));
         return ResponseEntity.noContent().build();
     }
 }

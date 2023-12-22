@@ -1,10 +1,7 @@
 package com.sjiwon.anotherart.global.security.handler;
 
-import com.sjiwon.anotherart.global.security.exception.AnotherArtAccessDeniedException;
-import com.sjiwon.anotherart.global.security.exception.AuthErrorCode;
+import com.sjiwon.anotherart.global.security.principal.MemberPrincipal;
 import com.sjiwon.anotherart.token.domain.service.TokenIssuer;
-import com.sjiwon.anotherart.token.utils.AuthorizationExtractor;
-import com.sjiwon.anotherart.token.utils.TokenProvider;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +13,6 @@ import org.springframework.security.web.authentication.logout.LogoutSuccessHandl
 
 @RequiredArgsConstructor
 public class JwtLogoutSuccessHandler implements LogoutSuccessHandler {
-    private final TokenProvider tokenProvider;
     private final TokenIssuer tokenIssuer;
 
     @Override
@@ -25,26 +21,23 @@ public class JwtLogoutSuccessHandler implements LogoutSuccessHandler {
             final HttpServletResponse response,
             final Authentication authentication
     ) {
-        removeRefreshToken(request);
+        removeRefreshToken(authentication);
         clearSecurityContextHolder();
-
-        response.setStatus(HttpStatus.OK.value());
-        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-        response.setCharacterEncoding("UTF-8");
+        sendResponse(response);
     }
 
-    private void removeRefreshToken(final HttpServletRequest request) {
-        final String accessToken = extractAccessToken(request);
-        final Long memberId = tokenProvider.getId(accessToken);
-        tokenIssuer.deleteRefreshToken(memberId);
-    }
-
-    private String extractAccessToken(final HttpServletRequest request) {
-        return AuthorizationExtractor.extractToken(request)
-                .orElseThrow(() -> AnotherArtAccessDeniedException.type(AuthErrorCode.INVALID_PERMISSION));
+    private void removeRefreshToken(final Authentication authentication) {
+        final MemberPrincipal principal = (MemberPrincipal) authentication.getPrincipal();
+        tokenIssuer.deleteRefreshToken(principal.id());
     }
 
     private void clearSecurityContextHolder() {
         SecurityContextHolder.clearContext();
+    }
+
+    private void sendResponse(final HttpServletResponse response) {
+        response.setStatus(HttpStatus.OK.value());
+        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+        response.setCharacterEncoding("UTF-8");
     }
 }

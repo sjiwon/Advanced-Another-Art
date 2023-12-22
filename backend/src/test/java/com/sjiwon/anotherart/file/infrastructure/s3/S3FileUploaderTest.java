@@ -7,7 +7,6 @@ import com.sjiwon.anotherart.global.exception.AnotherArtException;
 import io.awspring.cloud.s3.ObjectMetadata;
 import io.awspring.cloud.s3.S3Resource;
 import io.awspring.cloud.s3.S3Template;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -34,14 +33,8 @@ public class S3FileUploaderTest {
     private final S3Resource s3Resource = mock(S3Resource.class);
     private final S3FileUploader sut = new S3FileUploader(s3Template, BUCKET, CLOUD_FRONT_URL);
 
-    private RawFileData rawFileData;
-    private String imageUploadLinkPath;
-
-    @BeforeEach
-    void setUp() throws IOException {
-        rawFileData = FileConverter.convertImageFile(createSingleMockMultipartFile("1.png", "image/png"));
-        imageUploadLinkPath = "/" + rawFileData.fileName();
-    }
+    private final RawFileData rawFileData = FileConverter.convertImageFile(createSingleMockMultipartFile("1.png", "image/png"));
+    private final String imageUploadLinkPath = "/" + rawFileData.fileName();
 
     @Test
     @DisplayName("Client가 파일을 전송하지 않았으면 예외가 발생한다")

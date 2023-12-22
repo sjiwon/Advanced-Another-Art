@@ -7,7 +7,6 @@ import com.sjiwon.anotherart.global.security.exception.AuthErrorCode;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.web.access.AccessDeniedHandler;
@@ -24,14 +23,21 @@ public class JwtAccessDeniedHandler implements AccessDeniedHandler {
             final HttpServletResponse response,
             final AccessDeniedException accessDeniedException
     ) throws IOException {
-        response.setStatus(HttpStatus.FORBIDDEN.value());
+        final ErrorResponse errorResponse = createErrorResponse(accessDeniedException);
+        sendResponse(response, errorResponse);
+    }
+
+    private ErrorResponse createErrorResponse(final AccessDeniedException exception) {
+        if (exception instanceof final AnotherArtAccessDeniedException ex) {
+            return ErrorResponse.from(ex.getCode());
+        }
+        return ErrorResponse.from(AuthErrorCode.INVALID_TOKEN);
+    }
+
+    private void sendResponse(final HttpServletResponse response, final ErrorResponse errorResponse) throws IOException {
+        response.setStatus(errorResponse.getStatus());
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setCharacterEncoding("UTF-8");
-
-        if (accessDeniedException instanceof final AnotherArtAccessDeniedException ex) {
-            objectMapper.writeValue(response.getWriter(), ErrorResponse.from(ex.getCode()));
-        } else {
-            objectMapper.writeValue(response.getWriter(), ErrorResponse.from(AuthErrorCode.INVALID_PERMISSION));
-        }
+        objectMapper.writeValue(response.getWriter(), errorResponse);
     }
 }

@@ -1,8 +1,9 @@
 package com.sjiwon.anotherart.purchase.presentation;
 
-import com.sjiwon.anotherart.global.resolver.ExtractPayload;
+import com.sjiwon.anotherart.global.annotation.Auth;
 import com.sjiwon.anotherart.purchase.application.usecase.PurchaseArtUseCase;
 import com.sjiwon.anotherart.purchase.application.usecase.command.PurchaseArtCommand;
+import com.sjiwon.anotherart.token.domain.model.Authenticated;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -22,10 +23,10 @@ public class PurchaseApiController {
     @Operation(summary = "작품 구매 Endpoint")
     @PostMapping
     public ResponseEntity<Void> purchaseArt(
-            @ExtractPayload final Long memberId,
+            @Auth final Authenticated authenticated,
             @PathVariable final Long artId
     ) {
-        purchaseArtUseCase.invoke(new PurchaseArtCommand(memberId, artId));
+        purchaseArtUseCase.invoke(new PurchaseArtCommand(authenticated.id(), artId));
         return ResponseEntity.noContent().build();
     }
 }

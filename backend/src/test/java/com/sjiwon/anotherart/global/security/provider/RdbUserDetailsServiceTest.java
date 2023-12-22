@@ -19,10 +19,10 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 
-@DisplayName("Global/Security -> CustomUserDetailsService 테스트")
-public class CustomUserDetailsServiceTest extends UseCaseTest {
+@DisplayName("Global/Security -> RdbUserDetailsService 테스트")
+public class RdbUserDetailsServiceTest extends UseCaseTest {
     private final MemberRepository memberRepository = mock(MemberRepository.class);
-    private final CustomUserDetailsService sut = new CustomUserDetailsService(memberRepository);
+    private final RdbUserDetailsService sut = new RdbUserDetailsService(memberRepository);
 
     private final Member member = MEMBER_A.toMember().apply(1L);
 

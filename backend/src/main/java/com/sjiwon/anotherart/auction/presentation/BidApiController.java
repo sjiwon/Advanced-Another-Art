@@ -3,7 +3,8 @@ package com.sjiwon.anotherart.auction.presentation;
 import com.sjiwon.anotherart.auction.application.usecase.BidUseCase;
 import com.sjiwon.anotherart.auction.application.usecase.command.BidCommand;
 import com.sjiwon.anotherart.auction.presentation.dto.request.BidRequest;
-import com.sjiwon.anotherart.global.resolver.ExtractPayload;
+import com.sjiwon.anotherart.global.annotation.Auth;
+import com.sjiwon.anotherart.token.domain.model.Authenticated;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -25,11 +26,11 @@ public class BidApiController {
     @Operation(summary = "경매 작품 입찰 Endpoint")
     @PostMapping
     public ResponseEntity<Void> bid(
-            @ExtractPayload final Long memberId,
+            @Auth final Authenticated authenticated,
             @PathVariable final Long auctionId,
             @RequestBody @Valid final BidRequest request
     ) {
-        bidUseCase.invoke(new BidCommand(memberId, auctionId, request.bidPrice()));
+        bidUseCase.invoke(new BidCommand(authenticated.id(), auctionId, request.bidPrice()));
         return ResponseEntity.noContent().build();
     }
 }

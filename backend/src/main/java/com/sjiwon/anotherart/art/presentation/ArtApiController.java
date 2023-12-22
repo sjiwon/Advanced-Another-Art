@@ -11,7 +11,8 @@ import com.sjiwon.anotherart.art.presentation.dto.request.ArtDuplicateCheckReque
 import com.sjiwon.anotherart.art.presentation.dto.request.RegisterArtRequest;
 import com.sjiwon.anotherart.art.presentation.dto.response.ArtIdResponse;
 import com.sjiwon.anotherart.file.utils.converter.FileConverter;
-import com.sjiwon.anotherart.global.resolver.ExtractPayload;
+import com.sjiwon.anotherart.global.annotation.Auth;
+import com.sjiwon.anotherart.token.domain.model.Authenticated;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -45,11 +46,11 @@ public class ArtApiController {
     @Operation(summary = "작품 등록 Endpoint")
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ArtIdResponse> registerArt(
-            @ExtractPayload final Long memberId,
+            @Auth final Authenticated authenticated,
             @ModelAttribute @Valid final RegisterArtRequest request
     ) {
         final Long savedArtId = registerArtUseCase.invoke(new RegisterArtCommand(
-                memberId,
+                authenticated.id(),
                 ArtName.from(request.name()),
                 Description.from(request.description()),
                 ArtType.from(request.type()),

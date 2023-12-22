@@ -12,7 +12,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 
 @RequiredArgsConstructor
-public class InvalidTokenExceptionTranslationFilter extends OncePerRequestFilter {
+public class JwtAuthorizationExceptionTranslationFilter extends OncePerRequestFilter {
     private final AccessDeniedHandler accessDeniedHandler;
 
     @Override

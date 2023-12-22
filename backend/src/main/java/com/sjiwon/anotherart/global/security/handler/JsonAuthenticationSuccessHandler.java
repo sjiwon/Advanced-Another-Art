@@ -17,7 +17,7 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 import java.io.IOException;
 
 @RequiredArgsConstructor
-public class AjaxAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
+public class JsonAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
     private final TokenIssuer tokenIssuer;
     private final TokenResponseWriter tokenResponseWriter;
     private final ObjectMapper objectMapper;
@@ -28,28 +28,21 @@ public class AjaxAuthenticationSuccessHandler implements AuthenticationSuccessHa
             final HttpServletResponse response,
             final Authentication authentication
     ) throws IOException {
-        final MemberPrincipal member = extractMemberPrincipal(authentication);
-        final AuthToken authToken = tokenIssuer.provideAuthorityToken(member.id());
-        sendAccessTokenAndRefreshToken(response, member, authToken);
+        final MemberPrincipal principal = getPrincipal(authentication);
+        final AuthToken authToken = tokenIssuer.provideAuthorityToken(principal.id());
+
+        tokenResponseWriter.applyToken(response, authToken);
+        sendResponse(response, principal);
     }
 
-    private MemberPrincipal extractMemberPrincipal(final Authentication authentication) {
+    private MemberPrincipal getPrincipal(final Authentication authentication) {
         return (MemberPrincipal) authentication.getPrincipal();
     }
 
-    private void sendAccessTokenAndRefreshToken(
-            final HttpServletResponse response,
-            final MemberPrincipal member,
-            final AuthToken authToken
-    ) throws IOException {
+    private void sendResponse(final HttpServletResponse response, final MemberPrincipal principal) throws IOException {
         response.setStatus(HttpStatus.OK.value());
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setCharacterEncoding("UTF-8");
-
-        tokenResponseWriter.applyAccessToken(response, authToken.accessToken());
-        tokenResponseWriter.applyRefreshToken(response, authToken.refreshToken());
-
-        final LoginResponse tokenResponse = new LoginResponse(member.id(), member.nickname());
-        objectMapper.writeValue(response.getWriter(), tokenResponse);
+        objectMapper.writeValue(response.getWriter(), new LoginResponse(principal.id(), principal.name(), principal.nickname()));
     }
 }

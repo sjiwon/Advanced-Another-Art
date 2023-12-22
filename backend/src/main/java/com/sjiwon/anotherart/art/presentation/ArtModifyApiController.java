@@ -7,7 +7,8 @@ import com.sjiwon.anotherart.art.application.usecase.command.UpdateArtCommand;
 import com.sjiwon.anotherart.art.domain.model.ArtName;
 import com.sjiwon.anotherart.art.domain.model.Description;
 import com.sjiwon.anotherart.art.presentation.dto.request.UpdateArtRequest;
-import com.sjiwon.anotherart.global.resolver.ExtractPayload;
+import com.sjiwon.anotherart.global.annotation.Auth;
+import com.sjiwon.anotherart.token.domain.model.Authenticated;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -30,10 +31,10 @@ public class ArtModifyApiController {
     private final DeleteArtUseCase deleteArtUseCase;
 
     @Operation(summary = "작품 수정 EndPoint")
-    @PreAuthorize("@artOwnerValidator.isArtOwner(#artId, #memberId)")
+    @PreAuthorize("@artOwnerValidator.isArtOwner(#artId, #authenticated.id)")
     @PatchMapping
     public ResponseEntity<Void> update(
-            @ExtractPayload final Long memberId,
+            @Auth final Authenticated authenticated,
             @PathVariable final Long artId,
             @RequestBody @Valid final UpdateArtRequest request
     ) {
@@ -47,10 +48,10 @@ public class ArtModifyApiController {
     }
 
     @Operation(summary = "작품 삭제 EndPoint")
-    @PreAuthorize("@artOwnerValidator.isArtOwner(#artId, #memberId)")
+    @PreAuthorize("@artOwnerValidator.isArtOwner(#artId, #authenticated.id)")
     @DeleteMapping
     public ResponseEntity<Void> delete(
-            @ExtractPayload final Long memberId,
+            @Auth final Authenticated authenticated,
             @PathVariable final Long artId
     ) {
         deleteArtUseCase.invoke(new DeleteArtCommand(artId));
