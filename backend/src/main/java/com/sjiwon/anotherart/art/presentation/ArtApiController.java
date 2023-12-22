@@ -4,6 +4,7 @@ import com.sjiwon.anotherart.art.application.usecase.RegisterArtUseCase;
 import com.sjiwon.anotherart.art.application.usecase.ValidateArtResourceUseCase;
 import com.sjiwon.anotherart.art.application.usecase.command.RegisterArtCommand;
 import com.sjiwon.anotherart.art.application.usecase.command.ValidateArtResourceCommand;
+import com.sjiwon.anotherart.art.domain.model.ArtDuplicateResource;
 import com.sjiwon.anotherart.art.domain.model.ArtName;
 import com.sjiwon.anotherart.art.domain.model.ArtType;
 import com.sjiwon.anotherart.art.domain.model.Description;
@@ -20,15 +21,14 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import static com.sjiwon.anotherart.art.domain.model.ArtDuplicateResource.NAME;
-
-@Tag(name = "작품 리소스 중복 체크 & 등록 API")
+@Tag(name = "작품 리소스 중복체크 & 등록 API")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/arts")
@@ -36,10 +36,13 @@ public class ArtApiController {
     private final ValidateArtResourceUseCase validateArtResourceUseCase;
     private final RegisterArtUseCase registerArtUseCase;
 
-    @Operation(summary = "작품명 중복체크 EndPoint")
-    @PostMapping("/duplicate/name")
-    public ResponseEntity<Void> checkName(@RequestBody @Valid final ArtDuplicateCheckRequest request) {
-        validateArtResourceUseCase.invoke(new ValidateArtResourceCommand(NAME, request.value()));
+    @Operation(summary = "작품 리소스 중복체크 EndPoint (이름)")
+    @PostMapping("/duplicate/{resource}")
+    public ResponseEntity<Void> checkDuplicateResource(
+            @PathVariable final String resource,
+            @RequestBody @Valid final ArtDuplicateCheckRequest request
+    ) {
+        validateArtResourceUseCase.invoke(new ValidateArtResourceCommand(ArtDuplicateResource.from(resource), request.value()));
         return ResponseEntity.noContent().build();
     }
 

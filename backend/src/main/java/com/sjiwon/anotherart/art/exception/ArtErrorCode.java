@@ -24,6 +24,7 @@ public enum ArtErrorCode implements ErrorCode {
     CANNOT_DELETE_SOLD_ART(CONFLICT, "ART_010", "이미 판매된 작품은 삭제할 수 없습니다."),
     CANNOT_DELETE_IF_BID_EXISTS(CONFLICT, "ART_011", "이미 입찰이 진행된 경매 작품은 삭제할 수 없습니다."),
     SORT_TYPE_NOT_PROVIED(BAD_REQUEST, "ART_012", "제공하지 않는 정렬 타입입니다."),
+    INVALID_DUPLICATE_RESOURCE(BAD_REQUEST, "ART_013", "중복 체크 대상이 아닙니다."),
     ;
 
     private final HttpStatus status;

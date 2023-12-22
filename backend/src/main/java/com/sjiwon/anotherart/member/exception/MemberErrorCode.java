@@ -29,6 +29,7 @@ public enum MemberErrorCode implements ErrorCode {
     DUPLICATE_LOGIN_ID(CONFLICT, "MEMBER_014", "이미 사용중인 아이디입니다."),
     DUPLICATE_PHONE(CONFLICT, "MEMBER_015", "이미 사용중인 전화번호입니다."),
     DUPLICATE_EMAIL(CONFLICT, "MEMBER_016", "이미 사용중인 이메일입니다."),
+    INVALID_DUPLICATE_RESOURCE(BAD_REQUEST, "MEMBER_017", "중복 체크 대상이 아닙니다."),
     ;
 
     private final HttpStatus status;
