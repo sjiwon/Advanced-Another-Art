@@ -4,9 +4,9 @@ import com.sjiwon.anotherart.art.domain.repository.ArtRepository;
 import com.sjiwon.anotherart.art.exception.ArtErrorCode;
 import com.sjiwon.anotherart.global.exception.AnotherArtException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
-@Component
+@Service
 @RequiredArgsConstructor
 public class ArtResourceValidator {
     private final ArtRepository artRepository;

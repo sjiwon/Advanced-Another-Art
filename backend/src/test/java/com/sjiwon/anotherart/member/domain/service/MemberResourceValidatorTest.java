@@ -1,6 +1,6 @@
 package com.sjiwon.anotherart.member.domain.service;
 
-import com.sjiwon.anotherart.common.UseCaseTest;
+import com.sjiwon.anotherart.common.UnitTest;
 import com.sjiwon.anotherart.global.exception.AnotherArtException;
 import com.sjiwon.anotherart.member.domain.model.Member;
 import com.sjiwon.anotherart.member.domain.repository.MemberRepository;
@@ -15,7 +15,7 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 
 @DisplayName("Member -> MemberResourceValidator 테스트")
-public class MemberResourceValidatorTest extends UseCaseTest {
+public class MemberResourceValidatorTest extends UnitTest {
     private final MemberRepository memberRepository = mock(MemberRepository.class);
     private final MemberResourceValidator sut = new MemberResourceValidator(memberRepository);
 

@@ -6,9 +6,9 @@ import com.sjiwon.anotherart.global.security.principal.MemberPrincipal;
 import com.sjiwon.anotherart.member.domain.model.Member;
 import com.sjiwon.anotherart.member.domain.repository.MemberRepository;
 import com.sjiwon.anotherart.member.exception.MemberErrorCode;
+import com.sjiwon.anotherart.token.domain.service.TokenProvider;
 import com.sjiwon.anotherart.token.exception.InvalidTokenException;
-import com.sjiwon.anotherart.token.utils.RequestTokenExtractor;
-import com.sjiwon.anotherart.token.utils.TokenProvider;
+import com.sjiwon.anotherart.token.utils.TokenExtractor;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -32,12 +32,12 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             final HttpServletResponse response,
             final FilterChain filterChain
     ) throws ServletException, IOException {
-        final Optional<String> token = RequestTokenExtractor.extractAccessToken(request);
+        final Optional<String> token = TokenExtractor.extractAccessToken(request);
 
         if (token.isPresent()) {
             try {
                 final String accessToken = token.get();
-                tokenProvider.validateToken(accessToken);
+                tokenProvider.validateAccessToken(accessToken);
 
                 final Member member = getMemberViaToken(accessToken);
                 applyMemberToSecurityContext(member);

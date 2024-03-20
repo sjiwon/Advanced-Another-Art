@@ -9,12 +9,12 @@ import com.sjiwon.anotherart.art.domain.repository.query.ArtDetailQueryRepositor
 import com.sjiwon.anotherart.art.domain.repository.query.dto.ArtDetails;
 import com.sjiwon.anotherart.art.domain.repository.query.dto.AuctionArt;
 import com.sjiwon.anotherart.art.domain.repository.query.dto.GeneralArt;
-import com.sjiwon.anotherart.art.utils.search.Pagination;
+import com.sjiwon.anotherart.global.annotation.UseCase;
+import com.sjiwon.anotherart.global.query.Pagination;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.stereotype.Service;
 
-@Service
+@UseCase
 @RequiredArgsConstructor
 public class ArtSearchUseCase {
     private final ArtDetailQueryRepository artDetailQueryRepository;

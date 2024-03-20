@@ -4,9 +4,9 @@ import com.sjiwon.anotherart.art.domain.model.UploadImage;
 import com.sjiwon.anotherart.file.application.adapter.FileUploader;
 import com.sjiwon.anotherart.file.domain.model.RawFileData;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
-@Component
+@Service
 @RequiredArgsConstructor
 public class ArtImageUploader {
     private final FileUploader fileUploader;

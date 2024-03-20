@@ -7,14 +7,14 @@ import com.sjiwon.anotherart.favorite.application.usecase.command.MarkArtLikeCom
 import com.sjiwon.anotherart.favorite.domain.model.Favorite;
 import com.sjiwon.anotherart.favorite.domain.repository.FavoriteRepository;
 import com.sjiwon.anotherart.favorite.exception.FavoriteErrorCode;
+import com.sjiwon.anotherart.global.annotation.UseCase;
 import com.sjiwon.anotherart.global.exception.AnotherArtException;
 import com.sjiwon.anotherart.member.domain.model.Member;
 import com.sjiwon.anotherart.member.domain.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.stereotype.Service;
 
-@Service
+@UseCase
 @RequiredArgsConstructor
 public class ManageFavoriteUseCase {
     private final ArtRepository artRepository;

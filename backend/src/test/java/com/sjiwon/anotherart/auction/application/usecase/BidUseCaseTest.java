@@ -6,7 +6,7 @@ import com.sjiwon.anotherart.auction.domain.model.Auction;
 import com.sjiwon.anotherart.auction.domain.model.AuctionRecord;
 import com.sjiwon.anotherart.auction.domain.repository.AuctionRepository;
 import com.sjiwon.anotherart.auction.exception.AuctionErrorCode;
-import com.sjiwon.anotherart.common.UseCaseTest;
+import com.sjiwon.anotherart.common.UnitTest;
 import com.sjiwon.anotherart.global.exception.AnotherArtException;
 import com.sjiwon.anotherart.member.domain.model.Member;
 import com.sjiwon.anotherart.member.domain.repository.MemberRepository;
@@ -30,7 +30,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @DisplayName("Auction -> BidUseCase 테스트")
-class BidUseCaseTest extends UseCaseTest {
+class BidUseCaseTest extends UnitTest {
     private final AuctionRepository auctionRepository = mock(AuctionRepository.class);
     private final MemberRepository memberRepository = mock(MemberRepository.class);
     private final BidUseCase sut = new BidUseCase(auctionRepository, memberRepository);

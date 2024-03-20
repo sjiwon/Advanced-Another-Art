@@ -16,8 +16,9 @@ import com.sjiwon.anotherart.global.security.properties.CorsProperties;
 import com.sjiwon.anotherart.global.security.provider.JsonAuthenticationProvider;
 import com.sjiwon.anotherart.global.security.provider.RdbUserDetailsService;
 import com.sjiwon.anotherart.member.domain.repository.MemberRepository;
+import com.sjiwon.anotherart.token.domain.model.AuthToken;
 import com.sjiwon.anotherart.token.domain.service.TokenIssuer;
-import com.sjiwon.anotherart.token.utils.TokenProvider;
+import com.sjiwon.anotherart.token.domain.service.TokenProvider;
 import com.sjiwon.anotherart.token.utils.TokenResponseWriter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
@@ -215,7 +216,7 @@ public class SecurityConfiguration {
         http.logout(logout ->
                 logout.logoutUrl("/api/logout")
                         .clearAuthentication(true)
-                        .deleteCookies(TokenResponseWriter.REFRESH_TOKEN_COOKIE)
+                        .deleteCookies(AuthToken.REFRESH_TOKEN_HEADER)
                         .addLogoutHandler(jwtLogoutTokenCheckHandler())
                         .logoutSuccessHandler(jwtLogoutSuccessHandler())
         );

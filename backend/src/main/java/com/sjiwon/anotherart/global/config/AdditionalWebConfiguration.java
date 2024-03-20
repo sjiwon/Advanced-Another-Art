@@ -3,7 +3,7 @@ package com.sjiwon.anotherart.global.config;
 import com.sjiwon.anotherart.global.annotation.AuthArgumentResolver;
 import com.sjiwon.anotherart.global.annotation.ExtractTokenArgumentResolver;
 import com.sjiwon.anotherart.global.interceptor.RequestLogInterceptor;
-import com.sjiwon.anotherart.token.utils.TokenProvider;
+import com.sjiwon.anotherart.token.domain.service.TokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;

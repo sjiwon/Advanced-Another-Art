@@ -1,6 +1,6 @@
 package com.sjiwon.anotherart.token.domain.service;
 
-import com.sjiwon.anotherart.common.UseCaseTest;
+import com.sjiwon.anotherart.common.UnitTest;
 import com.sjiwon.anotherart.member.domain.model.Member;
 import com.sjiwon.anotherart.token.domain.model.Token;
 import com.sjiwon.anotherart.token.domain.repository.TokenRepository;
@@ -20,7 +20,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @DisplayName("Token -> TokenManager 테스트")
-class TokenManagerTest extends UseCaseTest {
+class TokenManagerTest extends UnitTest {
     private final TokenRepository tokenRepository = mock(TokenRepository.class);
     private final TokenManager sut = new TokenManager(tokenRepository);
 

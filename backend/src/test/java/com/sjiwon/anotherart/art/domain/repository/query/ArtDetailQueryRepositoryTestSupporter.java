@@ -6,7 +6,6 @@ import com.sjiwon.anotherart.art.domain.repository.query.dto.AuctionArt;
 import com.sjiwon.anotherart.art.domain.repository.query.dto.GeneralArt;
 import com.sjiwon.anotherart.art.utils.search.ActiveAuctionArtsSearchCondition;
 import com.sjiwon.anotherart.art.utils.search.ArtDetailsSearchCondition;
-import com.sjiwon.anotherart.art.utils.search.PagingConstants;
 import com.sjiwon.anotherart.auction.domain.model.Auction;
 import com.sjiwon.anotherart.auction.domain.repository.AuctionRepository;
 import com.sjiwon.anotherart.common.RepositoryTest;
@@ -15,6 +14,7 @@ import com.sjiwon.anotherart.common.fixture.AuctionFixture;
 import com.sjiwon.anotherart.common.fixture.MemberFixture;
 import com.sjiwon.anotherart.favorite.domain.model.Favorite;
 import com.sjiwon.anotherart.favorite.domain.repository.FavoriteRepository;
+import com.sjiwon.anotherart.global.query.PageCreator;
 import com.sjiwon.anotherart.member.domain.model.Member;
 import com.sjiwon.anotherart.member.domain.repository.MemberRepository;
 import com.sjiwon.anotherart.purchase.domain.model.Purchase;
@@ -135,8 +135,8 @@ public abstract class ArtDetailQueryRepositoryTestSupporter extends RepositoryTe
             new ArtDetailsSearchCondition(LIKE_ASC, "Hello"),
             new ArtDetailsSearchCondition(LIKE_DESC, "Hello")
     );
-    protected final Pageable pageable1 = PagingConstants.getPageable(1);
-    protected final Pageable pageable2 = PagingConstants.getPageable(2);
+    protected final Pageable pageable1 = PageCreator.getPageable(1);
+    protected final Pageable pageable2 = PageCreator.getPageable(2);
 
     @BeforeEach
     void setUp() {

@@ -1,5 +1,6 @@
 package com.sjiwon.anotherart.member.application.usecase;
 
+import com.sjiwon.anotherart.global.annotation.UseCase;
 import com.sjiwon.anotherart.global.encrypt.PasswordEncryptor;
 import com.sjiwon.anotherart.member.application.usecase.command.SignUpMemberCommand;
 import com.sjiwon.anotherart.member.domain.model.Member;
@@ -7,9 +8,8 @@ import com.sjiwon.anotherart.member.domain.model.Password;
 import com.sjiwon.anotherart.member.domain.repository.MemberRepository;
 import com.sjiwon.anotherart.member.domain.service.MemberResourceValidator;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
 
-@Service
+@UseCase
 @RequiredArgsConstructor
 public class SignUpMemberUseCase {
     private final MemberResourceValidator memberResourceValidator;

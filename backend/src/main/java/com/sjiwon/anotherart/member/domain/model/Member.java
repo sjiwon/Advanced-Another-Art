@@ -126,4 +126,8 @@ public class Member extends BaseEntity<Member> {
     public int getAvailablePoint() {
         return point.getAvailablePoint();
     }
+
+    public String getAuthority() {
+        return role.getAuthority();
+    }
 }

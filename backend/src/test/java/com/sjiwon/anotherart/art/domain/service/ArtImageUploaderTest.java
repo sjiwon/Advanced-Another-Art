@@ -1,7 +1,7 @@
 package com.sjiwon.anotherart.art.domain.service;
 
 import com.sjiwon.anotherart.art.domain.model.UploadImage;
-import com.sjiwon.anotherart.common.UseCaseTest;
+import com.sjiwon.anotherart.common.UnitTest;
 import com.sjiwon.anotherart.common.mock.stub.StubFileUploader;
 import com.sjiwon.anotherart.file.application.adapter.FileUploader;
 import com.sjiwon.anotherart.file.domain.model.RawFileData;
@@ -14,7 +14,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 @DisplayName("Art -> ArtImageUploader 테스트")
-public class ArtImageUploaderTest extends UseCaseTest {
+public class ArtImageUploaderTest extends UnitTest {
     private final FileUploader fileUploader = new StubFileUploader();
     private final ArtImageUploader sut = new ArtImageUploader(fileUploader);
 

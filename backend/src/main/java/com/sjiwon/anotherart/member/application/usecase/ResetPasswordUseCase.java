@@ -3,6 +3,7 @@ package com.sjiwon.anotherart.member.application.usecase;
 import com.sjiwon.anotherart.auth.application.adapter.MailAuthenticationProcessor;
 import com.sjiwon.anotherart.auth.domain.AuthKey;
 import com.sjiwon.anotherart.global.annotation.AnotherArtWritableTransactional;
+import com.sjiwon.anotherart.global.annotation.UseCase;
 import com.sjiwon.anotherart.global.encrypt.PasswordEncryptor;
 import com.sjiwon.anotherart.mail.application.adapter.EmailSender;
 import com.sjiwon.anotherart.member.application.usecase.command.AuthForResetPasswordCommand;
@@ -12,9 +13,8 @@ import com.sjiwon.anotherart.member.domain.model.Email;
 import com.sjiwon.anotherart.member.domain.model.Member;
 import com.sjiwon.anotherart.member.domain.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
 
-@Service
+@UseCase
 @RequiredArgsConstructor
 public class ResetPasswordUseCase {
     private final MemberRepository memberRepository;

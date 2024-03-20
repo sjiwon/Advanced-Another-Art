@@ -3,10 +3,10 @@ package com.sjiwon.anotherart.art.application.usecase;
 import com.sjiwon.anotherart.art.domain.model.ArtType;
 import com.sjiwon.anotherart.art.domain.repository.query.ArtSingleQueryRepository;
 import com.sjiwon.anotherart.art.domain.repository.query.dto.ArtDetails;
+import com.sjiwon.anotherart.global.annotation.UseCase;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
 
-@Service
+@UseCase
 @RequiredArgsConstructor
 public class ArtQueryUseCase {
     private final ArtSingleQueryRepository artSingleQueryRepository;

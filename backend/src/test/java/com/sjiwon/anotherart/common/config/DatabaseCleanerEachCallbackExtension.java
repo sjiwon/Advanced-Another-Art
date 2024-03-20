@@ -8,7 +8,8 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 public class DatabaseCleanerEachCallbackExtension implements AfterEachCallback {
     @Override
     public void afterEach(final ExtensionContext context) {
-        final DatabaseCleaner databaseCleaner = SpringExtension.getApplicationContext(context).getBean(DatabaseCleaner.class);
-        databaseCleaner.cleanUpDatabase();
+        SpringExtension.getApplicationContext(context)
+                .getBean(DatabaseCleaner.class)
+                .cleanUpDatabase();
     }
 }

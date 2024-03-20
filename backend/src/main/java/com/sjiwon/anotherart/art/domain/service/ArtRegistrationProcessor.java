@@ -7,11 +7,11 @@ import com.sjiwon.anotherart.auction.domain.model.Period;
 import com.sjiwon.anotherart.auction.domain.repository.AuctionRepository;
 import com.sjiwon.anotherart.global.annotation.AnotherArtWritableTransactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 
-@Component
+@Service
 @RequiredArgsConstructor
 public class ArtRegistrationProcessor {
     private final ArtRepository artRepository;

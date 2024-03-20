@@ -13,8 +13,8 @@ import com.sjiwon.anotherart.art.presentation.dto.request.ArtHashtagSearchReques
 import com.sjiwon.anotherart.art.presentation.dto.request.ArtKeywordSearchRequest;
 import com.sjiwon.anotherart.art.utils.search.ActiveAuctionArtsSearchCondition;
 import com.sjiwon.anotherart.art.utils.search.ArtDetailsSearchCondition;
-import com.sjiwon.anotherart.art.utils.search.Pagination;
 import com.sjiwon.anotherart.art.utils.search.SearchSortType;
+import com.sjiwon.anotherart.global.query.Pagination;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -28,8 +28,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-import static com.sjiwon.anotherart.art.utils.search.PagingConstants.getPageable;
 import static com.sjiwon.anotherart.art.utils.search.SearchSortType.isNotSupportedSortType;
+import static com.sjiwon.anotherart.global.query.PageCreator.getPageable;
 
 @Tag(name = "작품 조회 API")
 @RestController
@@ -50,7 +50,7 @@ public class ArtSearchApiController {
     @GetMapping("/active-auction")
     public ResponseEntity<AuctionArtPagingResponse> getActiveAuctionArts(@ModelAttribute @Valid final ArtBasicSearchRequest request) {
         if (isNotSupportedSortType(request.sortType())) {
-            return ResponseEntity.ok(new AuctionArtPagingResponse(List.of(), Pagination.getEmptyPage(request.page())));
+            return ResponseEntity.ok(new AuctionArtPagingResponse(List.of(), Pagination.empty(request.page())));
         }
 
         final ActiveAuctionArtsSearchCondition condition = new ActiveAuctionArtsSearchCondition(SearchSortType.from(request.sortType()));
@@ -62,7 +62,7 @@ public class ArtSearchApiController {
     @GetMapping("/auction/keyword")
     public ResponseEntity<AuctionArtPagingResponse> getAuctionArtsByKeyword(@ModelAttribute @Valid final ArtKeywordSearchRequest request) {
         if (isNotSupportedSortType(request.sortType())) {
-            return ResponseEntity.ok(new AuctionArtPagingResponse(List.of(), Pagination.getEmptyPage(request.page())));
+            return ResponseEntity.ok(new AuctionArtPagingResponse(List.of(), Pagination.empty(request.page())));
         }
 
         final ArtDetailsSearchCondition condition = new ArtDetailsSearchCondition(SearchSortType.from(request.sortType()), request.keyword());
@@ -74,7 +74,7 @@ public class ArtSearchApiController {
     @GetMapping("/general/keyword")
     public ResponseEntity<GeneralArtPagingResponse> getGeneralArtsByKeyword(@ModelAttribute @Valid final ArtKeywordSearchRequest request) {
         if (isNotSupportedSortType(request.sortType())) {
-            return ResponseEntity.ok(new GeneralArtPagingResponse(List.of(), Pagination.getEmptyPage(request.page())));
+            return ResponseEntity.ok(new GeneralArtPagingResponse(List.of(), Pagination.empty(request.page())));
         }
 
         final ArtDetailsSearchCondition condition = new ArtDetailsSearchCondition(SearchSortType.from(request.sortType()), request.keyword());
@@ -86,7 +86,7 @@ public class ArtSearchApiController {
     @GetMapping("/auction/hashtag")
     public ResponseEntity<AuctionArtPagingResponse> getAuctionArtsByHashtag(@ModelAttribute @Valid final ArtHashtagSearchRequest request) {
         if (isNotSupportedSortType(request.sortType())) {
-            return ResponseEntity.ok(new AuctionArtPagingResponse(List.of(), Pagination.getEmptyPage(request.page())));
+            return ResponseEntity.ok(new AuctionArtPagingResponse(List.of(), Pagination.empty(request.page())));
         }
 
         final ArtDetailsSearchCondition condition = new ArtDetailsSearchCondition(SearchSortType.from(request.sortType()), request.hashtag());
@@ -98,7 +98,7 @@ public class ArtSearchApiController {
     @GetMapping("/general/hashtag")
     public ResponseEntity<GeneralArtPagingResponse> getGeneralArtsByHashtag(@ModelAttribute @Valid final ArtHashtagSearchRequest request) {
         if (isNotSupportedSortType(request.sortType())) {
-            return ResponseEntity.ok(new GeneralArtPagingResponse(List.of(), Pagination.getEmptyPage(request.page())));
+            return ResponseEntity.ok(new GeneralArtPagingResponse(List.of(), Pagination.empty(request.page())));
         }
 
         final ArtDetailsSearchCondition condition = new ArtDetailsSearchCondition(SearchSortType.from(request.sortType()), request.hashtag());

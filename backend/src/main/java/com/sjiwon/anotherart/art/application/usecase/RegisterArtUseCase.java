@@ -6,12 +6,12 @@ import com.sjiwon.anotherart.art.domain.model.UploadImage;
 import com.sjiwon.anotherart.art.domain.service.ArtImageUploader;
 import com.sjiwon.anotherart.art.domain.service.ArtRegistrationProcessor;
 import com.sjiwon.anotherart.art.domain.service.ArtResourceValidator;
+import com.sjiwon.anotherart.global.annotation.UseCase;
 import com.sjiwon.anotherart.member.domain.model.Member;
 import com.sjiwon.anotherart.member.domain.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
 
-@Service
+@UseCase
 @RequiredArgsConstructor
 public class RegisterArtUseCase {
     private final ArtResourceValidator artResourceValidator;

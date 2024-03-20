@@ -1,5 +1,6 @@
 package com.sjiwon.anotherart.member.application.usecase;
 
+import com.sjiwon.anotherart.global.annotation.UseCase;
 import com.sjiwon.anotherart.member.application.usecase.dto.PurchaseArtsAssembler;
 import com.sjiwon.anotherart.member.application.usecase.dto.SoldArtsAssembler;
 import com.sjiwon.anotherart.member.application.usecase.query.GetInformationById;
@@ -14,14 +15,13 @@ import com.sjiwon.anotherart.member.domain.repository.query.dto.PurchaseArt;
 import com.sjiwon.anotherart.member.domain.repository.query.dto.SoldArt;
 import com.sjiwon.anotherart.member.domain.repository.query.dto.WinningAuctionArt;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 import static com.sjiwon.anotherart.art.domain.model.ArtType.AUCTION;
 import static com.sjiwon.anotherart.art.domain.model.ArtType.GENERAL;
 
-@Service
+@UseCase
 @RequiredArgsConstructor
 public class MemberPrivateQueryUseCase {
     private final MemberInformationQueryRepository memberInformationRepository;

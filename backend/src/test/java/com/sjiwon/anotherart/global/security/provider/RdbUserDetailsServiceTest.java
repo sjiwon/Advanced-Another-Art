@@ -1,6 +1,6 @@
 package com.sjiwon.anotherart.global.security.provider;
 
-import com.sjiwon.anotherart.common.UseCaseTest;
+import com.sjiwon.anotherart.common.UnitTest;
 import com.sjiwon.anotherart.global.security.principal.MemberPrincipal;
 import com.sjiwon.anotherart.member.domain.model.Member;
 import com.sjiwon.anotherart.member.domain.repository.MemberRepository;
@@ -20,7 +20,7 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 
 @DisplayName("Global/Security -> RdbUserDetailsService 테스트")
-public class RdbUserDetailsServiceTest extends UseCaseTest {
+public class RdbUserDetailsServiceTest extends UnitTest {
     private final MemberRepository memberRepository = mock(MemberRepository.class);
     private final RdbUserDetailsService sut = new RdbUserDetailsService(memberRepository);
 
@@ -57,7 +57,7 @@ public class RdbUserDetailsServiceTest extends UseCaseTest {
                 () -> assertThat(memberPrincipal.nickname()).isEqualTo(member.getNickname().getValue()),
                 () -> assertThat(memberPrincipal.loginId()).isEqualTo(member.getLoginId()),
                 () -> assertThat(memberPrincipal.password()).isEqualTo(member.getPassword().getValue()),
-                () -> assertThat(memberPrincipal.role()).isEqualTo(member.getRole().getAuthority())
+                () -> assertThat(memberPrincipal.authority()).isEqualTo(member.getRole().getAuthority())
         );
     }
 }

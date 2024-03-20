@@ -1,6 +1,6 @@
 package com.sjiwon.anotherart.member.application.usecase;
 
-import com.sjiwon.anotherart.common.UseCaseTest;
+import com.sjiwon.anotherart.common.UnitTest;
 import com.sjiwon.anotherart.common.mock.fake.FakePasswordEncryptor;
 import com.sjiwon.anotherart.global.encrypt.PasswordEncryptor;
 import com.sjiwon.anotherart.global.exception.AnotherArtException;
@@ -23,7 +23,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @DisplayName("Member -> SignUpMemberUseCase 테스트")
-public class SignUpMemberUseCaseTest extends UseCaseTest {
+public class SignUpMemberUseCaseTest extends UnitTest {
     private final PasswordEncryptor passwordEncryptor = new FakePasswordEncryptor();
     private final MemberRepository memberRepository = mock(MemberRepository.class);
     private final MemberResourceValidator memberResourceValidator = new MemberResourceValidator(memberRepository);

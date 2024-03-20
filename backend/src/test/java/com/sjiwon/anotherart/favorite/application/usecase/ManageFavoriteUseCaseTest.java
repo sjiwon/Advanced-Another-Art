@@ -2,7 +2,7 @@ package com.sjiwon.anotherart.favorite.application.usecase;
 
 import com.sjiwon.anotherart.art.domain.model.Art;
 import com.sjiwon.anotherart.art.domain.repository.ArtRepository;
-import com.sjiwon.anotherart.common.UseCaseTest;
+import com.sjiwon.anotherart.common.UnitTest;
 import com.sjiwon.anotherart.favorite.application.usecase.command.CancelArtLikeCommand;
 import com.sjiwon.anotherart.favorite.application.usecase.command.MarkArtLikeCommand;
 import com.sjiwon.anotherart.favorite.domain.model.Favorite;
@@ -29,7 +29,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @DisplayName("Favorite -> ManageFavoriteUseCase 테스트")
-class ManageFavoriteUseCaseTest extends UseCaseTest {
+class ManageFavoriteUseCaseTest extends UnitTest {
     private final ArtRepository artRepository = mock(ArtRepository.class);
     private final MemberRepository memberRepository = mock(MemberRepository.class);
     private final FavoriteRepository favoriteRepository = mock(FavoriteRepository.class);

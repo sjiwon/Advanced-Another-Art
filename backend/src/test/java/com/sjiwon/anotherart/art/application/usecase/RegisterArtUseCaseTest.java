@@ -9,7 +9,7 @@ import com.sjiwon.anotherart.art.domain.service.ArtResourceValidator;
 import com.sjiwon.anotherart.art.exception.ArtErrorCode;
 import com.sjiwon.anotherart.auction.domain.model.Auction;
 import com.sjiwon.anotherart.auction.domain.repository.AuctionRepository;
-import com.sjiwon.anotherart.common.UseCaseTest;
+import com.sjiwon.anotherart.common.UnitTest;
 import com.sjiwon.anotherart.file.domain.model.RawFileData;
 import com.sjiwon.anotherart.file.utils.converter.FileConverter;
 import com.sjiwon.anotherart.global.exception.AnotherArtException;
@@ -35,7 +35,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @DisplayName("Art -> RegisterArtUseCase 테스트")
-public class RegisterArtUseCaseTest extends UseCaseTest {
+public class RegisterArtUseCaseTest extends UnitTest {
     private final ArtRepository artRepository = mock(ArtRepository.class);
     private final AuctionRepository auctionRepository = mock(AuctionRepository.class);
 

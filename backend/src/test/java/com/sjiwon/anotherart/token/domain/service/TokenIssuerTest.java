@@ -2,7 +2,6 @@ package com.sjiwon.anotherart.token.domain.service;
 
 import com.sjiwon.anotherart.member.domain.model.Member;
 import com.sjiwon.anotherart.token.domain.model.AuthToken;
-import com.sjiwon.anotherart.token.utils.TokenProvider;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -28,15 +27,15 @@ public class TokenIssuerTest {
     @DisplayName("AuthToken[Access + Refresh]을 제공한다")
     void provideAuthorityToken() {
         // given
-        given(tokenProvider.createAccessToken(member.getId())).willReturn(ACCESS_TOKEN);
+        given(tokenProvider.createAccessToken(member.getId(), member.getAuthority())).willReturn(ACCESS_TOKEN);
         given(tokenProvider.createRefreshToken(member.getId())).willReturn(REFRESH_TOKEN);
 
         // when
-        final AuthToken authToken = sut.provideAuthorityToken(member.getId());
+        final AuthToken authToken = sut.provideAuthorityToken(member.getId(), member.getAuthority());
 
         // then
         assertAll(
-                () -> verify(tokenProvider, times(1)).createAccessToken(member.getId()),
+                () -> verify(tokenProvider, times(1)).createAccessToken(member.getId(), member.getAuthority()),
                 () -> verify(tokenProvider, times(1)).createRefreshToken(member.getId()),
                 () -> verify(tokenManager, times(1)).synchronizeRefreshToken(member.getId(), REFRESH_TOKEN),
                 () -> assertThat(authToken.accessToken()).isEqualTo(ACCESS_TOKEN),
@@ -48,15 +47,15 @@ public class TokenIssuerTest {
     @DisplayName("AuthToken[Access + Refresh]을 재발급한다")
     void reissueAuthorityToken() {
         // given
-        given(tokenProvider.createAccessToken(member.getId())).willReturn(ACCESS_TOKEN);
+        given(tokenProvider.createAccessToken(member.getId(), member.getAuthority())).willReturn(ACCESS_TOKEN);
         given(tokenProvider.createRefreshToken(member.getId())).willReturn(REFRESH_TOKEN);
 
         // when
-        final AuthToken authToken = sut.reissueAuthorityToken(member.getId());
+        final AuthToken authToken = sut.reissueAuthorityToken(member.getId(), member.getAuthority());
 
         // then
         assertAll(
-                () -> verify(tokenProvider, times(1)).createAccessToken(member.getId()),
+                () -> verify(tokenProvider, times(1)).createAccessToken(member.getId(), member.getAuthority()),
                 () -> verify(tokenProvider, times(1)).createRefreshToken(member.getId()),
                 () -> verify(tokenManager, times(1)).updateRefreshToken(member.getId(), REFRESH_TOKEN),
                 () -> assertThat(authToken.accessToken()).isEqualTo(ACCESS_TOKEN),

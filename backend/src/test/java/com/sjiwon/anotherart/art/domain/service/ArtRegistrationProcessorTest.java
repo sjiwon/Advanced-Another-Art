@@ -4,7 +4,7 @@ import com.sjiwon.anotherart.art.domain.model.Art;
 import com.sjiwon.anotherart.art.domain.repository.ArtRepository;
 import com.sjiwon.anotherart.auction.domain.model.Auction;
 import com.sjiwon.anotherart.auction.domain.repository.AuctionRepository;
-import com.sjiwon.anotherart.common.UseCaseTest;
+import com.sjiwon.anotherart.common.UnitTest;
 import com.sjiwon.anotherart.member.domain.model.Member;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -26,7 +26,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @DisplayName("Art -> ArtRegistrationProcessor 테스트")
-public class ArtRegistrationProcessorTest extends UseCaseTest {
+public class ArtRegistrationProcessorTest extends UnitTest {
     private final ArtRepository artRepository = mock(ArtRepository.class);
     private final AuctionRepository auctionRepository = mock(AuctionRepository.class);
     private final ArtRegistrationProcessor sut = new ArtRegistrationProcessor(artRepository, auctionRepository);

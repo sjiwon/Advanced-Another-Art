@@ -4,7 +4,7 @@ import com.sjiwon.anotherart.art.domain.model.Art;
 import com.sjiwon.anotherart.art.domain.repository.ArtRepository;
 import com.sjiwon.anotherart.auction.domain.model.Auction;
 import com.sjiwon.anotherart.auction.domain.repository.AuctionRepository;
-import com.sjiwon.anotherart.common.UseCaseTest;
+import com.sjiwon.anotherart.common.UnitTest;
 import com.sjiwon.anotherart.global.exception.AnotherArtException;
 import com.sjiwon.anotherart.member.domain.model.Member;
 import com.sjiwon.anotherart.member.domain.repository.MemberRepository;
@@ -37,7 +37,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @DisplayName("Purchase -> PurchaseArtUseCase 테스트")
-class PurchaseArtUseCaseTest extends UseCaseTest {
+class PurchaseArtUseCaseTest extends UnitTest {
     private final ArtRepository artRepository = mock(ArtRepository.class);
     private final MemberRepository memberRepository = mock(MemberRepository.class);
     private final AuctionRepository auctionRepository = mock(AuctionRepository.class);

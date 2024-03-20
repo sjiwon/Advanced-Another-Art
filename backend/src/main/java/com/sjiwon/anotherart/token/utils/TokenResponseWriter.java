@@ -6,15 +6,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Component;
 
-import static org.springframework.boot.web.server.Cookie.SameSite.STRICT;
-import static org.springframework.http.HttpHeaders.AUTHORIZATION;
+import static org.springframework.boot.web.server.Cookie.SameSite.NONE;
 import static org.springframework.http.HttpHeaders.SET_COOKIE;
 
 @Component
 public class TokenResponseWriter {
-    public static final String REFRESH_TOKEN_COOKIE = "refresh_token";
-    public static final String AUTHORIZATION_HEADER_TOKEN_PREFIX = "Bearer";
-
     private final long refreshTokenCookieAge;
 
     public TokenResponseWriter(@Value("${jwt.refresh-token-validity}") final long refreshTokenCookieAge) {
@@ -27,13 +23,13 @@ public class TokenResponseWriter {
     }
 
     private void applyAccessToken(final HttpServletResponse response, final String accessToken) {
-        response.setHeader(AUTHORIZATION, String.join(" ", AUTHORIZATION_HEADER_TOKEN_PREFIX, accessToken));
+        response.setHeader(AuthToken.ACCESS_TOKEN_HEADER, String.join(" ", AuthToken.TOKEN_TYPE, accessToken));
     }
 
     private void applyRefreshToken(final HttpServletResponse response, final String refreshToken) {
-        final ResponseCookie cookie = ResponseCookie.from(REFRESH_TOKEN_COOKIE, refreshToken)
+        final ResponseCookie cookie = ResponseCookie.from(AuthToken.REFRESH_TOKEN_HEADER, refreshToken)
                 .maxAge(refreshTokenCookieAge)
-                .sameSite(STRICT.attributeValue())
+                .sameSite(NONE.attributeValue())
                 .secure(true)
                 .httpOnly(true)
                 .path("/")

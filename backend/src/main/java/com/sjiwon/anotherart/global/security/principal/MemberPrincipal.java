@@ -14,7 +14,7 @@ public record MemberPrincipal(
         String nickname,
         String loginId,
         String password,
-        String role
+        String authority
 ) implements UserDetails {
     public MemberPrincipal(final Member member) {
         this(
@@ -30,7 +30,7 @@ public record MemberPrincipal(
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         final Collection<GrantedAuthority> authorities = new ArrayList<>();
-        authorities.add(new SimpleGrantedAuthority(role));
+        authorities.add(new SimpleGrantedAuthority(authority));
         return authorities;
     }
 

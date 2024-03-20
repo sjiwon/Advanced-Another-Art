@@ -1,11 +1,11 @@
 package com.sjiwon.anotherart.member.application.usecase;
 
+import com.sjiwon.anotherart.global.annotation.UseCase;
 import com.sjiwon.anotherart.member.application.usecase.command.ValidateMemberResourceCommand;
 import com.sjiwon.anotherart.member.domain.service.MemberResourceValidator;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
 
-@Service
+@UseCase
 @RequiredArgsConstructor
 public class ValidateMemberResourceUseCase {
     private final MemberResourceValidator memberResourceValidator;

@@ -5,7 +5,7 @@ import com.sjiwon.anotherart.art.domain.model.Art;
 import com.sjiwon.anotherart.art.domain.repository.ArtRepository;
 import com.sjiwon.anotherart.art.domain.service.ArtResourceValidator;
 import com.sjiwon.anotherart.art.exception.ArtErrorCode;
-import com.sjiwon.anotherart.common.UseCaseTest;
+import com.sjiwon.anotherart.common.UnitTest;
 import com.sjiwon.anotherart.global.exception.AnotherArtException;
 import com.sjiwon.anotherart.member.domain.model.Member;
 import org.junit.jupiter.api.DisplayName;
@@ -23,7 +23,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @DisplayName("Art -> UpdateArtUseCase 테스트")
-public class UpdateArtUseCaseTest extends UseCaseTest {
+public class UpdateArtUseCaseTest extends UnitTest {
     private final ArtRepository artRepository = mock(ArtRepository.class);
     private final ArtResourceValidator artResourceValidator = new ArtResourceValidator(artRepository);
     private final UpdateArtUseCase sut = new UpdateArtUseCase(artResourceValidator, artRepository);

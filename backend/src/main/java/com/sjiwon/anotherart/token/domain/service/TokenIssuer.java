@@ -1,7 +1,6 @@
 package com.sjiwon.anotherart.token.domain.service;
 
 import com.sjiwon.anotherart.token.domain.model.AuthToken;
-import com.sjiwon.anotherart.token.utils.TokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -11,16 +10,16 @@ public class TokenIssuer {
     private final TokenProvider tokenProvider;
     private final TokenManager tokenManager;
 
-    public AuthToken provideAuthorityToken(final Long memberId) {
-        final String accessToken = tokenProvider.createAccessToken(memberId);
+    public AuthToken provideAuthorityToken(final Long memberId, final String authority) {
+        final String accessToken = tokenProvider.createAccessToken(memberId, authority);
         final String refreshToken = tokenProvider.createRefreshToken(memberId);
         tokenManager.synchronizeRefreshToken(memberId, refreshToken);
 
         return new AuthToken(accessToken, refreshToken);
     }
 
-    public AuthToken reissueAuthorityToken(final Long memberId) {
-        final String newAccessToken = tokenProvider.createAccessToken(memberId);
+    public AuthToken reissueAuthorityToken(final Long memberId, final String authority) {
+        final String newAccessToken = tokenProvider.createAccessToken(memberId, authority);
         final String newRefreshToken = tokenProvider.createRefreshToken(memberId);
         tokenManager.updateRefreshToken(memberId, newRefreshToken);
 

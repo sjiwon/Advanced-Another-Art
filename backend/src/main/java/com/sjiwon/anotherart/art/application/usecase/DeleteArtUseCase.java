@@ -5,10 +5,10 @@ import com.sjiwon.anotherart.art.domain.model.Art;
 import com.sjiwon.anotherart.art.domain.repository.ArtRepository;
 import com.sjiwon.anotherart.art.domain.service.ArtDeleter;
 import com.sjiwon.anotherart.art.domain.service.ArtDeletionPreInspector;
+import com.sjiwon.anotherart.global.annotation.UseCase;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
 
-@Service
+@UseCase
 @RequiredArgsConstructor
 public class DeleteArtUseCase {
     private final ArtRepository artRepository;

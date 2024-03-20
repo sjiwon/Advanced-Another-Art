@@ -1,5 +1,6 @@
 package com.sjiwon.anotherart.token.utils;
 
+import com.sjiwon.anotherart.token.domain.model.AuthToken;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AccessLevel;
@@ -9,12 +10,10 @@ import org.springframework.util.StringUtils;
 import java.util.Arrays;
 import java.util.Optional;
 
-import static com.sjiwon.anotherart.token.utils.TokenResponseWriter.AUTHORIZATION_HEADER_TOKEN_PREFIX;
-import static com.sjiwon.anotherart.token.utils.TokenResponseWriter.REFRESH_TOKEN_COOKIE;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class RequestTokenExtractor {
+public class TokenExtractor {
     public static Optional<String> extractAccessToken(final HttpServletRequest request) {
         final String token = request.getHeader(AUTHORIZATION);
         if (isEmptyToken(token)) {
@@ -30,7 +29,7 @@ public class RequestTokenExtractor {
         }
 
         final String token = Arrays.stream(cookies)
-                .filter(cookie -> cookie.getName().equals(REFRESH_TOKEN_COOKIE))
+                .filter(cookie -> cookie.getName().equals(AuthToken.REFRESH_TOKEN_HEADER))
                 .map(Cookie::getValue)
                 .findFirst()
                 .orElse(null);
@@ -46,7 +45,7 @@ public class RequestTokenExtractor {
     }
 
     private static Optional<String> checkToken(final String[] parts) {
-        if (parts.length == 2 && parts[0].equals(AUTHORIZATION_HEADER_TOKEN_PREFIX)) {
+        if (parts.length == 2 && parts[0].equals(AuthToken.TOKEN_TYPE)) {
             return Optional.ofNullable(parts[1]);
         }
         return Optional.empty();

@@ -3,7 +3,7 @@ package com.sjiwon.anotherart.art.domain.service;
 import com.sjiwon.anotherart.art.domain.model.Art;
 import com.sjiwon.anotherart.art.domain.repository.ArtRepository;
 import com.sjiwon.anotherart.art.exception.ArtErrorCode;
-import com.sjiwon.anotherart.common.UseCaseTest;
+import com.sjiwon.anotherart.common.UnitTest;
 import com.sjiwon.anotherart.global.exception.AnotherArtException;
 import com.sjiwon.anotherart.member.domain.model.Member;
 import org.junit.jupiter.api.DisplayName;
@@ -17,7 +17,7 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 
 @DisplayName("Art -> ArtResourceValidator 테스트")
-public class ArtResourceValidatorTest extends UseCaseTest {
+public class ArtResourceValidatorTest extends UnitTest {
     private final ArtRepository artRepository = mock(ArtRepository.class);
     private final ArtResourceValidator sut = new ArtResourceValidator(artRepository);
 

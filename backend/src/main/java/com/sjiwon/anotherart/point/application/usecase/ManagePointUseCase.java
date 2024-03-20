@@ -1,6 +1,7 @@
 package com.sjiwon.anotherart.point.application.usecase;
 
 import com.sjiwon.anotherart.global.annotation.AnotherArtWritableTransactional;
+import com.sjiwon.anotherart.global.annotation.UseCase;
 import com.sjiwon.anotherart.member.domain.model.Member;
 import com.sjiwon.anotherart.member.domain.repository.MemberRepository;
 import com.sjiwon.anotherart.point.application.usecase.command.ChargePointCommand;
@@ -8,12 +9,11 @@ import com.sjiwon.anotherart.point.application.usecase.command.RefundPointComman
 import com.sjiwon.anotherart.point.domain.model.PointRecord;
 import com.sjiwon.anotherart.point.domain.repository.PointRecordRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
 
 import static com.sjiwon.anotherart.point.domain.model.PointType.CHARGE;
 import static com.sjiwon.anotherart.point.domain.model.PointType.REFUND;
 
-@Service
+@UseCase
 @RequiredArgsConstructor
 public class ManagePointUseCase {
     private final MemberRepository memberRepository;

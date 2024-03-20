@@ -14,8 +14,6 @@ import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
-import java.util.List;
-
 @RequiredArgsConstructor
 public class AuthArgumentResolver implements HandlerMethodArgumentResolver {
     @Override
@@ -46,6 +44,6 @@ public class AuthArgumentResolver implements HandlerMethodArgumentResolver {
 
     private Authenticated extractAuthInfo(final Authentication authentication) {
         final MemberPrincipal principal = (MemberPrincipal) authentication.getPrincipal();
-        return new Authenticated(principal.id(), principal.name(), principal.nickname(), List.of(principal.role()));
+        return new Authenticated(principal.id(), principal.authority());
     }
 }

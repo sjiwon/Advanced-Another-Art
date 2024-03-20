@@ -29,7 +29,7 @@ public class JsonAuthenticationSuccessHandler implements AuthenticationSuccessHa
             final Authentication authentication
     ) throws IOException {
         final MemberPrincipal principal = getPrincipal(authentication);
-        final AuthToken authToken = tokenIssuer.provideAuthorityToken(principal.id());
+        final AuthToken authToken = tokenIssuer.provideAuthorityToken(principal.id(), principal.authority());
 
         tokenResponseWriter.applyToken(response, authToken);
         sendResponse(response, principal);

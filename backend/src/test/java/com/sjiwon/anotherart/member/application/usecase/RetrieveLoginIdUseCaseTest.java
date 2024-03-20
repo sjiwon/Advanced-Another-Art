@@ -2,7 +2,7 @@ package com.sjiwon.anotherart.member.application.usecase;
 
 import com.sjiwon.anotherart.auth.application.adapter.MailAuthenticationProcessor;
 import com.sjiwon.anotherart.auth.domain.AuthKey;
-import com.sjiwon.anotherart.common.UseCaseTest;
+import com.sjiwon.anotherart.common.UnitTest;
 import com.sjiwon.anotherart.global.exception.AnotherArtException;
 import com.sjiwon.anotherart.global.security.exception.AuthErrorCode;
 import com.sjiwon.anotherart.mail.application.adapter.EmailSender;
@@ -26,7 +26,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @DisplayName("Member -> RetrieveLoginIdUseCase 테스트")
-public class RetrieveLoginIdUseCaseTest extends UseCaseTest {
+public class RetrieveLoginIdUseCaseTest extends UnitTest {
     private final MemberRepository memberRepository = mock(MemberRepository.class);
     private final MailAuthenticationProcessor mailAuthenticationProcessor = mock(MailAuthenticationProcessor.class);
     private final EmailSender emailSender = mock(EmailSender.class);

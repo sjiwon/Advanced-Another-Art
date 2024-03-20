@@ -7,9 +7,9 @@ import com.sjiwon.anotherart.member.domain.model.Phone;
 import com.sjiwon.anotherart.member.domain.repository.MemberRepository;
 import com.sjiwon.anotherart.member.exception.MemberErrorCode;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
-@Component
+@Service
 @RequiredArgsConstructor
 public class MemberResourceValidator {
     private final MemberRepository memberRepository;

@@ -1,6 +1,7 @@
 package com.sjiwon.anotherart.member.application.usecase;
 
 import com.sjiwon.anotherart.global.annotation.AnotherArtWritableTransactional;
+import com.sjiwon.anotherart.global.annotation.UseCase;
 import com.sjiwon.anotherart.global.encrypt.PasswordEncryptor;
 import com.sjiwon.anotherart.member.application.usecase.command.UpdateAddressCommand;
 import com.sjiwon.anotherart.member.application.usecase.command.UpdateNicknameCommand;
@@ -9,9 +10,8 @@ import com.sjiwon.anotherart.member.domain.model.Member;
 import com.sjiwon.anotherart.member.domain.repository.MemberRepository;
 import com.sjiwon.anotherart.member.domain.service.MemberResourceValidator;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
 
-@Service
+@UseCase
 @RequiredArgsConstructor
 public class UpdateMemberResourceUseCase {
     private final MemberResourceValidator memberResourceValidator;

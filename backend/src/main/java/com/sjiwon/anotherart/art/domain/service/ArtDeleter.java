@@ -7,9 +7,9 @@ import com.sjiwon.anotherart.auction.domain.repository.AuctionRepository;
 import com.sjiwon.anotherart.favorite.domain.repository.FavoriteRepository;
 import com.sjiwon.anotherart.global.annotation.AnotherArtWritableTransactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
-@Component
+@Service
 @RequiredArgsConstructor
 public class ArtDeleter {
     private final AuctionRepository auctionRepository;
