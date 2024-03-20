@@ -1,19 +1,20 @@
 package com.sjiwon.anotherart.favorite.domain.model;
 
 import com.sjiwon.anotherart.art.domain.model.Art;
-import com.sjiwon.anotherart.global.BaseEntity;
+import com.sjiwon.anotherart.global.base.BaseEntity;
 import com.sjiwon.anotherart.member.domain.model.Member;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import static lombok.AccessLevel.PROTECTED;
+
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor(access = PROTECTED)
 @Entity
 @Table(name = "art_favorite")
 public class Favorite extends BaseEntity<Favorite> {

@@ -1,16 +1,16 @@
 package com.sjiwon.anotherart.member.application.usecase;
 
 import com.sjiwon.anotherart.common.UnitTest;
-import com.sjiwon.anotherart.common.mock.fake.FakePasswordEncryptor;
-import com.sjiwon.anotherart.global.encrypt.PasswordEncryptor;
-import com.sjiwon.anotherart.global.exception.AnotherArtException;
+import com.sjiwon.anotherart.common.mock.fake.FakeEncryptor;
+import com.sjiwon.anotherart.global.utils.encrypt.Encryptor;
 import com.sjiwon.anotherart.member.application.usecase.command.UpdateAddressCommand;
 import com.sjiwon.anotherart.member.application.usecase.command.UpdateNicknameCommand;
 import com.sjiwon.anotherart.member.application.usecase.command.UpdatePasswordCommand;
 import com.sjiwon.anotherart.member.domain.model.Member;
 import com.sjiwon.anotherart.member.domain.repository.MemberRepository;
 import com.sjiwon.anotherart.member.domain.service.MemberResourceValidator;
-import com.sjiwon.anotherart.member.exception.MemberErrorCode;
+import com.sjiwon.anotherart.member.exception.MemberException;
+import com.sjiwon.anotherart.member.exception.MemberExceptionCode;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -28,9 +28,9 @@ import static org.mockito.Mockito.verify;
 @DisplayName("Member -> UpdateMemberResourceUseCase 테스트")
 public class UpdateMemberResourceUseCaseTest extends UnitTest {
     private final MemberRepository memberRepository = mock(MemberRepository.class);
-    private final PasswordEncryptor passwordEncryptor = new FakePasswordEncryptor();
+    private final Encryptor encryptor = new FakeEncryptor();
     private final MemberResourceValidator memberResourceValidator = new MemberResourceValidator(memberRepository);
-    private final UpdateMemberResourceUseCase sut = new UpdateMemberResourceUseCase(memberResourceValidator, passwordEncryptor, memberRepository);
+    private final UpdateMemberResourceUseCase sut = new UpdateMemberResourceUseCase(memberResourceValidator, encryptor, memberRepository);
 
     private final Member member = MEMBER_A.toMember().apply(1L);
 
@@ -47,8 +47,8 @@ public class UpdateMemberResourceUseCaseTest extends UnitTest {
 
             // when - then
             assertThatThrownBy(() -> sut.updateNickname(command))
-                    .isInstanceOf(AnotherArtException.class)
-                    .hasMessage(MemberErrorCode.DUPLICATE_NICKNAME.getMessage());
+                    .isInstanceOf(MemberException.class)
+                    .hasMessage(MemberExceptionCode.DUPLICATE_NICKNAME.getMessage());
 
             assertAll(
                     () -> verify(memberRepository, times(1)).isNicknameUsedByOther(command.memberId(), command.nickname()),
@@ -66,8 +66,8 @@ public class UpdateMemberResourceUseCaseTest extends UnitTest {
 
             // when - then
             assertThatThrownBy(() -> sut.updateNickname(command))
-                    .isInstanceOf(AnotherArtException.class)
-                    .hasMessage(MemberErrorCode.NICKNAME_SAME_AS_BEFORE.getMessage());
+                    .isInstanceOf(MemberException.class)
+                    .hasMessage(MemberExceptionCode.NICKNAME_SAME_AS_BEFORE.getMessage());
 
             assertAll(
                     () -> verify(memberRepository, times(1)).isNicknameUsedByOther(command.memberId(), command.nickname()),
@@ -127,7 +127,7 @@ public class UpdateMemberResourceUseCaseTest extends UnitTest {
     @Nested
     @DisplayName("비밀번호 수정")
     class UpdatePassword {
-        private final PasswordEncryptor passwordEncryptor = new FakePasswordEncryptor();
+        private final Encryptor encryptor = new FakeEncryptor();
         private final UpdatePasswordCommand command = new UpdatePasswordCommand(
                 member.getId(),
                 MEMBER_B.getPassword()
@@ -145,8 +145,8 @@ public class UpdateMemberResourceUseCaseTest extends UnitTest {
             // then
             assertAll(
                     () -> verify(memberRepository, times(1)).getById(command.memberId()),
-                    () -> assertThat(passwordEncryptor.matches(MEMBER_B.getPassword(), member.getPassword().getValue())).isTrue(),
-                    () -> assertThat(passwordEncryptor.matches(MEMBER_A.getPassword(), member.getPassword().getValue())).isFalse()
+                    () -> assertThat(encryptor.matches(MEMBER_B.getPassword(), member.getPassword().getValue())).isTrue(),
+                    () -> assertThat(encryptor.matches(MEMBER_A.getPassword(), member.getPassword().getValue())).isFalse()
             );
         }
     }

@@ -1,7 +1,7 @@
 package com.sjiwon.anotherart.art.domain.model;
 
-import com.sjiwon.anotherart.art.exception.ArtErrorCode;
-import com.sjiwon.anotherart.global.exception.AnotherArtException;
+import com.sjiwon.anotherart.art.exception.ArtException;
+import com.sjiwon.anotherart.art.exception.ArtExceptionCode;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -17,8 +17,8 @@ class DescriptionTest {
     @DisplayName("Description이 공백이면 생성에 실패한다")
     void throwExceptionByDescriptionIsBlank(final String value) {
         assertThatThrownBy(() -> Description.from(value))
-                .isInstanceOf(AnotherArtException.class)
-                .hasMessage(ArtErrorCode.DESCRIPTION_IS_BLANK.getMessage());
+                .isInstanceOf(ArtException.class)
+                .hasMessage(ArtExceptionCode.DESCRIPTION_IS_BLANK.getMessage());
     }
 
     @Test
@@ -27,8 +27,8 @@ class DescriptionTest {
         final String value = "a".repeat(1001);
 
         assertThatThrownBy(() -> Description.from(value))
-                .isInstanceOf(AnotherArtException.class)
-                .hasMessage(ArtErrorCode.DESCRIPTION_LENGTH_OUT_OF_RANGE.getMessage());
+                .isInstanceOf(ArtException.class)
+                .hasMessage(ArtExceptionCode.DESCRIPTION_LENGTH_OUT_OF_RANGE.getMessage());
     }
 
     @Test

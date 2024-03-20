@@ -1,14 +1,14 @@
 package com.sjiwon.anotherart.member.application.usecase;
 
 import com.sjiwon.anotherart.common.UnitTest;
-import com.sjiwon.anotherart.common.mock.fake.FakePasswordEncryptor;
-import com.sjiwon.anotherart.global.encrypt.PasswordEncryptor;
-import com.sjiwon.anotherart.global.exception.AnotherArtException;
+import com.sjiwon.anotherart.common.mock.fake.FakeEncryptor;
+import com.sjiwon.anotherart.global.utils.encrypt.Encryptor;
 import com.sjiwon.anotherart.member.application.usecase.command.SignUpMemberCommand;
 import com.sjiwon.anotherart.member.domain.model.Member;
 import com.sjiwon.anotherart.member.domain.repository.MemberRepository;
 import com.sjiwon.anotherart.member.domain.service.MemberResourceValidator;
-import com.sjiwon.anotherart.member.exception.MemberErrorCode;
+import com.sjiwon.anotherart.member.exception.MemberException;
+import com.sjiwon.anotherart.member.exception.MemberExceptionCode;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -24,10 +24,10 @@ import static org.mockito.Mockito.verify;
 
 @DisplayName("Member -> SignUpMemberUseCase 테스트")
 public class SignUpMemberUseCaseTest extends UnitTest {
-    private final PasswordEncryptor passwordEncryptor = new FakePasswordEncryptor();
+    private final Encryptor encryptor = new FakeEncryptor();
     private final MemberRepository memberRepository = mock(MemberRepository.class);
     private final MemberResourceValidator memberResourceValidator = new MemberResourceValidator(memberRepository);
-    private final SignUpMemberUseCase sut = new SignUpMemberUseCase(memberResourceValidator, passwordEncryptor, memberRepository);
+    private final SignUpMemberUseCase sut = new SignUpMemberUseCase(memberResourceValidator, encryptor, memberRepository);
 
     private final SignUpMemberCommand command = new SignUpMemberCommand(
             MEMBER_A.getName(),
@@ -48,8 +48,8 @@ public class SignUpMemberUseCaseTest extends UnitTest {
 
         // when - then
         assertThatThrownBy(() -> sut.invoke(command))
-                .isInstanceOf(AnotherArtException.class)
-                .hasMessage(MemberErrorCode.DUPLICATE_LOGIN_ID.getMessage());
+                .isInstanceOf(MemberException.class)
+                .hasMessage(MemberExceptionCode.DUPLICATE_LOGIN_ID.getMessage());
 
         assertAll(
                 () -> verify(memberRepository, times(1)).existsByLoginId(command.loginId()),
@@ -69,8 +69,8 @@ public class SignUpMemberUseCaseTest extends UnitTest {
 
         // when - then
         assertThatThrownBy(() -> sut.invoke(command))
-                .isInstanceOf(AnotherArtException.class)
-                .hasMessage(MemberErrorCode.DUPLICATE_EMAIL.getMessage());
+                .isInstanceOf(MemberException.class)
+                .hasMessage(MemberExceptionCode.DUPLICATE_EMAIL.getMessage());
 
         assertAll(
                 () -> verify(memberRepository, times(1)).existsByLoginId(command.loginId()),
@@ -91,8 +91,8 @@ public class SignUpMemberUseCaseTest extends UnitTest {
 
         // when - then
         assertThatThrownBy(() -> sut.invoke(command))
-                .isInstanceOf(AnotherArtException.class)
-                .hasMessage(MemberErrorCode.DUPLICATE_NICKNAME.getMessage());
+                .isInstanceOf(MemberException.class)
+                .hasMessage(MemberExceptionCode.DUPLICATE_NICKNAME.getMessage());
 
         assertAll(
                 () -> verify(memberRepository, times(1)).existsByLoginId(command.loginId()),
@@ -114,8 +114,8 @@ public class SignUpMemberUseCaseTest extends UnitTest {
 
         // when - then
         assertThatThrownBy(() -> sut.invoke(command))
-                .isInstanceOf(AnotherArtException.class)
-                .hasMessage(MemberErrorCode.DUPLICATE_PHONE.getMessage());
+                .isInstanceOf(MemberException.class)
+                .hasMessage(MemberExceptionCode.DUPLICATE_PHONE.getMessage());
 
         assertAll(
                 () -> verify(memberRepository, times(1)).existsByLoginId(command.loginId()),

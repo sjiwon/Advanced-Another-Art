@@ -1,11 +1,12 @@
 package com.sjiwon.anotherart.art.domain.model;
 
-import com.sjiwon.anotherart.art.exception.ArtErrorCode;
-import com.sjiwon.anotherart.global.exception.AnotherArtException;
+import com.sjiwon.anotherart.art.exception.ArtException;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 import java.util.Arrays;
+
+import static com.sjiwon.anotherart.art.exception.ArtExceptionCode.INVALID_ART_TYPE;
 
 @Getter
 @RequiredArgsConstructor
@@ -21,7 +22,7 @@ public enum ArtType {
         return Arrays.stream(values())
                 .filter(type -> type.brief.equals(value))
                 .findFirst()
-                .orElseThrow(() -> AnotherArtException.type(ArtErrorCode.INVALID_ART_TYPE));
+                .orElseThrow(() -> new ArtException(INVALID_ART_TYPE));
     }
 
     public boolean isAuctionType() {

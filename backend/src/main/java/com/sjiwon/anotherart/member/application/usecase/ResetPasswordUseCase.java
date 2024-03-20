@@ -4,7 +4,7 @@ import com.sjiwon.anotherart.auth.application.adapter.MailAuthenticationProcesso
 import com.sjiwon.anotherart.auth.domain.AuthKey;
 import com.sjiwon.anotherart.global.annotation.AnotherArtWritableTransactional;
 import com.sjiwon.anotherart.global.annotation.UseCase;
-import com.sjiwon.anotherart.global.encrypt.PasswordEncryptor;
+import com.sjiwon.anotherart.global.utils.encrypt.Encryptor;
 import com.sjiwon.anotherart.mail.application.adapter.EmailSender;
 import com.sjiwon.anotherart.member.application.usecase.command.AuthForResetPasswordCommand;
 import com.sjiwon.anotherart.member.application.usecase.command.ConfirmAuthCodeForResetPasswordCommand;
@@ -20,7 +20,7 @@ public class ResetPasswordUseCase {
     private final MemberRepository memberRepository;
     private final MailAuthenticationProcessor mailAuthenticationProcessor;
     private final EmailSender emailSender;
-    private final PasswordEncryptor passwordEncryptor;
+    private final Encryptor encryptor;
 
     public void provideAuthCode(final AuthForResetPasswordCommand command) {
         final Member member = memberRepository.getByNameAndEmailAndLoginId(command.name(), command.email(), command.loginId());
@@ -48,6 +48,6 @@ public class ResetPasswordUseCase {
     @AnotherArtWritableTransactional
     public void resetPassword(final ResetPasswordCommand command) {
         final Member member = memberRepository.getByNameAndEmailAndLoginId(command.name(), command.email(), command.loginId());
-        member.updatePassword(command.password(), passwordEncryptor);
+        member.updatePassword(command.password(), encryptor);
     }
 }

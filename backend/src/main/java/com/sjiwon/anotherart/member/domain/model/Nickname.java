@@ -1,17 +1,19 @@
 package com.sjiwon.anotherart.member.domain.model;
 
-import com.sjiwon.anotherart.global.exception.AnotherArtException;
-import com.sjiwon.anotherart.member.exception.MemberErrorCode;
+import com.sjiwon.anotherart.member.exception.MemberException;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.util.regex.Pattern;
 
+import static com.sjiwon.anotherart.member.exception.MemberExceptionCode.INVALID_NICKNAME_FORMAT;
+import static com.sjiwon.anotherart.member.exception.MemberExceptionCode.NICKNAME_SAME_AS_BEFORE;
+import static lombok.AccessLevel.PROTECTED;
+
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor(access = PROTECTED)
 @Embeddable
 public class Nickname {
     /**
@@ -41,7 +43,7 @@ public class Nickname {
 
     private static void validateNicknamePattern(final String value) {
         if (isInvalidPattern(value)) {
-            throw AnotherArtException.type(MemberErrorCode.INVALID_NICKNAME_FORMAT);
+            throw new MemberException(INVALID_NICKNAME_FORMAT);
         }
     }
 
@@ -51,7 +53,7 @@ public class Nickname {
 
     private void validateNicknameSameAsBefore(final String value) {
         if (this.value.equals(value)) {
-            throw AnotherArtException.type(MemberErrorCode.NICKNAME_SAME_AS_BEFORE);
+            throw new MemberException(NICKNAME_SAME_AS_BEFORE);
         }
     }
 

@@ -1,18 +1,19 @@
 package com.sjiwon.anotherart.art.domain.repository;
 
 import com.sjiwon.anotherart.art.domain.model.Art;
-import com.sjiwon.anotherart.art.exception.ArtErrorCode;
-import com.sjiwon.anotherart.global.exception.AnotherArtException;
+import com.sjiwon.anotherart.art.exception.ArtException;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.Optional;
 
+import static com.sjiwon.anotherart.art.exception.ArtExceptionCode.ART_NOT_FOUND;
+
 public interface ArtRepository extends JpaRepository<Art, Long> {
     default Art getById(final Long id) {
         return findById(id)
-                .orElseThrow(() -> AnotherArtException.type(ArtErrorCode.ART_NOT_FOUND));
+                .orElseThrow(() -> new ArtException(ART_NOT_FOUND));
     }
 
     // @Query
@@ -24,7 +25,7 @@ public interface ArtRepository extends JpaRepository<Art, Long> {
 
     default Art getByIdWithFetchOwner(final Long id) {
         return findByIdWitFetchOwner(id)
-                .orElseThrow(() -> AnotherArtException.type(ArtErrorCode.ART_NOT_FOUND));
+                .orElseThrow(() -> new ArtException(ART_NOT_FOUND));
     }
 
     @Query("SELECT a.owner.id" +

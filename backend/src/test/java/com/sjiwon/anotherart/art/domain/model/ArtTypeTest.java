@@ -1,7 +1,7 @@
 package com.sjiwon.anotherart.art.domain.model;
 
-import com.sjiwon.anotherart.art.exception.ArtErrorCode;
-import com.sjiwon.anotherart.global.exception.AnotherArtException;
+import com.sjiwon.anotherart.art.exception.ArtException;
+import com.sjiwon.anotherart.art.exception.ArtExceptionCode;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -26,8 +26,8 @@ public class ArtTypeTest {
     @DisplayName("유효하지 않은 값으로 ArtType을 조회할 수 없다")
     void throwExceptionByArtTypeIsWeird() {
         assertThatThrownBy(() -> ArtType.from("anonymous"))
-                .isInstanceOf(AnotherArtException.class)
-                .hasMessage(ArtErrorCode.INVALID_ART_TYPE.getMessage());
+                .isInstanceOf(ArtException.class)
+                .hasMessage(ArtExceptionCode.INVALID_ART_TYPE.getMessage());
     }
 
     @Test

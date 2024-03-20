@@ -3,8 +3,8 @@ package com.sjiwon.anotherart.member.application.usecase;
 import com.sjiwon.anotherart.auth.application.adapter.MailAuthenticationProcessor;
 import com.sjiwon.anotherart.auth.domain.AuthKey;
 import com.sjiwon.anotherart.common.UnitTest;
-import com.sjiwon.anotherart.global.exception.AnotherArtException;
 import com.sjiwon.anotherart.global.security.exception.AuthErrorCode;
+import com.sjiwon.anotherart.global.security.exception.AuthException;
 import com.sjiwon.anotherart.mail.application.adapter.EmailSender;
 import com.sjiwon.anotherart.member.application.usecase.command.AuthForRetrieveLoginIdCommand;
 import com.sjiwon.anotherart.member.application.usecase.command.ConfirmAuthCodeForLoginIdCommand;
@@ -85,13 +85,13 @@ public class RetrieveLoginIdUseCaseTest extends UnitTest {
             given(memberRepository.getByNameAndEmail(command.name(), command.email())).willReturn(member);
 
             final String key = AuthKey.LOGIN_AUTH_KEY.generateAuthKey(member.getEmail().getValue());
-            doThrow(AnotherArtException.type(AuthErrorCode.INVALID_AUTH_CODE))
+            doThrow(new AuthException(AuthErrorCode.INVALID_AUTH_CODE))
                     .when(mailAuthenticationProcessor)
                     .verifyAuthCode(key, command.authCode());
 
             // when - then
             assertThatThrownBy(() -> sut.getLoginId(command))
-                    .isInstanceOf(AnotherArtException.class)
+                    .isInstanceOf(AuthException.class)
                     .hasMessage(AuthErrorCode.INVALID_AUTH_CODE.getMessage());
 
             assertAll(

@@ -1,6 +1,6 @@
 package com.sjiwon.anotherart.global.annotation;
 
-import com.sjiwon.anotherart.global.exception.AnotherArtException;
+import com.sjiwon.anotherart.global.security.exception.AuthException;
 import com.sjiwon.anotherart.token.domain.model.TokenType;
 import com.sjiwon.anotherart.token.domain.service.TokenProvider;
 import jakarta.servlet.http.HttpServletRequest;
@@ -41,12 +41,12 @@ public class ExtractTokenArgumentResolver implements HandlerMethodArgumentResolv
     private String getToken(final HttpServletRequest request, final TokenType type) {
         if (type == TokenType.ACCESS) {
             final String accessToken = extractAccessToken(request)
-                    .orElseThrow(() -> AnotherArtException.type(INVALID_PERMISSION));
+                    .orElseThrow(() -> new AuthException(INVALID_PERMISSION));
             tokenProvider.validateAccessToken(accessToken);
             return accessToken;
         }
         final String refreshToken = extractRefreshToken(request)
-                .orElseThrow(() -> AnotherArtException.type(INVALID_PERMISSION));
+                .orElseThrow(() -> new AuthException(INVALID_PERMISSION));
         tokenProvider.validateRefreshToken(refreshToken);
         return refreshToken;
     }

@@ -9,7 +9,7 @@ import com.sjiwon.anotherart.file.utils.converter.FileConverter;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static com.sjiwon.anotherart.common.utils.FileMockingUtils.createSingleMockMultipartFile;
+import static com.sjiwon.anotherart.common.utils.FileVirtualCreator.createSingleMockMultipartFile;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 

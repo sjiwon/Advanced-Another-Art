@@ -1,14 +1,15 @@
 package com.sjiwon.anotherart.token.application.usecase;
 
 import com.sjiwon.anotherart.global.annotation.UseCase;
-import com.sjiwon.anotherart.global.exception.AnotherArtException;
-import com.sjiwon.anotherart.global.security.exception.AuthErrorCode;
+import com.sjiwon.anotherart.global.security.exception.AuthException;
 import com.sjiwon.anotherart.member.domain.model.Member;
 import com.sjiwon.anotherart.member.domain.repository.MemberRepository;
 import com.sjiwon.anotherart.token.domain.model.AuthToken;
 import com.sjiwon.anotherart.token.domain.service.TokenIssuer;
 import com.sjiwon.anotherart.token.domain.service.TokenProvider;
 import lombok.RequiredArgsConstructor;
+
+import static com.sjiwon.anotherart.global.security.exception.AuthErrorCode.INVALID_TOKEN;
 
 @UseCase
 @RequiredArgsConstructor
@@ -25,7 +26,7 @@ public class ReissueTokenUseCase {
 
     private void validateMemberToken(final Long memberId, final String refreshToken) {
         if (isAnonymousRefreshToken(memberId, refreshToken)) {
-            throw AnotherArtException.type(AuthErrorCode.INVALID_TOKEN);
+            throw new AuthException(INVALID_TOKEN);
         }
     }
 

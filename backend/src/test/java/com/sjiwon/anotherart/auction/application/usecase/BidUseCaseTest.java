@@ -5,9 +5,9 @@ import com.sjiwon.anotherart.auction.application.usecase.command.BidCommand;
 import com.sjiwon.anotherart.auction.domain.model.Auction;
 import com.sjiwon.anotherart.auction.domain.model.AuctionRecord;
 import com.sjiwon.anotherart.auction.domain.repository.AuctionRepository;
-import com.sjiwon.anotherart.auction.exception.AuctionErrorCode;
+import com.sjiwon.anotherart.auction.exception.AuctionException;
+import com.sjiwon.anotherart.auction.exception.AuctionExceptionCode;
 import com.sjiwon.anotherart.common.UnitTest;
-import com.sjiwon.anotherart.global.exception.AnotherArtException;
 import com.sjiwon.anotherart.member.domain.model.Member;
 import com.sjiwon.anotherart.member.domain.repository.MemberRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -70,8 +70,8 @@ class BidUseCaseTest extends UnitTest {
 
         // when - then
         assertThatThrownBy(() -> sut.invoke(command))
-                .isInstanceOf(AnotherArtException.class)
-                .hasMessage(AuctionErrorCode.AUCTION_IS_NOT_IN_PROGRESS.getMessage());
+                .isInstanceOf(AuctionException.class)
+                .hasMessage(AuctionExceptionCode.AUCTION_IS_NOT_IN_PROGRESS.getMessage());
 
         assertAll(
                 () -> verify(auctionRepository, times(1)).getByIdWithFetchBidder(command.auctionId()),
@@ -89,8 +89,8 @@ class BidUseCaseTest extends UnitTest {
 
         // when - then
         assertThatThrownBy(() -> sut.invoke(command))
-                .isInstanceOf(AnotherArtException.class)
-                .hasMessage(AuctionErrorCode.AUCTION_IS_NOT_IN_PROGRESS.getMessage());
+                .isInstanceOf(AuctionException.class)
+                .hasMessage(AuctionExceptionCode.AUCTION_IS_NOT_IN_PROGRESS.getMessage());
 
         assertAll(
                 () -> verify(auctionRepository, times(1)).getByIdWithFetchBidder(command.auctionId()),
@@ -108,8 +108,8 @@ class BidUseCaseTest extends UnitTest {
 
         // when - then
         assertThatThrownBy(() -> sut.invoke(command))
-                .isInstanceOf(AnotherArtException.class)
-                .hasMessage(AuctionErrorCode.ART_OWNER_CANNOT_BID.getMessage());
+                .isInstanceOf(AuctionException.class)
+                .hasMessage(AuctionExceptionCode.ART_OWNER_CANNOT_BID.getMessage());
 
         assertAll(
                 () -> verify(auctionRepository, times(1)).getByIdWithFetchBidder(command.auctionId()),
@@ -130,8 +130,8 @@ class BidUseCaseTest extends UnitTest {
 
         // when - then
         assertThatThrownBy(() -> sut.invoke(command))
-                .isInstanceOf(AnotherArtException.class)
-                .hasMessage(AuctionErrorCode.HIGHEST_BIDDER_CANNOT_BID_AGAIN.getMessage());
+                .isInstanceOf(AuctionException.class)
+                .hasMessage(AuctionExceptionCode.HIGHEST_BIDDER_CANNOT_BID_AGAIN.getMessage());
 
         assertAll(
                 () -> verify(auctionRepository, times(1)).getByIdWithFetchBidder(command.auctionId()),
@@ -153,8 +153,8 @@ class BidUseCaseTest extends UnitTest {
         given(memberRepository.getById(commandA.memberId())).willReturn(memberB);
 
         assertThatThrownBy(() -> sut.invoke(commandA))
-                .isInstanceOf(AnotherArtException.class)
-                .hasMessage(AuctionErrorCode.BID_PRICE_IS_NOT_ENOUGH.getMessage());
+                .isInstanceOf(AuctionException.class)
+                .hasMessage(AuctionExceptionCode.BID_PRICE_IS_NOT_ENOUGH.getMessage());
 
         /* 동일한 금액 */
         final BidCommand commandB = new BidCommand(memberB.getId(), auction.getId(), newBidPrice);
@@ -162,8 +162,8 @@ class BidUseCaseTest extends UnitTest {
         given(memberRepository.getById(commandB.memberId())).willReturn(memberB);
 
         assertThatThrownBy(() -> sut.invoke(commandB)) // 동일한 금액
-                .isInstanceOf(AnotherArtException.class)
-                .hasMessage(AuctionErrorCode.BID_PRICE_IS_NOT_ENOUGH.getMessage());
+                .isInstanceOf(AuctionException.class)
+                .hasMessage(AuctionExceptionCode.BID_PRICE_IS_NOT_ENOUGH.getMessage());
     }
 
     @Test
@@ -177,8 +177,8 @@ class BidUseCaseTest extends UnitTest {
 
         // when -then
         assertThatThrownBy(() -> sut.invoke(command))
-                .isInstanceOf(AnotherArtException.class)
-                .hasMessage(AuctionErrorCode.BID_PRICE_IS_NOT_ENOUGH.getMessage());
+                .isInstanceOf(AuctionException.class)
+                .hasMessage(AuctionExceptionCode.BID_PRICE_IS_NOT_ENOUGH.getMessage());
 
         assertAll(
                 () -> verify(auctionRepository, times(1)).getByIdWithFetchBidder(command.auctionId()),

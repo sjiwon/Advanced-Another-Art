@@ -1,15 +1,17 @@
 package com.sjiwon.anotherart.art.domain.model;
 
-import com.sjiwon.anotherart.art.exception.ArtErrorCode;
-import com.sjiwon.anotherart.global.exception.AnotherArtException;
+import com.sjiwon.anotherart.art.exception.ArtException;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import static com.sjiwon.anotherart.art.exception.ArtExceptionCode.NAME_IS_BLANK;
+import static com.sjiwon.anotherart.art.exception.ArtExceptionCode.NAME_LENGTH_OUT_OF_RANGE;
+import static lombok.AccessLevel.PROTECTED;
+
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor(access = PROTECTED)
 @Embeddable
 public class ArtName {
     private static final int MAXIMUM_LENGTH = 20;
@@ -29,13 +31,13 @@ public class ArtName {
 
     private static void validateNameIsUsable(final String value) {
         if (value == null || value.isBlank()) {
-            throw AnotherArtException.type(ArtErrorCode.NAME_IS_BLANK);
+            throw new ArtException(NAME_IS_BLANK);
         }
     }
 
     private static void validateLengthIsInRange(final String value) {
         if (isLengthOutOfRange(value)) {
-            throw AnotherArtException.type(ArtErrorCode.NAME_LENGTH_OUT_OF_RANGE);
+            throw new ArtException(NAME_LENGTH_OUT_OF_RANGE);
         }
     }
 

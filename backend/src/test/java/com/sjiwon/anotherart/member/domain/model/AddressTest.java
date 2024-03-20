@@ -1,7 +1,7 @@
 package com.sjiwon.anotherart.member.domain.model;
 
-import com.sjiwon.anotherart.global.exception.AnotherArtException;
-import com.sjiwon.anotherart.member.exception.MemberErrorCode;
+import com.sjiwon.anotherart.member.exception.MemberException;
+import com.sjiwon.anotherart.member.exception.MemberExceptionCode;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -28,8 +28,8 @@ class AddressTest {
         @DisplayName("주소의 우편번호(postcode)는 반드시 5자리 숫자여야 합니다")
         void throwExceptionByInvalidPostCode(final int postcode, final String defaultAddress, final String detailAddress) {
             assertThatThrownBy(() -> Address.of(postcode, defaultAddress, detailAddress))
-                    .isInstanceOf(AnotherArtException.class)
-                    .hasMessage(MemberErrorCode.INVALID_POST_CODE.getMessage());
+                    .isInstanceOf(MemberException.class)
+                    .hasMessage(MemberExceptionCode.INVALID_POST_CODE.getMessage());
         }
 
         private static Stream<Arguments> postcodeDoNotMatch() {
@@ -46,8 +46,8 @@ class AddressTest {
         @DisplayName("주소 또는 상세주소는 반드시 null이나 빈 값이 아니여야 합니다")
         void throwExceptionByInvalidAddress(final int postcode, final String defaultAddress, final String detailAddress) {
             assertThatThrownBy(() -> Address.of(postcode, defaultAddress, detailAddress))
-                    .isInstanceOf(AnotherArtException.class)
-                    .hasMessage(MemberErrorCode.INVALID_ADDRESS.getMessage());
+                    .isInstanceOf(MemberException.class)
+                    .hasMessage(MemberExceptionCode.INVALID_ADDRESS.getMessage());
         }
 
         private static Stream<Arguments> defaultOrDetailAddressDoNotMatch() {

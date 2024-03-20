@@ -1,7 +1,7 @@
 package com.sjiwon.anotherart.member.domain.model;
 
-import com.sjiwon.anotherart.global.exception.AnotherArtException;
-import com.sjiwon.anotherart.member.exception.MemberErrorCode;
+import com.sjiwon.anotherart.member.exception.MemberException;
+import com.sjiwon.anotherart.member.exception.MemberExceptionCode;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -21,8 +21,8 @@ class NicknameTest {
         @DisplayName("형식에 맞지 않는 Nickname이면 생성에 실패한다")
         void throwExceptionByInvalidNicknameFormat(final String value) {
             assertThatThrownBy(() -> Nickname.from(value))
-                    .isInstanceOf(AnotherArtException.class)
-                    .hasMessage(MemberErrorCode.INVALID_NICKNAME_FORMAT.getMessage());
+                    .isInstanceOf(MemberException.class)
+                    .hasMessage(MemberExceptionCode.INVALID_NICKNAME_FORMAT.getMessage());
         }
 
         @ParameterizedTest
@@ -46,8 +46,8 @@ class NicknameTest {
 
             // when - then
             assertThatThrownBy(() -> nickname.update("Hello"))
-                    .isInstanceOf(AnotherArtException.class)
-                    .hasMessage(MemberErrorCode.NICKNAME_SAME_AS_BEFORE.getMessage());
+                    .isInstanceOf(MemberException.class)
+                    .hasMessage(MemberExceptionCode.NICKNAME_SAME_AS_BEFORE.getMessage());
         }
 
         @Test

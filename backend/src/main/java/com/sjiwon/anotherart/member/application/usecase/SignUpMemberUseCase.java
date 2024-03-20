@@ -1,7 +1,7 @@
 package com.sjiwon.anotherart.member.application.usecase;
 
 import com.sjiwon.anotherart.global.annotation.UseCase;
-import com.sjiwon.anotherart.global.encrypt.PasswordEncryptor;
+import com.sjiwon.anotherart.global.utils.encrypt.Encryptor;
 import com.sjiwon.anotherart.member.application.usecase.command.SignUpMemberCommand;
 import com.sjiwon.anotherart.member.domain.model.Member;
 import com.sjiwon.anotherart.member.domain.model.Password;
@@ -13,7 +13,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class SignUpMemberUseCase {
     private final MemberResourceValidator memberResourceValidator;
-    private final PasswordEncryptor passwordEncryptor;
+    private final Encryptor encryptor;
     private final MemberRepository memberRepository;
 
     public Long invoke(final SignUpMemberCommand command) {
@@ -28,7 +28,7 @@ public class SignUpMemberUseCase {
                 command.name(),
                 command.nickname(),
                 command.loginId(),
-                Password.encrypt(command.password(), passwordEncryptor),
+                Password.encrypt(command.password(), encryptor),
                 command.school(),
                 command.phone(),
                 command.email(),

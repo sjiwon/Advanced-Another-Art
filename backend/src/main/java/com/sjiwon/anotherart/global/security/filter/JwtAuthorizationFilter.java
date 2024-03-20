@@ -5,7 +5,7 @@ import com.sjiwon.anotherart.global.security.exception.AuthErrorCode;
 import com.sjiwon.anotherart.global.security.principal.MemberPrincipal;
 import com.sjiwon.anotherart.member.domain.model.Member;
 import com.sjiwon.anotherart.member.domain.repository.MemberRepository;
-import com.sjiwon.anotherart.member.exception.MemberErrorCode;
+import com.sjiwon.anotherart.member.exception.MemberExceptionCode;
 import com.sjiwon.anotherart.token.domain.service.TokenProvider;
 import com.sjiwon.anotherart.token.exception.InvalidTokenException;
 import com.sjiwon.anotherart.token.utils.TokenExtractor;
@@ -51,7 +51,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
     private Member getMemberViaToken(final String accessToken) {
         return memberRepository.findById(tokenProvider.getId(accessToken))
-                .orElseThrow(() -> AnotherArtAccessDeniedException.type(MemberErrorCode.MEMBER_NOT_FOUND));
+                .orElseThrow(() -> AnotherArtAccessDeniedException.type(MemberExceptionCode.MEMBER_NOT_FOUND));
     }
 
     private void applyMemberToSecurityContext(final Member member) {

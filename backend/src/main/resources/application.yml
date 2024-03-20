@@ -71,6 +71,10 @@ mail:
 cors:
   allowed-origin-patterns: http://localhost:8080 # Vue.js
 
+encrypt:
+  secret-key: 26f01335335d279cc9fbfa1cb2b73819111460fa21905f689763946b6bf4beee
+  salt: 0b7a3890901fe0c61f14f26ab87189211922d4a294f9619bf70606618d6044f3 # Even Hex Number
+
 jwt:
   secret-key: 2da7acad220ffe59e6943c826ec1fcf879a4339521ff5837fa92aab485e94bcb # 테스트용 Secret Key
   access-token-validity: 7200

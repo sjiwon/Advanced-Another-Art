@@ -8,7 +8,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
-import static com.sjiwon.anotherart.member.exception.MemberErrorCode.MEMBER_NOT_FOUND;
+import static com.sjiwon.anotherart.member.exception.MemberExceptionCode.MEMBER_NOT_FOUND;
 
 @RequiredArgsConstructor
 public class RdbUserDetailsService implements UserDetailsService {

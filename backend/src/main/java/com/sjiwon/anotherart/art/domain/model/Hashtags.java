@@ -1,11 +1,9 @@
 package com.sjiwon.anotherart.art.domain.model;
 
-import com.sjiwon.anotherart.art.exception.ArtErrorCode;
-import com.sjiwon.anotherart.global.exception.AnotherArtException;
+import com.sjiwon.anotherart.art.exception.ArtException;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.OneToMany;
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -13,8 +11,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import static com.sjiwon.anotherart.art.exception.ArtExceptionCode.HASHTAG_MUST_EXISTS_AT_LEAST_ONE;
+import static com.sjiwon.anotherart.art.exception.ArtExceptionCode.HASHTAG_MUST_NOT_EXISTS_MORE_THAN_TEN;
+import static lombok.AccessLevel.PROTECTED;
+
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor(access = PROTECTED)
 @Embeddable
 public class Hashtags {
     private static final int MIN_COUNT = 1;
@@ -37,11 +39,11 @@ public class Hashtags {
 
     private void validateHashtagCount(final Set<String> hashtags) {
         if (hashtags.isEmpty()) {
-            throw AnotherArtException.type(ArtErrorCode.HASHTAG_MUST_EXISTS_AT_LEAST_ONE);
+            throw new ArtException(HASHTAG_MUST_EXISTS_AT_LEAST_ONE);
         }
 
         if (hashtags.size() > MAX_COUNT) {
-            throw AnotherArtException.type(ArtErrorCode.HASHTAG_MUST_NOT_EXISTS_MORE_THAN_TEN);
+            throw new ArtException(HASHTAG_MUST_NOT_EXISTS_MORE_THAN_TEN);
         }
     }
 

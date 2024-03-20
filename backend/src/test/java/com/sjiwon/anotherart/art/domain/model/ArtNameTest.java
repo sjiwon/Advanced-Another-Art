@@ -1,7 +1,7 @@
 package com.sjiwon.anotherart.art.domain.model;
 
-import com.sjiwon.anotherart.art.exception.ArtErrorCode;
-import com.sjiwon.anotherart.global.exception.AnotherArtException;
+import com.sjiwon.anotherart.art.exception.ArtException;
+import com.sjiwon.anotherart.art.exception.ArtExceptionCode;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -18,8 +18,8 @@ class ArtNameTest {
     @DisplayName("ArtName이 null이거나 공백이면 생성에 실패한다")
     void throwExceptionByNameIsBlank(final String value) {
         assertThatThrownBy(() -> ArtName.from(value))
-                .isInstanceOf(AnotherArtException.class)
-                .hasMessage(ArtErrorCode.NAME_IS_BLANK.getMessage());
+                .isInstanceOf(ArtException.class)
+                .hasMessage(ArtExceptionCode.NAME_IS_BLANK.getMessage());
     }
 
     @Test
@@ -28,8 +28,8 @@ class ArtNameTest {
         final String value = "a".repeat(21);
 
         assertThatThrownBy(() -> ArtName.from(value))
-                .isInstanceOf(AnotherArtException.class)
-                .hasMessage(ArtErrorCode.NAME_LENGTH_OUT_OF_RANGE.getMessage());
+                .isInstanceOf(ArtException.class)
+                .hasMessage(ArtExceptionCode.NAME_LENGTH_OUT_OF_RANGE.getMessage());
     }
 
     @ParameterizedTest

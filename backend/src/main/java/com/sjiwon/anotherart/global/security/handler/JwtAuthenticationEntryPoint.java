@@ -1,7 +1,7 @@
 package com.sjiwon.anotherart.global.security.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sjiwon.anotherart.global.exception.dto.ErrorResponse;
+import com.sjiwon.anotherart.global.exception.ExceptionResponse;
 import com.sjiwon.anotherart.global.security.exception.AuthErrorCode;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -26,6 +26,6 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
         response.setStatus(HttpStatus.UNAUTHORIZED.value());
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setCharacterEncoding("UTF-8");
-        objectMapper.writeValue(response.getWriter(), ErrorResponse.from(AuthErrorCode.LOGIN_REQUIRED));
+        objectMapper.writeValue(response.getWriter(), ExceptionResponse.from(AuthErrorCode.LOGIN_REQUIRED));
     }
 }

@@ -1,15 +1,17 @@
 package com.sjiwon.anotherart.member.domain.model;
 
-import com.sjiwon.anotherart.global.exception.AnotherArtException;
-import com.sjiwon.anotherart.member.exception.MemberErrorCode;
+import com.sjiwon.anotherart.member.exception.MemberException;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import static com.sjiwon.anotherart.member.exception.MemberExceptionCode.POINT_CANNOT_BE_NEGATIVE;
+import static com.sjiwon.anotherart.member.exception.MemberExceptionCode.POINT_IS_NOT_ENOUGH;
+import static lombok.AccessLevel.PROTECTED;
+
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor(access = PROTECTED)
 @Embeddable
 public class Point {
     private static final int INIT_POINT = 0;
@@ -53,13 +55,13 @@ public class Point {
 
     private static void validatePointIsPositive(final int value) {
         if (value < 0) {
-            throw AnotherArtException.type(MemberErrorCode.POINT_CANNOT_BE_NEGATIVE);
+            throw new MemberException(POINT_CANNOT_BE_NEGATIVE);
         }
     }
 
     private void validatePointIsEnough(final int value) {
         if (totalPoint < value || availablePoint < value) {
-            throw AnotherArtException.type(MemberErrorCode.POINT_IS_NOT_ENOUGH);
+            throw new MemberException(POINT_IS_NOT_ENOUGH);
         }
     }
 }

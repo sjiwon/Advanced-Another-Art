@@ -1,10 +1,10 @@
 package com.sjiwon.anotherart.member.domain.service;
 
 import com.sjiwon.anotherart.common.UnitTest;
-import com.sjiwon.anotherart.global.exception.AnotherArtException;
 import com.sjiwon.anotherart.member.domain.model.Member;
 import com.sjiwon.anotherart.member.domain.repository.MemberRepository;
-import com.sjiwon.anotherart.member.exception.MemberErrorCode;
+import com.sjiwon.anotherart.member.exception.MemberException;
+import com.sjiwon.anotherart.member.exception.MemberExceptionCode;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -30,8 +30,8 @@ public class MemberResourceValidatorTest extends UnitTest {
 
         // when - then
         assertThatThrownBy(() -> sut.validateLoginIdIsUnique(member.getLoginId()))
-                .isInstanceOf(AnotherArtException.class)
-                .hasMessage(MemberErrorCode.DUPLICATE_LOGIN_ID.getMessage());
+                .isInstanceOf(MemberException.class)
+                .hasMessage(MemberExceptionCode.DUPLICATE_LOGIN_ID.getMessage());
         assertDoesNotThrow(() -> sut.validateLoginIdIsUnique("diff" + member.getLoginId()));
     }
 
@@ -44,8 +44,8 @@ public class MemberResourceValidatorTest extends UnitTest {
 
         // when - then
         assertThatThrownBy(() -> sut.validateEmailIsUnique(member.getEmail().getValue()))
-                .isInstanceOf(AnotherArtException.class)
-                .hasMessage(MemberErrorCode.DUPLICATE_EMAIL.getMessage());
+                .isInstanceOf(MemberException.class)
+                .hasMessage(MemberExceptionCode.DUPLICATE_EMAIL.getMessage());
         assertDoesNotThrow(() -> sut.validateEmailIsUnique("diff" + member.getEmail().getValue()));
     }
 
@@ -58,8 +58,8 @@ public class MemberResourceValidatorTest extends UnitTest {
 
         // when - then
         assertThatThrownBy(() -> sut.validateNicknameIsUnique(member.getNickname().getValue()))
-                .isInstanceOf(AnotherArtException.class)
-                .hasMessage(MemberErrorCode.DUPLICATE_NICKNAME.getMessage());
+                .isInstanceOf(MemberException.class)
+                .hasMessage(MemberExceptionCode.DUPLICATE_NICKNAME.getMessage());
         assertDoesNotThrow(() -> sut.validateNicknameIsUnique("diff" + member.getNickname().getValue()));
     }
 
@@ -72,8 +72,8 @@ public class MemberResourceValidatorTest extends UnitTest {
 
         // when - then
         assertThatThrownBy(() -> sut.validatePhoneIsUnique(member.getPhone().getValue()))
-                .isInstanceOf(AnotherArtException.class)
-                .hasMessage(MemberErrorCode.DUPLICATE_PHONE.getMessage());
+                .isInstanceOf(MemberException.class)
+                .hasMessage(MemberExceptionCode.DUPLICATE_PHONE.getMessage());
         assertDoesNotThrow(() -> sut.validatePhoneIsUnique(member.getPhone().getValue().replaceAll("0", "9")));
     }
 
@@ -86,8 +86,8 @@ public class MemberResourceValidatorTest extends UnitTest {
 
         // when - then
         assertThatThrownBy(() -> sut.validateNicknameIsInUseByOther(member.getId(), member.getNickname().getValue()))
-                .isInstanceOf(AnotherArtException.class)
-                .hasMessage(MemberErrorCode.DUPLICATE_NICKNAME.getMessage());
+                .isInstanceOf(MemberException.class)
+                .hasMessage(MemberExceptionCode.DUPLICATE_NICKNAME.getMessage());
         assertDoesNotThrow(() -> sut.validateNicknameIsInUseByOther(member.getId(), "diff" + member.getNickname().getValue()));
     }
 }

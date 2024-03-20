@@ -1,7 +1,7 @@
 package com.sjiwon.anotherart.art.utils.search;
 
-import com.sjiwon.anotherart.art.exception.ArtErrorCode;
-import com.sjiwon.anotherart.global.exception.AnotherArtException;
+import com.sjiwon.anotherart.art.exception.ArtException;
+import com.sjiwon.anotherart.art.exception.ArtExceptionCode;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -27,8 +27,8 @@ class SearchSortTypeTest {
         @DisplayName("제공하지 않는 SortType value면 예외가 발생한다")
         void throwExceptionBySortTypeNotProvided() {
             assertThatThrownBy(() -> SearchSortType.from("anonymous"))
-                    .isInstanceOf(AnotherArtException.class)
-                    .hasMessage(ArtErrorCode.SORT_TYPE_NOT_PROVIED.getMessage());
+                    .isInstanceOf(ArtException.class)
+                    .hasMessage(ArtExceptionCode.SORT_TYPE_NOT_PROVIED.getMessage());
         }
 
         @Test

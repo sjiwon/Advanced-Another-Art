@@ -1,16 +1,18 @@
 package com.sjiwon.anotherart.art.domain.model;
 
-import com.sjiwon.anotherart.art.exception.ArtErrorCode;
-import com.sjiwon.anotherart.global.exception.AnotherArtException;
+import com.sjiwon.anotherart.art.exception.ArtException;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.Lob;
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import static com.sjiwon.anotherart.art.exception.ArtExceptionCode.DESCRIPTION_IS_BLANK;
+import static com.sjiwon.anotherart.art.exception.ArtExceptionCode.DESCRIPTION_LENGTH_OUT_OF_RANGE;
+import static lombok.AccessLevel.PROTECTED;
+
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor(access = PROTECTED)
 @Embeddable
 public class Description {
     private static final int MAXIMUM_LENGTH = 1000;
@@ -31,13 +33,13 @@ public class Description {
 
     private static void validateDescriptionIsUsable(final String value) {
         if (value == null || value.isBlank()) {
-            throw AnotherArtException.type(ArtErrorCode.DESCRIPTION_IS_BLANK);
+            throw new ArtException(DESCRIPTION_IS_BLANK);
         }
     }
 
     private static void validateLengthIsInRange(final String value) {
         if (isLengthOutOfRange(value)) {
-            throw AnotherArtException.type(ArtErrorCode.DESCRIPTION_LENGTH_OUT_OF_RANGE);
+            throw new ArtException(DESCRIPTION_LENGTH_OUT_OF_RANGE);
         }
     }
 

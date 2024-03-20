@@ -1,6 +1,6 @@
 package com.sjiwon.anotherart.global.security.exception;
 
-import com.sjiwon.anotherart.global.exception.ErrorCode;
+import com.sjiwon.anotherart.global.base.BusinessExceptionCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -11,7 +11,7 @@ import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
 @Getter
 @RequiredArgsConstructor
-public enum AuthErrorCode implements ErrorCode {
+public enum AuthErrorCode implements BusinessExceptionCode {
     INVALID_AUTH_CONTENT_TYPE(BAD_REQUEST, "AUTH_001", "인증방식이 올바르지 않습니다."),
     INVALID_AUTH_DATA(UNAUTHORIZED, "AUTH_002", "아이디나 비밀번호를 정확하게 입력해주세요."),
     LOGIN_REQUIRED(FORBIDDEN, "AUTH_003", "로그인이 필요합니다."),

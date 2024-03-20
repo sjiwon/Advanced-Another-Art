@@ -1,9 +1,9 @@
 package com.sjiwon.anotherart.member.domain.model;
 
-import com.sjiwon.anotherart.common.mock.fake.FakePasswordEncryptor;
-import com.sjiwon.anotherart.global.encrypt.PasswordEncryptor;
-import com.sjiwon.anotherart.global.exception.AnotherArtException;
-import com.sjiwon.anotherart.member.exception.MemberErrorCode;
+import com.sjiwon.anotherart.common.mock.fake.FakeEncryptor;
+import com.sjiwon.anotherart.global.utils.encrypt.Encryptor;
+import com.sjiwon.anotherart.member.exception.MemberException;
+import com.sjiwon.anotherart.member.exception.MemberExceptionCode;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -17,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 @DisplayName("Member -> 도메인 [Password VO] 테스트")
 class PasswordTest {
-    private final PasswordEncryptor passwordEncryptor = new FakePasswordEncryptor();
+    private final Encryptor encryptor = new FakeEncryptor();
 
     @Nested
     @DisplayName("Password 생성")
@@ -26,9 +26,9 @@ class PasswordTest {
         @ValueSource(strings = {"", "123", "abc", "!@#", "Tabc12!", "aaabbbcccdddeeeAAABBBCCCDDDEEE123123123!@#$@!#%!@%!@#$!@#"})
         @DisplayName("형식에 맞지 않는 패스워드면 예외가 발생한다")
         void throwExceptionByInalidPasswordPattern(final String value) {
-            assertThatThrownBy(() -> Password.encrypt(value, passwordEncryptor))
-                    .isInstanceOf(AnotherArtException.class)
-                    .hasMessage(MemberErrorCode.INVALID_PASSWORD_PATTERN.getMessage());
+            assertThatThrownBy(() -> Password.encrypt(value, encryptor))
+                    .isInstanceOf(MemberException.class)
+                    .hasMessage(MemberExceptionCode.INVALID_PASSWORD_PATTERN.getMessage());
         }
 
         @Test
@@ -38,12 +38,12 @@ class PasswordTest {
             final String rawValue = "abcABC123!@#";
 
             // when
-            final Password password = Password.encrypt(rawValue, passwordEncryptor);
+            final Password password = Password.encrypt(rawValue, encryptor);
 
             // then
             assertAll(
                     () -> assertThat(password.getValue()).isNotEqualTo("abcABC123!@#"),
-                    () -> assertThat(passwordEncryptor.matches(rawValue, password.getValue())).isTrue()
+                    () -> assertThat(encryptor.matches(rawValue, password.getValue())).isTrue()
             );
         }
     }
@@ -56,12 +56,12 @@ class PasswordTest {
         void throwExceptionByPasswordSameAsBefore() {
             // given
             final String oldValue = "abcABC123!@#";
-            final Password password = Password.encrypt(oldValue, passwordEncryptor);
+            final Password password = Password.encrypt(oldValue, encryptor);
 
             // when - then
-            Assertions.assertThatThrownBy(() -> password.update(oldValue, passwordEncryptor))
-                    .isInstanceOf(AnotherArtException.class)
-                    .hasMessage(MemberErrorCode.PASSWORD_SAME_AS_BEFORE.getMessage());
+            Assertions.assertThatThrownBy(() -> password.update(oldValue, encryptor))
+                    .isInstanceOf(MemberException.class)
+                    .hasMessage(MemberExceptionCode.PASSWORD_SAME_AS_BEFORE.getMessage());
         }
 
         @Test
@@ -69,16 +69,16 @@ class PasswordTest {
         void success() {
             // given
             final String oldValue = "abcABC123!@#";
-            final Password oldPassword = Password.encrypt(oldValue, passwordEncryptor);
+            final Password oldPassword = Password.encrypt(oldValue, encryptor);
 
             // when
             final String newValue = "abcABC123!@#123";
-            final Password newPassword = oldPassword.update(newValue, passwordEncryptor);
+            final Password newPassword = oldPassword.update(newValue, encryptor);
 
             // then
             assertAll(
-                    () -> assertThat(passwordEncryptor.matches(oldValue, newPassword.getValue())).isFalse(),
-                    () -> assertThat(passwordEncryptor.matches(newValue, newPassword.getValue())).isTrue()
+                    () -> assertThat(encryptor.matches(oldValue, newPassword.getValue())).isFalse(),
+                    () -> assertThat(encryptor.matches(newValue, newPassword.getValue())).isTrue()
             );
         }
     }

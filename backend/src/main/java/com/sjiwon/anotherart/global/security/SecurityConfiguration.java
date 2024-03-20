@@ -1,11 +1,11 @@
 package com.sjiwon.anotherart.global.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sjiwon.anotherart.global.filter.RequestResponseCachingFilter;
 import com.sjiwon.anotherart.global.security.filter.JsonAuthenticationFilter;
 import com.sjiwon.anotherart.global.security.filter.JwtAuthorizationExceptionTranslationFilter;
 import com.sjiwon.anotherart.global.security.filter.JwtAuthorizationFilter;
 import com.sjiwon.anotherart.global.security.filter.LogoutExceptionTranslationFilter;
-import com.sjiwon.anotherart.global.security.filter.RequestResponseCachingFilter;
 import com.sjiwon.anotherart.global.security.handler.JsonAuthenticationFailureHandler;
 import com.sjiwon.anotherart.global.security.handler.JsonAuthenticationSuccessHandler;
 import com.sjiwon.anotherart.global.security.handler.JwtAccessDeniedHandler;
@@ -36,7 +36,6 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
@@ -66,11 +65,7 @@ public class SecurityConfiguration {
     private final TokenProvider tokenProvider;
     private final TokenIssuer tokenIssuer;
     private final TokenResponseWriter tokenResponseWriter;
-
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
-    }
+    private final PasswordEncoder passwordEncoder;
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
@@ -92,7 +87,7 @@ public class SecurityConfiguration {
 
     @Bean
     public AuthenticationProvider jsonAuthenticationProvider() {
-        return new JsonAuthenticationProvider(rdbUserDetailsService(), passwordEncoder());
+        return new JsonAuthenticationProvider(rdbUserDetailsService(), passwordEncoder);
     }
 
     @Bean

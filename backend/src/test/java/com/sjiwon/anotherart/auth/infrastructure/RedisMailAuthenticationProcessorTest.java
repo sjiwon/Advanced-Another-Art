@@ -3,8 +3,8 @@ package com.sjiwon.anotherart.auth.infrastructure;
 import com.sjiwon.anotherart.auth.domain.AuthCodeGenerator;
 import com.sjiwon.anotherart.auth.domain.AuthKey;
 import com.sjiwon.anotherart.common.RedisTest;
-import com.sjiwon.anotherart.global.exception.AnotherArtException;
 import com.sjiwon.anotherart.global.security.exception.AuthErrorCode;
+import com.sjiwon.anotherart.global.security.exception.AuthException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -79,7 +79,7 @@ public class RedisMailAuthenticationProcessorTest extends RedisTest {
         assertAll(
                 () -> assertDoesNotThrow(() -> sut.verifyAuthCode(key, correct)),
                 () -> assertThatThrownBy(() -> sut.verifyAuthCode(key, wrong))
-                        .isInstanceOf(AnotherArtException.class)
+                        .isInstanceOf(AuthException.class)
                         .hasMessage(AuthErrorCode.INVALID_AUTH_CODE.getMessage())
         );
     }

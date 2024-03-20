@@ -5,7 +5,6 @@ import com.sjiwon.anotherart.art.domain.repository.ArtRepository;
 import com.sjiwon.anotherart.auction.domain.model.Auction;
 import com.sjiwon.anotherart.auction.domain.repository.AuctionRepository;
 import com.sjiwon.anotherart.global.annotation.UseCase;
-import com.sjiwon.anotherart.global.exception.AnotherArtException;
 import com.sjiwon.anotherart.global.lock.DistributedLock;
 import com.sjiwon.anotherart.member.domain.model.Member;
 import com.sjiwon.anotherart.member.domain.repository.MemberRepository;
@@ -15,11 +14,15 @@ import com.sjiwon.anotherart.point.domain.repository.PointRecordRepository;
 import com.sjiwon.anotherart.purchase.application.usecase.command.PurchaseArtCommand;
 import com.sjiwon.anotherart.purchase.domain.model.Purchase;
 import com.sjiwon.anotherart.purchase.domain.repository.PurchaseRepository;
-import com.sjiwon.anotherart.purchase.exception.PurchaseErrorCode;
+import com.sjiwon.anotherart.purchase.exception.PurchaseException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 
 import java.util.List;
+
+import static com.sjiwon.anotherart.purchase.exception.PurchaseExceptionCode.ALREADY_SOLD;
+import static com.sjiwon.anotherart.purchase.exception.PurchaseExceptionCode.AUCTION_NOT_FINISHED;
+import static com.sjiwon.anotherart.purchase.exception.PurchaseExceptionCode.BUYER_IS_NOT_HIGHEST_BIDDER;
 
 @UseCase
 @RequiredArgsConstructor
@@ -57,11 +60,11 @@ public class PurchaseArtUseCase {
 
     private void validateAuctionArtIsPurchasable(final Auction auction, final Member buyer) {
         if (auction.isInProgress()) {
-            throw AnotherArtException.type(PurchaseErrorCode.AUCTION_NOT_FINISHED);
+            throw new PurchaseException(AUCTION_NOT_FINISHED);
         }
 
         if (!auction.isHighestBidder(buyer)) {
-            throw AnotherArtException.type(PurchaseErrorCode.BUYER_IS_NOT_HIGHEST_BIDDER);
+            throw new PurchaseException(BUYER_IS_NOT_HIGHEST_BIDDER);
         }
     }
 
@@ -74,7 +77,7 @@ public class PurchaseArtUseCase {
             ));
         } catch (final DataIntegrityViolationException e) {
             // Redis Timeout 발생 시 일반 작품 구매 동시 Insert에 대한 Unique Constraint
-            throw AnotherArtException.type(PurchaseErrorCode.ALREADY_SOLD);
+            throw new PurchaseException(ALREADY_SOLD);
         }
     }
 }

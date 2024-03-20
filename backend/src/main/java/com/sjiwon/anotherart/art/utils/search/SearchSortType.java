@@ -1,11 +1,12 @@
 package com.sjiwon.anotherart.art.utils.search;
 
-import com.sjiwon.anotherart.art.exception.ArtErrorCode;
-import com.sjiwon.anotherart.global.exception.AnotherArtException;
+import com.sjiwon.anotherart.art.exception.ArtException;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 import java.util.Arrays;
+
+import static com.sjiwon.anotherart.art.exception.ArtExceptionCode.SORT_TYPE_NOT_PROVIED;
 
 @Getter
 @RequiredArgsConstructor
@@ -46,6 +47,6 @@ public enum SearchSortType {
         return Arrays.stream(values())
                 .filter(sortType -> sortType.value.equals(value))
                 .findFirst()
-                .orElseThrow(() -> AnotherArtException.type(ArtErrorCode.SORT_TYPE_NOT_PROVIED));
+                .orElseThrow(() -> new ArtException(SORT_TYPE_NOT_PROVIED));
     }
 }

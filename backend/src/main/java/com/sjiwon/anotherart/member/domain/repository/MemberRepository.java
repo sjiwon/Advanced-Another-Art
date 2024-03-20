@@ -1,18 +1,19 @@
 package com.sjiwon.anotherart.member.domain.repository;
 
-import com.sjiwon.anotherart.global.exception.AnotherArtException;
 import com.sjiwon.anotherart.member.domain.model.Member;
-import com.sjiwon.anotherart.member.exception.MemberErrorCode;
+import com.sjiwon.anotherart.member.exception.MemberException;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.Optional;
 
+import static com.sjiwon.anotherart.member.exception.MemberExceptionCode.MEMBER_NOT_FOUND;
+
 public interface MemberRepository extends JpaRepository<Member, Long> {
     default Member getById(final Long id) {
         return findById(id)
-                .orElseThrow(() -> AnotherArtException.type(MemberErrorCode.MEMBER_NOT_FOUND));
+                .orElseThrow(() -> new MemberException(MEMBER_NOT_FOUND));
     }
 
     // @Query
@@ -23,7 +24,7 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 
     default Member getByNameAndEmail(final String name, final String email) {
         return findByNameAndEmail(name, email)
-                .orElseThrow(() -> AnotherArtException.type(MemberErrorCode.MEMBER_NOT_FOUND));
+                .orElseThrow(() -> new MemberException(MEMBER_NOT_FOUND));
     }
 
     @Query("SELECT m" +
@@ -37,7 +38,7 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 
     default Member getByNameAndEmailAndLoginId(final String name, final String email, final String loginId) {
         return findByNameAndEmailAndLoginId(name, email, loginId)
-                .orElseThrow(() -> AnotherArtException.type(MemberErrorCode.MEMBER_NOT_FOUND));
+                .orElseThrow(() -> new MemberException(MEMBER_NOT_FOUND));
     }
 
     @Query("SELECT m.id" +
@@ -55,7 +56,7 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 
     default Member getByLoginId(final String loginId) {
         return findByLoginId(loginId)
-                .orElseThrow(() -> AnotherArtException.type(MemberErrorCode.MEMBER_NOT_FOUND));
+                .orElseThrow(() -> new MemberException(MEMBER_NOT_FOUND));
     }
 
     boolean existsByNicknameValue(final String nickname);

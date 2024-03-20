@@ -1,21 +1,21 @@
 package com.sjiwon.anotherart.member.domain.model;
 
-import com.sjiwon.anotherart.global.BaseEntity;
-import com.sjiwon.anotherart.global.encrypt.PasswordEncryptor;
+import com.sjiwon.anotherart.global.base.BaseEntity;
+import com.sjiwon.anotherart.global.utils.encrypt.Encryptor;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.Table;
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import static com.sjiwon.anotherart.member.domain.model.Role.USER;
+import static jakarta.persistence.EnumType.STRING;
+import static lombok.AccessLevel.PROTECTED;
 
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor(access = PROTECTED)
 @Entity
 @Table(name = "member")
 public class Member extends BaseEntity<Member> {
@@ -46,8 +46,8 @@ public class Member extends BaseEntity<Member> {
     @Embedded
     private Point point;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "role", nullable = false)
+    @Enumerated(STRING)
+    @Column(name = "role", nullable = false, columnDefinition = "VARCHAR(20)")
     private Role role;
 
     private Member(
@@ -90,7 +90,7 @@ public class Member extends BaseEntity<Member> {
         this.nickname = this.nickname.update(nickname);
     }
 
-    public void updatePassword(final String password, final PasswordEncryptor encryptor) {
+    public void updatePassword(final String password, final Encryptor encryptor) {
         this.password = this.password.update(password, encryptor);
     }
 

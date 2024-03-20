@@ -1,8 +1,8 @@
 package com.sjiwon.anotherart.auction.domain.model;
 
 import com.sjiwon.anotherart.art.domain.model.Art;
-import com.sjiwon.anotherart.auction.exception.AuctionErrorCode;
-import com.sjiwon.anotherart.global.exception.AnotherArtException;
+import com.sjiwon.anotherart.auction.exception.AuctionException;
+import com.sjiwon.anotherart.auction.exception.AuctionExceptionCode;
 import com.sjiwon.anotherart.member.domain.model.Member;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -55,8 +55,8 @@ class AuctionTest {
 
             // when - then
             assertThatThrownBy(() -> Auction.createAuction(generalArt, OPEN_WEEK_1_LATER.toPeriod()))
-                    .isInstanceOf(AnotherArtException.class)
-                    .hasMessage(AuctionErrorCode.INVALID_ART_TYPE.getMessage());
+                    .isInstanceOf(AuctionException.class)
+                    .hasMessage(AuctionExceptionCode.INVALID_ART_TYPE.getMessage());
         }
 
         @Test
@@ -101,11 +101,11 @@ class AuctionTest {
 
             // when - then
             assertThatThrownBy(() -> auctionA.applyNewBid(memberA, auctionA.getHighestBidPrice() + 50_000))
-                    .isInstanceOf(AnotherArtException.class)
-                    .hasMessage(AuctionErrorCode.AUCTION_IS_NOT_IN_PROGRESS.getMessage());
+                    .isInstanceOf(AuctionException.class)
+                    .hasMessage(AuctionExceptionCode.AUCTION_IS_NOT_IN_PROGRESS.getMessage());
             assertThatThrownBy(() -> auctionB.applyNewBid(memberA, auctionB.getHighestBidPrice() + 50_000))
-                    .isInstanceOf(AnotherArtException.class)
-                    .hasMessage(AuctionErrorCode.AUCTION_IS_NOT_IN_PROGRESS.getMessage());
+                    .isInstanceOf(AuctionException.class)
+                    .hasMessage(AuctionExceptionCode.AUCTION_IS_NOT_IN_PROGRESS.getMessage());
         }
 
         @Test
@@ -116,8 +116,8 @@ class AuctionTest {
 
             // when - then
             assertThatThrownBy(() -> auction.applyNewBid(owner, newBidPrice))
-                    .isInstanceOf(AnotherArtException.class)
-                    .hasMessage(AuctionErrorCode.ART_OWNER_CANNOT_BID.getMessage());
+                    .isInstanceOf(AuctionException.class)
+                    .hasMessage(AuctionExceptionCode.ART_OWNER_CANNOT_BID.getMessage());
         }
 
         @Test
@@ -129,8 +129,8 @@ class AuctionTest {
 
             // when - then
             assertThatThrownBy(() -> auction.applyNewBid(memberA, newBidPrice + 50_000))
-                    .isInstanceOf(AnotherArtException.class)
-                    .hasMessage(AuctionErrorCode.HIGHEST_BIDDER_CANNOT_BID_AGAIN.getMessage());
+                    .isInstanceOf(AuctionException.class)
+                    .hasMessage(AuctionExceptionCode.HIGHEST_BIDDER_CANNOT_BID_AGAIN.getMessage());
         }
 
         @Test
@@ -142,19 +142,19 @@ class AuctionTest {
 
             // when - then
             assertThatThrownBy(() -> auction.applyNewBid(memberB, newBidPrice - 10_000)) // 더 적은 금액
-                    .isInstanceOf(AnotherArtException.class)
-                    .hasMessage(AuctionErrorCode.BID_PRICE_IS_NOT_ENOUGH.getMessage());
+                    .isInstanceOf(AuctionException.class)
+                    .hasMessage(AuctionExceptionCode.BID_PRICE_IS_NOT_ENOUGH.getMessage());
             assertThatThrownBy(() -> auction.applyNewBid(memberB, newBidPrice)) // 동일한 금액
-                    .isInstanceOf(AnotherArtException.class)
-                    .hasMessage(AuctionErrorCode.BID_PRICE_IS_NOT_ENOUGH.getMessage());
+                    .isInstanceOf(AuctionException.class)
+                    .hasMessage(AuctionExceptionCode.BID_PRICE_IS_NOT_ENOUGH.getMessage());
         }
 
         @Test
         @DisplayName("입찰 금액이 부족하다면 입찰을 진행할 수 없다 -> 2) 최고 입찰자가 존재하지 않는 경우")
         void throwExceptionByBidPriceIsNotEnoughCaseB() {
             assertThatThrownBy(() -> auction.applyNewBid(memberB, auction.getHighestBidPrice() - 10_000))
-                    .isInstanceOf(AnotherArtException.class)
-                    .hasMessage(AuctionErrorCode.BID_PRICE_IS_NOT_ENOUGH.getMessage());
+                    .isInstanceOf(AuctionException.class)
+                    .hasMessage(AuctionExceptionCode.BID_PRICE_IS_NOT_ENOUGH.getMessage());
         }
 
         @Test

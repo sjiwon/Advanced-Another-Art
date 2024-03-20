@@ -5,15 +5,16 @@ import com.sjiwon.anotherart.art.domain.repository.ArtRepository;
 import com.sjiwon.anotherart.auction.domain.model.Auction;
 import com.sjiwon.anotherart.auction.domain.repository.AuctionRepository;
 import com.sjiwon.anotherart.common.UnitTest;
-import com.sjiwon.anotherart.global.exception.AnotherArtException;
 import com.sjiwon.anotherart.member.domain.model.Member;
 import com.sjiwon.anotherart.member.domain.repository.MemberRepository;
-import com.sjiwon.anotherart.member.exception.MemberErrorCode;
+import com.sjiwon.anotherart.member.exception.MemberException;
+import com.sjiwon.anotherart.member.exception.MemberExceptionCode;
 import com.sjiwon.anotherart.point.domain.repository.PointRecordRepository;
 import com.sjiwon.anotherart.purchase.application.usecase.command.PurchaseArtCommand;
 import com.sjiwon.anotherart.purchase.domain.model.Purchase;
 import com.sjiwon.anotherart.purchase.domain.repository.PurchaseRepository;
-import com.sjiwon.anotherart.purchase.exception.PurchaseErrorCode;
+import com.sjiwon.anotherart.purchase.exception.PurchaseException;
+import com.sjiwon.anotherart.purchase.exception.PurchaseExceptionCode;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -86,8 +87,8 @@ class PurchaseArtUseCaseTest extends UnitTest {
 
             // when - then
             assertThatThrownBy(() -> sut.invoke(command))
-                    .isInstanceOf(AnotherArtException.class)
-                    .hasMessage(PurchaseErrorCode.ART_OWNER_CANNOT_PURCHASE_OWN.getMessage());
+                    .isInstanceOf(PurchaseException.class)
+                    .hasMessage(PurchaseExceptionCode.ART_OWNER_CANNOT_PURCHASE_OWN.getMessage());
 
             assertAll(
                     () -> verify(artRepository, times(1)).getByIdWithFetchOwner(command.artId()),
@@ -110,8 +111,8 @@ class PurchaseArtUseCaseTest extends UnitTest {
 
             // when - then
             assertThatThrownBy(() -> sut.invoke(command))
-                    .isInstanceOf(AnotherArtException.class)
-                    .hasMessage(PurchaseErrorCode.ALREADY_SOLD.getMessage());
+                    .isInstanceOf(PurchaseException.class)
+                    .hasMessage(PurchaseExceptionCode.ALREADY_SOLD.getMessage());
 
             assertAll(
                     () -> verify(artRepository, times(1)).getByIdWithFetchOwner(command.artId()),
@@ -134,8 +135,8 @@ class PurchaseArtUseCaseTest extends UnitTest {
 
             // when - then
             assertThatThrownBy(() -> sut.invoke(command))
-                    .isInstanceOf(AnotherArtException.class)
-                    .hasMessage(MemberErrorCode.POINT_IS_NOT_ENOUGH.getMessage());
+                    .isInstanceOf(MemberException.class)
+                    .hasMessage(MemberExceptionCode.POINT_IS_NOT_ENOUGH.getMessage());
 
             assertAll(
                     () -> verify(artRepository, times(1)).getByIdWithFetchOwner(command.artId()),
@@ -209,8 +210,8 @@ class PurchaseArtUseCaseTest extends UnitTest {
 
             // when - then
             assertThatThrownBy(() -> sut.invoke(command))
-                    .isInstanceOf(AnotherArtException.class)
-                    .hasMessage(PurchaseErrorCode.AUCTION_NOT_FINISHED.getMessage());
+                    .isInstanceOf(PurchaseException.class)
+                    .hasMessage(PurchaseExceptionCode.AUCTION_NOT_FINISHED.getMessage());
 
             assertAll(
                     () -> verify(artRepository, times(1)).getByIdWithFetchOwner(command.artId()),
@@ -232,8 +233,8 @@ class PurchaseArtUseCaseTest extends UnitTest {
 
             // when - then
             assertThatThrownBy(() -> sut.invoke(command))
-                    .isInstanceOf(AnotherArtException.class)
-                    .hasMessage(PurchaseErrorCode.BUYER_IS_NOT_HIGHEST_BIDDER.getMessage());
+                    .isInstanceOf(PurchaseException.class)
+                    .hasMessage(PurchaseExceptionCode.BUYER_IS_NOT_HIGHEST_BIDDER.getMessage());
 
             assertAll(
                     () -> verify(artRepository, times(1)).getByIdWithFetchOwner(command.artId()),
@@ -257,8 +258,8 @@ class PurchaseArtUseCaseTest extends UnitTest {
 
             // when - then
             assertThatThrownBy(() -> sut.invoke(command))
-                    .isInstanceOf(AnotherArtException.class)
-                    .hasMessage(PurchaseErrorCode.ALREADY_SOLD.getMessage());
+                    .isInstanceOf(PurchaseException.class)
+                    .hasMessage(PurchaseExceptionCode.ALREADY_SOLD.getMessage());
 
             assertAll(
                     () -> verify(artRepository, times(1)).getByIdWithFetchOwner(command.artId()),
@@ -282,8 +283,8 @@ class PurchaseArtUseCaseTest extends UnitTest {
 
             // when - then
             assertThatThrownBy(() -> sut.invoke(command))
-                    .isInstanceOf(AnotherArtException.class)
-                    .hasMessage(MemberErrorCode.POINT_IS_NOT_ENOUGH.getMessage());
+                    .isInstanceOf(MemberException.class)
+                    .hasMessage(MemberExceptionCode.POINT_IS_NOT_ENOUGH.getMessage());
 
             assertAll(
                     () -> verify(artRepository, times(1)).getByIdWithFetchOwner(command.artId()),

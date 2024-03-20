@@ -1,7 +1,7 @@
 package com.sjiwon.anotherart.member.domain.model;
 
-import com.sjiwon.anotherart.global.exception.AnotherArtException;
-import com.sjiwon.anotherart.member.exception.MemberErrorCode;
+import com.sjiwon.anotherart.member.exception.MemberException;
+import com.sjiwon.anotherart.member.exception.MemberExceptionCode;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -51,8 +51,8 @@ class PointTest {
 
             // when - then
             assertThatThrownBy(() -> point.decreaseTotalPoint(100_000 + 5_000))
-                    .isInstanceOf(AnotherArtException.class)
-                    .hasMessage(MemberErrorCode.POINT_IS_NOT_ENOUGH.getMessage());
+                    .isInstanceOf(MemberException.class)
+                    .hasMessage(MemberExceptionCode.POINT_IS_NOT_ENOUGH.getMessage());
         }
 
         @Test
@@ -112,8 +112,8 @@ class PointTest {
 
             // when - then
             assertThatThrownBy(() -> point.decreaseAvailablePoint(100_000 + 5_000))
-                    .isInstanceOf(AnotherArtException.class)
-                    .hasMessage(MemberErrorCode.POINT_IS_NOT_ENOUGH.getMessage());
+                    .isInstanceOf(MemberException.class)
+                    .hasMessage(MemberExceptionCode.POINT_IS_NOT_ENOUGH.getMessage());
         }
 
         @Test

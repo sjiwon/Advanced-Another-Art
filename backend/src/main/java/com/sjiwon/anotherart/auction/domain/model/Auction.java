@@ -1,9 +1,8 @@
 package com.sjiwon.anotherart.auction.domain.model;
 
 import com.sjiwon.anotherart.art.domain.model.Art;
-import com.sjiwon.anotherart.auction.exception.AuctionErrorCode;
-import com.sjiwon.anotherart.global.BaseEntity;
-import com.sjiwon.anotherart.global.exception.AnotherArtException;
+import com.sjiwon.anotherart.auction.exception.AuctionException;
+import com.sjiwon.anotherart.global.base.BaseEntity;
 import com.sjiwon.anotherart.member.domain.model.Member;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Embedded;
@@ -14,7 +13,6 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.Version;
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -22,8 +20,13 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.sjiwon.anotherart.auction.exception.AuctionExceptionCode.ART_OWNER_CANNOT_BID;
+import static com.sjiwon.anotherart.auction.exception.AuctionExceptionCode.AUCTION_IS_NOT_IN_PROGRESS;
+import static com.sjiwon.anotherart.auction.exception.AuctionExceptionCode.INVALID_ART_TYPE;
+import static lombok.AccessLevel.PROTECTED;
+
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor(access = PROTECTED)
 @Entity
 @Table(name = "auction")
 public class Auction extends BaseEntity<Auction> {
@@ -56,7 +59,7 @@ public class Auction extends BaseEntity<Auction> {
 
     private static void validateArtType(final Art art) {
         if (!art.isAuctionType()) {
-            throw AnotherArtException.type(AuctionErrorCode.INVALID_ART_TYPE);
+            throw new AuctionException(INVALID_ART_TYPE);
         }
     }
 
@@ -71,13 +74,13 @@ public class Auction extends BaseEntity<Auction> {
         final LocalDateTime now = LocalDateTime.now();
 
         if (!period.isDateWithInRange(now)) {
-            throw AnotherArtException.type(AuctionErrorCode.AUCTION_IS_NOT_IN_PROGRESS);
+            throw new AuctionException(AUCTION_IS_NOT_IN_PROGRESS);
         }
     }
 
     private void validateArtOwner(final Member bidder) {
         if (art.isOwner(bidder)) {
-            throw AnotherArtException.type(AuctionErrorCode.ART_OWNER_CANNOT_BID);
+            throw new AuctionException(ART_OWNER_CANNOT_BID);
         }
     }
 

@@ -1,15 +1,16 @@
 package com.sjiwon.anotherart.token.domain.model;
 
-import com.sjiwon.anotherart.global.BaseEntity;
+import com.sjiwon.anotherart.global.base.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import static lombok.AccessLevel.PROTECTED;
+
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor(access = PROTECTED)
 @Entity
 @Table(name = "member_token")
 public class Token extends BaseEntity<Token> {

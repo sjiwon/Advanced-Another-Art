@@ -1,14 +1,14 @@
 package com.sjiwon.anotherart.file.utils.converter;
 
 import com.sjiwon.anotherart.file.domain.model.RawFileData;
-import com.sjiwon.anotherart.file.exception.FileErrorCode;
-import com.sjiwon.anotherart.global.exception.AnotherArtException;
+import com.sjiwon.anotherart.file.exception.FileException;
+import com.sjiwon.anotherart.file.exception.FileExceptionCode;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 
-import static com.sjiwon.anotherart.common.utils.FileMockingUtils.createSingleMockMultipartFile;
+import static com.sjiwon.anotherart.common.utils.FileVirtualCreator.createSingleMockMultipartFile;
 import static com.sjiwon.anotherart.file.domain.model.FileExtension.PNG;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -24,8 +24,8 @@ public class FileConverterTest {
 
         // when - then
         assertThatThrownBy(() -> FileConverter.convertImageFile(file))
-                .isInstanceOf(AnotherArtException.class)
-                .hasMessage(FileErrorCode.FILE_IS_NOT_UPLOAD.getMessage());
+                .isInstanceOf(FileException.class)
+                .hasMessage(FileExceptionCode.FILE_IS_NOT_UPLOAD.getMessage());
     }
 
     @Test

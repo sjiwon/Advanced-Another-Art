@@ -1,16 +1,18 @@
 package com.sjiwon.anotherart.member.domain.model;
 
-import com.sjiwon.anotherart.global.exception.AnotherArtException;
-import com.sjiwon.anotherart.member.exception.MemberErrorCode;
+import com.sjiwon.anotherart.member.exception.MemberException;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.util.StringUtils;
 
+import static com.sjiwon.anotherart.member.exception.MemberExceptionCode.INVALID_ADDRESS;
+import static com.sjiwon.anotherart.member.exception.MemberExceptionCode.INVALID_POST_CODE;
+import static lombok.AccessLevel.PROTECTED;
+
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor(access = PROTECTED)
 @Embeddable
 public class Address {
     private static final int POSTCODE_LENGTH = 5;
@@ -44,7 +46,7 @@ public class Address {
 
     private static void validatePostcodeLength(final int postcode) {
         if (isInvalidPostcodeLength(postcode)) {
-            throw AnotherArtException.type(MemberErrorCode.INVALID_POST_CODE);
+            throw new MemberException(INVALID_POST_CODE);
         }
     }
 
@@ -54,7 +56,7 @@ public class Address {
 
     private static void validateAddressIsNotBlank(final String defaultAddress, final String detailAddress) {
         if (isAddressEmpty(defaultAddress, detailAddress)) {
-            throw AnotherArtException.type(MemberErrorCode.INVALID_ADDRESS);
+            throw new MemberException(INVALID_ADDRESS);
         }
     }
 

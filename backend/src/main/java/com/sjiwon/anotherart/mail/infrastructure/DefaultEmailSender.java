@@ -1,7 +1,6 @@
 package com.sjiwon.anotherart.mail.infrastructure;
 
-import com.sjiwon.anotherart.global.exception.AnotherArtException;
-import com.sjiwon.anotherart.global.exception.GlobalErrorCode;
+import com.sjiwon.anotherart.global.exception.GlobalException;
 import com.sjiwon.anotherart.mail.application.adapter.EmailSender;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
@@ -14,6 +13,8 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.spring6.SpringTemplateEngine;
+
+import static com.sjiwon.anotherart.global.exception.GlobalExceptionCode.UNEXPECTED_SERVER_ERROR;
 
 @Slf4j
 @Profile("default")
@@ -74,7 +75,7 @@ public class DefaultEmailSender implements EmailSender {
             mailSender.send(message);
         } catch (final Exception e) {
             log.warn("메일 전송 간 오류 발생...", e);
-            throw AnotherArtException.type(GlobalErrorCode.INTERNAL_SERVER_ERROR);
+            throw new GlobalException(UNEXPECTED_SERVER_ERROR);
         }
     }
 }

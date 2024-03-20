@@ -3,8 +3,8 @@ package com.sjiwon.anotherart.file.infrastructure.s3;
 import com.sjiwon.anotherart.file.application.adapter.FileUploader;
 import com.sjiwon.anotherart.file.domain.model.FileExtension;
 import com.sjiwon.anotherart.file.domain.model.RawFileData;
-import com.sjiwon.anotherart.file.exception.FileErrorCode;
-import com.sjiwon.anotherart.global.exception.AnotherArtException;
+import com.sjiwon.anotherart.file.exception.FileException;
+import com.sjiwon.anotherart.global.exception.GlobalException;
 import io.awspring.cloud.s3.ObjectMetadata;
 import io.awspring.cloud.s3.S3Template;
 import lombok.extern.slf4j.Slf4j;
@@ -16,7 +16,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.UUID;
 
+import static com.sjiwon.anotherart.file.exception.FileExceptionCode.FILE_IS_NOT_UPLOAD;
 import static com.sjiwon.anotherart.file.infrastructure.s3.BucketMetadata.ART_IMAGES;
+import static com.sjiwon.anotherart.global.exception.GlobalExceptionCode.UNEXPECTED_SERVER_ERROR;
 
 @Slf4j
 @Component
@@ -43,7 +45,7 @@ public class S3FileUploader implements FileUploader {
 
     private void validateFileExists(final RawFileData file) {
         if (file == null) {
-            throw AnotherArtException.type(FileErrorCode.FILE_IS_NOT_UPLOAD);
+            throw new FileException(FILE_IS_NOT_UPLOAD);
         }
     }
 
@@ -61,7 +63,7 @@ public class S3FileUploader implements FileUploader {
             return cloudFrontUrl + uploadUrlPath;
         } catch (final IOException e) {
             log.error("S3 파일 업로드에 실패했습니다. {}", e.getMessage(), e);
-            throw AnotherArtException.type(FileErrorCode.UPLOAD_FAILURE);
+            throw new GlobalException(UNEXPECTED_SERVER_ERROR);
         }
     }
 

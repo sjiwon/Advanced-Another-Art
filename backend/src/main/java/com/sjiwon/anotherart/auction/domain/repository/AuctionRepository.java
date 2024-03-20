@@ -1,15 +1,16 @@
 package com.sjiwon.anotherart.auction.domain.repository;
 
 import com.sjiwon.anotherart.auction.domain.model.Auction;
-import com.sjiwon.anotherart.auction.exception.AuctionErrorCode;
+import com.sjiwon.anotherart.auction.exception.AuctionException;
 import com.sjiwon.anotherart.global.annotation.AnotherArtWritableTransactional;
-import com.sjiwon.anotherart.global.exception.AnotherArtException;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.Optional;
+
+import static com.sjiwon.anotherart.auction.exception.AuctionExceptionCode.AUCTION_NOT_FOUND;
 
 public interface AuctionRepository extends JpaRepository<Auction, Long> {
     @Query("SELECT ac" +
@@ -20,7 +21,7 @@ public interface AuctionRepository extends JpaRepository<Auction, Long> {
 
     default Auction getByIdWithFetchBidder(final Long id) {
         return findByIdWithFetchBidder(id)
-                .orElseThrow(() -> AnotherArtException.type(AuctionErrorCode.AUCTION_NOT_FOUND));
+                .orElseThrow(() -> new AuctionException(AUCTION_NOT_FOUND));
     }
 
     @Query("SELECT ac" +
@@ -30,7 +31,7 @@ public interface AuctionRepository extends JpaRepository<Auction, Long> {
 
     default Auction getByArtId(final Long artId) {
         return findByArtId(artId)
-                .orElseThrow(() -> AnotherArtException.type(AuctionErrorCode.AUCTION_NOT_FOUND));
+                .orElseThrow(() -> new AuctionException(AUCTION_NOT_FOUND));
     }
 
     @AnotherArtWritableTransactional

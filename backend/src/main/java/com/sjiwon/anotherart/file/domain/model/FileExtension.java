@@ -1,11 +1,12 @@
 package com.sjiwon.anotherart.file.domain.model;
 
-import com.sjiwon.anotherart.file.exception.FileErrorCode;
-import com.sjiwon.anotherart.global.exception.AnotherArtException;
+import com.sjiwon.anotherart.file.exception.FileException;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 import java.util.Arrays;
+
+import static com.sjiwon.anotherart.file.exception.FileExceptionCode.INVALID_FILE_EXTENSION;
 
 @Getter
 @RequiredArgsConstructor
@@ -23,7 +24,7 @@ public enum FileExtension {
         return Arrays.stream(values())
                 .filter(extension -> extension.value.equals(fileExtension))
                 .findFirst()
-                .orElseThrow(() -> AnotherArtException.type(FileErrorCode.INVALID_FILE_EXTENSION));
+                .orElseThrow(() -> new FileException(INVALID_FILE_EXTENSION));
     }
 
     public static boolean isValidExtension(final String fileName) {

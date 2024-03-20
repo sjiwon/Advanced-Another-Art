@@ -2,10 +2,11 @@ package com.sjiwon.anotherart.purchase.domain.model;
 
 import com.sjiwon.anotherart.art.domain.model.Art;
 import com.sjiwon.anotherart.auction.domain.model.Auction;
-import com.sjiwon.anotherart.global.exception.AnotherArtException;
 import com.sjiwon.anotherart.member.domain.model.Member;
-import com.sjiwon.anotherart.member.exception.MemberErrorCode;
-import com.sjiwon.anotherart.purchase.exception.PurchaseErrorCode;
+import com.sjiwon.anotherart.member.exception.MemberException;
+import com.sjiwon.anotherart.member.exception.MemberExceptionCode;
+import com.sjiwon.anotherart.purchase.exception.PurchaseException;
+import com.sjiwon.anotherart.purchase.exception.PurchaseExceptionCode;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -48,8 +49,8 @@ class PurchaseTest {
         @DisplayName("본인 작품은 구매할 수 없다")
         void throwExceptionByArtOwnerCannotPurchaseOwn() {
             assertThatThrownBy(() -> Purchase.purchaseGeneralArt(generalArt, owner))
-                    .isInstanceOf(AnotherArtException.class)
-                    .hasMessage(PurchaseErrorCode.ART_OWNER_CANNOT_PURCHASE_OWN.getMessage());
+                    .isInstanceOf(PurchaseException.class)
+                    .hasMessage(PurchaseExceptionCode.ART_OWNER_CANNOT_PURCHASE_OWN.getMessage());
         }
 
         @Test
@@ -60,8 +61,8 @@ class PurchaseTest {
 
             // when - then
             assertThatThrownBy(() -> Purchase.purchaseGeneralArt(generalArt, member))
-                    .isInstanceOf(AnotherArtException.class)
-                    .hasMessage(PurchaseErrorCode.ALREADY_SOLD.getMessage());
+                    .isInstanceOf(PurchaseException.class)
+                    .hasMessage(PurchaseExceptionCode.ALREADY_SOLD.getMessage());
         }
 
         @Test
@@ -72,8 +73,8 @@ class PurchaseTest {
 
             // when - then
             assertThatThrownBy(() -> Purchase.purchaseGeneralArt(generalArt, member))
-                    .isInstanceOf(AnotherArtException.class)
-                    .hasMessage(MemberErrorCode.POINT_IS_NOT_ENOUGH.getMessage());
+                    .isInstanceOf(MemberException.class)
+                    .hasMessage(MemberExceptionCode.POINT_IS_NOT_ENOUGH.getMessage());
         }
 
         @Test
@@ -120,8 +121,8 @@ class PurchaseTest {
 
             // when - then
             assertThatThrownBy(() -> Purchase.purchaseAuctionArt(auctionArt, member, bidPrice))
-                    .isInstanceOf(AnotherArtException.class)
-                    .hasMessage(PurchaseErrorCode.ALREADY_SOLD.getMessage());
+                    .isInstanceOf(PurchaseException.class)
+                    .hasMessage(PurchaseExceptionCode.ALREADY_SOLD.getMessage());
         }
 
         @Test
@@ -132,8 +133,8 @@ class PurchaseTest {
 
             // when - then
             assertThatThrownBy(() -> Purchase.purchaseAuctionArt(auctionArt, member, bidPrice))
-                    .isInstanceOf(AnotherArtException.class)
-                    .hasMessage(MemberErrorCode.POINT_IS_NOT_ENOUGH.getMessage());
+                    .isInstanceOf(MemberException.class)
+                    .hasMessage(MemberExceptionCode.POINT_IS_NOT_ENOUGH.getMessage());
         }
 
         @Test

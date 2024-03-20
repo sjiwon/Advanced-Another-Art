@@ -4,9 +4,9 @@ import com.sjiwon.anotherart.art.application.usecase.command.UpdateArtCommand;
 import com.sjiwon.anotherart.art.domain.model.Art;
 import com.sjiwon.anotherart.art.domain.repository.ArtRepository;
 import com.sjiwon.anotherart.art.domain.service.ArtResourceValidator;
-import com.sjiwon.anotherart.art.exception.ArtErrorCode;
+import com.sjiwon.anotherart.art.exception.ArtException;
+import com.sjiwon.anotherart.art.exception.ArtExceptionCode;
 import com.sjiwon.anotherart.common.UnitTest;
-import com.sjiwon.anotherart.global.exception.AnotherArtException;
 import com.sjiwon.anotherart.member.domain.model.Member;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -45,8 +45,8 @@ public class UpdateArtUseCaseTest extends UnitTest {
 
         // when - then
         assertThatThrownBy(() -> sut.invoke(command))
-                .isInstanceOf(AnotherArtException.class)
-                .hasMessage(ArtErrorCode.DUPLICATE_NAME.getMessage());
+                .isInstanceOf(ArtException.class)
+                .hasMessage(ArtExceptionCode.DUPLICATE_NAME.getMessage());
 
         assertAll(
                 () -> verify(artRepository, times(1)).isNameUsedByOther(command.artId(), command.name().getValue()),

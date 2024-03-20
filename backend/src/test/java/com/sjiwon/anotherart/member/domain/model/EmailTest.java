@@ -1,7 +1,7 @@
 package com.sjiwon.anotherart.member.domain.model;
 
-import com.sjiwon.anotherart.global.exception.AnotherArtException;
-import com.sjiwon.anotherart.member.exception.MemberErrorCode;
+import com.sjiwon.anotherart.member.exception.MemberException;
+import com.sjiwon.anotherart.member.exception.MemberExceptionCode;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -16,8 +16,8 @@ class EmailTest {
     @DisplayName("형식에 맞지 않는 Email이면 예외가 발생한다")
     void throwExceptionByInvalidEmailPattern(final String value) {
         assertThatThrownBy(() -> Email.from(value))
-                .isInstanceOf(AnotherArtException.class)
-                .hasMessage(MemberErrorCode.INVALID_EMAIL_PATTERN.getMessage());
+                .isInstanceOf(MemberException.class)
+                .hasMessage(MemberExceptionCode.INVALID_EMAIL_PATTERN.getMessage());
     }
 
     @ParameterizedTest

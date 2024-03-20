@@ -2,7 +2,7 @@ package com.sjiwon.anotherart.member.application.usecase;
 
 import com.sjiwon.anotherart.global.annotation.AnotherArtWritableTransactional;
 import com.sjiwon.anotherart.global.annotation.UseCase;
-import com.sjiwon.anotherart.global.encrypt.PasswordEncryptor;
+import com.sjiwon.anotherart.global.utils.encrypt.Encryptor;
 import com.sjiwon.anotherart.member.application.usecase.command.UpdateAddressCommand;
 import com.sjiwon.anotherart.member.application.usecase.command.UpdateNicknameCommand;
 import com.sjiwon.anotherart.member.application.usecase.command.UpdatePasswordCommand;
@@ -15,7 +15,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class UpdateMemberResourceUseCase {
     private final MemberResourceValidator memberResourceValidator;
-    private final PasswordEncryptor passwordEncryptor;
+    private final Encryptor encryptor;
     private final MemberRepository memberRepository;
 
     @AnotherArtWritableTransactional
@@ -35,6 +35,6 @@ public class UpdateMemberResourceUseCase {
     @AnotherArtWritableTransactional
     public void updatePassword(final UpdatePasswordCommand command) {
         final Member member = memberRepository.getById(command.memberId());
-        member.updatePassword(command.password(), passwordEncryptor);
+        member.updatePassword(command.password(), encryptor);
     }
 }

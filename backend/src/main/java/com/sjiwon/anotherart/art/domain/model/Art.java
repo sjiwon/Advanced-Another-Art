@@ -1,17 +1,15 @@
 package com.sjiwon.anotherart.art.domain.model;
 
-import com.sjiwon.anotherart.global.BaseEntity;
+import com.sjiwon.anotherart.global.base.BaseEntity;
 import com.sjiwon.anotherart.member.domain.model.Member;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -21,9 +19,11 @@ import java.util.Set;
 import static com.sjiwon.anotherart.art.domain.model.ArtStatus.ON_SALE;
 import static com.sjiwon.anotherart.art.domain.model.ArtStatus.SOLD;
 import static com.sjiwon.anotherart.art.domain.model.ArtType.AUCTION;
+import static jakarta.persistence.EnumType.STRING;
+import static lombok.AccessLevel.PROTECTED;
 
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor(access = PROTECTED)
 @Entity
 @Table(name = "art")
 public class Art extends BaseEntity<Art> {
@@ -33,8 +33,8 @@ public class Art extends BaseEntity<Art> {
     @Embedded
     private Description description;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "art_type", nullable = false, updatable = false)
+    @Enumerated(STRING)
+    @Column(name = "art_type", nullable = false, updatable = false, columnDefinition = "VARCHAR(30)")
     private ArtType type;
 
     @Column(name = "price", nullable = false, updatable = false)
@@ -43,8 +43,8 @@ public class Art extends BaseEntity<Art> {
     @Embedded
     private UploadImage uploadImage;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "art_status", nullable = false)
+    @Enumerated(STRING)
+    @Column(name = "art_status", nullable = false, columnDefinition = "VARCHAR(30)")
     private ArtStatus status;
 
     @Embedded

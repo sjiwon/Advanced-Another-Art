@@ -1,6 +1,6 @@
 package com.sjiwon.anotherart.common.fixture;
 
-import com.sjiwon.anotherart.common.mock.fake.FakePasswordEncryptor;
+import com.sjiwon.anotherart.common.mock.fake.FakeEncryptor;
 import com.sjiwon.anotherart.member.domain.model.Address;
 import com.sjiwon.anotherart.member.domain.model.Email;
 import com.sjiwon.anotherart.member.domain.model.Member;
@@ -173,7 +173,7 @@ public enum MemberFixture {
                 name,
                 nickname,
                 loginId,
-                Password.encrypt(password, new FakePasswordEncryptor()),
+                Password.encrypt(password, new FakeEncryptor()),
                 "경기대학교",
                 phone,
                 email,

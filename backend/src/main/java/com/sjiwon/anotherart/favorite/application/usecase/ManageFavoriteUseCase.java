@@ -6,13 +6,15 @@ import com.sjiwon.anotherart.favorite.application.usecase.command.CancelArtLikeC
 import com.sjiwon.anotherart.favorite.application.usecase.command.MarkArtLikeCommand;
 import com.sjiwon.anotherart.favorite.domain.model.Favorite;
 import com.sjiwon.anotherart.favorite.domain.repository.FavoriteRepository;
-import com.sjiwon.anotherart.favorite.exception.FavoriteErrorCode;
+import com.sjiwon.anotherart.favorite.exception.FavoriteException;
 import com.sjiwon.anotherart.global.annotation.UseCase;
-import com.sjiwon.anotherart.global.exception.AnotherArtException;
 import com.sjiwon.anotherart.member.domain.model.Member;
 import com.sjiwon.anotherart.member.domain.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
+
+import static com.sjiwon.anotherart.favorite.exception.FavoriteExceptionCode.ALREADY_LIKE_MARKED;
+import static com.sjiwon.anotherart.favorite.exception.FavoriteExceptionCode.FAVORITE_MARKING_NOT_FOUND;
 
 @UseCase
 @RequiredArgsConstructor
@@ -28,13 +30,13 @@ public class ManageFavoriteUseCase {
         try {
             return favoriteRepository.save(Favorite.favoriteMarking(art, member)).getId();
         } catch (final DataIntegrityViolationException e) {
-            throw AnotherArtException.type(FavoriteErrorCode.ALREADY_LIKE_MARKED);
+            throw new FavoriteException(ALREADY_LIKE_MARKED);
         }
     }
 
     public void cancelLike(final CancelArtLikeCommand command) {
         final Favorite favorite = favoriteRepository.findByArtIdAndMemberId(command.artId(), command.memberId())
-                .orElseThrow(() -> AnotherArtException.type(FavoriteErrorCode.FAVORITE_MARKING_NOT_FOUND));
+                .orElseThrow(() -> new FavoriteException(FAVORITE_MARKING_NOT_FOUND));
         favoriteRepository.delete(favorite);
     }
 }

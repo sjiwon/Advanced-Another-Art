@@ -7,8 +7,8 @@ import com.sjiwon.anotherart.favorite.application.usecase.command.CancelArtLikeC
 import com.sjiwon.anotherart.favorite.application.usecase.command.MarkArtLikeCommand;
 import com.sjiwon.anotherart.favorite.domain.model.Favorite;
 import com.sjiwon.anotherart.favorite.domain.repository.FavoriteRepository;
-import com.sjiwon.anotherart.favorite.exception.FavoriteErrorCode;
-import com.sjiwon.anotherart.global.exception.AnotherArtException;
+import com.sjiwon.anotherart.favorite.exception.FavoriteException;
+import com.sjiwon.anotherart.favorite.exception.FavoriteExceptionCode;
 import com.sjiwon.anotherart.member.domain.model.Member;
 import com.sjiwon.anotherart.member.domain.repository.MemberRepository;
 import org.junit.jupiter.api.DisplayName;
@@ -83,8 +83,8 @@ class ManageFavoriteUseCaseTest extends UnitTest {
 
             // when - then
             assertThatThrownBy(() -> sut.cancelLike(command))
-                    .isInstanceOf(AnotherArtException.class)
-                    .hasMessage(FavoriteErrorCode.FAVORITE_MARKING_NOT_FOUND.getMessage());
+                    .isInstanceOf(FavoriteException.class)
+                    .hasMessage(FavoriteExceptionCode.FAVORITE_MARKING_NOT_FOUND.getMessage());
 
             assertAll(
                     () -> verify(favoriteRepository, times(1)).findByArtIdAndMemberId(command.artId(), command.memberId()),

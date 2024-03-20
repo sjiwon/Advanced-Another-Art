@@ -2,9 +2,9 @@ package com.sjiwon.anotherart.art.domain.service;
 
 import com.sjiwon.anotherart.art.domain.model.Art;
 import com.sjiwon.anotherart.art.domain.repository.ArtRepository;
-import com.sjiwon.anotherart.art.exception.ArtErrorCode;
+import com.sjiwon.anotherart.art.exception.ArtException;
+import com.sjiwon.anotherart.art.exception.ArtExceptionCode;
 import com.sjiwon.anotherart.common.UnitTest;
-import com.sjiwon.anotherart.global.exception.AnotherArtException;
 import com.sjiwon.anotherart.member.domain.model.Member;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -33,8 +33,8 @@ public class ArtResourceValidatorTest extends UnitTest {
 
         // when - then
         assertThatThrownBy(() -> sut.validatenNameIsUnique(art.getName().getValue()))
-                .isInstanceOf(AnotherArtException.class)
-                .hasMessage(ArtErrorCode.DUPLICATE_NAME.getMessage());
+                .isInstanceOf(ArtException.class)
+                .hasMessage(ArtExceptionCode.DUPLICATE_NAME.getMessage());
         assertDoesNotThrow(() -> sut.validatenNameIsUnique("diff" + art.getName().getValue()));
     }
 
@@ -47,8 +47,8 @@ public class ArtResourceValidatorTest extends UnitTest {
 
         // when - then
         assertThatThrownBy(() -> sut.validateNameIsInUseByOther(art.getId(), art.getName().getValue()))
-                .isInstanceOf(AnotherArtException.class)
-                .hasMessage(ArtErrorCode.DUPLICATE_NAME.getMessage());
+                .isInstanceOf(ArtException.class)
+                .hasMessage(ArtExceptionCode.DUPLICATE_NAME.getMessage());
         assertDoesNotThrow(() -> sut.validateNameIsInUseByOther(art.getId(), "diff" + art.getName().getValue()));
     }
 }

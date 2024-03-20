@@ -1,17 +1,19 @@
 package com.sjiwon.anotherart.auction.domain.model;
 
-import com.sjiwon.anotherart.auction.exception.AuctionErrorCode;
-import com.sjiwon.anotherart.global.exception.AnotherArtException;
+import com.sjiwon.anotherart.auction.exception.AuctionException;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
+import static com.sjiwon.anotherart.auction.exception.AuctionExceptionCode.AUCTION_END_DATE_MUST_BE_AFTER_START_DATE;
+import static com.sjiwon.anotherart.auction.exception.AuctionExceptionCode.PERIOD_MUST_EXISTS;
+import static lombok.AccessLevel.PROTECTED;
+
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor(access = PROTECTED)
 @Embeddable
 public class Period {
     @Column(name = "start_date", nullable = false, updatable = false)
@@ -33,13 +35,13 @@ public class Period {
 
     private static void validateDateExists(final LocalDateTime startDate, final LocalDateTime endDate) {
         if (startDate == null || endDate == null) {
-            throw AnotherArtException.type(AuctionErrorCode.PERIOD_MUST_EXISTS);
+            throw new AuctionException(PERIOD_MUST_EXISTS);
         }
     }
 
     private static void validateStartIsBeforeEnd(final LocalDateTime startDate, final LocalDateTime endDate) {
         if (startDate.isAfter(endDate)) {
-            throw AnotherArtException.type(AuctionErrorCode.AUCTION_END_DATE_MUST_BE_AFTER_START_DATE);
+            throw new AuctionException(AUCTION_END_DATE_MUST_BE_AFTER_START_DATE);
         }
     }
 

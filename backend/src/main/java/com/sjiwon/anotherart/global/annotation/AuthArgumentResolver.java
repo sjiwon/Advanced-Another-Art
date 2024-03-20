@@ -1,7 +1,6 @@
 package com.sjiwon.anotherart.global.annotation;
 
-import com.sjiwon.anotherart.global.exception.AnotherArtException;
-import com.sjiwon.anotherart.global.security.exception.AuthErrorCode;
+import com.sjiwon.anotherart.global.security.exception.AuthException;
 import com.sjiwon.anotherart.global.security.principal.MemberPrincipal;
 import com.sjiwon.anotherart.token.domain.model.Authenticated;
 import lombok.RequiredArgsConstructor;
@@ -13,6 +12,8 @@ import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
+
+import static com.sjiwon.anotherart.global.security.exception.AuthErrorCode.INVALID_PERMISSION;
 
 @RequiredArgsConstructor
 public class AuthArgumentResolver implements HandlerMethodArgumentResolver {
@@ -31,7 +32,7 @@ public class AuthArgumentResolver implements HandlerMethodArgumentResolver {
         final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if (isNotAuthUser(authentication)) {
-            throw AnotherArtException.type(AuthErrorCode.INVALID_PERMISSION);
+            throw new AuthException(INVALID_PERMISSION);
         }
 
         return extractAuthInfo(authentication);

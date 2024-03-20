@@ -2,10 +2,10 @@ package com.sjiwon.anotherart.member.application.usecase;
 
 import com.sjiwon.anotherart.auth.application.adapter.MailAuthenticationProcessor;
 import com.sjiwon.anotherart.auth.domain.AuthKey;
-import com.sjiwon.anotherart.common.mock.fake.FakePasswordEncryptor;
-import com.sjiwon.anotherart.global.encrypt.PasswordEncryptor;
-import com.sjiwon.anotherart.global.exception.AnotherArtException;
+import com.sjiwon.anotherart.common.mock.fake.FakeEncryptor;
 import com.sjiwon.anotherart.global.security.exception.AuthErrorCode;
+import com.sjiwon.anotherart.global.security.exception.AuthException;
+import com.sjiwon.anotherart.global.utils.encrypt.Encryptor;
 import com.sjiwon.anotherart.mail.application.adapter.EmailSender;
 import com.sjiwon.anotherart.member.application.usecase.command.AuthForResetPasswordCommand;
 import com.sjiwon.anotherart.member.application.usecase.command.ConfirmAuthCodeForResetPasswordCommand;
@@ -32,12 +32,12 @@ public class ResetPasswordUseCaseTest {
     private final MemberRepository memberRepository = mock(MemberRepository.class);
     private final MailAuthenticationProcessor mailAuthenticationProcessor = mock(MailAuthenticationProcessor.class);
     private final EmailSender emailSender = mock(EmailSender.class);
-    private final PasswordEncryptor passwordEncryptor = new FakePasswordEncryptor();
+    private final Encryptor encryptor = new FakeEncryptor();
     private final ResetPasswordUseCase sut = new ResetPasswordUseCase(
             memberRepository,
             mailAuthenticationProcessor,
             emailSender,
-            passwordEncryptor
+            encryptor
     );
 
     private final Member member = MEMBER_A.toMember().apply(1L);
@@ -91,13 +91,13 @@ public class ResetPasswordUseCaseTest {
             given(memberRepository.getByNameAndEmailAndLoginId(command.name(), command.email(), command.loginId())).willReturn(member);
 
             final String key = AuthKey.PASSWORD_AUTH_KEY.generateAuthKey(member.getEmail().getValue());
-            doThrow(AnotherArtException.type(AuthErrorCode.INVALID_AUTH_CODE))
+            doThrow(new AuthException(AuthErrorCode.INVALID_AUTH_CODE))
                     .when(mailAuthenticationProcessor)
                     .verifyAuthCode(key, command.authCode());
 
             // when - then
             assertThatThrownBy(() -> sut.confirmAuthCode(command))
-                    .isInstanceOf(AnotherArtException.class)
+                    .isInstanceOf(AuthException.class)
                     .hasMessage(AuthErrorCode.INVALID_AUTH_CODE.getMessage());
 
             assertAll(
@@ -153,7 +153,7 @@ public class ResetPasswordUseCaseTest {
             // then
             assertAll(
                     () -> verify(memberRepository, times(1)).getByNameAndEmailAndLoginId(command.name(), command.email(), command.loginId()),
-                    () -> assertThat(passwordEncryptor.matches(NEW_PASSWORD, member.getPassword().getValue())).isTrue()
+                    () -> assertThat(encryptor.matches(NEW_PASSWORD, member.getPassword().getValue())).isTrue()
             );
         }
     }

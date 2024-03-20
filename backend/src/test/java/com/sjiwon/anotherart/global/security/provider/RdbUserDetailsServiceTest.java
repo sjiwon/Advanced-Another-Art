@@ -4,7 +4,7 @@ import com.sjiwon.anotherart.common.UnitTest;
 import com.sjiwon.anotherart.global.security.principal.MemberPrincipal;
 import com.sjiwon.anotherart.member.domain.model.Member;
 import com.sjiwon.anotherart.member.domain.repository.MemberRepository;
-import com.sjiwon.anotherart.member.exception.MemberErrorCode;
+import com.sjiwon.anotherart.member.exception.MemberExceptionCode;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -36,7 +36,7 @@ public class RdbUserDetailsServiceTest extends UnitTest {
         // when - then
         assertThatThrownBy(() -> sut.loadUserByUsername(loginId))
                 .isInstanceOf(UsernameNotFoundException.class)
-                .hasMessage(MemberErrorCode.MEMBER_NOT_FOUND.getMessage());
+                .hasMessage(MemberExceptionCode.MEMBER_NOT_FOUND.getMessage());
     }
 
     @Test

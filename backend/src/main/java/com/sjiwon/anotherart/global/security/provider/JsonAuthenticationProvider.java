@@ -1,6 +1,6 @@
 package com.sjiwon.anotherart.global.security.provider;
 
-import com.sjiwon.anotherart.member.exception.MemberErrorCode;
+import com.sjiwon.anotherart.member.exception.MemberExceptionCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -28,7 +28,7 @@ public class JsonAuthenticationProvider implements AuthenticationProvider {
 
     private void validatePassword(final String rawPassword, final UserDetails userDetails) {
         if (isNotCorrectPassword(rawPassword, userDetails)) {
-            throw new BadCredentialsException(MemberErrorCode.INVALID_PASSWORD.getMessage());
+            throw new BadCredentialsException(MemberExceptionCode.INVALID_PASSWORD.getMessage());
         }
     }
 

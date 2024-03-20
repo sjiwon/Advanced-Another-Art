@@ -3,16 +3,16 @@ package com.sjiwon.anotherart.token.utils;
 import com.sjiwon.anotherart.token.domain.model.AuthToken;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
-import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.springframework.util.StringUtils;
 
 import java.util.Arrays;
 import java.util.Optional;
 
+import static lombok.AccessLevel.PRIVATE;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@NoArgsConstructor(access = PRIVATE)
 public class TokenExtractor {
     public static Optional<String> extractAccessToken(final HttpServletRequest request) {
         final String token = request.getHeader(AUTHORIZATION);

@@ -1,10 +1,9 @@
 package com.sjiwon.anotherart.purchase.domain.model;
 
 import com.sjiwon.anotherart.art.domain.model.Art;
-import com.sjiwon.anotherart.global.BaseEntity;
-import com.sjiwon.anotherart.global.exception.AnotherArtException;
+import com.sjiwon.anotherart.global.base.BaseEntity;
 import com.sjiwon.anotherart.member.domain.model.Member;
-import com.sjiwon.anotherart.purchase.exception.PurchaseErrorCode;
+import com.sjiwon.anotherart.purchase.exception.PurchaseException;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -12,12 +11,15 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import static com.sjiwon.anotherart.purchase.exception.PurchaseExceptionCode.ALREADY_SOLD;
+import static com.sjiwon.anotherart.purchase.exception.PurchaseExceptionCode.ART_OWNER_CANNOT_PURCHASE_OWN;
+import static lombok.AccessLevel.PROTECTED;
+
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor(access = PROTECTED)
 @Entity
 @Table(name = "art_purchase")
 public class Purchase extends BaseEntity<Purchase> {
@@ -51,13 +53,13 @@ public class Purchase extends BaseEntity<Purchase> {
 
     private static void validateBuyerIsArtOwner(final Art art, final Member buyer) {
         if (art.isOwner(buyer)) {
-            throw AnotherArtException.type(PurchaseErrorCode.ART_OWNER_CANNOT_PURCHASE_OWN);
+            throw new PurchaseException(ART_OWNER_CANNOT_PURCHASE_OWN);
         }
     }
 
     private static void validateArtIsOnSale(final Art art) {
         if (art.isSold()) {
-            throw AnotherArtException.type(PurchaseErrorCode.ALREADY_SOLD);
+            throw new PurchaseException(ALREADY_SOLD);
         }
     }
 

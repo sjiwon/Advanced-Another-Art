@@ -6,13 +6,13 @@ import com.sjiwon.anotherart.art.domain.repository.ArtRepository;
 import com.sjiwon.anotherart.art.domain.service.ArtImageUploader;
 import com.sjiwon.anotherart.art.domain.service.ArtRegistrationProcessor;
 import com.sjiwon.anotherart.art.domain.service.ArtResourceValidator;
-import com.sjiwon.anotherart.art.exception.ArtErrorCode;
+import com.sjiwon.anotherart.art.exception.ArtException;
+import com.sjiwon.anotherart.art.exception.ArtExceptionCode;
 import com.sjiwon.anotherart.auction.domain.model.Auction;
 import com.sjiwon.anotherart.auction.domain.repository.AuctionRepository;
 import com.sjiwon.anotherart.common.UnitTest;
 import com.sjiwon.anotherart.file.domain.model.RawFileData;
 import com.sjiwon.anotherart.file.utils.converter.FileConverter;
-import com.sjiwon.anotherart.global.exception.AnotherArtException;
 import com.sjiwon.anotherart.member.domain.model.Member;
 import com.sjiwon.anotherart.member.domain.repository.MemberRepository;
 import org.junit.jupiter.api.DisplayName;
@@ -24,7 +24,7 @@ import java.time.LocalDateTime;
 import static com.sjiwon.anotherart.common.fixture.ArtFixture.AUCTION_1;
 import static com.sjiwon.anotherart.common.fixture.ArtFixture.GENERAL_1;
 import static com.sjiwon.anotherart.common.fixture.MemberFixture.MEMBER_A;
-import static com.sjiwon.anotherart.common.utils.FileMockingUtils.createSingleMockMultipartFile;
+import static com.sjiwon.anotherart.common.utils.FileVirtualCreator.createSingleMockMultipartFile;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -76,8 +76,8 @@ public class RegisterArtUseCaseTest extends UnitTest {
 
             // when - then
             assertThatThrownBy(() -> sut.invoke(command))
-                    .isInstanceOf(AnotherArtException.class)
-                    .hasMessage(ArtErrorCode.DUPLICATE_NAME.getMessage());
+                    .isInstanceOf(ArtException.class)
+                    .hasMessage(ArtExceptionCode.DUPLICATE_NAME.getMessage());
 
             assertAll(
                     () -> verify(artRepository, times(1)).existsByNameValue(command.name().getValue()),
@@ -136,8 +136,8 @@ public class RegisterArtUseCaseTest extends UnitTest {
 
             // when - then
             assertThatThrownBy(() -> sut.invoke(command))
-                    .isInstanceOf(AnotherArtException.class)
-                    .hasMessage(ArtErrorCode.DUPLICATE_NAME.getMessage());
+                    .isInstanceOf(ArtException.class)
+                    .hasMessage(ArtExceptionCode.DUPLICATE_NAME.getMessage());
 
             assertAll(
                     () -> verify(artRepository, times(1)).existsByNameValue(command.name().getValue()),

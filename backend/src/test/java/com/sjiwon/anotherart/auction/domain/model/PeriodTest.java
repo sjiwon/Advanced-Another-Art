@@ -1,7 +1,7 @@
 package com.sjiwon.anotherart.auction.domain.model;
 
-import com.sjiwon.anotherart.auction.exception.AuctionErrorCode;
-import com.sjiwon.anotherart.global.exception.AnotherArtException;
+import com.sjiwon.anotherart.auction.exception.AuctionException;
+import com.sjiwon.anotherart.auction.exception.AuctionExceptionCode;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -17,8 +17,8 @@ class PeriodTest {
     @DisplayName("날짜가 입력되지 않으면 Period 생성에 실패한다")
     void throwExceptionByPeriodMustExists() {
         assertThatThrownBy(() -> Period.of(null, null))
-                .isInstanceOf(AnotherArtException.class)
-                .hasMessage(AuctionErrorCode.PERIOD_MUST_EXISTS.getMessage());
+                .isInstanceOf(AuctionException.class)
+                .hasMessage(AuctionExceptionCode.PERIOD_MUST_EXISTS.getMessage());
     }
 
     @Test
@@ -28,8 +28,8 @@ class PeriodTest {
         final LocalDateTime endDate = LocalDateTime.now().plusDays(1);
 
         assertThatThrownBy(() -> Period.of(startDate, endDate))
-                .isInstanceOf(AnotherArtException.class)
-                .hasMessage(AuctionErrorCode.AUCTION_END_DATE_MUST_BE_AFTER_START_DATE.getMessage());
+                .isInstanceOf(AuctionException.class)
+                .hasMessage(AuctionExceptionCode.AUCTION_END_DATE_MUST_BE_AFTER_START_DATE.getMessage());
     }
 
     @Test

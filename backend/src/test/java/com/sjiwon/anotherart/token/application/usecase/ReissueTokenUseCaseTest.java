@@ -1,8 +1,8 @@
 package com.sjiwon.anotherart.token.application.usecase;
 
 import com.sjiwon.anotherart.common.UnitTest;
-import com.sjiwon.anotherart.global.exception.AnotherArtException;
 import com.sjiwon.anotherart.global.security.exception.AuthErrorCode;
+import com.sjiwon.anotherart.global.security.exception.AuthException;
 import com.sjiwon.anotherart.member.domain.model.Member;
 import com.sjiwon.anotherart.member.domain.repository.MemberRepository;
 import com.sjiwon.anotherart.token.domain.model.AuthToken;
@@ -45,7 +45,7 @@ class ReissueTokenUseCaseTest extends UnitTest {
 
         // when - then
         assertThatThrownBy(() -> sut.invoke(REFRESH_TOKEN))
-                .isInstanceOf(AnotherArtException.class)
+                .isInstanceOf(AuthException.class)
                 .hasMessage(AuthErrorCode.INVALID_TOKEN.getMessage());
 
         assertAll(

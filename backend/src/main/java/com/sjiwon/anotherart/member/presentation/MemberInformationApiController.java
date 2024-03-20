@@ -1,7 +1,7 @@
 package com.sjiwon.anotherart.member.presentation;
 
+import com.sjiwon.anotherart.global.ResponseWrapper;
 import com.sjiwon.anotherart.global.annotation.Auth;
-import com.sjiwon.anotherart.global.dto.ResponseWrapper;
 import com.sjiwon.anotherart.member.application.usecase.MemberPrivateQueryUseCase;
 import com.sjiwon.anotherart.member.application.usecase.dto.PurchaseArtsAssembler;
 import com.sjiwon.anotherart.member.application.usecase.dto.SoldArtsAssembler;

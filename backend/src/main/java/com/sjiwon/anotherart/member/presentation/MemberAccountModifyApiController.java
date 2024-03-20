@@ -1,6 +1,6 @@
 package com.sjiwon.anotherart.member.presentation;
 
-import com.sjiwon.anotherart.global.dto.ResponseWrapper;
+import com.sjiwon.anotherart.global.ResponseWrapper;
 import com.sjiwon.anotherart.member.application.usecase.ResetPasswordUseCase;
 import com.sjiwon.anotherart.member.application.usecase.RetrieveLoginIdUseCase;
 import com.sjiwon.anotherart.member.application.usecase.command.AuthForResetPasswordCommand;

@@ -1,7 +1,6 @@
 package com.sjiwon.anotherart.mail.infrastructure.ses;
 
-import com.sjiwon.anotherart.global.exception.AnotherArtException;
-import com.sjiwon.anotherart.global.exception.GlobalErrorCode;
+import com.sjiwon.anotherart.global.exception.GlobalException;
 import com.sjiwon.anotherart.mail.application.adapter.EmailSender;
 import com.sjiwon.anotherart.mail.infrastructure.EmailMetadata;
 import lombok.extern.slf4j.Slf4j;
@@ -17,6 +16,8 @@ import software.amazon.awssdk.services.ses.model.Content;
 import software.amazon.awssdk.services.ses.model.Destination;
 import software.amazon.awssdk.services.ses.model.Message;
 import software.amazon.awssdk.services.ses.model.SendEmailRequest;
+
+import static com.sjiwon.anotherart.global.exception.GlobalExceptionCode.UNEXPECTED_SERVER_ERROR;
 
 @Slf4j
 @Profile("prod")
@@ -68,8 +69,8 @@ public class AwsSESEmailSender implements EmailSender {
         try {
             sesClient.sendEmail(createEmailRequest(subject, email, mailBody));
         } catch (final Exception e) {
-            log.warn("메일 전송 간 오류 발생...", e);
-            throw AnotherArtException.type(GlobalErrorCode.INTERNAL_SERVER_ERROR);
+            log.error("메일 전송 간 오류 발생...", e);
+            throw new GlobalException(UNEXPECTED_SERVER_ERROR);
         }
     }
 

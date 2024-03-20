@@ -1,7 +1,7 @@
 package com.sjiwon.anotherart.art.domain.model;
 
-import com.sjiwon.anotherart.art.exception.ArtErrorCode;
-import com.sjiwon.anotherart.global.exception.AnotherArtException;
+import com.sjiwon.anotherart.art.exception.ArtException;
+import com.sjiwon.anotherart.art.exception.ArtExceptionCode;
 import com.sjiwon.anotherart.member.domain.model.Member;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -33,16 +33,16 @@ public class HashtagsTest {
         @DisplayName("해시태그는 적어도 1개 이상 존재해야 한다")
         void throwExceptionByHashtagMustExistsAtLeastOne() {
             assertThatThrownBy(() -> new Hashtags(art, Set.of()))
-                    .isInstanceOf(AnotherArtException.class)
-                    .hasMessage(ArtErrorCode.HASHTAG_MUST_EXISTS_AT_LEAST_ONE.getMessage());
+                    .isInstanceOf(ArtException.class)
+                    .hasMessage(ArtExceptionCode.HASHTAG_MUST_EXISTS_AT_LEAST_ONE.getMessage());
         }
 
         @Test
         @DisplayName("해시태그는 10개를 초과해서 존재할 수 없다")
         void throwExceptionByHashtagMustNotExistsMoreThanTen() {
             assertThatThrownBy(() -> new Hashtags(art, Set.of("A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K")))
-                    .isInstanceOf(AnotherArtException.class)
-                    .hasMessage(ArtErrorCode.HASHTAG_MUST_NOT_EXISTS_MORE_THAN_TEN.getMessage());
+                    .isInstanceOf(ArtException.class)
+                    .hasMessage(ArtExceptionCode.HASHTAG_MUST_NOT_EXISTS_MORE_THAN_TEN.getMessage());
         }
 
         @ParameterizedTest
@@ -75,16 +75,16 @@ public class HashtagsTest {
         @DisplayName("해시태그는 적어도 1개 이상 존재해야 한다")
         void throwExceptionByHashtagMustExistsAtLeastOne() {
             assertThatThrownBy(() -> hashtags.update(art, Set.of()))
-                    .isInstanceOf(AnotherArtException.class)
-                    .hasMessage(ArtErrorCode.HASHTAG_MUST_EXISTS_AT_LEAST_ONE.getMessage());
+                    .isInstanceOf(ArtException.class)
+                    .hasMessage(ArtExceptionCode.HASHTAG_MUST_EXISTS_AT_LEAST_ONE.getMessage());
         }
 
         @Test
         @DisplayName("해시태그는 10개를 초과해서 존재할 수 없다")
         void throwExceptionByHashtagMustNotExistsMoreThanTen() {
             assertThatThrownBy(() -> hashtags.update(art, Set.of("A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K")))
-                    .isInstanceOf(AnotherArtException.class)
-                    .hasMessage(ArtErrorCode.HASHTAG_MUST_NOT_EXISTS_MORE_THAN_TEN.getMessage());
+                    .isInstanceOf(ArtException.class)
+                    .hasMessage(ArtExceptionCode.HASHTAG_MUST_NOT_EXISTS_MORE_THAN_TEN.getMessage());
         }
 
         @Test

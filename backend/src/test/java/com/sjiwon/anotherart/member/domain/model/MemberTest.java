@@ -1,9 +1,9 @@
 package com.sjiwon.anotherart.member.domain.model;
 
-import com.sjiwon.anotherart.common.mock.fake.FakePasswordEncryptor;
-import com.sjiwon.anotherart.global.encrypt.PasswordEncryptor;
-import com.sjiwon.anotherart.global.exception.AnotherArtException;
-import com.sjiwon.anotherart.member.exception.MemberErrorCode;
+import com.sjiwon.anotherart.common.mock.fake.FakeEncryptor;
+import com.sjiwon.anotherart.global.utils.encrypt.Encryptor;
+import com.sjiwon.anotherart.member.exception.MemberException;
+import com.sjiwon.anotherart.member.exception.MemberExceptionCode;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -17,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 @DisplayName("Member -> 도메인 [Member] 테스트")
 class MemberTest {
-    private final PasswordEncryptor passwordEncryptor = new FakePasswordEncryptor();
+    private final Encryptor encryptor = new FakeEncryptor();
 
     @Test
     @DisplayName("멤버를 생성한다")
@@ -28,7 +28,7 @@ class MemberTest {
                 () -> assertThat(member.getName()).isEqualTo(MEMBER_A.getName()),
                 () -> assertThat(member.getNickname().getValue()).isEqualTo(MEMBER_A.getNickname().getValue()),
                 () -> assertThat(member.getLoginId()).isEqualTo(MEMBER_A.getLoginId()),
-                () -> assertThat(passwordEncryptor.matches(MEMBER_A.getPassword(), member.getPassword().getValue())).isTrue(),
+                () -> assertThat(encryptor.matches(MEMBER_A.getPassword(), member.getPassword().getValue())).isTrue(),
                 () -> assertThat(member.getEmail().getValue()).isEqualTo(MEMBER_A.getEmail().getValue()),
                 () -> assertThat(member.getAddress().getPostcode()).isEqualTo(MEMBER_A.getAddress().getPostcode()),
                 () -> assertThat(member.getAddress().getDefaultAddress()).isEqualTo(MEMBER_A.getAddress().getDefaultAddress()),
@@ -51,8 +51,8 @@ class MemberTest {
 
             // when - then
             assertThatThrownBy(() -> member.updateNickname(oldNickname))
-                    .isInstanceOf(AnotherArtException.class)
-                    .hasMessage(MemberErrorCode.NICKNAME_SAME_AS_BEFORE.getMessage());
+                    .isInstanceOf(MemberException.class)
+                    .hasMessage(MemberExceptionCode.NICKNAME_SAME_AS_BEFORE.getMessage());
         }
 
         @Test
@@ -81,9 +81,9 @@ class MemberTest {
             final String oldPassword = MEMBER_A.getPassword();
 
             // when - then
-            assertThatThrownBy(() -> member.updatePassword(oldPassword, passwordEncryptor))
-                    .isInstanceOf(AnotherArtException.class)
-                    .hasMessage(MemberErrorCode.PASSWORD_SAME_AS_BEFORE.getMessage());
+            assertThatThrownBy(() -> member.updatePassword(oldPassword, encryptor))
+                    .isInstanceOf(MemberException.class)
+                    .hasMessage(MemberExceptionCode.PASSWORD_SAME_AS_BEFORE.getMessage());
         }
 
         @Test
@@ -95,12 +95,12 @@ class MemberTest {
             final String newPassword = MEMBER_A.getPassword() + "diff";
 
             // when
-            member.updatePassword(newPassword, passwordEncryptor);
+            member.updatePassword(newPassword, encryptor);
 
             // then
             assertAll(
-                    () -> assertThat(passwordEncryptor.matches(oldPassword, member.getPassword().getValue())).isFalse(),
-                    () -> assertThat(passwordEncryptor.matches(newPassword, member.getPassword().getValue())).isTrue()
+                    () -> assertThat(encryptor.matches(oldPassword, member.getPassword().getValue())).isFalse(),
+                    () -> assertThat(encryptor.matches(newPassword, member.getPassword().getValue())).isTrue()
             );
         }
     }
@@ -161,8 +161,8 @@ class MemberTest {
 
             // when - then
             assertThatThrownBy(() -> member.decreaseTotalPoint(5_000))
-                    .isInstanceOf(AnotherArtException.class)
-                    .hasMessage(MemberErrorCode.POINT_IS_NOT_ENOUGH.getMessage());
+                    .isInstanceOf(MemberException.class)
+                    .hasMessage(MemberExceptionCode.POINT_IS_NOT_ENOUGH.getMessage());
         }
 
         @Test
@@ -228,8 +228,8 @@ class MemberTest {
 
             // when - then
             assertThatThrownBy(() -> member.decreaseAvailablePoint(80_000))
-                    .isInstanceOf(AnotherArtException.class)
-                    .hasMessage(MemberErrorCode.POINT_IS_NOT_ENOUGH.getMessage());
+                    .isInstanceOf(MemberException.class)
+                    .hasMessage(MemberExceptionCode.POINT_IS_NOT_ENOUGH.getMessage());
         }
 
         @Test

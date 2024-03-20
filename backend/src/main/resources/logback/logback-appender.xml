@@ -4,7 +4,7 @@
     <property name="LOG_FILE_PATH" value="./logs"/>
     <property name="ARCHIVE_FILE_PATH" value="./logs/archive"/>
     <property name="LOG_PATTERN"
-              value="[%-5level] [%thread] [%d{yyyy-MM-dd HH:mm:ss.SSS, ${logback.timezone:-Asia/Seoul}}] [%logger{1}] %msg %n"/>
+              value="[%d{yyyy-MM-dd HH:mm:ss.SSS, ${logback.timezone:-Asia/Seoul}}] [%-5level] [%thread] [%logger{1}] [%X{REQUEST_ID:-NO REQUEST ID}] %msg %n"/>
 
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <layout class="ch.qos.logback.classic.PatternLayout">

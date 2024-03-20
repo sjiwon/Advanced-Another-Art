@@ -6,11 +6,11 @@ import com.sjiwon.anotherart.art.domain.repository.ArtRepository;
 import com.sjiwon.anotherart.art.domain.repository.HashtagRepository;
 import com.sjiwon.anotherart.art.domain.service.ArtDeleter;
 import com.sjiwon.anotherart.art.domain.service.ArtDeletionPreInspector;
-import com.sjiwon.anotherart.art.exception.ArtErrorCode;
+import com.sjiwon.anotherart.art.exception.ArtException;
+import com.sjiwon.anotherart.art.exception.ArtExceptionCode;
 import com.sjiwon.anotherart.auction.domain.repository.AuctionRepository;
 import com.sjiwon.anotherart.common.UnitTest;
 import com.sjiwon.anotherart.favorite.domain.repository.FavoriteRepository;
-import com.sjiwon.anotherart.global.exception.AnotherArtException;
 import com.sjiwon.anotherart.member.domain.model.Member;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -67,8 +67,8 @@ public class DeleteArtUseCaseTest extends UnitTest {
 
             // when - then
             assertThatThrownBy(() -> sut.invoke(command))
-                    .isInstanceOf(AnotherArtException.class)
-                    .hasMessage(ArtErrorCode.CANNOT_DELETE_SOLD_ART.getMessage());
+                    .isInstanceOf(ArtException.class)
+                    .hasMessage(ArtExceptionCode.CANNOT_DELETE_SOLD_ART.getMessage());
 
             assertAll(
                     () -> verify(artRepository, times(1)).getById(art.getId()),
@@ -120,8 +120,8 @@ public class DeleteArtUseCaseTest extends UnitTest {
 
             // when - then
             assertThatThrownBy(() -> sut.invoke(command))
-                    .isInstanceOf(AnotherArtException.class)
-                    .hasMessage(ArtErrorCode.CANNOT_DELETE_SOLD_ART.getMessage());
+                    .isInstanceOf(ArtException.class)
+                    .hasMessage(ArtExceptionCode.CANNOT_DELETE_SOLD_ART.getMessage());
 
             assertAll(
                     () -> verify(artRepository, times(1)).getById(art.getId()),
@@ -141,8 +141,8 @@ public class DeleteArtUseCaseTest extends UnitTest {
 
             // when - then
             assertThatThrownBy(() -> sut.invoke(command))
-                    .isInstanceOf(AnotherArtException.class)
-                    .hasMessage(ArtErrorCode.CANNOT_DELETE_IF_BID_EXISTS.getMessage());
+                    .isInstanceOf(ArtException.class)
+                    .hasMessage(ArtExceptionCode.CANNOT_DELETE_IF_BID_EXISTS.getMessage());
 
             assertAll(
                     () -> verify(artRepository, times(1)).getById(art.getId()),

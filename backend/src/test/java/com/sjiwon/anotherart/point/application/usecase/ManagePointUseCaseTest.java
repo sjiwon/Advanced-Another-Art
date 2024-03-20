@@ -1,10 +1,10 @@
 package com.sjiwon.anotherart.point.application.usecase;
 
 import com.sjiwon.anotherart.common.UnitTest;
-import com.sjiwon.anotherart.global.exception.AnotherArtException;
 import com.sjiwon.anotherart.member.domain.model.Member;
 import com.sjiwon.anotherart.member.domain.repository.MemberRepository;
-import com.sjiwon.anotherart.member.exception.MemberErrorCode;
+import com.sjiwon.anotherart.member.exception.MemberException;
+import com.sjiwon.anotherart.member.exception.MemberExceptionCode;
 import com.sjiwon.anotherart.point.application.usecase.command.ChargePointCommand;
 import com.sjiwon.anotherart.point.application.usecase.command.RefundPointCommand;
 import com.sjiwon.anotherart.point.domain.model.PointRecord;
@@ -81,8 +81,8 @@ public class ManagePointUseCaseTest extends UnitTest {
 
             // when - then
             assertThatThrownBy(() -> sut.refund(command))
-                    .isInstanceOf(AnotherArtException.class)
-                    .hasMessage(MemberErrorCode.POINT_IS_NOT_ENOUGH.getMessage());
+                    .isInstanceOf(MemberException.class)
+                    .hasMessage(MemberExceptionCode.POINT_IS_NOT_ENOUGH.getMessage());
 
             assertAll(
                     () -> verify(memberRepository, times(1)).getById(command.memberId()),

@@ -55,6 +55,10 @@ mail:
 cors:
   allowed-origin-patterns: http://localhost:8080
 
+encrypt:
+  secret-key: 26f01335335d279cc9fbfa1cb2b73819111460fa21905f689763946b6bf4beee
+  salt: 0b7a3890901fe0c61f14f26ab87189211922d4a294f9619bf70606618d6044f3 # Even Hex Number
+
 jwt:
   secret-key: adsfasjdflksajdlkfjasldjflkasdjflasjdlfjasldfjlkasdfasdasd
   access-token-validity: 1234

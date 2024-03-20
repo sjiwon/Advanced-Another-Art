@@ -2,16 +2,17 @@ package com.sjiwon.anotherart.file.utils.converter;
 
 import com.sjiwon.anotherart.file.domain.model.FileExtension;
 import com.sjiwon.anotherart.file.domain.model.RawFileData;
-import com.sjiwon.anotherart.file.exception.FileErrorCode;
-import com.sjiwon.anotherart.global.exception.AnotherArtException;
+import com.sjiwon.anotherart.file.exception.FileException;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 
+import static com.sjiwon.anotherart.file.exception.FileExceptionCode.FILE_IS_NOT_UPLOAD;
+
 public class FileConverter {
     public static RawFileData convertImageFile(final MultipartFile file) {
         if (file == null || file.isEmpty()) {
-            throw AnotherArtException.type(FileErrorCode.FILE_IS_NOT_UPLOAD);
+            throw new FileException(FILE_IS_NOT_UPLOAD);
         }
 
         final String fileName = file.getOriginalFilename();

@@ -1,17 +1,18 @@
 package com.sjiwon.anotherart.member.domain.model;
 
-import com.sjiwon.anotherart.global.exception.AnotherArtException;
-import com.sjiwon.anotherart.member.exception.MemberErrorCode;
+import com.sjiwon.anotherart.member.exception.MemberException;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.util.regex.Pattern;
 
+import static com.sjiwon.anotherart.member.exception.MemberExceptionCode.INVALID_PHONE_PATTERN;
+import static lombok.AccessLevel.PROTECTED;
+
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor(access = PROTECTED)
 @Embeddable
 public class Phone {
     /**
@@ -33,7 +34,7 @@ public class Phone {
 
     private static void validatePhonePattern(final String value) {
         if (isNotValidPattern(value)) {
-            throw AnotherArtException.type(MemberErrorCode.INVALID_PHONE_PATTERN);
+            throw new MemberException(INVALID_PHONE_PATTERN);
         }
     }
 

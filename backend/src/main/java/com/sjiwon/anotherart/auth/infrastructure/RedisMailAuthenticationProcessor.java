@@ -2,13 +2,14 @@ package com.sjiwon.anotherart.auth.infrastructure;
 
 import com.sjiwon.anotherart.auth.application.adapter.MailAuthenticationProcessor;
 import com.sjiwon.anotherart.auth.domain.AuthCodeGenerator;
-import com.sjiwon.anotherart.global.exception.AnotherArtException;
-import com.sjiwon.anotherart.global.security.exception.AuthErrorCode;
+import com.sjiwon.anotherart.global.security.exception.AuthException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
 
 import java.util.concurrent.TimeUnit;
+
+import static com.sjiwon.anotherart.global.security.exception.AuthErrorCode.INVALID_AUTH_CODE;
 
 @Component
 public class RedisMailAuthenticationProcessor implements MailAuthenticationProcessor {
@@ -38,7 +39,7 @@ public class RedisMailAuthenticationProcessor implements MailAuthenticationProce
         final String realValue = stringRedisTemplate.opsForValue().get(key);
 
         if (!value.equals(realValue)) {
-            throw AnotherArtException.type(AuthErrorCode.INVALID_AUTH_CODE);
+            throw new AuthException(INVALID_AUTH_CODE);
         }
     }
 
