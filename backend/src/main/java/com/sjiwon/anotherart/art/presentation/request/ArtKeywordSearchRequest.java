@@ -1,10 +1,10 @@
-package com.sjiwon.anotherart.art.presentation.dto.request;
+package com.sjiwon.anotherart.art.presentation.request;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
-public record ArtHashtagSearchRequest(
+public record ArtKeywordSearchRequest(
         @NotBlank(message = "정렬 기준은 필수입니다.")
         String sortType,
 
@@ -15,7 +15,7 @@ public record ArtHashtagSearchRequest(
         @NotBlank(message = "작품 타입은 필수입니다.")
         String artType,
 
-        @NotBlank(message = "해시태그는 필수입니다.")
-        String hashtag
+        @NotBlank(message = "키워드는 필수입니다.")
+        String keyword
 ) {
 }

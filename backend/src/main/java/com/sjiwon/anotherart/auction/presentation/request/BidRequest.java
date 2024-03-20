@@ -1,4 +1,4 @@
-package com.sjiwon.anotherart.auction.presentation.dto.request;
+package com.sjiwon.anotherart.auction.presentation.request;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;

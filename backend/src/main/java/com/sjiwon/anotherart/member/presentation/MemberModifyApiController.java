@@ -5,9 +5,9 @@ import com.sjiwon.anotherart.member.application.usecase.UpdateMemberResourceUseC
 import com.sjiwon.anotherart.member.application.usecase.command.UpdateAddressCommand;
 import com.sjiwon.anotherart.member.application.usecase.command.UpdateNicknameCommand;
 import com.sjiwon.anotherart.member.application.usecase.command.UpdatePasswordCommand;
-import com.sjiwon.anotherart.member.presentation.dto.request.UpdateAddressRequest;
-import com.sjiwon.anotherart.member.presentation.dto.request.UpdateNicknameRequest;
-import com.sjiwon.anotherart.member.presentation.dto.request.UpdatePasswordRequest;
+import com.sjiwon.anotherart.member.presentation.request.UpdateAddressRequest;
+import com.sjiwon.anotherart.member.presentation.request.UpdateNicknameRequest;
+import com.sjiwon.anotherart.member.presentation.request.UpdatePasswordRequest;
 import com.sjiwon.anotherart.token.domain.model.Authenticated;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;

@@ -8,11 +8,11 @@ import com.sjiwon.anotherart.member.application.usecase.command.AuthForRetrieveL
 import com.sjiwon.anotherart.member.application.usecase.command.ConfirmAuthCodeForLoginIdCommand;
 import com.sjiwon.anotherart.member.application.usecase.command.ConfirmAuthCodeForResetPasswordCommand;
 import com.sjiwon.anotherart.member.application.usecase.command.ResetPasswordCommand;
-import com.sjiwon.anotherart.member.presentation.dto.request.ConfirmAuthCodeForLoginIdRequest;
-import com.sjiwon.anotherart.member.presentation.dto.request.ConfirmAuthCodeForResetPasswordRequest;
-import com.sjiwon.anotherart.member.presentation.dto.request.ProvideAuthCodeForLoginIdRequest;
-import com.sjiwon.anotherart.member.presentation.dto.request.ProvideAuthCodeForResetPasswordRequest;
-import com.sjiwon.anotherart.member.presentation.dto.request.ResetPasswordRequest;
+import com.sjiwon.anotherart.member.presentation.request.ConfirmAuthCodeForLoginIdRequest;
+import com.sjiwon.anotherart.member.presentation.request.ConfirmAuthCodeForResetPasswordRequest;
+import com.sjiwon.anotherart.member.presentation.request.ProvideAuthCodeForLoginIdRequest;
+import com.sjiwon.anotherart.member.presentation.request.ProvideAuthCodeForResetPasswordRequest;
+import com.sjiwon.anotherart.member.presentation.request.ResetPasswordRequest;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

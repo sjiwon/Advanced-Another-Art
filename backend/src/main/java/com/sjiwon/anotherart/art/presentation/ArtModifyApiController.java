@@ -6,7 +6,7 @@ import com.sjiwon.anotherart.art.application.usecase.command.DeleteArtCommand;
 import com.sjiwon.anotherart.art.application.usecase.command.UpdateArtCommand;
 import com.sjiwon.anotherart.art.domain.model.ArtName;
 import com.sjiwon.anotherart.art.domain.model.Description;
-import com.sjiwon.anotherart.art.presentation.dto.request.UpdateArtRequest;
+import com.sjiwon.anotherart.art.presentation.request.UpdateArtRequest;
 import com.sjiwon.anotherart.global.annotation.Auth;
 import com.sjiwon.anotherart.token.domain.model.Authenticated;
 import io.swagger.v3.oas.annotations.Operation;

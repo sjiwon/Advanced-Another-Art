@@ -1,4 +1,4 @@
-package com.sjiwon.anotherart.member.presentation.dto.request;
+package com.sjiwon.anotherart.member.presentation.request;
 
 import jakarta.validation.constraints.NotBlank;
 

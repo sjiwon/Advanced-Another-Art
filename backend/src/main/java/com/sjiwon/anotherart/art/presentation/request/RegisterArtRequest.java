@@ -1,4 +1,4 @@
-package com.sjiwon.anotherart.art.presentation.dto.request;
+package com.sjiwon.anotherart.art.presentation.request;
 
 import com.sjiwon.anotherart.art.utils.validator.ValidAuctionStartDate;
 import jakarta.validation.constraints.Min;

@@ -2,7 +2,7 @@ package com.sjiwon.anotherart.auction.presentation;
 
 import com.sjiwon.anotherart.auction.application.usecase.BidUseCase;
 import com.sjiwon.anotherart.auction.application.usecase.command.BidCommand;
-import com.sjiwon.anotherart.auction.presentation.dto.request.BidRequest;
+import com.sjiwon.anotherart.auction.presentation.request.BidRequest;
 import com.sjiwon.anotherart.global.annotation.Auth;
 import com.sjiwon.anotherart.token.domain.model.Authenticated;
 import io.swagger.v3.oas.annotations.Operation;
