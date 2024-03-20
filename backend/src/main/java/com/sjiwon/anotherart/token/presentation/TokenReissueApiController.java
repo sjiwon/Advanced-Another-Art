@@ -2,7 +2,6 @@ package com.sjiwon.anotherart.token.presentation;
 
 import com.sjiwon.anotherart.global.annotation.ExtractToken;
 import com.sjiwon.anotherart.token.application.usecase.ReissueTokenUseCase;
-import com.sjiwon.anotherart.token.application.usecase.command.ReissueTokenCommand;
 import com.sjiwon.anotherart.token.domain.model.AuthToken;
 import com.sjiwon.anotherart.token.domain.model.TokenType;
 import com.sjiwon.anotherart.token.utils.TokenResponseWriter;
@@ -29,7 +28,7 @@ public class TokenReissueApiController {
             @ExtractToken(tokenType = TokenType.REFRESH) final String refreshToken,
             final HttpServletResponse response
     ) {
-        final AuthToken authToken = reissueTokenUseCase.invoke(new ReissueTokenCommand(refreshToken));
+        final AuthToken authToken = reissueTokenUseCase.invoke(refreshToken);
         tokenResponseWriter.applyToken(response, authToken);
 
         return ResponseEntity.noContent().build();

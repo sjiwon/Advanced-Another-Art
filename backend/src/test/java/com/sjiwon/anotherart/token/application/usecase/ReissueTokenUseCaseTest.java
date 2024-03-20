@@ -5,7 +5,6 @@ import com.sjiwon.anotherart.global.exception.AnotherArtException;
 import com.sjiwon.anotherart.global.security.exception.AuthErrorCode;
 import com.sjiwon.anotherart.member.domain.model.Member;
 import com.sjiwon.anotherart.member.domain.repository.MemberRepository;
-import com.sjiwon.anotherart.token.application.usecase.command.ReissueTokenCommand;
 import com.sjiwon.anotherart.token.domain.model.AuthToken;
 import com.sjiwon.anotherart.token.domain.service.TokenIssuer;
 import com.sjiwon.anotherart.token.domain.service.TokenProvider;
@@ -35,24 +34,23 @@ class ReissueTokenUseCaseTest extends UnitTest {
     );
 
     private final Member member = MEMBER_A.toMember().apply(1L);
-    private final ReissueTokenCommand command = new ReissueTokenCommand(REFRESH_TOKEN);
 
     @Test
     @DisplayName("RefreshToken이 유효하지 않으면 토큰 재발급에 실패한다")
     void throwExceptionByInvalidRefreshToken() {
         // given
-        given(tokenProvider.getId(command.refreshToken())).willReturn(member.getId());
+        given(tokenProvider.getId(REFRESH_TOKEN)).willReturn(member.getId());
         given(memberRepository.getById(member.getId())).willReturn(member);
-        given(tokenIssuer.isMemberRefreshToken(member.getId(), command.refreshToken())).willReturn(false);
+        given(tokenIssuer.isMemberRefreshToken(member.getId(), REFRESH_TOKEN)).willReturn(false);
 
         // when - then
-        assertThatThrownBy(() -> sut.invoke(command))
+        assertThatThrownBy(() -> sut.invoke(REFRESH_TOKEN))
                 .isInstanceOf(AnotherArtException.class)
                 .hasMessage(AuthErrorCode.INVALID_TOKEN.getMessage());
 
         assertAll(
-                () -> verify(tokenProvider, times(1)).getId(command.refreshToken()),
-                () -> verify(tokenIssuer, times(1)).isMemberRefreshToken(member.getId(), command.refreshToken())
+                () -> verify(tokenProvider, times(1)).getId(REFRESH_TOKEN),
+                () -> verify(tokenIssuer, times(1)).isMemberRefreshToken(member.getId(), REFRESH_TOKEN)
         );
     }
 
@@ -60,20 +58,20 @@ class ReissueTokenUseCaseTest extends UnitTest {
     @DisplayName("유효성이 확인된 RefreshToken을 통해서 새로운 AccessToken과 RefreshToken을 재발급받는다")
     void reissueSuccess() {
         // given
-        given(tokenProvider.getId(command.refreshToken())).willReturn(member.getId());
+        given(tokenProvider.getId(REFRESH_TOKEN)).willReturn(member.getId());
         given(memberRepository.getById(member.getId())).willReturn(member);
-        given(tokenIssuer.isMemberRefreshToken(member.getId(), command.refreshToken())).willReturn(true);
+        given(tokenIssuer.isMemberRefreshToken(member.getId(), REFRESH_TOKEN)).willReturn(true);
 
         final AuthToken authToken = new AuthToken(ACCESS_TOKEN, REFRESH_TOKEN);
         given(tokenIssuer.reissueAuthorityToken(member.getId(), member.getAuthority())).willReturn(authToken);
 
         // when
-        final AuthToken result = sut.invoke(command);
+        final AuthToken result = sut.invoke(REFRESH_TOKEN);
 
         // then
         assertAll(
-                () -> verify(tokenProvider, times(1)).getId(command.refreshToken()),
-                () -> verify(tokenIssuer, times(1)).isMemberRefreshToken(member.getId(), command.refreshToken()),
+                () -> verify(tokenProvider, times(1)).getId(REFRESH_TOKEN),
+                () -> verify(tokenIssuer, times(1)).isMemberRefreshToken(member.getId(), REFRESH_TOKEN),
                 () -> assertThat(result.accessToken()).isEqualTo(ACCESS_TOKEN),
                 () -> assertThat(result.refreshToken()).isEqualTo(REFRESH_TOKEN)
         );
