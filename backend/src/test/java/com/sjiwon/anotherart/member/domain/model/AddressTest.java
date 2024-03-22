@@ -1,5 +1,6 @@
 package com.sjiwon.anotherart.member.domain.model;
 
+import com.sjiwon.anotherart.common.UnitTest;
 import com.sjiwon.anotherart.member.exception.MemberException;
 import com.sjiwon.anotherart.member.exception.MemberExceptionCode;
 import org.junit.jupiter.api.DisplayName;
@@ -15,8 +16,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-@DisplayName("Member -> 도메인 [Address VO] 테스트")
-class AddressTest {
+@DisplayName("Member -> 도메인 [Address] 테스트")
+class AddressTest extends UnitTest {
     private static final String DEFAULT_ADDRESS = "경기 성남시 분당구 정자일로 95";
     private static final String DETAIL_ADDRESS = "네이버";
 
@@ -72,34 +73,5 @@ class AddressTest {
                     () -> assertThat(address.getDetailAddress()).isEqualTo(DETAIL_ADDRESS)
             );
         }
-    }
-
-    @ParameterizedTest(name = "{index}: 우편번호={0}, 주소={1}, 상세주소={2}")
-    @MethodSource("successAddressUpdate")
-    @DisplayName("Address를 수정한다")
-    void update(final int postcode, final String defaultAddress, final String detailAddress) {
-        // given
-        final Address address = Address.of(12345, DEFAULT_ADDRESS, DETAIL_ADDRESS);
-
-        // when
-        final Address updateAddress = address.update(postcode, defaultAddress, detailAddress);
-
-        // then
-        assertAll(
-                () -> assertThat(updateAddress.getPostcode()).isEqualTo(postcode),
-                () -> assertThat(updateAddress.getDefaultAddress()).isEqualTo(defaultAddress),
-                () -> assertThat(updateAddress.getDetailAddress()).isEqualTo(detailAddress)
-        );
-    }
-
-    private static Stream<Arguments> successAddressUpdate() {
-        return Stream.of(
-                Arguments.of(11111, "경기도 성남시 분당구 판교역로 166", "카카오"),
-                Arguments.of(22222, "경기 성남시 분당구 황새울로360번길 42", "라인"),
-                Arguments.of(33333, "서울 송파구 송파대로 570, 18층", "쿠팡"),
-                Arguments.of(44444, "서울특별시 송파구 방이2동 위례성대로 2", "우아한 형제들"),
-                Arguments.of(55555, "서울특별시 강남구 테헤란로 142 아크플레이스 12층", "토스"),
-                Arguments.of(66666, "서울 강남구 테헤란로4길 14 (역삼동, 미림타워) 5층", "두나무")
-        );
     }
 }

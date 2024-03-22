@@ -15,7 +15,7 @@ import static lombok.AccessLevel.PROTECTED;
 @NoArgsConstructor(access = PROTECTED)
 @Embeddable
 public class Email {
-    private static final Pattern EMAIL_PATTERN = Pattern.compile("^[a-zA-Z0-9+-\\_.]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+$");
+    private static final Pattern pattern = Pattern.compile("^[a-zA-Z0-9+-\\_.]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+$");
 
     @Column(name = "email", nullable = false, unique = true, updatable = false)
     private String value;
@@ -36,7 +36,7 @@ public class Email {
     }
 
     private static boolean isNotValidPattern(final String email) {
-        return !EMAIL_PATTERN.matcher(email).matches();
+        return !pattern.matcher(email).matches();
     }
 
     @Override

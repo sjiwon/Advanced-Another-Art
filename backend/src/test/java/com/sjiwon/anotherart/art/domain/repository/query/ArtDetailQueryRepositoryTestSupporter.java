@@ -2,21 +2,23 @@ package com.sjiwon.anotherart.art.domain.repository.query;
 
 import com.sjiwon.anotherart.art.domain.model.Art;
 import com.sjiwon.anotherart.art.domain.repository.ArtRepository;
-import com.sjiwon.anotherart.art.domain.repository.query.dto.AuctionArt;
-import com.sjiwon.anotherart.art.domain.repository.query.dto.GeneralArt;
-import com.sjiwon.anotherart.art.utils.search.ActiveAuctionArtsSearchCondition;
-import com.sjiwon.anotherart.art.utils.search.ArtDetailsSearchCondition;
+import com.sjiwon.anotherart.art.domain.repository.query.response.AuctionArt;
+import com.sjiwon.anotherart.art.domain.repository.query.response.GeneralArt;
+import com.sjiwon.anotherart.art.domain.repository.query.spec.ActiveAuctionArtsSearchCondition;
+import com.sjiwon.anotherart.art.domain.repository.query.spec.ArtDetailsSearchCondition;
 import com.sjiwon.anotherart.auction.domain.model.Auction;
 import com.sjiwon.anotherart.auction.domain.repository.AuctionRepository;
+import com.sjiwon.anotherart.auction.domain.service.AuctionWriter;
+import com.sjiwon.anotherart.auction.domain.service.BidProcessor;
 import com.sjiwon.anotherart.common.RepositoryTest;
 import com.sjiwon.anotherart.common.fixture.ArtFixture;
 import com.sjiwon.anotherart.common.fixture.AuctionFixture;
-import com.sjiwon.anotherart.common.fixture.MemberFixture;
-import com.sjiwon.anotherart.favorite.domain.model.Favorite;
-import com.sjiwon.anotherart.favorite.domain.repository.FavoriteRepository;
 import com.sjiwon.anotherart.global.query.PageCreator;
+import com.sjiwon.anotherart.like.domain.model.Like;
+import com.sjiwon.anotherart.like.domain.repository.LikeRepository;
 import com.sjiwon.anotherart.member.domain.model.Member;
 import com.sjiwon.anotherart.member.domain.repository.MemberRepository;
+import com.sjiwon.anotherart.member.domain.service.MemberReader;
 import com.sjiwon.anotherart.purchase.domain.model.Purchase;
 import com.sjiwon.anotherart.purchase.domain.repository.PurchaseRepository;
 import jakarta.persistence.EntityManager;
@@ -30,14 +32,14 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 
-import static com.sjiwon.anotherart.art.utils.search.SearchSortType.BID_COUNT_ASC;
-import static com.sjiwon.anotherart.art.utils.search.SearchSortType.BID_COUNT_DESC;
-import static com.sjiwon.anotherart.art.utils.search.SearchSortType.DATE_ASC;
-import static com.sjiwon.anotherart.art.utils.search.SearchSortType.DATE_DESC;
-import static com.sjiwon.anotherart.art.utils.search.SearchSortType.LIKE_ASC;
-import static com.sjiwon.anotherart.art.utils.search.SearchSortType.LIKE_DESC;
-import static com.sjiwon.anotherart.art.utils.search.SearchSortType.PRICE_ASC;
-import static com.sjiwon.anotherart.art.utils.search.SearchSortType.PRICE_DESC;
+import static com.sjiwon.anotherart.art.domain.repository.query.spec.SortType.BID_COUNT_ASC;
+import static com.sjiwon.anotherart.art.domain.repository.query.spec.SortType.BID_COUNT_DESC;
+import static com.sjiwon.anotherart.art.domain.repository.query.spec.SortType.DATE_ASC;
+import static com.sjiwon.anotherart.art.domain.repository.query.spec.SortType.DATE_DESC;
+import static com.sjiwon.anotherart.art.domain.repository.query.spec.SortType.LIKE_ASC;
+import static com.sjiwon.anotherart.art.domain.repository.query.spec.SortType.LIKE_DESC;
+import static com.sjiwon.anotherart.art.domain.repository.query.spec.SortType.PRICE_ASC;
+import static com.sjiwon.anotherart.art.domain.repository.query.spec.SortType.PRICE_DESC;
 import static com.sjiwon.anotherart.common.fixture.ArtFixture.AUCTION_1;
 import static com.sjiwon.anotherart.common.fixture.ArtFixture.AUCTION_10;
 import static com.sjiwon.anotherart.common.fixture.ArtFixture.AUCTION_11;
@@ -62,7 +64,7 @@ import static com.sjiwon.anotherart.common.fixture.ArtFixture.GENERAL_6;
 import static com.sjiwon.anotherart.common.fixture.ArtFixture.GENERAL_7;
 import static com.sjiwon.anotherart.common.fixture.ArtFixture.GENERAL_8;
 import static com.sjiwon.anotherart.common.fixture.ArtFixture.GENERAL_9;
-import static com.sjiwon.anotherart.common.fixture.AuctionFixture.AUCTION_OPEN_NOW;
+import static com.sjiwon.anotherart.common.fixture.AuctionFixture.경매_현재_진행;
 import static com.sjiwon.anotherart.common.fixture.MemberFixture.DUMMY_1;
 import static com.sjiwon.anotherart.common.fixture.MemberFixture.DUMMY_10;
 import static com.sjiwon.anotherart.common.fixture.MemberFixture.DUMMY_2;
@@ -77,10 +79,18 @@ import static com.sjiwon.anotherart.common.fixture.MemberFixture.MEMBER_A;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-@Import(ArtDetailQueryRepositoryImpl.class)
+@Import({
+        ArtDetailQueryRepositoryImpl.class,
+        BidProcessor.class,
+        MemberReader.class,
+        AuctionWriter.class
+})
 public abstract class ArtDetailQueryRepositoryTestSupporter extends RepositoryTest {
     @Autowired
     protected ArtDetailQueryRepositoryImpl sut;
+
+    @Autowired
+    private BidProcessor bidProcessor;
 
     @Autowired
     private MemberRepository memberRepository;
@@ -89,7 +99,7 @@ public abstract class ArtDetailQueryRepositoryTestSupporter extends RepositoryTe
     private ArtRepository artRepository;
 
     @Autowired
-    private FavoriteRepository favoriteRepository;
+    private LikeRepository likeRepository;
 
     @Autowired
     private AuctionRepository auctionRepository;
@@ -101,11 +111,12 @@ public abstract class ArtDetailQueryRepositoryTestSupporter extends RepositoryTe
     private EntityManager em;
 
     private static final int MEMBER_INIT_POINT = 2_000_000_000;
+
     protected Member owner;
-    protected final Member[] members = new Member[10];
-    protected final Art[] auctionArts = new Art[12];
-    protected final Art[] generalArts = new Art[12];
-    protected final Auction[] auctions = new Auction[12];
+    protected Member[] members = new Member[10];
+    protected Art[] auctionArts = new Art[12];
+    protected Art[] generalArts = new Art[12];
+    protected Auction[] auctions = new Auction[12];
 
     protected final List<ActiveAuctionArtsSearchCondition> activeAuctionArtsSearchConditions = List.of(
             new ActiveAuctionArtsSearchCondition(DATE_ASC),
@@ -135,8 +146,8 @@ public abstract class ArtDetailQueryRepositoryTestSupporter extends RepositoryTe
             new ArtDetailsSearchCondition(LIKE_ASC, "Hello"),
             new ArtDetailsSearchCondition(LIKE_DESC, "Hello")
     );
-    protected final Pageable pageable1 = PageCreator.getPageable(1);
-    protected final Pageable pageable2 = PageCreator.getPageable(2);
+    protected final Pageable pageable1 = PageCreator.create(1);
+    protected final Pageable pageable2 = PageCreator.create(2);
 
     @BeforeEach
     void setUp() {
@@ -144,17 +155,19 @@ public abstract class ArtDetailQueryRepositoryTestSupporter extends RepositoryTe
     }
 
     private void initData() {
-        owner = createMember(MEMBER_A);
-        members[0] = createMember(DUMMY_1);
-        members[1] = createMember(DUMMY_2);
-        members[2] = createMember(DUMMY_3);
-        members[3] = createMember(DUMMY_4);
-        members[4] = createMember(DUMMY_5);
-        members[5] = createMember(DUMMY_6);
-        members[6] = createMember(DUMMY_7);
-        members[7] = createMember(DUMMY_8);
-        members[8] = createMember(DUMMY_9);
-        members[9] = createMember(DUMMY_10);
+        owner = memberRepository.save(MEMBER_A.toDomain(MEMBER_INIT_POINT));
+        members = memberRepository.saveAll(List.of(
+                DUMMY_1.toDomain(MEMBER_INIT_POINT),
+                DUMMY_2.toDomain(MEMBER_INIT_POINT),
+                DUMMY_3.toDomain(MEMBER_INIT_POINT),
+                DUMMY_4.toDomain(MEMBER_INIT_POINT),
+                DUMMY_5.toDomain(MEMBER_INIT_POINT),
+                DUMMY_6.toDomain(MEMBER_INIT_POINT),
+                DUMMY_7.toDomain(MEMBER_INIT_POINT),
+                DUMMY_8.toDomain(MEMBER_INIT_POINT),
+                DUMMY_9.toDomain(MEMBER_INIT_POINT),
+                DUMMY_10.toDomain(MEMBER_INIT_POINT)
+        )).toArray(Member[]::new);
 
         auctionArts[0] = createArt(AUCTION_1, 1, "Hello", members[0], members[1], members[4], members[6], members[8]);
         auctionArts[1] = createArt(AUCTION_2, 2, "Hello", members[2], members[5], members[6]);
@@ -182,18 +195,18 @@ public abstract class ArtDetailQueryRepositoryTestSupporter extends RepositoryTe
         generalArts[10] = createArt(GENERAL_11, 23, "Hello", members[0], members[2], members[3], members[6]);
         generalArts[11] = createArt(GENERAL_12, 24, "Hello", members[1], members[2], members[4], members[6], members[8]);
 
-        auctions[0] = createAuction(auctionArts[0], AUCTION_OPEN_NOW);
-        auctions[1] = createAuction(auctionArts[1], AUCTION_OPEN_NOW); // closed
-        auctions[2] = createAuction(auctionArts[2], AUCTION_OPEN_NOW);
-        auctions[3] = createAuction(auctionArts[3], AUCTION_OPEN_NOW);
-        auctions[4] = createAuction(auctionArts[4], AUCTION_OPEN_NOW);
-        auctions[5] = createAuction(auctionArts[5], AUCTION_OPEN_NOW); // closed
-        auctions[6] = createAuction(auctionArts[6], AUCTION_OPEN_NOW);
-        auctions[7] = createAuction(auctionArts[7], AUCTION_OPEN_NOW);
-        auctions[8] = createAuction(auctionArts[8], AUCTION_OPEN_NOW); // closed
-        auctions[9] = createAuction(auctionArts[9], AUCTION_OPEN_NOW);
-        auctions[10] = createAuction(auctionArts[10], AUCTION_OPEN_NOW);
-        auctions[11] = createAuction(auctionArts[11], AUCTION_OPEN_NOW); // closed
+        auctions[0] = createAuction(auctionArts[0], 경매_현재_진행);
+        auctions[1] = createAuction(auctionArts[1], 경매_현재_진행); // closed
+        auctions[2] = createAuction(auctionArts[2], 경매_현재_진행);
+        auctions[3] = createAuction(auctionArts[3], 경매_현재_진행);
+        auctions[4] = createAuction(auctionArts[4], 경매_현재_진행);
+        auctions[5] = createAuction(auctionArts[5], 경매_현재_진행); // closed
+        auctions[6] = createAuction(auctionArts[6], 경매_현재_진행);
+        auctions[7] = createAuction(auctionArts[7], 경매_현재_진행);
+        auctions[8] = createAuction(auctionArts[8], 경매_현재_진행); // closed
+        auctions[9] = createAuction(auctionArts[9], 경매_현재_진행);
+        auctions[10] = createAuction(auctionArts[10], 경매_현재_진행);
+        auctions[11] = createAuction(auctionArts[11], 경매_현재_진행); // closed
 
         bid(auctions[0], List.of(0, 2, 6), List.of(
                 auctionArts[0].getPrice() + 10_000,
@@ -265,27 +278,23 @@ public abstract class ArtDetailQueryRepositoryTestSupporter extends RepositoryTe
         closeAuction(auctions[11]);
     }
 
-    private Member createMember(final MemberFixture fixture) {
-        final Member member = fixture.toMember();
-        member.increaseTotalPoint(MEMBER_INIT_POINT);
-        return memberRepository.save(member);
-    }
-
     private Art createArt(final ArtFixture fixture, final int index, final String searchValue, final Member... likeMembers) {
-        final Art art = artRepository.save(fixture.toArt(owner, searchValue + index, Set.of(searchValue)));
+        final Art art = artRepository.save(fixture.toDomain(owner, searchValue + index, Set.of(searchValue)));
         for (final Member likeMember : likeMembers) {
-            favoriteRepository.save(Favorite.favoriteMarking(art, likeMember));
+            likeRepository.save(new Like(art, likeMember));
         }
         return art;
     }
 
     private Auction createAuction(final Art art, final AuctionFixture auctionFixture) {
-        return auctionRepository.save(auctionFixture.toAuction(art));
+        return auctionRepository.save(auctionFixture.toDomain(art));
     }
 
     private void bid(final Auction auction, final List<Integer> bidderIndicies, final List<Integer> bidPrices) {
         for (int i = 0; i < bidderIndicies.size(); i++) {
-            auction.applyNewBid(members[bidderIndicies.get(i)], bidPrices.get(i));
+            final Member bidder = members[bidderIndicies.get(i)];
+            final int bidPrice = bidPrices.get(i);
+            bidProcessor.execute(auction, bidder, bidPrice);
         }
     }
 

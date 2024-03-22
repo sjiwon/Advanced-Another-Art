@@ -1,19 +1,26 @@
 package com.sjiwon.anotherart.auction.application.usecase;
 
+import com.sjiwon.anotherart.art.domain.model.Art;
+import com.sjiwon.anotherart.art.domain.service.ArtReader;
 import com.sjiwon.anotherart.auction.application.usecase.command.BidCommand;
 import com.sjiwon.anotherart.auction.domain.model.Auction;
-import com.sjiwon.anotherart.auction.domain.repository.AuctionRepository;
+import com.sjiwon.anotherart.auction.domain.service.AuctionReader;
+import com.sjiwon.anotherart.auction.domain.service.BidInspector;
+import com.sjiwon.anotherart.auction.domain.service.BidProcessor;
 import com.sjiwon.anotherart.global.annotation.UseCase;
 import com.sjiwon.anotherart.global.lock.DistributedLock;
 import com.sjiwon.anotherart.member.domain.model.Member;
-import com.sjiwon.anotherart.member.domain.repository.MemberRepository;
+import com.sjiwon.anotherart.member.domain.service.MemberReader;
 import lombok.RequiredArgsConstructor;
 
 @UseCase
 @RequiredArgsConstructor
 public class BidUseCase {
-    private final AuctionRepository auctionRepository;
-    private final MemberRepository memberRepository;
+    private final AuctionReader auctionReader;
+    private final ArtReader artReader;
+    private final MemberReader memberReader;
+    private final BidInspector bidInspector;
+    private final BidProcessor bidProcessor;
 
     @DistributedLock(
             keyPrefix = "AUCTION:",
@@ -22,9 +29,11 @@ public class BidUseCase {
             withRetry = 3
     )
     public void invoke(final BidCommand command) {
-        final Auction auction = auctionRepository.getByIdWithFetchBidder(command.auctionId());
-        final Member bidder = memberRepository.getById(command.memberId());
+        final Auction auction = auctionReader.getByIdWithRecords(command.auctionId());
+        final Art art = artReader.getById(auction.getArtId());
+        final Member bidder = memberReader.getById(command.memberId());
 
-        auction.applyNewBid(bidder, command.bidPrice());
+        bidInspector.checkBidCanBeProceed(auction, art, bidder, command.bidPrice());
+        bidProcessor.execute(auction, bidder, command.bidPrice());
     }
 }

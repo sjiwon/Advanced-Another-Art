@@ -16,7 +16,6 @@ public class FileConverter {
         }
 
         final String fileName = file.getOriginalFilename();
-
         try {
             return new RawFileData(
                     fileName,

@@ -2,14 +2,13 @@ package com.sjiwon.anotherart.art.domain.repository.query;
 
 import com.sjiwon.anotherart.art.domain.model.Art;
 import com.sjiwon.anotherart.art.domain.repository.ArtRepository;
-import com.sjiwon.anotherart.art.domain.repository.query.dto.AuctionArt;
-import com.sjiwon.anotherart.art.domain.repository.query.dto.GeneralArt;
+import com.sjiwon.anotherart.art.domain.repository.query.response.AuctionArt;
+import com.sjiwon.anotherart.art.domain.repository.query.response.GeneralArt;
 import com.sjiwon.anotherart.auction.domain.model.Auction;
 import com.sjiwon.anotherart.auction.domain.repository.AuctionRepository;
 import com.sjiwon.anotherart.common.RepositoryTest;
-import com.sjiwon.anotherart.common.fixture.MemberFixture;
-import com.sjiwon.anotherart.favorite.domain.model.Favorite;
-import com.sjiwon.anotherart.favorite.domain.repository.FavoriteRepository;
+import com.sjiwon.anotherart.like.domain.model.Like;
+import com.sjiwon.anotherart.like.domain.repository.LikeRepository;
 import com.sjiwon.anotherart.member.domain.model.Member;
 import com.sjiwon.anotherart.member.domain.repository.MemberRepository;
 import com.sjiwon.anotherart.purchase.domain.model.Purchase;
@@ -25,11 +24,11 @@ import org.springframework.context.annotation.Import;
 
 import java.util.List;
 
-import static com.sjiwon.anotherart.art.domain.model.ArtType.AUCTION;
-import static com.sjiwon.anotherart.art.domain.model.ArtType.GENERAL;
+import static com.sjiwon.anotherart.art.domain.model.Art.Type.AUCTION;
+import static com.sjiwon.anotherart.art.domain.model.Art.Type.GENERAL;
 import static com.sjiwon.anotherart.common.fixture.ArtFixture.AUCTION_1;
 import static com.sjiwon.anotherart.common.fixture.ArtFixture.GENERAL_1;
-import static com.sjiwon.anotherart.common.fixture.AuctionFixture.AUCTION_OPEN_NOW;
+import static com.sjiwon.anotherart.common.fixture.AuctionFixture.경매_현재_진행;
 import static com.sjiwon.anotherart.common.fixture.MemberFixture.DUMMY_1;
 import static com.sjiwon.anotherart.common.fixture.MemberFixture.DUMMY_2;
 import static com.sjiwon.anotherart.common.fixture.MemberFixture.DUMMY_3;
@@ -53,7 +52,7 @@ class ArtSingleQueryRepositoryTest extends RepositoryTest {
     private ArtRepository artRepository;
 
     @Autowired
-    private FavoriteRepository favoriteRepository;
+    private LikeRepository likeRepository;
 
     @Autowired
     private AuctionRepository auctionRepository;
@@ -74,9 +73,9 @@ class ArtSingleQueryRepositoryTest extends RepositoryTest {
 
         @BeforeEach
         void setUp() {
-            final Member owner = memberRepository.save(MEMBER_A.toMember());
-            artA = artRepository.save(GENERAL_1.toArt(owner));
-            artB = artRepository.save(AUCTION_1.toArt(owner));
+            final Member owner = memberRepository.save(MEMBER_A.toDomain());
+            artA = artRepository.save(GENERAL_1.toDomain(owner));
+            artB = artRepository.save(AUCTION_1.toDomain(owner));
         }
 
         @Test
@@ -99,15 +98,15 @@ class ArtSingleQueryRepositoryTest extends RepositoryTest {
 
         @BeforeEach
         void setUp() {
-            members[0] = createMember(DUMMY_1);
-            members[1] = createMember(DUMMY_2);
-            members[2] = createMember(DUMMY_3);
-            members[3] = createMember(DUMMY_4);
-            members[4] = createMember(DUMMY_5);
+            members[0] = memberRepository.save(DUMMY_1.toDomain(MEMBER_INIT_POINT));
+            members[1] = memberRepository.save(DUMMY_2.toDomain(MEMBER_INIT_POINT));
+            members[2] = memberRepository.save(DUMMY_3.toDomain(MEMBER_INIT_POINT));
+            members[3] = memberRepository.save(DUMMY_4.toDomain(MEMBER_INIT_POINT));
+            members[4] = memberRepository.save(DUMMY_5.toDomain(MEMBER_INIT_POINT));
 
-            owner = createMember(MEMBER_A);
-            art = artRepository.save(AUCTION_1.toArt(owner));
-            auction = auctionRepository.save(AUCTION_OPEN_NOW.toAuction(art));
+            owner = memberRepository.save(MEMBER_A.toDomain(MEMBER_INIT_POINT));
+            art = artRepository.save(AUCTION_1.toDomain(owner));
+            auction = auctionRepository.save(경매_현재_진행.toDomain(art));
         }
 
         @Test
@@ -168,7 +167,7 @@ class ArtSingleQueryRepositoryTest extends RepositoryTest {
         }
 
         private void bid(final Member bidder, final int bidPrice) {
-            auction.applyNewBid(bidder, bidPrice);
+            auction.updateHighestBid(bidder, bidPrice);
         }
 
         private void assertThatAuctionArtMatch(
@@ -207,16 +206,16 @@ class ArtSingleQueryRepositoryTest extends RepositoryTest {
 
         @BeforeEach
         void setUp() {
-            members[0] = createMember(DUMMY_1);
-            members[1] = createMember(DUMMY_2);
-            members[2] = createMember(DUMMY_3);
-            members[3] = createMember(DUMMY_4);
-            members[4] = createMember(DUMMY_5);
+            members[0] = memberRepository.save(DUMMY_1.toDomain(MEMBER_INIT_POINT));
+            members[1] = memberRepository.save(DUMMY_2.toDomain(MEMBER_INIT_POINT));
+            members[2] = memberRepository.save(DUMMY_3.toDomain(MEMBER_INIT_POINT));
+            members[3] = memberRepository.save(DUMMY_4.toDomain(MEMBER_INIT_POINT));
+            members[4] = memberRepository.save(DUMMY_5.toDomain(MEMBER_INIT_POINT));
 
-            owner = createMember(MEMBER_A);
-            buyer = createMember(MEMBER_B);
+            owner = memberRepository.save(MEMBER_A.toDomain(MEMBER_INIT_POINT));
+            buyer = memberRepository.save(MEMBER_B.toDomain(MEMBER_INIT_POINT));
 
-            art = artRepository.save(GENERAL_1.toArt(owner));
+            art = artRepository.save(GENERAL_1.toDomain(owner));
         }
 
         @Test
@@ -291,18 +290,12 @@ class ArtSingleQueryRepositoryTest extends RepositoryTest {
         }
     }
 
-    private Member createMember(final MemberFixture fixture) {
-        final Member member = fixture.toMember();
-        member.increaseTotalPoint(MEMBER_INIT_POINT);
-        return memberRepository.save(member);
-    }
-
     private void like(final Art art, final Member member) {
-        favoriteRepository.save(Favorite.favoriteMarking(art, member));
+        likeRepository.save(new Like(art, member));
     }
 
     private void likeCancel(final Art art, final Member member) {
-        em.createQuery("DELETE FROM Favorite f WHERE f.art.id = :artId AND f.member.id = :memberId")
+        em.createQuery("DELETE FROM Like f WHERE f.artId = :artId AND f.memberId = :memberId")
                 .setParameter("artId", art.getId())
                 .setParameter("memberId", member.getId())
                 .executeUpdate();

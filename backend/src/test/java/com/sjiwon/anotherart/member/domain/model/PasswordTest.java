@@ -1,5 +1,6 @@
 package com.sjiwon.anotherart.member.domain.model;
 
+import com.sjiwon.anotherart.common.UnitTest;
 import com.sjiwon.anotherart.common.mock.fake.FakeEncryptor;
 import com.sjiwon.anotherart.global.utils.encrypt.Encryptor;
 import com.sjiwon.anotherart.member.exception.MemberException;
@@ -15,8 +16,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-@DisplayName("Member -> 도메인 [Password VO] 테스트")
-class PasswordTest {
+@DisplayName("Member -> 도메인 [Password] 테스트")
+class PasswordTest extends UnitTest {
     private final Encryptor encryptor = new FakeEncryptor();
 
     @Nested
@@ -50,7 +51,7 @@ class PasswordTest {
 
     @Nested
     @DisplayName("Password 수정")
-    class update {
+    class Update {
         @Test
         @DisplayName("이전과 동일한 Password로 수정하려고 하면 예외가 발생한다")
         void throwExceptionByPasswordSameAsBefore() {

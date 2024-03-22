@@ -21,7 +21,7 @@ public class TokenIssuerTest {
     private final TokenManager tokenManager = mock(TokenManager.class);
     private final TokenIssuer sut = new TokenIssuer(tokenProvider, tokenManager);
 
-    private final Member member = MEMBER_A.toMember().apply(1L);
+    private final Member member = MEMBER_A.toDomain().apply(1L);
 
     @Test
     @DisplayName("AuthToken[Access + Refresh]을 제공한다")

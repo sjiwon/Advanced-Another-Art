@@ -22,16 +22,16 @@ class MemberRepositoryTest extends RepositoryTest {
     @DisplayName("로그인 아이디로 사용자를 조회한다")
     void findByLoginId() {
         // given
-        final Member member = sut.save(MEMBER_A.toMember());
+        sut.save(MEMBER_A.toDomain());
 
         // when
-        final Optional<Member> emptyMember = sut.findByLoginId("fake");
-        final Member actualMember = sut.getByLoginId(member.getLoginId());
+        final Optional<Member> actual1 = sut.findByLoginId(MEMBER_A.getLoginId());
+        final Optional<Member> actual2 = sut.findByLoginId(MEMBER_B.getLoginId());
 
         // then
         assertAll(
-                () -> assertThat(emptyMember).isEmpty(),
-                () -> assertThat(actualMember).isEqualTo(member)
+                () -> assertThat(actual1).isPresent(),
+                () -> assertThat(actual2).isEmpty()
         );
     }
 
@@ -39,18 +39,21 @@ class MemberRepositoryTest extends RepositoryTest {
     @DisplayName("이름 + 이메일로 사용자를 조회한다")
     void findByNameAndEmail() {
         // given
-        final Member member = sut.save(MEMBER_A.toMember());
+        sut.save(MEMBER_A.toDomain());
+        sut.save(MEMBER_B.toDomain());
 
         // when
-        final Optional<Member> emptyMember1 = sut.findByNameAndEmail("diff" + member.getName(), member.getEmail().getValue());
-        final Optional<Member> emptyMember2 = sut.findByNameAndEmail(member.getName(), "diff" + member.getEmail().getValue());
-        final Member actualMember = sut.getByNameAndEmail(member.getName(), member.getEmail().getValue());
+        final Optional<Member> actual1 = sut.findByNameAndEmail(MEMBER_A.getName(), MEMBER_A.getEmail().getValue());
+        final Optional<Member> actual2 = sut.findByNameAndEmail(MEMBER_A.getName(), MEMBER_B.getEmail().getValue());
+        final Optional<Member> actual3 = sut.findByNameAndEmail(MEMBER_B.getName(), MEMBER_B.getEmail().getValue());
+        final Optional<Member> actual4 = sut.findByNameAndEmail(MEMBER_B.getName(), MEMBER_A.getEmail().getValue());
 
         // then
         assertAll(
-                () -> assertThat(emptyMember1).isEmpty(),
-                () -> assertThat(emptyMember2).isEmpty(),
-                () -> assertThat(actualMember).isEqualTo(member)
+                () -> assertThat(actual1).isPresent(),
+                () -> assertThat(actual2).isEmpty(),
+                () -> assertThat(actual3).isPresent(),
+                () -> assertThat(actual4).isEmpty()
         );
     }
 
@@ -58,20 +61,44 @@ class MemberRepositoryTest extends RepositoryTest {
     @DisplayName("이름 + 이메일 + 로그인 아이디로 사용자를 조회한다")
     void findByNameAndEmailAndLoginId() {
         // given
-        final Member member = sut.save(MEMBER_A.toMember());
+        sut.save(MEMBER_A.toDomain());
 
         // when
-        final Optional<Member> emptyMember1 = sut.findByNameAndEmailAndLoginId("diff" + member.getName(), member.getEmail().getValue(), member.getLoginId());
-        final Optional<Member> emptyMember2 = sut.findByNameAndEmailAndLoginId(member.getName(), "diff" + member.getEmail().getValue(), member.getLoginId());
-        final Optional<Member> emptyMember3 = sut.findByNameAndEmailAndLoginId(member.getName(), member.getEmail().getValue(), "diff" + member.getLoginId());
-        final Member actualMember = sut.getByNameAndEmailAndLoginId(member.getName(), member.getEmail().getValue(), member.getLoginId());
+        final Optional<Member> actual1 = sut.findByNameAndEmailAndLoginId(MEMBER_A.getName(), MEMBER_A.getEmail().getValue(), MEMBER_A.getLoginId());
+        final Optional<Member> actual2 = sut.findByNameAndEmailAndLoginId(MEMBER_A.getName(), MEMBER_A.getEmail().getValue(), MEMBER_B.getLoginId());
+        final Optional<Member> actual3 = sut.findByNameAndEmailAndLoginId(MEMBER_A.getName(), MEMBER_B.getEmail().getValue(), MEMBER_A.getLoginId());
+        final Optional<Member> actual4 = sut.findByNameAndEmailAndLoginId(MEMBER_A.getName(), MEMBER_B.getEmail().getValue(), MEMBER_B.getLoginId());
+        final Optional<Member> actual5 = sut.findByNameAndEmailAndLoginId(MEMBER_B.getName(), MEMBER_B.getEmail().getValue(), MEMBER_A.getLoginId());
+        final Optional<Member> actual6 = sut.findByNameAndEmailAndLoginId(MEMBER_B.getName(), MEMBER_A.getEmail().getValue(), MEMBER_B.getLoginId());
+        final Optional<Member> actual7 = sut.findByNameAndEmailAndLoginId(MEMBER_B.getName(), MEMBER_B.getEmail().getValue(), MEMBER_B.getLoginId());
 
         // then
         assertAll(
-                () -> assertThat(emptyMember1).isEmpty(),
-                () -> assertThat(emptyMember2).isEmpty(),
-                () -> assertThat(emptyMember3).isEmpty(),
-                () -> assertThat(actualMember).isEqualTo(member)
+                () -> assertThat(actual1).isPresent(),
+                () -> assertThat(actual2).isEmpty(),
+                () -> assertThat(actual3).isEmpty(),
+                () -> assertThat(actual4).isEmpty(),
+                () -> assertThat(actual5).isEmpty(),
+                () -> assertThat(actual6).isEmpty(),
+                () -> assertThat(actual7).isEmpty()
+        );
+    }
+
+    @Test
+    @DisplayName("닉네임에 해당하는 사용자 ID를 조회한다")
+    void findIdByNickname() {
+        // given
+        final Member memberA = sut.save(MEMBER_A.toDomain());
+        final Member memberB = sut.save(MEMBER_B.toDomain());
+
+        // when
+        final Long actual1 = sut.findIdByNickname(memberA.getNickname().getValue());
+        final Long actual2 = sut.findIdByNickname(memberB.getNickname().getValue());
+
+        // then
+        assertAll(
+                () -> assertThat(actual1).isEqualTo(memberA.getId()),
+                () -> assertThat(actual2).isEqualTo(memberB.getId())
         );
     }
 
@@ -79,13 +106,11 @@ class MemberRepositoryTest extends RepositoryTest {
     @DisplayName("닉네임에 해당하는 사용자가 존재하는지 확인한다")
     void existsByNicknameValue() {
         // given
-        final Member member = sut.save(MEMBER_A.toMember());
-        final String same = member.getNickname().getValue();
-        final String diff = "diff" + member.getNickname().getValue();
+        sut.save(MEMBER_A.toDomain());
 
         // when
-        final boolean actual1 = sut.existsByNicknameValue(same);
-        final boolean actual2 = sut.existsByNicknameValue(diff);
+        final boolean actual1 = sut.existsByNicknameValue(MEMBER_A.getNickname().getValue());
+        final boolean actual2 = sut.existsByNicknameValue(MEMBER_B.getNickname().getValue());
 
         // then
         assertAll(
@@ -95,38 +120,14 @@ class MemberRepositoryTest extends RepositoryTest {
     }
 
     @Test
-    @DisplayName("해당 닉네임을 본인이 아닌 타인이 사용하고 있는지 확인한다")
-    void isNicknameUsedByOther() {
-        // given
-        final Member memberA = sut.save(MEMBER_A.toMember());
-        final Member memberB = sut.save(MEMBER_B.toMember());
-
-        // when
-        final boolean actual1 = sut.isNicknameUsedByOther(memberA.getId(), memberA.getNickname().getValue());
-        final boolean actual2 = sut.isNicknameUsedByOther(memberA.getId(), memberB.getNickname().getValue());
-        final boolean actual3 = sut.isNicknameUsedByOther(memberB.getId(), memberB.getNickname().getValue());
-        final boolean actual4 = sut.isNicknameUsedByOther(memberB.getId(), memberA.getNickname().getValue());
-
-        // then
-        assertAll(
-                () -> assertThat(actual1).isFalse(),
-                () -> assertThat(actual2).isTrue(),
-                () -> assertThat(actual3).isFalse(),
-                () -> assertThat(actual4).isTrue()
-        );
-    }
-
-    @Test
     @DisplayName("로그인 아이디에 해당하는 사용자가 존재하는지 확인한다")
     void existsByLoginId() {
         // given
-        final Member member = sut.save(MEMBER_A.toMember());
-        final String same = member.getLoginId();
-        final String diff = member.getLoginId() + "fake";
+        sut.save(MEMBER_A.toDomain());
 
         // when
-        final boolean actual1 = sut.existsByLoginId(same);
-        final boolean actual2 = sut.existsByLoginId(diff);
+        final boolean actual1 = sut.existsByLoginId(MEMBER_A.getLoginId());
+        final boolean actual2 = sut.existsByLoginId(MEMBER_B.getLoginId());
 
         // then
         assertAll(
@@ -139,13 +140,11 @@ class MemberRepositoryTest extends RepositoryTest {
     @DisplayName("전화번호에 해당하는 사용자가 존재하는지 확인한다")
     void existsByPhoneValue() {
         // given
-        final Member member = sut.save(MEMBER_A.toMember());
-        final String same = member.getPhone().getValue();
-        final String diff = member.getPhone().getValue().replaceAll("0", "9");
+        sut.save(MEMBER_A.toDomain());
 
         // when
-        final boolean actual1 = sut.existsByPhoneValue(same);
-        final boolean actual2 = sut.existsByPhoneValue(diff);
+        final boolean actual1 = sut.existsByPhoneValue(MEMBER_A.getPhone().getValue());
+        final boolean actual2 = sut.existsByPhoneValue(MEMBER_B.getPhone().getValue());
 
         // then
         assertAll(
@@ -158,39 +157,16 @@ class MemberRepositoryTest extends RepositoryTest {
     @DisplayName("이메일에 해당하는 사용자가 존재하는지 확인한다")
     void existsByEmailValue() {
         // given
-        final Member member = sut.save(MEMBER_A.toMember());
-        final String same = member.getEmail().getValue();
-        final String diff = "diff" + member.getEmail().getValue();
+        sut.save(MEMBER_A.toDomain());
 
         // when
-        final boolean actual1 = sut.existsByEmailValue(same);
-        final boolean actual2 = sut.existsByEmailValue(diff);
+        final boolean actual1 = sut.existsByEmailValue(MEMBER_A.getEmail().getValue());
+        final boolean actual2 = sut.existsByEmailValue(MEMBER_B.getEmail().getValue());
 
         // then
         assertAll(
                 () -> assertThat(actual1).isTrue(),
                 () -> assertThat(actual2).isFalse()
-        );
-    }
-
-    @Test
-    @DisplayName("이름 + 이메일 + 로그인 아이디에 해당하는 사용자가 존재하는지 확인한다")
-    void existsByNameAndEmailAndLoginId() {
-        // given
-        final Member member = sut.save(MEMBER_A.toMember());
-
-        // when
-        final boolean actual1 = sut.existsByNameAndEmailValueAndLoginId(member.getName(), member.getEmail().getValue(), member.getLoginId());
-        final boolean actual2 = sut.existsByNameAndEmailValueAndLoginId("diff" + member.getName(), member.getEmail().getValue(), member.getLoginId());
-        final boolean actual3 = sut.existsByNameAndEmailValueAndLoginId(member.getName(), "diff" + member.getEmail().getValue(), member.getLoginId());
-        final boolean actual4 = sut.existsByNameAndEmailValueAndLoginId(member.getName(), member.getEmail().getValue(), "diff" + member.getLoginId());
-
-        // then
-        assertAll(
-                () -> assertThat(actual1).isTrue(),
-                () -> assertThat(actual2).isFalse(),
-                () -> assertThat(actual3).isFalse(),
-                () -> assertThat(actual4).isFalse()
         );
     }
 }

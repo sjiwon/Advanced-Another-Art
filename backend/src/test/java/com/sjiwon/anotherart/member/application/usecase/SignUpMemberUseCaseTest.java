@@ -5,8 +5,8 @@ import com.sjiwon.anotherart.common.mock.fake.FakeEncryptor;
 import com.sjiwon.anotherart.global.utils.encrypt.Encryptor;
 import com.sjiwon.anotherart.member.application.usecase.command.SignUpMemberCommand;
 import com.sjiwon.anotherart.member.domain.model.Member;
-import com.sjiwon.anotherart.member.domain.repository.MemberRepository;
-import com.sjiwon.anotherart.member.domain.service.MemberResourceValidator;
+import com.sjiwon.anotherart.member.domain.service.MemberReader;
+import com.sjiwon.anotherart.member.domain.service.MemberWriter;
 import com.sjiwon.anotherart.member.exception.MemberException;
 import com.sjiwon.anotherart.member.exception.MemberExceptionCode;
 import org.junit.jupiter.api.DisplayName;
@@ -18,16 +18,17 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @DisplayName("Member -> SignUpMemberUseCase 테스트")
-public class SignUpMemberUseCaseTest extends UnitTest {
+class SignUpMemberUseCaseTest extends UnitTest {
     private final Encryptor encryptor = new FakeEncryptor();
-    private final MemberRepository memberRepository = mock(MemberRepository.class);
-    private final MemberResourceValidator memberResourceValidator = new MemberResourceValidator(memberRepository);
-    private final SignUpMemberUseCase sut = new SignUpMemberUseCase(memberResourceValidator, encryptor, memberRepository);
+    private final SignUpMemberUseCase sut = new SignUpMemberUseCase(
+            new MemberReader(memberRepository),
+            encryptor,
+            new MemberWriter(memberRepository)
+    );
 
     private final SignUpMemberCommand command = new SignUpMemberCommand(
             MEMBER_A.getName(),
@@ -135,7 +136,7 @@ public class SignUpMemberUseCaseTest extends UnitTest {
         given(memberRepository.existsByNicknameValue(command.nickname().getValue())).willReturn(false);
         given(memberRepository.existsByPhoneValue(command.phone().getValue())).willReturn(false);
 
-        final Member member = MEMBER_A.toMember().apply(1L);
+        final Member member = MEMBER_A.toDomain().apply(1L);
         given(memberRepository.save(any(Member.class))).willReturn(member);
 
         // when

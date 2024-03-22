@@ -1,5 +1,6 @@
 package com.sjiwon.anotherart.file.utils.converter;
 
+import com.sjiwon.anotherart.common.UnitTest;
 import com.sjiwon.anotherart.file.domain.model.RawFileData;
 import com.sjiwon.anotherart.file.exception.FileException;
 import com.sjiwon.anotherart.file.exception.FileExceptionCode;
@@ -8,14 +9,14 @@ import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 
-import static com.sjiwon.anotherart.common.utils.FileVirtualCreator.createSingleMockMultipartFile;
+import static com.sjiwon.anotherart.common.utils.FileVirtualCreator.createFile;
 import static com.sjiwon.anotherart.file.domain.model.FileExtension.PNG;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 @DisplayName("FIle -> FileConverter 테스트")
-public class FileConverterTest {
+class FileConverterTest extends UnitTest {
     @Test
     @DisplayName("MultipartFile이 비어있으면 예외가 발생한다")
     void throwExceptionByFIleIsNotUpload() {
@@ -32,7 +33,7 @@ public class FileConverterTest {
     @DisplayName("MultipartFile -> RawFileData로 Converting한다")
     void success() {
         // given
-        final MultipartFile file = createSingleMockMultipartFile("1.png", "image/png");
+        final MultipartFile file = createFile("1.png", "image/png");
 
         // when
         final RawFileData rawFileData = FileConverter.convertImageFile(file);

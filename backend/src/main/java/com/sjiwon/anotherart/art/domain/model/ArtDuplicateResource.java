@@ -1,11 +1,11 @@
 package com.sjiwon.anotherart.art.domain.model;
 
-import com.sjiwon.anotherart.art.exception.ArtException;
+import com.sjiwon.anotherart.global.exception.GlobalException;
 import lombok.RequiredArgsConstructor;
 
 import java.util.Arrays;
 
-import static com.sjiwon.anotherart.art.exception.ArtExceptionCode.INVALID_DUPLICATE_RESOURCE;
+import static com.sjiwon.anotherart.global.exception.GlobalExceptionCode.VALIDATION_ERROR;
 
 @RequiredArgsConstructor
 public enum ArtDuplicateResource {
@@ -16,8 +16,8 @@ public enum ArtDuplicateResource {
 
     public static ArtDuplicateResource from(final String value) {
         return Arrays.stream(values())
-                .filter(resource -> resource.value.equals(value))
+                .filter(it -> it.value.equals(value))
                 .findFirst()
-                .orElseThrow(() -> new ArtException(INVALID_DUPLICATE_RESOURCE));
+                .orElseThrow(() -> new GlobalException(VALIDATION_ERROR));
     }
 }

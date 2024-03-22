@@ -23,11 +23,11 @@ public class UploadImage {
     }
 
     @Override
-    public boolean equals(final Object object) {
-        if (this == object) return true;
-        if (object == null || getClass() != object.getClass()) return false;
+    public boolean equals(final Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
 
-        final UploadImage other = (UploadImage) object;
+        final UploadImage other = (UploadImage) o;
 
         if (!uploadFileName.equals(other.uploadFileName)) return false;
         return link.equals(other.link);

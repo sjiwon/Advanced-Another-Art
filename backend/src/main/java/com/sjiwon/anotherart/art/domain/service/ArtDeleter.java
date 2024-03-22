@@ -1,30 +1,26 @@
 package com.sjiwon.anotherart.art.domain.service;
 
 import com.sjiwon.anotherart.art.domain.model.Art;
-import com.sjiwon.anotherart.art.domain.repository.ArtRepository;
-import com.sjiwon.anotherart.art.domain.repository.HashtagRepository;
-import com.sjiwon.anotherart.auction.domain.repository.AuctionRepository;
-import com.sjiwon.anotherart.favorite.domain.repository.FavoriteRepository;
+import com.sjiwon.anotherart.auction.domain.service.AuctionWriter;
 import com.sjiwon.anotherart.global.annotation.AnotherArtWritableTransactional;
+import com.sjiwon.anotherart.like.domain.service.LikeWriter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
 public class ArtDeleter {
-    private final AuctionRepository auctionRepository;
-    private final FavoriteRepository favoriteRepository;
-    private final HashtagRepository hashtagRepository;
-    private final ArtRepository artRepository;
+    private final AuctionWriter auctionWriter;
+    private final LikeWriter likeWriter;
+    private final ArtWriter artWriter;
 
     @AnotherArtWritableTransactional
     public void execute(final Art art) {
         if (art.isAuctionType()) {
-            auctionRepository.deleteByArtId(art.getId());
+            auctionWriter.deleteByArtId(art.getId());
         }
 
-        favoriteRepository.deleteByArtId(art.getId());
-        hashtagRepository.deleteByArtId(art.getId());
-        artRepository.deleteById(art.getId());
+        likeWriter.deleteByArtId(art.getId());
+        artWriter.deleteArt(art.getId());
     }
 }

@@ -22,16 +22,9 @@ public enum FileExtension {
         final String fileExtension = extractFileExtension(fileName);
 
         return Arrays.stream(values())
-                .filter(extension -> extension.value.equals(fileExtension))
+                .filter(it -> it.value.equals(fileExtension))
                 .findFirst()
                 .orElseThrow(() -> new FileException(INVALID_FILE_EXTENSION));
-    }
-
-    public static boolean isValidExtension(final String fileName) {
-        final String fileExtension = extractFileExtension(fileName);
-
-        return Arrays.stream(values())
-                .anyMatch(extension -> extension.value.equals(fileExtension));
     }
 
     private static String extractFileExtension(final String fileName) {

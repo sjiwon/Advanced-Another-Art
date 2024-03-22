@@ -46,7 +46,7 @@ public class RequestMetadataExtractor {
     public static String getSeveralParamsViaParsing(final HttpServletRequest request) {
         return Collections.list(request.getParameterNames())
                 .stream()
-                .map(param -> "%s = %s".formatted(param, request.getParameter(param)))
+                .map(it -> "%s = %s".formatted(it, request.getParameter(it)))
                 .collect(Collectors.joining(", ", "[", "]"));
     }
 }

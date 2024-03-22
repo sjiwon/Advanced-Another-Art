@@ -3,7 +3,6 @@ package com.sjiwon.anotherart.token.domain.service;
 import com.sjiwon.anotherart.common.UnitTest;
 import com.sjiwon.anotherart.member.domain.model.Member;
 import com.sjiwon.anotherart.token.domain.model.Token;
-import com.sjiwon.anotherart.token.domain.repository.TokenRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -15,16 +14,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @DisplayName("Token -> TokenManager 테스트")
 class TokenManagerTest extends UnitTest {
-    private final TokenRepository tokenRepository = mock(TokenRepository.class);
     private final TokenManager sut = new TokenManager(tokenRepository);
 
-    private final Member member = MEMBER_A.toMember().apply(1L);
+    private final Member member = MEMBER_A.toDomain().apply(1L);
     private final String previousToken = "previous";
     private final String newToken = "new";
 
@@ -35,7 +32,7 @@ class TokenManagerTest extends UnitTest {
         @DisplayName("RefreshToken을 보유한 상태면 새로운 RefreshToken으로 대체한다")
         void update() {
             // given
-            final Token token = Token.issueRefreshToken(member.getId(), previousToken).apply(1L);
+            final Token token = new Token(member.getId(), previousToken).apply(1L);
             given(tokenRepository.findByMemberId(member.getId())).willReturn(Optional.of(token));
 
             // when

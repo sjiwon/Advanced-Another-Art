@@ -6,7 +6,8 @@ import com.sjiwon.anotherart.art.domain.model.Description;
 import java.util.Set;
 
 public record UpdateArtCommand(
-        Long artId,
+        long memberId,
+        long artId,
         ArtName name,
         Description description,
         Set<String> hashtags

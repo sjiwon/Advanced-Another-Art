@@ -4,12 +4,14 @@ import com.sjiwon.anotherart.common.UnitTest;
 import com.sjiwon.anotherart.global.security.exception.AuthErrorCode;
 import com.sjiwon.anotherart.global.security.exception.AuthException;
 import com.sjiwon.anotherart.member.domain.model.Member;
-import com.sjiwon.anotherart.member.domain.repository.MemberRepository;
+import com.sjiwon.anotherart.member.domain.service.MemberReader;
 import com.sjiwon.anotherart.token.domain.model.AuthToken;
 import com.sjiwon.anotherart.token.domain.service.TokenIssuer;
 import com.sjiwon.anotherart.token.domain.service.TokenProvider;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
+import java.util.Optional;
 
 import static com.sjiwon.anotherart.common.fixture.MemberFixture.MEMBER_A;
 import static com.sjiwon.anotherart.common.utils.TokenUtils.ACCESS_TOKEN;
@@ -24,23 +26,22 @@ import static org.mockito.Mockito.verify;
 
 @DisplayName("Token -> ReissueTokenUseCase 테스트")
 class ReissueTokenUseCaseTest extends UnitTest {
-    private final MemberRepository memberRepository = mock(MemberRepository.class);
     private final TokenProvider tokenProvider = mock(TokenProvider.class);
     private final TokenIssuer tokenIssuer = mock(TokenIssuer.class);
     private final ReissueTokenUseCase sut = new ReissueTokenUseCase(
-            memberRepository,
+            new MemberReader(memberRepository),
             tokenProvider,
             tokenIssuer
     );
 
-    private final Member member = MEMBER_A.toMember().apply(1L);
+    private final Member member = MEMBER_A.toDomain().apply(1L);
 
     @Test
     @DisplayName("RefreshToken이 유효하지 않으면 토큰 재발급에 실패한다")
     void throwExceptionByInvalidRefreshToken() {
         // given
         given(tokenProvider.getId(REFRESH_TOKEN)).willReturn(member.getId());
-        given(memberRepository.getById(member.getId())).willReturn(member);
+        given(memberRepository.findById(member.getId())).willReturn(Optional.of(member));
         given(tokenIssuer.isMemberRefreshToken(member.getId(), REFRESH_TOKEN)).willReturn(false);
 
         // when - then
@@ -59,7 +60,7 @@ class ReissueTokenUseCaseTest extends UnitTest {
     void reissueSuccess() {
         // given
         given(tokenProvider.getId(REFRESH_TOKEN)).willReturn(member.getId());
-        given(memberRepository.getById(member.getId())).willReturn(member);
+        given(memberRepository.findById(member.getId())).willReturn(Optional.of(member));
         given(tokenIssuer.isMemberRefreshToken(member.getId(), REFRESH_TOKEN)).willReturn(true);
 
         final AuthToken authToken = new AuthToken(ACCESS_TOKEN, REFRESH_TOKEN);

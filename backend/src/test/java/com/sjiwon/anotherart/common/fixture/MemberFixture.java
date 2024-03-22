@@ -168,7 +168,7 @@ public enum MemberFixture {
     private final Email email;
     private final Address address;
 
-    public Member toMember() {
+    public Member toDomain() {
         return Member.createMember(
                 name,
                 nickname,
@@ -179,5 +179,20 @@ public enum MemberFixture {
                 email,
                 address
         );
+    }
+
+    public Member toDomain(final int initPoint) {
+        final Member member = Member.createMember(
+                name,
+                nickname,
+                loginId,
+                Password.encrypt(password, new FakeEncryptor()),
+                "경기대학교",
+                phone,
+                email,
+                address
+        );
+        member.increaseTotalPoint(initPoint);
+        return member;
     }
 }

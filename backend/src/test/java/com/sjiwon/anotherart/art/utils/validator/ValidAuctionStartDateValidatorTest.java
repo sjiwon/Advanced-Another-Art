@@ -1,5 +1,6 @@
 package com.sjiwon.anotherart.art.utils.validator;
 
+import com.sjiwon.anotherart.common.UnitTest;
 import jakarta.validation.ConstraintValidatorContext;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -10,7 +11,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
 @DisplayName("Art -> ValidAuctionStartDateValidator 테스트")
-class ValidAuctionStartDateValidatorTest {
+class ValidAuctionStartDateValidatorTest extends UnitTest {
     private final ConstraintValidatorContext context = mock(ConstraintValidatorContext.class);
     private final ValidAuctionStartDateValidator sut = new ValidAuctionStartDateValidator();
 

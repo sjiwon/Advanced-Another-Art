@@ -7,7 +7,6 @@ import com.sjiwon.anotherart.common.fixture.MemberFixture;
 import com.sjiwon.anotherart.member.domain.model.Member;
 import com.sjiwon.anotherart.member.domain.repository.MemberRepository;
 import com.sjiwon.anotherart.point.domain.model.PointRecord;
-import com.sjiwon.anotherart.point.domain.model.PointType;
 import com.sjiwon.anotherart.point.domain.repository.PointRecordRepository;
 import com.sjiwon.anotherart.purchase.application.usecase.command.PurchaseArtCommand;
 import com.sjiwon.anotherart.purchase.domain.model.Purchase;
@@ -32,7 +31,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 @Tag("Concurrency")
 @DisplayName("Purchase -> 일반 작품 구매 동시성 테스트")
-public class PurchaseArtUseCaseConcurrencyTest extends IntegrateTest {
+class PurchaseArtUseCaseConcurrencyTest extends IntegrateTest {
     @Autowired
     private PurchaseArtUseCase sut;
 
@@ -48,7 +47,7 @@ public class PurchaseArtUseCaseConcurrencyTest extends IntegrateTest {
     @Autowired
     private PointRecordRepository pointRecordRepository;
 
-    private static final int MEMBER_INIT_POINT = 100_000_000;
+    private static final int INIT_POINT = 100_000_000;
     private static final int TOTAL_THREAD_COUNT = 10;
 
     private Art art;
@@ -61,25 +60,19 @@ public class PurchaseArtUseCaseConcurrencyTest extends IntegrateTest {
 
     @BeforeEach
     void setUp() {
-        final Member owner = createMember(MEMBER_A);
-        art = artRepository.save(GENERAL_1.toArt(owner));
+        final Member owner = memberRepository.save(MEMBER_A.toDomain(INIT_POINT));
+        art = artRepository.save(GENERAL_1.toDomain(owner));
 
         final List<MemberFixture> fixtures = Arrays.stream(MemberFixture.values())
-                .filter(fixture -> fixture.getName().contains("더미"))
-                .limit(10)
+                .filter(it -> it.getName().contains("더미"))
+                .limit(TOTAL_THREAD_COUNT)
                 .toList();
-        Arrays.setAll(buyers, index -> createMember(fixtures.get(index)));
+        Arrays.setAll(buyers, index -> memberRepository.save(fixtures.get(index).toDomain(INIT_POINT)));
 
         executorService = Executors.newFixedThreadPool(TOTAL_THREAD_COUNT);
         countDownLatch = new CountDownLatch(TOTAL_THREAD_COUNT);
         successCount = new AtomicInteger();
         failCount = new AtomicInteger();
-    }
-
-    private Member createMember(final MemberFixture fixture) {
-        final Member member = fixture.toMember();
-        member.increaseTotalPoint(MEMBER_INIT_POINT);
-        return memberRepository.save(member);
     }
 
     @Test
@@ -100,7 +93,6 @@ public class PurchaseArtUseCaseConcurrencyTest extends IntegrateTest {
                 }
             });
         }
-
         executorService.shutdown();
         countDownLatch.await();
 
@@ -113,27 +105,27 @@ public class PurchaseArtUseCaseConcurrencyTest extends IntegrateTest {
                 () -> assertThat(successCount.get()).isEqualTo(1),
                 () -> assertThat(failCount.get()).isEqualTo(9),
                 () -> assertThat(purchases).hasSize(1),
-                () -> assertThat(purchases.get(0).getArt().getId()).isEqualTo(art.getId()),
+                () -> assertThat(purchases.get(0).getArtId()).isEqualTo(art.getId()),
                 () -> assertThat(purchases.get(0).getPrice()).isEqualTo(art.getPrice()),
                 () -> assertThat(pointRecords).hasSize(2),
                 () -> assertThat(pointRecords)
                         .map(PointRecord::getType)
-                        .containsExactlyInAnyOrder(PointType.SOLD, PointType.PURCHASE),
+                        .containsExactlyInAnyOrder(PointRecord.Type.SOLD, PointRecord.Type.PURCHASE),
                 () -> assertThat(members)
                         .map(Member::getAvailablePoint)
                         .containsExactlyInAnyOrder(
-                                MEMBER_INIT_POINT + art.getPrice(), // owner
-                                MEMBER_INIT_POINT,
-                                MEMBER_INIT_POINT,
-                                MEMBER_INIT_POINT,
-                                MEMBER_INIT_POINT,
-                                MEMBER_INIT_POINT,
-                                MEMBER_INIT_POINT,
-                                MEMBER_INIT_POINT,
-                                MEMBER_INIT_POINT,
-                                MEMBER_INIT_POINT,
-                                MEMBER_INIT_POINT - art.getPrice() // buyer
-                        ) // any order
+                                INIT_POINT + art.getPrice(), // owner
+                                INIT_POINT - art.getPrice(), // buyer
+                                INIT_POINT,
+                                INIT_POINT,
+                                INIT_POINT,
+                                INIT_POINT,
+                                INIT_POINT,
+                                INIT_POINT,
+                                INIT_POINT,
+                                INIT_POINT,
+                                INIT_POINT
+                        )
         );
     }
 }

@@ -1,5 +1,8 @@
 package com.sjiwon.anotherart.art.presentation.request;
 
+import com.sjiwon.anotherart.art.application.usecase.command.UpdateArtCommand;
+import com.sjiwon.anotherart.art.domain.model.ArtName;
+import com.sjiwon.anotherart.art.domain.model.Description;
 import jakarta.validation.constraints.NotBlank;
 
 import java.util.Set;
@@ -13,4 +16,16 @@ public record UpdateArtRequest(
 
         Set<String> hashtags
 ) {
+    public UpdateArtCommand toCommand(
+            final long memberId,
+            final long artId
+    ) {
+        return new UpdateArtCommand(
+                memberId,
+                artId,
+                ArtName.from(name),
+                Description.from(description),
+                hashtags
+        );
+    }
 }

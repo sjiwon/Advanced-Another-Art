@@ -11,8 +11,6 @@ import com.sjiwon.anotherart.common.IntegrateTest;
 import com.sjiwon.anotherart.common.fixture.MemberFixture;
 import com.sjiwon.anotherart.member.domain.model.Member;
 import com.sjiwon.anotherart.member.domain.repository.MemberRepository;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
@@ -29,14 +27,14 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static com.sjiwon.anotherart.common.fixture.ArtFixture.AUCTION_1;
-import static com.sjiwon.anotherart.common.fixture.AuctionFixture.AUCTION_OPEN_NOW;
+import static com.sjiwon.anotherart.common.fixture.AuctionFixture.경매_현재_진행;
 import static com.sjiwon.anotherart.common.fixture.MemberFixture.MEMBER_A;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 @Tag("Concurrency")
 @DisplayName("Auction -> 경매 작품 입찰 동시성 테스트")
-public class BidUseCaseConcurrencyTest extends IntegrateTest {
+class BidUseCaseConcurrencyTest extends IntegrateTest {
     @Autowired
     private BidUseCase sut;
 
@@ -52,10 +50,7 @@ public class BidUseCaseConcurrencyTest extends IntegrateTest {
     @Autowired
     private AuctionRecordRepository auctionRecordRepository;
 
-    @PersistenceContext
-    private EntityManager em;
-
-    private static final int MEMBER_INIT_POINT = 100_000_000;
+    private static final int INIT_POINT = 100_000_000;
     private static final int TOTAL_THREAD_COUNT = 10;
 
     private Auction auction;
@@ -68,26 +63,20 @@ public class BidUseCaseConcurrencyTest extends IntegrateTest {
 
     @BeforeEach
     void setUp() {
-        final Member owner = createMember(MEMBER_A);
-        final Art art = artRepository.save(AUCTION_1.toArt(owner));
-        auction = auctionRepository.save(AUCTION_OPEN_NOW.toAuction(art));
+        final Member owner = memberRepository.save(MEMBER_A.toDomain(INIT_POINT));
+        final Art art = artRepository.save(AUCTION_1.toDomain(owner));
+        auction = auctionRepository.save(경매_현재_진행.toDomain(art));
 
         final List<MemberFixture> fixtures = Arrays.stream(MemberFixture.values())
-                .filter(fixture -> fixture.getName().contains("더미"))
-                .limit(10)
+                .filter(it -> it.getName().contains("더미"))
+                .limit(TOTAL_THREAD_COUNT)
                 .toList();
-        Arrays.setAll(bidders, index -> createMember(fixtures.get(index)));
+        Arrays.setAll(bidders, index -> memberRepository.save(fixtures.get(index).toDomain(INIT_POINT)));
 
         executorService = Executors.newFixedThreadPool(TOTAL_THREAD_COUNT);
         countDownLatch = new CountDownLatch(TOTAL_THREAD_COUNT);
         successCount = new AtomicInteger();
         failCount = new AtomicInteger();
-    }
-
-    private Member createMember(final MemberFixture fixture) {
-        final Member member = fixture.toMember();
-        member.increaseTotalPoint(MEMBER_INIT_POINT);
-        return memberRepository.save(member);
     }
 
     @Test
@@ -111,12 +100,11 @@ public class BidUseCaseConcurrencyTest extends IntegrateTest {
                 }
             });
         }
-
         executorService.shutdown();
         countDownLatch.await();
 
         // then
-        final Auction findAuction = getAuction(auction.getId());
+        final Auction findAuction = auctionRepository.findById(auction.getId()).orElseThrow();
         final List<AuctionRecord> auctionRecords = auctionRecordRepository.findAll();
         final List<Member> members = memberRepository.findAll();
 
@@ -124,23 +112,23 @@ public class BidUseCaseConcurrencyTest extends IntegrateTest {
                 () -> assertThat(successCount.get()).isEqualTo(1),
                 () -> assertThat(failCount.get()).isEqualTo(9),
                 () -> assertThat(auctionRecords).hasSize(1),
-                () -> assertThat(findAuction.getHighestBid().getBidder()).isNotNull(),
-                () -> assertThat(findAuction.getHighestBid().getBidPrice()).isEqualTo(bidPrice),
+                () -> assertThat(findAuction.getHighestBidderId()).isNotNull(),
+                () -> assertThat(findAuction.getHighestBidPrice()).isEqualTo(bidPrice),
                 () -> assertThat(members)
                         .map(Member::getAvailablePoint)
                         .containsExactlyInAnyOrder(
-                                MEMBER_INIT_POINT,
-                                MEMBER_INIT_POINT,
-                                MEMBER_INIT_POINT,
-                                MEMBER_INIT_POINT,
-                                MEMBER_INIT_POINT,
-                                MEMBER_INIT_POINT,
-                                MEMBER_INIT_POINT,
-                                MEMBER_INIT_POINT,
-                                MEMBER_INIT_POINT,
-                                MEMBER_INIT_POINT,
-                                MEMBER_INIT_POINT - bidPrice
-                        ) // any order
+                                INIT_POINT - bidPrice,
+                                INIT_POINT,
+                                INIT_POINT,
+                                INIT_POINT,
+                                INIT_POINT,
+                                INIT_POINT,
+                                INIT_POINT,
+                                INIT_POINT,
+                                INIT_POINT,
+                                INIT_POINT,
+                                INIT_POINT
+                        )
         );
     }
 
@@ -148,11 +136,8 @@ public class BidUseCaseConcurrencyTest extends IntegrateTest {
     @DisplayName("10명의 입찰자가 서로 다른 가격으로 입찰을 진행하면 가장 높은 가격을 비드한 입찰자가 최종 입찰자이고 해당 입찰자만 사용 가능한 포인트가 감소해야 한다")
     void diffBid() throws InterruptedException {
         // given
-        final int bidStandard = auction.getHighestBidPrice();
-        final Map<Integer, Integer> bidInfo = new HashMap<>();
-        for (int index = 0; index < TOTAL_THREAD_COUNT; index++) {
-            bidInfo.put(index, bidStandard + (10_000 * index));
-        }
+        final Map<Integer, Integer> bidInfo = initBidInfo(auction.getHighestBidPrice());
+        final int highestBidPrice = auction.getHighestBidPrice() + (10_000 * (TOTAL_THREAD_COUNT - 1));
 
         // when
         for (int i = 0; i < TOTAL_THREAD_COUNT; i++) {
@@ -169,38 +154,39 @@ public class BidUseCaseConcurrencyTest extends IntegrateTest {
                 }
             });
         }
-
         executorService.shutdown();
         countDownLatch.await();
 
         // then
-        final Auction findAuction = getAuction(auction.getId());
+        final Auction findAuction = auctionRepository.findById(auction.getId()).orElseThrow();
         final List<Member> members = memberRepository.findAll();
 
         assertAll(
-                () -> assertThat(findAuction.getHighestBid().getBidder()).isNotNull(),
-                () -> assertThat(findAuction.getHighestBid().getBidPrice()).isEqualTo(bidStandard + 10_000 * 9),
+                () -> assertThat(findAuction.getHighestBidderId()).isNotNull(),
+                () -> assertThat(findAuction.getHighestBidPrice()).isEqualTo(highestBidPrice),
                 () -> assertThat(members)
                         .map(Member::getAvailablePoint)
                         .containsExactlyInAnyOrder(
-                                MEMBER_INIT_POINT,
-                                MEMBER_INIT_POINT,
-                                MEMBER_INIT_POINT,
-                                MEMBER_INIT_POINT,
-                                MEMBER_INIT_POINT,
-                                MEMBER_INIT_POINT,
-                                MEMBER_INIT_POINT,
-                                MEMBER_INIT_POINT,
-                                MEMBER_INIT_POINT,
-                                MEMBER_INIT_POINT,
-                                MEMBER_INIT_POINT - (bidStandard + 10_000 * 9)
-                        ) // any order
+                                INIT_POINT - highestBidPrice,
+                                INIT_POINT,
+                                INIT_POINT,
+                                INIT_POINT,
+                                INIT_POINT,
+                                INIT_POINT,
+                                INIT_POINT,
+                                INIT_POINT,
+                                INIT_POINT,
+                                INIT_POINT,
+                                INIT_POINT
+                        )
         );
     }
 
-    private Auction getAuction(final Long auctionId) {
-        return em.createQuery("SELECT ac FROM Auction ac WHERE ac.id = :id", Auction.class)
-                .setParameter("id", auctionId)
-                .getSingleResult();
+    private Map<Integer, Integer> initBidInfo(final int bidStandard) {
+        final Map<Integer, Integer> result = new HashMap<>();
+        for (int index = 0; index < TOTAL_THREAD_COUNT; index++) {
+            result.put(index, bidStandard + (10_000 * index));
+        }
+        return result;
     }
 }

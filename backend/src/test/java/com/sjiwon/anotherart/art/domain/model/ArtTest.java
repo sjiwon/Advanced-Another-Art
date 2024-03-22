@@ -1,15 +1,16 @@
 package com.sjiwon.anotherart.art.domain.model;
 
+import com.sjiwon.anotherart.common.UnitTest;
 import com.sjiwon.anotherart.member.domain.model.Member;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.Set;
 
-import static com.sjiwon.anotherart.art.domain.model.ArtStatus.ON_SALE;
-import static com.sjiwon.anotherart.art.domain.model.ArtStatus.SOLD;
-import static com.sjiwon.anotherart.art.domain.model.ArtType.AUCTION;
-import static com.sjiwon.anotherart.art.domain.model.ArtType.GENERAL;
+import static com.sjiwon.anotherart.art.domain.model.Art.Status.ON_SALE;
+import static com.sjiwon.anotherart.art.domain.model.Art.Status.SOLD;
+import static com.sjiwon.anotherart.art.domain.model.Art.Type.AUCTION;
+import static com.sjiwon.anotherart.art.domain.model.Art.Type.GENERAL;
 import static com.sjiwon.anotherart.common.fixture.ArtFixture.AUCTION_1;
 import static com.sjiwon.anotherart.common.fixture.ArtFixture.GENERAL_1;
 import static com.sjiwon.anotherart.common.fixture.MemberFixture.MEMBER_A;
@@ -17,18 +18,19 @@ import static com.sjiwon.anotherart.common.fixture.MemberFixture.MEMBER_B;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-@DisplayName("Art -> 도메인 [Art] 테스트")
-class ArtTest {
-    private final Member owner = MEMBER_A.toMember().apply(1L);
-    private final Member member = MEMBER_B.toMember().apply(2L);
+@DisplayName("Art -> 도메인 Aggregate [Art] 테스트")
+class ArtTest extends UnitTest {
+    private final Member owner = MEMBER_A.toDomain().apply(1L);
+    private final Member member = MEMBER_B.toDomain().apply(2L);
 
     @Test
     @DisplayName("Art를 생성한다")
     void construct() {
-        final Art auctionArt = AUCTION_1.toArt(owner);
-        final Art generalArt = GENERAL_1.toArt(owner);
+        final Art auctionArt = AUCTION_1.toDomain(owner);
+        final Art generalArt = GENERAL_1.toDomain(owner);
 
         assertAll(
+                () -> assertThat(auctionArt.getOwnerId()).isEqualTo(owner.getId()),
                 () -> assertThat(auctionArt.getName().getValue()).isEqualTo(AUCTION_1.getName().getValue()),
                 () -> assertThat(auctionArt.getDescription().getValue()).isEqualTo(AUCTION_1.getDescription().getValue()),
                 () -> assertThat(auctionArt.getType()).isEqualTo(AUCTION),
@@ -37,8 +39,8 @@ class ArtTest {
                 () -> assertThat(auctionArt.getUploadImage().getLink()).isEqualTo(AUCTION_1.getUploadImage().getLink()),
                 () -> assertThat(auctionArt.getStatus()).isEqualTo(ON_SALE),
                 () -> assertThat(auctionArt.getHashtags()).containsExactlyInAnyOrderElementsOf(AUCTION_1.getHashtags()),
-                () -> assertThat(auctionArt.getOwner().getId()).isEqualTo(owner.getId()),
 
+                () -> assertThat(generalArt.getOwnerId()).isEqualTo(owner.getId()),
                 () -> assertThat(generalArt.getName().getValue()).isEqualTo(GENERAL_1.getName().getValue()),
                 () -> assertThat(generalArt.getDescription().getValue()).isEqualTo(GENERAL_1.getDescription().getValue()),
                 () -> assertThat(generalArt.getType()).isEqualTo(GENERAL),
@@ -46,8 +48,7 @@ class ArtTest {
                 () -> assertThat(generalArt.getUploadImage().getUploadFileName()).isEqualTo(GENERAL_1.getUploadImage().getUploadFileName()),
                 () -> assertThat(generalArt.getUploadImage().getLink()).isEqualTo(GENERAL_1.getUploadImage().getLink()),
                 () -> assertThat(generalArt.getStatus()).isEqualTo(ON_SALE),
-                () -> assertThat(generalArt.getHashtags()).containsExactlyInAnyOrderElementsOf(GENERAL_1.getHashtags()),
-                () -> assertThat(generalArt.getOwner().getId()).isEqualTo(owner.getId())
+                () -> assertThat(generalArt.getHashtags()).containsExactlyInAnyOrderElementsOf(GENERAL_1.getHashtags())
         );
     }
 
@@ -55,7 +56,7 @@ class ArtTest {
     @DisplayName("작품을 수정한다 [이름 & 설명 & 해시태그]")
     void update() {
         // given
-        final Art art = AUCTION_1.toArt(owner);
+        final Art art = AUCTION_1.toDomain(owner);
         final ArtName updateName = ArtName.from("HELLO ART");
         final Description updateDescription = Description.from("Hello World");
         final Set<String> updateHashtags = Set.of("HELLO", "WORLD", "JAVA", "SPRING");
@@ -75,7 +76,7 @@ class ArtTest {
     @DisplayName("작품 판매를 종료한다")
     void closeSale() {
         // given
-        final Art art = AUCTION_1.toArt(owner);
+        final Art art = AUCTION_1.toDomain(owner);
         assertAll(
                 () -> assertThat(art.getStatus()).isEqualTo(ON_SALE),
                 () -> assertThat(art.isSold()).isFalse()
@@ -95,8 +96,8 @@ class ArtTest {
     @DisplayName("경매 작품인지 확인한다")
     void isAuctionType() {
         // given
-        final Art auctionArt = AUCTION_1.toArt(owner);
-        final Art generalArt = GENERAL_1.toArt(owner);
+        final Art auctionArt = AUCTION_1.toDomain(owner);
+        final Art generalArt = GENERAL_1.toDomain(owner);
 
         // when
         final boolean actual1 = auctionArt.isAuctionType();
@@ -113,7 +114,7 @@ class ArtTest {
     @DisplayName("작품 소유자인지 확인한다")
     void isOwner() {
         // given
-        final Art art = AUCTION_1.toArt(owner);
+        final Art art = AUCTION_1.toDomain(owner);
 
         // when
         final boolean actual1 = art.isOwner(owner);

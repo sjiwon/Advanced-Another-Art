@@ -8,18 +8,18 @@ import com.sjiwon.anotherart.member.application.usecase.command.AuthForRetrieveL
 import com.sjiwon.anotherart.member.application.usecase.command.ConfirmAuthCodeForLoginIdCommand;
 import com.sjiwon.anotherart.member.domain.model.Email;
 import com.sjiwon.anotherart.member.domain.model.Member;
-import com.sjiwon.anotherart.member.domain.repository.MemberRepository;
+import com.sjiwon.anotherart.member.domain.service.MemberReader;
 import lombok.RequiredArgsConstructor;
 
 @UseCase
 @RequiredArgsConstructor
 public class RetrieveLoginIdUseCase {
-    private final MemberRepository memberRepository;
+    private final MemberReader memberReader;
     private final MailAuthenticationProcessor mailAuthenticationProcessor;
     private final EmailSender emailSender;
 
     public void provideAuthCode(final AuthForRetrieveLoginIdCommand command) {
-        final Member member = memberRepository.getByNameAndEmail(command.name(), command.email());
+        final Member member = memberReader.getByNameAndEmail(command.name(), command.email());
 
         final String key = generateAuthKey(member.getEmail());
         final String authCode = mailAuthenticationProcessor.storeAuthCode(key);
@@ -27,7 +27,7 @@ public class RetrieveLoginIdUseCase {
     }
 
     public String getLoginId(final ConfirmAuthCodeForLoginIdCommand command) {
-        final Member member = memberRepository.getByNameAndEmail(command.name(), command.email());
+        final Member member = memberReader.getByNameAndEmail(command.name(), command.email());
         verifyAuthCode(member, command.authCode());
         return member.getLoginId();
     }

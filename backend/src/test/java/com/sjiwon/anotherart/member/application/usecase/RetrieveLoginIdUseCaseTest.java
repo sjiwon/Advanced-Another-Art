@@ -9,10 +9,12 @@ import com.sjiwon.anotherart.mail.application.adapter.EmailSender;
 import com.sjiwon.anotherart.member.application.usecase.command.AuthForRetrieveLoginIdCommand;
 import com.sjiwon.anotherart.member.application.usecase.command.ConfirmAuthCodeForLoginIdCommand;
 import com.sjiwon.anotherart.member.domain.model.Member;
-import com.sjiwon.anotherart.member.domain.repository.MemberRepository;
+import com.sjiwon.anotherart.member.domain.service.MemberReader;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+
+import java.util.Optional;
 
 import static com.sjiwon.anotherart.common.fixture.MemberFixture.MEMBER_A;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -26,21 +28,20 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @DisplayName("Member -> RetrieveLoginIdUseCase 테스트")
-public class RetrieveLoginIdUseCaseTest extends UnitTest {
-    private final MemberRepository memberRepository = mock(MemberRepository.class);
+class RetrieveLoginIdUseCaseTest extends UnitTest {
     private final MailAuthenticationProcessor mailAuthenticationProcessor = mock(MailAuthenticationProcessor.class);
     private final EmailSender emailSender = mock(EmailSender.class);
     private final RetrieveLoginIdUseCase sut = new RetrieveLoginIdUseCase(
-            memberRepository,
+            new MemberReader(memberRepository),
             mailAuthenticationProcessor,
             emailSender
     );
 
-    private final Member member = MEMBER_A.toMember().apply(1L);
+    private final Member member = MEMBER_A.toDomain().apply(1L);
 
     @Nested
     @DisplayName("인증번호 발송")
-    class PprovideAuthCode {
+    class ProvideAuthCode {
         private final AuthForRetrieveLoginIdCommand command = new AuthForRetrieveLoginIdCommand(
                 member.getName(),
                 member.getEmail().getValue()
@@ -50,7 +51,7 @@ public class RetrieveLoginIdUseCaseTest extends UnitTest {
         @DisplayName("이름 + 이메일에 해당하는 사용자에게 아이디 찾기 인증번호를 발송한다")
         void success() {
             // given
-            given(memberRepository.getByNameAndEmail(command.name(), command.email())).willReturn(member);
+            given(memberRepository.findByNameAndEmail(command.name(), command.email())).willReturn(Optional.of(member));
 
             final String key = AuthKey.LOGIN_AUTH_KEY.generateAuthKey(member.getEmail().getValue());
             final String authCode = "Hello";
@@ -61,7 +62,7 @@ public class RetrieveLoginIdUseCaseTest extends UnitTest {
 
             // then
             assertAll(
-                    () -> verify(memberRepository, times(1)).getByNameAndEmail(command.name(), command.email()),
+                    () -> verify(memberRepository, times(1)).findByNameAndEmail(command.name(), command.email()),
                     () -> verify(mailAuthenticationProcessor, times(1)).storeAuthCode(key),
                     () -> verify(emailSender, times(1)).sendAuthCodeForLoginId(member.getEmail().getValue(), authCode)
             );
@@ -82,7 +83,7 @@ public class RetrieveLoginIdUseCaseTest extends UnitTest {
         @DisplayName("인증번호가 일치하지 않으면 사용자 인증에 실패한다")
         void throwExceptionByInvalidAuthCode() {
             // given
-            given(memberRepository.getByNameAndEmail(command.name(), command.email())).willReturn(member);
+            given(memberRepository.findByNameAndEmail(command.name(), command.email())).willReturn(Optional.of(member));
 
             final String key = AuthKey.LOGIN_AUTH_KEY.generateAuthKey(member.getEmail().getValue());
             doThrow(new AuthException(AuthErrorCode.INVALID_AUTH_CODE))
@@ -95,7 +96,7 @@ public class RetrieveLoginIdUseCaseTest extends UnitTest {
                     .hasMessage(AuthErrorCode.INVALID_AUTH_CODE.getMessage());
 
             assertAll(
-                    () -> verify(memberRepository, times(1)).getByNameAndEmail(command.name(), command.email()),
+                    () -> verify(memberRepository, times(1)).findByNameAndEmail(command.name(), command.email()),
                     () -> verify(mailAuthenticationProcessor, times(1)).verifyAuthCode(key, command.authCode()),
                     () -> verify(mailAuthenticationProcessor, times(0)).deleteAuthCode(key)
             );
@@ -105,7 +106,7 @@ public class RetrieveLoginIdUseCaseTest extends UnitTest {
         @DisplayName("인증번호가 일치하면 사용자의 로그인 아이디를 제공한다")
         void success() {
             // given
-            given(memberRepository.getByNameAndEmail(command.name(), command.email())).willReturn(member);
+            given(memberRepository.findByNameAndEmail(command.name(), command.email())).willReturn(Optional.of(member));
 
             final String key = AuthKey.LOGIN_AUTH_KEY.generateAuthKey(member.getEmail().getValue());
             doNothing()
@@ -117,7 +118,7 @@ public class RetrieveLoginIdUseCaseTest extends UnitTest {
 
             // then
             assertAll(
-                    () -> verify(memberRepository, times(1)).getByNameAndEmail(command.name(), command.email()),
+                    () -> verify(memberRepository, times(1)).findByNameAndEmail(command.name(), command.email()),
                     () -> verify(mailAuthenticationProcessor, times(1)).verifyAuthCode(key, command.authCode()),
                     () -> verify(mailAuthenticationProcessor, times(1)).deleteAuthCode(key),
                     () -> assertThat(loginId).isEqualTo(member.getLoginId())

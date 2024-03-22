@@ -20,7 +20,7 @@ public class DatabaseCleaner {
                 .getEntities()
                 .stream()
                 .map(Type::getJavaType)
-                .map(javaType -> javaType.getAnnotation(Table.class))
+                .map(it -> it.getAnnotation(Table.class))
                 .map(Table::name)
                 .collect(Collectors.toList());
     }

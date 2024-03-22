@@ -95,7 +95,7 @@ public class Member extends BaseEntity<Member> {
     }
 
     public void updateAddress(final int postcode, final String defaultAddress, final String detailAddress) {
-        this.address = this.address.update(postcode, defaultAddress, detailAddress);
+        this.address = Address.of(postcode, defaultAddress, detailAddress);
     }
 
     public void increaseTotalPoint(final int point) {

@@ -18,6 +18,9 @@ import static lombok.AccessLevel.PROTECTED;
 @Entity
 @Table(name = "auction_record")
 public class AuctionRecord extends BaseEntity<AuctionRecord> {
+    @Column(name = "bidder_id", updatable = false)
+    private Long bidderId;
+
     @Column(name = "bid_price")
     private int bidPrice;
 
@@ -25,17 +28,10 @@ public class AuctionRecord extends BaseEntity<AuctionRecord> {
     @JoinColumn(name = "auction_id", referencedColumnName = "id", nullable = false, updatable = false)
     private Auction auction;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "bidder_id", referencedColumnName = "id", updatable = false)
-    private Member bidder;
-
-    private AuctionRecord(final Auction auction, final Member bidder, final int bidPrice) {
+    public AuctionRecord(final Auction auction, final Member bidder, final int bidPrice) {
         this.auction = auction;
-        this.bidder = bidder;
+        this.bidderId = bidder.getId();
         this.bidPrice = bidPrice;
-    }
-
-    public static AuctionRecord createAuctionRecord(final Auction auction, final Member bidder, final int bidPrice) {
-        return new AuctionRecord(auction, bidder, bidPrice);
+        auction.getAuctionRecords().add(this);
     }
 }

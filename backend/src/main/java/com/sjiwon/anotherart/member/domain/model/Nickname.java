@@ -21,7 +21,7 @@ public class Nickname {
      * 2. 공백 불가능 <br>
      * 3. 2자 이상 10자 이하
      */
-    private static final Pattern NICKNAME_PATTERN = Pattern.compile("^[a-zA-Z가-힣0-9]{2,10}$");
+    private static final Pattern pattern = Pattern.compile("^[a-zA-Z가-힣0-9]{2,10}$");
 
     @Column(name = "nickname", nullable = false, unique = true)
     private String value;
@@ -48,7 +48,7 @@ public class Nickname {
     }
 
     private static boolean isInvalidPattern(final String nickname) {
-        return !NICKNAME_PATTERN.matcher(nickname).matches();
+        return !pattern.matcher(nickname).matches();
     }
 
     private void validateNicknameSameAsBefore(final String value) {

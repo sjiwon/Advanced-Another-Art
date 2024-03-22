@@ -29,7 +29,7 @@ public class TokenExtractor {
         }
 
         final String token = Arrays.stream(cookies)
-                .filter(cookie -> cookie.getName().equals(AuthToken.REFRESH_TOKEN_HEADER))
+                .filter(it -> it.getName().equals(AuthToken.REFRESH_TOKEN_HEADER))
                 .map(Cookie::getValue)
                 .findFirst()
                 .orElse(null);

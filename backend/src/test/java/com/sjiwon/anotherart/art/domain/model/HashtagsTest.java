@@ -2,8 +2,8 @@ package com.sjiwon.anotherart.art.domain.model;
 
 import com.sjiwon.anotherart.art.exception.ArtException;
 import com.sjiwon.anotherart.art.exception.ArtExceptionCode;
+import com.sjiwon.anotherart.common.UnitTest;
 import com.sjiwon.anotherart.member.domain.model.Member;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -21,10 +21,10 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
-@DisplayName("Art -> 도메인 [Hashtags VO] 테스트")
-public class HashtagsTest {
-    private final Member owner = MEMBER_A.toMember().apply(1L);
-    private final Art art = GENERAL_1.toArt(owner).apply(1L);
+@DisplayName("Art -> 도메인 [Hashtags] 테스트")
+class HashtagsTest extends UnitTest {
+    private final Member owner = MEMBER_A.toDomain().apply(1L);
+    private final Art art = GENERAL_1.toDomain(owner).apply(1L);
 
     @Nested
     @DisplayName("Hashtags 생성")
@@ -34,7 +34,7 @@ public class HashtagsTest {
         void throwExceptionByHashtagMustExistsAtLeastOne() {
             assertThatThrownBy(() -> new Hashtags(art, Set.of()))
                     .isInstanceOf(ArtException.class)
-                    .hasMessage(ArtExceptionCode.HASHTAG_MUST_EXISTS_AT_LEAST_ONE.getMessage());
+                    .hasMessage(ArtExceptionCode.HASHTAG_MUST_BE_EXISTS_WITHIN_RESTRICTIONS.getMessage());
         }
 
         @Test
@@ -42,7 +42,7 @@ public class HashtagsTest {
         void throwExceptionByHashtagMustNotExistsMoreThanTen() {
             assertThatThrownBy(() -> new Hashtags(art, Set.of("A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K")))
                     .isInstanceOf(ArtException.class)
-                    .hasMessage(ArtExceptionCode.HASHTAG_MUST_NOT_EXISTS_MORE_THAN_TEN.getMessage());
+                    .hasMessage(ArtExceptionCode.HASHTAG_MUST_BE_EXISTS_WITHIN_RESTRICTIONS.getMessage());
         }
 
         @ParameterizedTest
@@ -64,41 +64,46 @@ public class HashtagsTest {
     @Nested
     @DisplayName("Hashtags 수정")
     class Update {
-        private Hashtags hashtags;
-
-        @BeforeEach
-        void setUp() {
-            hashtags = new Hashtags(art, Set.of("A", "B", "C"));
-        }
-
         @Test
         @DisplayName("해시태그는 적어도 1개 이상 존재해야 한다")
         void throwExceptionByHashtagMustExistsAtLeastOne() {
+            // given
+            final Hashtags hashtags = new Hashtags(art, Set.of("A", "B", "C"));
+
+            // when - then
             assertThatThrownBy(() -> hashtags.update(art, Set.of()))
                     .isInstanceOf(ArtException.class)
-                    .hasMessage(ArtExceptionCode.HASHTAG_MUST_EXISTS_AT_LEAST_ONE.getMessage());
+                    .hasMessage(ArtExceptionCode.HASHTAG_MUST_BE_EXISTS_WITHIN_RESTRICTIONS.getMessage());
         }
 
         @Test
         @DisplayName("해시태그는 10개를 초과해서 존재할 수 없다")
         void throwExceptionByHashtagMustNotExistsMoreThanTen() {
+            // given
+            final Hashtags hashtags = new Hashtags(art, Set.of("A", "B", "C"));
+
+            // when - then
             assertThatThrownBy(() -> hashtags.update(art, Set.of("A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K")))
                     .isInstanceOf(ArtException.class)
-                    .hasMessage(ArtExceptionCode.HASHTAG_MUST_NOT_EXISTS_MORE_THAN_TEN.getMessage());
+                    .hasMessage(ArtExceptionCode.HASHTAG_MUST_BE_EXISTS_WITHIN_RESTRICTIONS.getMessage());
         }
 
         @Test
-        @DisplayName("Hashtags를 업데이트한다")
+        @DisplayName("Hashtags를 수정한다")
         void success() {
+            // given
+            final Hashtags hashtags = new Hashtags(art, Set.of("A", "B", "C"));
+
             // when
-            hashtags.update(art, Set.of("Hello", "World", "Spring", "JPA", "JDBC"));
+            final Set<String> sets = Set.of("Hello", "World", "Spring", "JPA", "JDBC");
+            hashtags.update(art, sets);
 
             // then
             assertAll(
-                    () -> assertThat(hashtags.getHashtags()).hasSize(5),
+                    () -> assertThat(hashtags.getHashtags()).hasSize(sets.size()),
                     () -> assertThat(hashtags.getHashtags())
                             .map(Hashtag::getName)
-                            .containsExactlyInAnyOrder("Hello", "World", "Spring", "JPA", "JDBC")
+                            .containsExactlyInAnyOrderElementsOf(sets)
             );
         }
     }

@@ -4,32 +4,36 @@ import com.sjiwon.anotherart.art.application.usecase.command.RegisterArtCommand;
 import com.sjiwon.anotherart.art.domain.model.Art;
 import com.sjiwon.anotherart.art.domain.model.UploadImage;
 import com.sjiwon.anotherart.art.domain.service.ArtImageUploader;
-import com.sjiwon.anotherart.art.domain.service.ArtRegistrationProcessor;
-import com.sjiwon.anotherart.art.domain.service.ArtResourceValidator;
+import com.sjiwon.anotherart.art.domain.service.ArtReader;
+import com.sjiwon.anotherart.art.domain.service.ArtRegister;
+import com.sjiwon.anotherart.art.exception.ArtException;
 import com.sjiwon.anotherart.global.annotation.UseCase;
 import com.sjiwon.anotherart.member.domain.model.Member;
-import com.sjiwon.anotherart.member.domain.repository.MemberRepository;
+import com.sjiwon.anotherart.member.domain.service.MemberReader;
 import lombok.RequiredArgsConstructor;
+
+import static com.sjiwon.anotherart.art.exception.ArtExceptionCode.DUPLICATE_NAME;
 
 @UseCase
 @RequiredArgsConstructor
 public class RegisterArtUseCase {
-    private final ArtResourceValidator artResourceValidator;
+    private final ArtReader artReader;
     private final ArtImageUploader artImageUploader;
-    private final MemberRepository memberRepository;
-    private final ArtRegistrationProcessor artRegistrationProcessor;
+    private final MemberReader memberReader;
+    private final ArtRegister artRegister;
 
     public Long invoke(final RegisterArtCommand command) {
-        artResourceValidator.validatenNameIsUnique(command.name().getValue());
+        if (artReader.isNotUniqueName(command.name())) {
+            throw new ArtException(DUPLICATE_NAME);
+        }
 
         final UploadImage uploadImage = artImageUploader.uploadImage(command.image());
-        final Member owner = memberRepository.getById(command.ownerId());
-        final Art art = build(command, owner, uploadImage);
-
-        return artRegistrationProcessor.execute(art, command.auctionStartDate(), command.auctionEndDate()).getId();
+        final Member owner = memberReader.getById(command.ownerId());
+        final Art art = createArt(command, owner, uploadImage);
+        return artRegister.execute(art, command.auctionStartDate(), command.auctionEndDate()).getId();
     }
 
-    private Art build(final RegisterArtCommand command, final Member owner, final UploadImage uploadImage) {
+    private Art createArt(final RegisterArtCommand command, final Member owner, final UploadImage uploadImage) {
         return Art.createArt(
                 owner,
                 command.name(),

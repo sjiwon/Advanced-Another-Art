@@ -38,13 +38,9 @@ public class Description {
     }
 
     private static void validateLengthIsInRange(final String value) {
-        if (isLengthOutOfRange(value)) {
+        if (value.length() > MAXIMUM_LENGTH) {
             throw new ArtException(DESCRIPTION_LENGTH_OUT_OF_RANGE);
         }
-    }
-
-    private static boolean isLengthOutOfRange(final String name) {
-        return name.length() > MAXIMUM_LENGTH;
     }
 
     @Override

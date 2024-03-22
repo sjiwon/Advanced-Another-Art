@@ -38,12 +38,6 @@ public class Address {
         return new Address(postcode, defaultAddress, detailAddress);
     }
 
-    public Address update(final int postcode, final String defaultAddress, final String detailAddress) {
-        validatePostcodeLength(postcode);
-        validateAddressIsNotBlank(defaultAddress, detailAddress);
-        return new Address(postcode, defaultAddress, detailAddress);
-    }
-
     private static void validatePostcodeLength(final int postcode) {
         if (isInvalidPostcodeLength(postcode)) {
             throw new MemberException(INVALID_POST_CODE);
@@ -55,13 +49,9 @@ public class Address {
     }
 
     private static void validateAddressIsNotBlank(final String defaultAddress, final String detailAddress) {
-        if (isAddressEmpty(defaultAddress, detailAddress)) {
+        if (isEmpty(defaultAddress) || isEmpty(detailAddress)) {
             throw new MemberException(INVALID_ADDRESS);
         }
-    }
-
-    private static boolean isAddressEmpty(final String defaultAddress, final String detailAddress) {
-        return isEmpty(defaultAddress) || isEmpty(detailAddress);
     }
 
     private static boolean isEmpty(final String str) {

@@ -9,11 +9,14 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.Optional;
+
 import static com.sjiwon.anotherart.common.fixture.ArtFixture.AUCTION_1;
 import static com.sjiwon.anotherart.common.fixture.ArtFixture.AUCTION_2;
 import static com.sjiwon.anotherart.common.fixture.ArtFixture.GENERAL_1;
-import static com.sjiwon.anotherart.common.fixture.MemberFixture.DUMMY_1;
+import static com.sjiwon.anotherart.common.fixture.ArtFixture.GENERAL_2;
 import static com.sjiwon.anotherart.common.fixture.MemberFixture.MEMBER_A;
+import static com.sjiwon.anotherart.common.fixture.MemberFixture.MEMBER_B;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
@@ -25,43 +28,24 @@ class ArtRepositoryTest extends RepositoryTest {
     @Autowired
     private MemberRepository memberRepository;
 
-    private Member owner;
-    private Member anonymous;
+    private Member memberA;
+    private Member memberB;
 
     @BeforeEach
     void setUp() {
-        owner = memberRepository.save(MEMBER_A.toMember());
-        anonymous = memberRepository.save(DUMMY_1.toMember());
-    }
-
-    @Test
-    @DisplayName("작품 주인인지 확인한다")
-    void isOwner() {
-        // given
-        final Art art = sut.save(GENERAL_1.toArt(owner));
-
-        // when
-        final boolean actual1 = sut.isOwner(art.getId(), owner.getId());
-        final boolean actual2 = sut.isOwner(art.getId(), anonymous.getId());
-
-        // then
-        assertAll(
-                () -> assertThat(actual1).isTrue(),
-                () -> assertThat(actual2).isFalse()
-        );
+        memberA = memberRepository.save(MEMBER_A.toDomain());
+        memberB = memberRepository.save(MEMBER_B.toDomain());
     }
 
     @Test
     @DisplayName("이름에 해당하는 작품이 존재하는지 확인한다")
     void existsByNameValue() {
         // given
-        final Art art = sut.save(GENERAL_1.toArt(owner));
-        final String same = art.getName().getValue();
-        final String diff = "diff" + art.getName().getValue();
+        sut.save(GENERAL_1.toDomain(memberA));
 
         // when
-        final boolean actual1 = sut.existsByNameValue(same);
-        final boolean actual2 = sut.existsByNameValue(diff);
+        final boolean actual1 = sut.existsByNameValue(GENERAL_1.getName().getValue());
+        final boolean actual2 = sut.existsByNameValue(GENERAL_2.getName().getValue());
 
         // then
         assertAll(
@@ -71,24 +55,42 @@ class ArtRepositoryTest extends RepositoryTest {
     }
 
     @Test
-    @DisplayName("해당 작품명을 사용하는 다른 작품이 존재하는지 확인한다")
-    void isNameUsedByOther() {
+    @DisplayName("작품명에 해당하는 작품의 ID를 조회한다")
+    void findIdByName() {
         // given
-        final Art artA = sut.save(AUCTION_1.toArt(owner));
-        final Art artB = sut.save(AUCTION_2.toArt(owner));
+        final Art artA = sut.save(AUCTION_1.toDomain(memberA));
+        final Art artB = sut.save(AUCTION_2.toDomain(memberA));
 
         // when
-        final boolean actual1 = sut.isNameUsedByOther(artA.getId(), artA.getName().getValue());
-        final boolean actual2 = sut.isNameUsedByOther(artA.getId(), artB.getName().getValue());
-        final boolean actual3 = sut.isNameUsedByOther(artB.getId(), artB.getName().getValue());
-        final boolean actual4 = sut.isNameUsedByOther(artB.getId(), artA.getName().getValue());
+        final long id1 = sut.findIdByName(artA.getName().getValue());
+        final long id2 = sut.findIdByName(artB.getName().getValue());
 
         // then
         assertAll(
-                () -> assertThat(actual1).isFalse(),
-                () -> assertThat(actual2).isTrue(),
-                () -> assertThat(actual3).isFalse(),
-                () -> assertThat(actual4).isTrue()
+                () -> assertThat(id1).isEqualTo(artA.getId()),
+                () -> assertThat(id2).isEqualTo(artB.getId())
+        );
+    }
+
+    @Test
+    @DisplayName("작품 ID + 소유자 ID로 작품을 조회한다")
+    void findByIdAndOwnerId() {
+        // given
+        final Art artA = sut.save(AUCTION_1.toDomain(memberA));
+        final Art artB = sut.save(AUCTION_2.toDomain(memberB));
+
+        // when
+        final Optional<Art> actual1 = sut.findByIdAndOwnerId(artA.getId(), artA.getOwnerId());
+        final Optional<Art> actual2 = sut.findByIdAndOwnerId(artA.getId(), artB.getOwnerId());
+        final Optional<Art> actual3 = sut.findByIdAndOwnerId(artB.getId(), artB.getOwnerId());
+        final Optional<Art> actual4 = sut.findByIdAndOwnerId(artB.getId(), artA.getOwnerId());
+
+        // then
+        assertAll(
+                () -> assertThat(actual1).isPresent(),
+                () -> assertThat(actual2).isEmpty(),
+                () -> assertThat(actual3).isPresent(),
+                () -> assertThat(actual4).isEmpty()
         );
     }
 }

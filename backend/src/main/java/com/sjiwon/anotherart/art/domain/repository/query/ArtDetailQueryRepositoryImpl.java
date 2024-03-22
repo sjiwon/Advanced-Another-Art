@@ -8,20 +8,20 @@ import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import com.sjiwon.anotherart.art.domain.model.ArtType;
-import com.sjiwon.anotherart.art.domain.repository.query.dto.AuctionActivitySummary;
-import com.sjiwon.anotherart.art.domain.repository.query.dto.AuctionArt;
-import com.sjiwon.anotherart.art.domain.repository.query.dto.FavoriteSummary;
-import com.sjiwon.anotherart.art.domain.repository.query.dto.GeneralArt;
-import com.sjiwon.anotherart.art.domain.repository.query.dto.HashtagSummary;
-import com.sjiwon.anotherart.art.domain.repository.query.dto.QAuctionActivitySummary;
-import com.sjiwon.anotherart.art.domain.repository.query.dto.QAuctionArt;
-import com.sjiwon.anotherart.art.domain.repository.query.dto.QFavoriteSummary;
-import com.sjiwon.anotherart.art.domain.repository.query.dto.QGeneralArt;
-import com.sjiwon.anotherart.art.domain.repository.query.dto.QHashtagSummary;
-import com.sjiwon.anotherart.art.utils.search.ActiveAuctionArtsSearchCondition;
-import com.sjiwon.anotherart.art.utils.search.ArtDetailsSearchCondition;
-import com.sjiwon.anotherart.art.utils.search.SearchSortType;
+import com.sjiwon.anotherart.art.domain.model.Art;
+import com.sjiwon.anotherart.art.domain.repository.query.response.AuctionActivitySummary;
+import com.sjiwon.anotherart.art.domain.repository.query.response.AuctionArt;
+import com.sjiwon.anotherart.art.domain.repository.query.response.GeneralArt;
+import com.sjiwon.anotherart.art.domain.repository.query.response.HashtagSummary;
+import com.sjiwon.anotherart.art.domain.repository.query.response.LikeSummary;
+import com.sjiwon.anotherart.art.domain.repository.query.response.QAuctionActivitySummary;
+import com.sjiwon.anotherart.art.domain.repository.query.response.QAuctionArt;
+import com.sjiwon.anotherart.art.domain.repository.query.response.QGeneralArt;
+import com.sjiwon.anotherart.art.domain.repository.query.response.QHashtagSummary;
+import com.sjiwon.anotherart.art.domain.repository.query.response.QLikeSummary;
+import com.sjiwon.anotherart.art.domain.repository.query.spec.ActiveAuctionArtsSearchCondition;
+import com.sjiwon.anotherart.art.domain.repository.query.spec.ArtDetailsSearchCondition;
+import com.sjiwon.anotherart.art.domain.repository.query.spec.SortType;
 import com.sjiwon.anotherart.global.annotation.AnotherArtReadOnlyTransactional;
 import com.sjiwon.anotherart.member.domain.model.QMember;
 import lombok.RequiredArgsConstructor;
@@ -30,19 +30,21 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
-import static com.sjiwon.anotherart.art.domain.model.ArtType.AUCTION;
-import static com.sjiwon.anotherart.art.domain.model.ArtType.GENERAL;
+import static com.sjiwon.anotherart.art.domain.model.Art.Type.AUCTION;
+import static com.sjiwon.anotherart.art.domain.model.Art.Type.GENERAL;
 import static com.sjiwon.anotherart.art.domain.model.QArt.art;
 import static com.sjiwon.anotherart.art.domain.model.QHashtag.hashtag;
 import static com.sjiwon.anotherart.auction.domain.model.QAuction.auction;
 import static com.sjiwon.anotherart.auction.domain.model.QAuctionRecord.auctionRecord;
-import static com.sjiwon.anotherart.favorite.domain.model.QFavorite.favorite;
+import static com.sjiwon.anotherart.like.domain.model.QLike.like;
+import static com.sjiwon.anotherart.member.domain.model.QMember.member;
 import static com.sjiwon.anotherart.purchase.domain.model.QPurchase.purchase;
 
 @Repository
@@ -61,7 +63,7 @@ public class ArtDetailQueryRepositoryImpl implements ArtDetailQueryRepository {
             final Pageable pageable
     ) {
         final List<AuctionArt> result = projectionAuctionArts(
-                condition.searchSortType(),
+                condition.sortType(),
                 pageable,
                 Arrays.asList(
                         artTypeEq(AUCTION),
@@ -71,7 +73,7 @@ public class ArtDetailQueryRepositoryImpl implements ArtDetailQueryRepository {
         final Long totalCount = query
                 .select(art.id.count())
                 .from(art)
-                .innerJoin(auction).on(auction.art.id.eq(art.id))
+                .innerJoin(auction).on(auction.artId.eq(art.id))
                 .where(
                         artTypeEq(AUCTION),
                         auctionIsInProgress()
@@ -87,7 +89,7 @@ public class ArtDetailQueryRepositoryImpl implements ArtDetailQueryRepository {
             final Pageable pageable
     ) {
         final List<AuctionArt> result = projectionAuctionArts(
-                condition.searchSortType(),
+                condition.sortType(),
                 pageable,
                 Arrays.asList(
                         artTypeEq(AUCTION),
@@ -97,7 +99,7 @@ public class ArtDetailQueryRepositoryImpl implements ArtDetailQueryRepository {
         final Long totalCount = query
                 .select(art.id.count())
                 .from(art)
-                .innerJoin(auction).on(auction.art.id.eq(art.id))
+                .innerJoin(auction).on(auction.artId.eq(art.id))
                 .where(
                         artTypeEq(AUCTION),
                         artKeywordEq(condition.value())
@@ -113,7 +115,7 @@ public class ArtDetailQueryRepositoryImpl implements ArtDetailQueryRepository {
             final Pageable pageable
     ) {
         final List<GeneralArt> result = projectionGeneralArts(
-                condition.searchSortType(),
+                condition.sortType(),
                 pageable,
                 Arrays.asList(
                         artTypeEq(GENERAL),
@@ -147,14 +149,14 @@ public class ArtDetailQueryRepositoryImpl implements ArtDetailQueryRepository {
                 )
                 .fetch();
         final List<AuctionArt> result = projectionAuctionArts(
-                condition.searchSortType(),
+                condition.sortType(),
                 pageable,
                 Arrays.asList(artIdIn(artIds))
         );
         final Long totalCount = query
                 .select(art.id.count())
                 .from(art)
-                .innerJoin(auction).on(auction.art.id.eq(art.id))
+                .innerJoin(auction).on(auction.artId.eq(art.id))
                 .where(artIdIn(artIds))
                 .fetchOne();
 
@@ -176,7 +178,7 @@ public class ArtDetailQueryRepositoryImpl implements ArtDetailQueryRepository {
                 )
                 .fetch();
         final List<GeneralArt> result = projectionGeneralArts(
-                condition.searchSortType(),
+                condition.sortType(),
                 pageable,
                 Arrays.asList(artIdIn(artIds))
         );
@@ -190,16 +192,16 @@ public class ArtDetailQueryRepositoryImpl implements ArtDetailQueryRepository {
     }
 
     private List<AuctionArt> projectionAuctionArts(
-            final SearchSortType sortType,
+            final SortType sortType,
             final Pageable pageable,
             final List<BooleanExpression> whereConditions
     ) {
         final JPAQuery<AuctionArt> fetchQuery = query
                 .select(fetchAuctionArt())
                 .from(art)
-                .innerJoin(art.owner, owner)
-                .innerJoin(auction).on(auction.art.id.eq(art.id))
-                .leftJoin(auction.highestBid.bidder, highestBidder)
+                .innerJoin(member, owner).on(owner.id.eq(art.ownerId))
+                .innerJoin(auction).on(auction.artId.eq(art.id))
+                .leftJoin(member, highestBidder).on(highestBidder.id.eq(auction.highestBidderId))
                 .where(whereConditions.toArray(Predicate[]::new))
                 .orderBy(orderBySearchCondition(sortType, AUCTION).toArray(OrderSpecifier[]::new))
                 .offset(pageable.getOffset())
@@ -209,16 +211,16 @@ public class ArtDetailQueryRepositoryImpl implements ArtDetailQueryRepository {
     }
 
     private List<GeneralArt> projectionGeneralArts(
-            final SearchSortType sortType,
+            final SortType sortType,
             final Pageable pageable,
             final List<BooleanExpression> whereConditions
     ) {
         final JPAQuery<GeneralArt> fetchQuery = query
                 .select(fetchGeneralArt())
                 .from(art)
-                .innerJoin(art.owner, owner)
-                .leftJoin(purchase).on(purchase.art.id.eq(art.id))
-                .leftJoin(purchase.buyer, buyer)
+                .innerJoin(member, owner).on(owner.id.eq(art.ownerId))
+                .leftJoin(purchase).on(purchase.artId.eq(art.id))
+                .leftJoin(member, buyer).on(buyer.id.eq(purchase.buyerId))
                 .where(whereConditions.toArray(Predicate[]::new))
                 .orderBy(orderBySearchCondition(sortType, GENERAL).toArray(OrderSpecifier[]::new))
                 .offset(pageable.getOffset())
@@ -230,7 +232,7 @@ public class ArtDetailQueryRepositoryImpl implements ArtDetailQueryRepository {
     private ConstructorExpression<AuctionArt> fetchAuctionArt() {
         return new QAuctionArt(
                 auction.id,
-                auction.highestBid.bidPrice,
+                auction.highestBidPrice,
                 auction.period.startDate,
                 auction.period.endDate,
                 art.id,
@@ -267,22 +269,22 @@ public class ArtDetailQueryRepositoryImpl implements ArtDetailQueryRepository {
         );
     }
 
-    private List<OrderSpecifier<?>> orderBySearchCondition(final SearchSortType sortType, final ArtType artType) {
+    private List<OrderSpecifier<?>> orderBySearchCondition(final SortType sortType, final Art.Type artType) {
         final List<OrderSpecifier<?>> orderBy = new LinkedList<>();
 
         switch (sortType) {
             case DATE_ASC -> orderBy.add(art.id.asc());
             case DATE_DESC -> orderBy.add(art.id.desc());
             case PRICE_ASC -> orderBy.addAll(List.of(
-                    artType == AUCTION ? auction.highestBid.bidPrice.asc() : art.price.asc(),
+                    artType == AUCTION ? auction.highestBidPrice.asc() : art.price.asc(),
                     art.id.desc()
             ));
             case PRICE_DESC -> orderBy.addAll(List.of(
-                    artType == AUCTION ? auction.highestBid.bidPrice.desc() : art.price.desc(),
+                    artType == AUCTION ? auction.highestBidPrice.desc() : art.price.desc(),
                     art.id.desc()
             ));
-            case LIKE_ASC -> orderBy.addAll(List.of(favorite.count().asc(), art.id.desc()));
-            case LIKE_DESC -> orderBy.addAll(List.of(favorite.count().desc(), art.id.desc()));
+            case LIKE_ASC -> orderBy.addAll(List.of(like.count().asc(), art.id.desc()));
+            case LIKE_DESC -> orderBy.addAll(List.of(like.count().desc(), art.id.desc()));
             case BID_COUNT_ASC -> orderBy.addAll(List.of(auctionRecord.count().asc(), art.id.desc()));
             default -> orderBy.addAll(List.of(auctionRecord.count().desc(), art.id.desc()));
         }
@@ -292,7 +294,7 @@ public class ArtDetailQueryRepositoryImpl implements ArtDetailQueryRepository {
 
     private List<AuctionArt> completeAuctionArts(
             final JPAQuery<AuctionArt> fetchQuery,
-            final SearchSortType sortType
+            final SortType sortType
     ) {
         final List<AuctionArt> result = addAuctionArtJoinBySortOption(fetchQuery, sortType);
 
@@ -305,7 +307,7 @@ public class ArtDetailQueryRepositoryImpl implements ArtDetailQueryRepository {
 
     private List<GeneralArt> completeGeneralArts(
             final JPAQuery<GeneralArt> fetchQuery,
-            final SearchSortType sortType
+            final SortType sortType
     ) {
         final List<GeneralArt> result = addGeneralArtJoinBySortOption(fetchQuery, sortType);
 
@@ -318,7 +320,7 @@ public class ArtDetailQueryRepositoryImpl implements ArtDetailQueryRepository {
 
     private List<AuctionArt> addAuctionArtJoinBySortOption(
             final JPAQuery<AuctionArt> fetchQuery,
-            final SearchSortType sortType
+            final SortType sortType
     ) {
         return switch (sortType) {
             case BID_COUNT_ASC, BID_COUNT_DESC -> fetchQuery
@@ -326,7 +328,7 @@ public class ArtDetailQueryRepositoryImpl implements ArtDetailQueryRepository {
                     .groupBy(getAuctionArtGroupByExpressions())
                     .fetch();
             case LIKE_ASC, LIKE_DESC -> fetchQuery
-                    .leftJoin(favorite).on(favorite.art.id.eq(art.id))
+                    .leftJoin(like).on(like.artId.eq(art.id))
                     .groupBy(getAuctionArtGroupByExpressions())
                     .fetch();
             default -> fetchQuery.fetch();
@@ -335,11 +337,11 @@ public class ArtDetailQueryRepositoryImpl implements ArtDetailQueryRepository {
 
     private List<GeneralArt> addGeneralArtJoinBySortOption(
             final JPAQuery<GeneralArt> fetchQuery,
-            final SearchSortType sortType
+            final SortType sortType
     ) {
         return switch (sortType) {
             case LIKE_ASC, LIKE_DESC -> fetchQuery
-                    .leftJoin(favorite).on(favorite.art.id.eq(art.id))
+                    .leftJoin(like).on(like.artId.eq(art.id))
                     .groupBy(getGeneralArtGroupByExpressions())
                     .fetch();
             default -> fetchQuery.fetch();
@@ -349,7 +351,7 @@ public class ArtDetailQueryRepositoryImpl implements ArtDetailQueryRepository {
     private Expression<?> getAuctionArtGroupByExpressions() {
         return Expressions.list(
                 auction.id,
-                auction.highestBid.bidPrice,
+                auction.highestBidPrice,
                 auction.period.startDate,
                 auction.period.endDate,
                 art.id,
@@ -391,7 +393,7 @@ public class ArtDetailQueryRepositoryImpl implements ArtDetailQueryRepository {
                 .map(AuctionArt::getArtId)
                 .toList();
         final List<HashtagSummary> hashtagSummaries = getHashtagSummaries(artIds);
-        final List<FavoriteSummary> favoriteSummaries = getFavoriteSummaries(artIds);
+        final List<LikeSummary> favoriteSummaries = getFavoriteSummaries(artIds);
         final List<AuctionActivitySummary> auctionActivitySummaries = getAuctionActivitySummaries(artIds);
 
         result.forEach(art -> {
@@ -406,7 +408,7 @@ public class ArtDetailQueryRepositoryImpl implements ArtDetailQueryRepository {
                 .map(GeneralArt::getArtId)
                 .toList();
         final List<HashtagSummary> hashtagSummaries = getHashtagSummaries(artIds);
-        final List<FavoriteSummary> favoriteSummaries = getFavoriteSummaries(artIds);
+        final List<LikeSummary> favoriteSummaries = getFavoriteSummaries(artIds);
 
         result.forEach(art -> {
             art.applyHashtags(collectHashtags(hashtagSummaries, art.getArtId()));
@@ -430,41 +432,41 @@ public class ArtDetailQueryRepositoryImpl implements ArtDetailQueryRepository {
             final Long artId
     ) {
         return hashtagSummaries.stream()
-                .filter(hashtag -> hashtag.artId().equals(artId))
+                .filter(it -> it.artId().equals(artId))
                 .map(HashtagSummary::name)
                 .toList();
     }
 
-    private List<FavoriteSummary> getFavoriteSummaries(final List<Long> artIds) {
+    private List<LikeSummary> getFavoriteSummaries(final List<Long> artIds) {
         return query
-                .select(new QFavoriteSummary(
-                        favorite.art.id,
-                        favorite.member.id
+                .select(new QLikeSummary(
+                        like.artId,
+                        like.memberId
                 ))
-                .from(favorite)
-                .where(favorite.art.id.in(artIds))
+                .from(like)
+                .where(like.artId.in(artIds))
                 .fetch();
     }
 
     private List<Long> collectLikeMembers(
-            final List<FavoriteSummary> favoriteSummaries,
+            final List<LikeSummary> favoriteSummaries,
             final Long artId
     ) {
         return favoriteSummaries.stream()
-                .filter(favorite -> favorite.artId().equals(artId))
-                .map(FavoriteSummary::memberId)
+                .filter(it -> it.artId().equals(artId))
+                .map(LikeSummary::memberId)
                 .toList();
     }
 
     private List<AuctionActivitySummary> getAuctionActivitySummaries(final List<Long> artIds) {
         return query
                 .select(new QAuctionActivitySummary(
-                        auction.art.id,
+                        auction.artId,
                         auction.count()
                 ))
                 .from(auction)
                 .innerJoin(auctionRecord).on(auctionRecord.auction.id.eq(auction.id))
-                .where(auction.art.id.in(artIds))
+                .where(auction.artId.in(artIds))
                 .groupBy(auction.id)
                 .fetch();
     }
@@ -474,14 +476,14 @@ public class ArtDetailQueryRepositoryImpl implements ArtDetailQueryRepository {
             final Long artId
     ) {
         return auctionActivitySummaries.stream()
-                .filter(auction -> auction.artId().equals(artId))
+                .filter(it -> it.artId().equals(artId))
                 .map(AuctionActivitySummary::bidCount)
                 .findFirst()
                 .orElse(0L)
                 .intValue();
     }
 
-    private BooleanExpression artTypeEq(final ArtType type) {
+    private BooleanExpression artTypeEq(final Art.Type type) {
         return art.type.eq(type);
     }
 
@@ -493,7 +495,7 @@ public class ArtDetailQueryRepositoryImpl implements ArtDetailQueryRepository {
     }
 
     private BooleanExpression artKeywordEq(final String givenKeyword) {
-        if (givenKeyword == null) {
+        if (!StringUtils.hasText(givenKeyword)) {
             return null;
         }
 
@@ -501,7 +503,7 @@ public class ArtDetailQueryRepositoryImpl implements ArtDetailQueryRepository {
     }
 
     private BooleanExpression artHashtagEq(final String givenHashtag) {
-        if (givenHashtag == null) {
+        if (!StringUtils.hasText(givenHashtag)) {
             return null;
         }
 

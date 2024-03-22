@@ -19,7 +19,7 @@ public enum PeriodFixture {
     private final LocalDateTime startDate;
     private final LocalDateTime endDate;
 
-    public Period toPeriod() {
+    public Period toDomain() {
         return Period.of(startDate, endDate);
     }
 }

@@ -1,5 +1,6 @@
 package com.sjiwon.anotherart.member.domain.model;
 
+import com.sjiwon.anotherart.common.UnitTest;
 import com.sjiwon.anotherart.member.exception.MemberException;
 import com.sjiwon.anotherart.member.exception.MemberExceptionCode;
 import org.junit.jupiter.api.DisplayName;
@@ -11,8 +12,8 @@ import org.junit.jupiter.params.provider.ValueSource;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-@DisplayName("Member -> 도메인 [Nickname VO] 테스트")
-class NicknameTest {
+@DisplayName("Member -> 도메인 [Nickname] 테스트")
+class NicknameTest extends UnitTest {
     @Nested
     @DisplayName("Nickname 생성")
     class Construct {
@@ -37,7 +38,7 @@ class NicknameTest {
 
     @Nested
     @DisplayName("Nickname 수정")
-    class update {
+    class Update {
         @Test
         @DisplayName("이전과 동일한 Nickname으로 수정하려고 하면 예외가 발생한다")
         void throwExceptionByNicknameSameAsBefore() {

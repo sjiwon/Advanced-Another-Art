@@ -1,23 +1,32 @@
 package com.sjiwon.anotherart.auction.application.usecase;
 
 import com.sjiwon.anotherart.art.domain.model.Art;
+import com.sjiwon.anotherart.art.domain.service.ArtReader;
 import com.sjiwon.anotherart.auction.application.usecase.command.BidCommand;
 import com.sjiwon.anotherart.auction.domain.model.Auction;
 import com.sjiwon.anotherart.auction.domain.model.AuctionRecord;
-import com.sjiwon.anotherart.auction.domain.repository.AuctionRepository;
+import com.sjiwon.anotherart.auction.domain.service.AuctionReader;
+import com.sjiwon.anotherart.auction.domain.service.AuctionWriter;
+import com.sjiwon.anotherart.auction.domain.service.BidInspector;
+import com.sjiwon.anotherart.auction.domain.service.BidProcessor;
 import com.sjiwon.anotherart.auction.exception.AuctionException;
-import com.sjiwon.anotherart.auction.exception.AuctionExceptionCode;
 import com.sjiwon.anotherart.common.UnitTest;
 import com.sjiwon.anotherart.member.domain.model.Member;
-import com.sjiwon.anotherart.member.domain.repository.MemberRepository;
+import com.sjiwon.anotherart.member.domain.service.MemberReader;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.util.Optional;
+
+import static com.sjiwon.anotherart.auction.exception.AuctionExceptionCode.ART_OWNER_CANNOT_BID;
+import static com.sjiwon.anotherart.auction.exception.AuctionExceptionCode.AUCTION_IS_NOT_IN_PROGRESS;
+import static com.sjiwon.anotherart.auction.exception.AuctionExceptionCode.BID_PRICE_IS_NOT_ENOUGH;
+import static com.sjiwon.anotherart.auction.exception.AuctionExceptionCode.HIGHEST_BIDDER_CANNOT_BID_AGAIN;
 import static com.sjiwon.anotherart.common.fixture.ArtFixture.AUCTION_1;
-import static com.sjiwon.anotherart.common.fixture.AuctionFixture.AUCTION_CLOSED_WEEK_1_AGO;
-import static com.sjiwon.anotherart.common.fixture.AuctionFixture.AUCTION_OPEN_NOW;
-import static com.sjiwon.anotherart.common.fixture.AuctionFixture.AUCTION_OPEN_WEEK_1_LATER;
+import static com.sjiwon.anotherart.common.fixture.AuctionFixture.경매_1주뒤_오픈;
+import static com.sjiwon.anotherart.common.fixture.AuctionFixture.경매_1주전_종료;
+import static com.sjiwon.anotherart.common.fixture.AuctionFixture.경매_현재_진행;
 import static com.sjiwon.anotherart.common.fixture.MemberFixture.MEMBER_A;
 import static com.sjiwon.anotherart.common.fixture.MemberFixture.MEMBER_B;
 import static com.sjiwon.anotherart.common.fixture.MemberFixture.MEMBER_C;
@@ -25,237 +34,293 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 
 @DisplayName("Auction -> BidUseCase 테스트")
 class BidUseCaseTest extends UnitTest {
-    private final AuctionRepository auctionRepository = mock(AuctionRepository.class);
-    private final MemberRepository memberRepository = mock(MemberRepository.class);
-    private final BidUseCase sut = new BidUseCase(auctionRepository, memberRepository);
+    private final BidUseCase sut = new BidUseCase(
+            new AuctionReader(auctionRepository),
+            new ArtReader(artRepository),
+            new MemberReader(memberRepository),
+            new BidInspector(),
+            new BidProcessor(
+                    new MemberReader(memberRepository),
+                    new AuctionWriter(auctionRepository, auctionRecordRepository)
+            )
+    );
 
-    private static final int MEMBER_INIT_POINT = 1_000_000;
+    private static final int INIT_POINT = 1_000_000_000;
+
     private Member owner;
-    private Member memberA;
-    private Member memberB;
-    private Auction closedAuction;
+    private Member bidderA;
+    private Member bidderB;
+    private Art art;
     private Auction auction;
-    private Auction willOpenAuction;
 
     @BeforeEach
     void setUp() {
-        owner = MEMBER_A.toMember().apply(1L);
-        owner.increaseTotalPoint(MEMBER_INIT_POINT);
-
-        memberA = MEMBER_B.toMember().apply(2L);
-        memberA.increaseTotalPoint(MEMBER_INIT_POINT);
-
-        memberB = MEMBER_C.toMember().apply(3L);
-        memberB.increaseTotalPoint(MEMBER_INIT_POINT);
-
-        final Art art = AUCTION_1.toArt(owner).apply(1L);
-        closedAuction = AUCTION_CLOSED_WEEK_1_AGO.toAuction(art).apply(1L);
-        auction = AUCTION_OPEN_NOW.toAuction(art).apply(2L);
-        willOpenAuction = AUCTION_OPEN_WEEK_1_LATER.toAuction(art).apply(3L);
+        owner = MEMBER_A.toDomain(INIT_POINT).apply(1L);
+        bidderA = MEMBER_B.toDomain(INIT_POINT).apply(2L);
+        bidderB = MEMBER_C.toDomain(INIT_POINT).apply(3L);
+        art = AUCTION_1.toDomain(owner).apply(1L);
+        auction = 경매_현재_진행.toDomain(art).apply(1L);
     }
 
     @Test
-    @DisplayName("경매가 진행되고 있지 않으면 입찰을 진행할 수 없다 -> 1) 이미 종료된 경매")
-    void throwExceptionByAuctionIsNotInProgessCaseA() {
-        // given
-        final BidCommand command = new BidCommand(memberA.getId(), closedAuction.getId(), closedAuction.getHighestBidPrice() + 50_000);
-        given(auctionRepository.getByIdWithFetchBidder(command.auctionId())).willReturn(closedAuction);
-        given(memberRepository.getById(command.memberId())).willReturn(memberA);
-
-        // when - then
-        assertThatThrownBy(() -> sut.invoke(command))
-                .isInstanceOf(AuctionException.class)
-                .hasMessage(AuctionExceptionCode.AUCTION_IS_NOT_IN_PROGRESS.getMessage());
-
-        assertAll(
-                () -> verify(auctionRepository, times(1)).getByIdWithFetchBidder(command.auctionId()),
-                () -> verify(memberRepository, times(1)).getById(command.memberId())
-        );
-    }
-
-    @Test
-    @DisplayName("경매가 진행되고 있지 않으면 입찰을 진행할 수 없다 -> 2) 아직 오픈되지 않은 경매")
-    void throwExceptionByAuctionIsNotInProgessCaseB() {
-        // given
-        final BidCommand command = new BidCommand(memberA.getId(), willOpenAuction.getId(), willOpenAuction.getHighestBidPrice() + 50_000);
-        given(auctionRepository.getByIdWithFetchBidder(command.auctionId())).willReturn(willOpenAuction);
-        given(memberRepository.getById(command.memberId())).willReturn(memberA);
-
-        // when - then
-        assertThatThrownBy(() -> sut.invoke(command))
-                .isInstanceOf(AuctionException.class)
-                .hasMessage(AuctionExceptionCode.AUCTION_IS_NOT_IN_PROGRESS.getMessage());
-
-        assertAll(
-                () -> verify(auctionRepository, times(1)).getByIdWithFetchBidder(command.auctionId()),
-                () -> verify(memberRepository, times(1)).getById(command.memberId())
-        );
-    }
-
-    @Test
-    @DisplayName("작품 소유자는 입찰을 진행할 수 없다")
+    @DisplayName("1. 작품 소유자는 입찰을 시도할 수 없다")
     void throwExceptionByArtOwnerCannotBid() {
         // given
-        final BidCommand command = new BidCommand(owner.getId(), auction.getId(), auction.getHighestBidPrice() + 50_000);
-        given(auctionRepository.getByIdWithFetchBidder(command.auctionId())).willReturn(auction);
-        given(memberRepository.getById(command.memberId())).willReturn(owner);
+        final int newBidPrice = auction.getHighestBidPrice();
+        final BidCommand command = new BidCommand(
+                owner.getId(),
+                auction.getId(),
+                newBidPrice
+        );
+        given(auctionRepository.findByIdWithRecords(command.auctionId())).willReturn(Optional.of(auction));
+        given(artRepository.findById(auction.getArtId())).willReturn(Optional.of(art));
+        given(memberRepository.findById(command.memberId())).willReturn(Optional.of(owner));
 
         // when - then
         assertThatThrownBy(() -> sut.invoke(command))
                 .isInstanceOf(AuctionException.class)
-                .hasMessage(AuctionExceptionCode.ART_OWNER_CANNOT_BID.getMessage());
-
-        assertAll(
-                () -> verify(auctionRepository, times(1)).getByIdWithFetchBidder(command.auctionId()),
-                () -> verify(memberRepository, times(1)).getById(command.memberId())
-        );
+                .hasMessage(ART_OWNER_CANNOT_BID.getMessage());
     }
 
     @Test
-    @DisplayName("최고 입찰자는 연속으로 입찰을 진행할 수 없다")
+    @DisplayName("2-1. 경매 진행 기간이 아니면 입찰을 진행할 수 없다 [이미 종료]")
+    void throwExceptionByAuctionIsNotInProgressA() {
+        // given
+        final Auction auction = 경매_1주전_종료.toDomain(art).apply(1L);
+        final int newBidPrice = auction.getHighestBidPrice();
+        final BidCommand command = new BidCommand(
+                bidderA.getId(),
+                auction.getId(),
+                newBidPrice
+        );
+        given(auctionRepository.findByIdWithRecords(command.auctionId())).willReturn(Optional.of(auction));
+        given(artRepository.findById(auction.getArtId())).willReturn(Optional.of(art));
+        given(memberRepository.findById(command.memberId())).willReturn(Optional.of(bidderA));
+
+        // when - then
+        assertThatThrownBy(() -> sut.invoke(command))
+                .isInstanceOf(AuctionException.class)
+                .hasMessage(AUCTION_IS_NOT_IN_PROGRESS.getMessage());
+    }
+
+    @Test
+    @DisplayName("2-2. 경매 진행 기간이 아니면 입찰을 진행할 수 없다 [아직 시작 X]")
+    void throwExceptionByAuctionIsNotInProgressB() {
+        // given
+        final Auction auction = 경매_1주뒤_오픈.toDomain(art).apply(1L);
+        final int newBidPrice = auction.getHighestBidPrice();
+        final BidCommand command = new BidCommand(
+                bidderA.getId(),
+                auction.getId(),
+                newBidPrice
+        );
+        given(auctionRepository.findByIdWithRecords(command.auctionId())).willReturn(Optional.of(auction));
+        given(artRepository.findById(auction.getArtId())).willReturn(Optional.of(art));
+        given(memberRepository.findById(command.memberId())).willReturn(Optional.of(bidderA));
+
+        // when - then
+        assertThatThrownBy(() -> sut.invoke(command))
+                .isInstanceOf(AuctionException.class)
+                .hasMessage(AUCTION_IS_NOT_IN_PROGRESS.getMessage());
+    }
+
+    @Test
+    @DisplayName("3. 최고 입찰자는 연속으로 입찰을 진행할 수 없다")
     void throwExceptionByHighestBidderCannotBidAgain() {
         // given
-        final int newBidPrice = auction.getHighestBidPrice() + 50_000;
-        auction.applyNewBid(memberA, newBidPrice);
+        auction.updateHighestBid(bidderA, auction.getHighestBidPrice());
 
-        final BidCommand command = new BidCommand(memberA.getId(), auction.getId(), newBidPrice + 50_000);
-        given(auctionRepository.getByIdWithFetchBidder(command.auctionId())).willReturn(auction);
-        given(memberRepository.getById(command.memberId())).willReturn(memberA);
+        final int newBidPrice = auction.getHighestBidPrice() + 5_000;
+        final BidCommand command = new BidCommand(
+                bidderA.getId(),
+                auction.getId(),
+                newBidPrice
+        );
+        given(auctionRepository.findByIdWithRecords(command.auctionId())).willReturn(Optional.of(auction));
+        given(artRepository.findById(auction.getArtId())).willReturn(Optional.of(art));
+        given(memberRepository.findById(command.memberId())).willReturn(Optional.of(bidderA));
 
         // when - then
         assertThatThrownBy(() -> sut.invoke(command))
                 .isInstanceOf(AuctionException.class)
-                .hasMessage(AuctionExceptionCode.HIGHEST_BIDDER_CANNOT_BID_AGAIN.getMessage());
-
-        assertAll(
-                () -> verify(auctionRepository, times(1)).getByIdWithFetchBidder(command.auctionId()),
-                () -> verify(memberRepository, times(1)).getById(command.memberId())
-        );
+                .hasMessage(HIGHEST_BIDDER_CANNOT_BID_AGAIN.getMessage());
     }
 
     @Test
-    @DisplayName("입찰 금액이 부족하다면 입찰을 진행할 수 없다 -> 1) 최고 입찰자가 존재하는 경우")
-    void throwExceptionByBidPriceIsNotEnoughCaseA() {
+    @DisplayName("4-1. 입찰가가 부족하면 입찰을 진행할 수 없다 [최고 입찰자 존재 X]")
+    void throwExceptionByBidPriceIsNotEnoughA() {
         // given
-        final int newBidPrice = auction.getHighestBidPrice() + 50_000;
-        auction.applyNewBid(memberA, newBidPrice);
+        final int newBidPrice = auction.getHighestBidPrice() - 5_000;
+        final BidCommand command = new BidCommand(
+                bidderA.getId(),
+                auction.getId(),
+                newBidPrice
+        );
+        given(auctionRepository.findByIdWithRecords(command.auctionId())).willReturn(Optional.of(auction));
+        given(artRepository.findById(auction.getArtId())).willReturn(Optional.of(art));
+        given(memberRepository.findById(command.memberId())).willReturn(Optional.of(bidderA));
 
         // when - then
-        /* 더 적은 금액 */
-        final BidCommand commandA = new BidCommand(memberB.getId(), auction.getId(), newBidPrice - 10_000);
-        given(auctionRepository.getByIdWithFetchBidder(commandA.auctionId())).willReturn(auction);
-        given(memberRepository.getById(commandA.memberId())).willReturn(memberB);
-
-        assertThatThrownBy(() -> sut.invoke(commandA))
-                .isInstanceOf(AuctionException.class)
-                .hasMessage(AuctionExceptionCode.BID_PRICE_IS_NOT_ENOUGH.getMessage());
-
-        /* 동일한 금액 */
-        final BidCommand commandB = new BidCommand(memberB.getId(), auction.getId(), newBidPrice);
-        given(auctionRepository.getByIdWithFetchBidder(commandB.auctionId())).willReturn(auction);
-        given(memberRepository.getById(commandB.memberId())).willReturn(memberB);
-
-        assertThatThrownBy(() -> sut.invoke(commandB)) // 동일한 금액
-                .isInstanceOf(AuctionException.class)
-                .hasMessage(AuctionExceptionCode.BID_PRICE_IS_NOT_ENOUGH.getMessage());
-    }
-
-    @Test
-    @DisplayName("입찰 금액이 부족하다면 입찰을 진행할 수 없다 -> 2) 최고 입찰자가 존재하지 않는 경우")
-    void throwExceptionByBidPriceIsNotEnoughCaseB() {
-        // given
-        final int newBidPrice = auction.getHighestBidPrice() - 10_000;
-        final BidCommand command = new BidCommand(memberB.getId(), auction.getId(), newBidPrice);
-        given(auctionRepository.getByIdWithFetchBidder(command.auctionId())).willReturn(auction);
-        given(memberRepository.getById(command.memberId())).willReturn(memberB);
-
-        // when -then
         assertThatThrownBy(() -> sut.invoke(command))
                 .isInstanceOf(AuctionException.class)
-                .hasMessage(AuctionExceptionCode.BID_PRICE_IS_NOT_ENOUGH.getMessage());
-
-        assertAll(
-                () -> verify(auctionRepository, times(1)).getByIdWithFetchBidder(command.auctionId()),
-                () -> verify(memberRepository, times(1)).getById(command.memberId())
-        );
+                .hasMessage(BID_PRICE_IS_NOT_ENOUGH.getMessage());
     }
 
     @Test
-    @DisplayName("입찰을 성공한다 [최고 입찰자 존재 X]")
-    void successA() {
+    @DisplayName("4-2. 입찰가가 부족하면 입찰을 진행할 수 없다 [최고 입찰자 존재 O - 낮은 입찰가]")
+    void throwExceptionByBidPriceIsNotEnoughB() {
         // given
-        final int newBidPrice = auction.getHighestBidPrice() + 50_000;
-        final BidCommand command = new BidCommand(memberA.getId(), auction.getId(), newBidPrice);
-        given(auctionRepository.getByIdWithFetchBidder(command.auctionId())).willReturn(auction);
-        given(memberRepository.getById(command.memberId())).willReturn(memberA);
+        auction.updateHighestBid(bidderA, auction.getHighestBidPrice());
+
+        final int newBidPrice = auction.getHighestBidPrice() - 5_000;
+        final BidCommand command = new BidCommand(
+                bidderB.getId(),
+                auction.getId(),
+                newBidPrice
+        );
+        given(auctionRepository.findByIdWithRecords(command.auctionId())).willReturn(Optional.of(auction));
+        given(artRepository.findById(auction.getArtId())).willReturn(Optional.of(art));
+        given(memberRepository.findById(command.memberId())).willReturn(Optional.of(bidderB));
+
+        // when - then
+        assertThatThrownBy(() -> sut.invoke(command))
+                .isInstanceOf(AuctionException.class)
+                .hasMessage(BID_PRICE_IS_NOT_ENOUGH.getMessage());
+    }
+
+    @Test
+    @DisplayName("4-3. 입찰가가 부족하면 입찰을 진행할 수 없다 [최고 입찰자 존재 O - 동일 입찰가]")
+    void throwExceptionByBidPriceIsNotEnoughC() {
+        // given
+        auction.updateHighestBid(bidderA, auction.getHighestBidPrice());
+
+        final int newBidPrice = auction.getHighestBidPrice();
+        final BidCommand command = new BidCommand(
+                bidderB.getId(),
+                auction.getId(),
+                newBidPrice
+        );
+        given(auctionRepository.findByIdWithRecords(command.auctionId())).willReturn(Optional.of(auction));
+        given(artRepository.findById(auction.getArtId())).willReturn(Optional.of(art));
+        given(memberRepository.findById(command.memberId())).willReturn(Optional.of(bidderB));
+
+        // when - then
+        assertThatThrownBy(() -> sut.invoke(command))
+                .isInstanceOf(AuctionException.class)
+                .hasMessage(BID_PRICE_IS_NOT_ENOUGH.getMessage());
+    }
+
+    @Test
+    @DisplayName("5-1. 입찰 프로세스를 진행한다 [최고 입찰자 X]")
+    void executeA() {
+        // given
+        assertAll(
+                // Auction - Record
+                () -> assertThat(auction.getHighestBidderId()).isNull(),
+                () -> assertThat(auction.getHighestBidPrice()).isEqualTo(art.getPrice()),
+                () -> assertThat(auction.getAuctionRecords()).hasSize(0),
+
+                // Bidders
+                () -> assertThat(bidderA.getTotalPoint()).isEqualTo(INIT_POINT),
+                () -> assertThat(bidderA.getAvailablePoint()).isEqualTo(INIT_POINT)
+        );
+
+        final int newBidPrice = auction.getHighestBidPrice();
+        final BidCommand command = new BidCommand(
+                bidderA.getId(),
+                auction.getId(),
+                newBidPrice
+        );
+        given(auctionRepository.findByIdWithRecords(command.auctionId())).willReturn(Optional.of(auction));
+        given(artRepository.findById(auction.getArtId())).willReturn(Optional.of(art));
+        given(memberRepository.findById(command.memberId())).willReturn(Optional.of(bidderA));
 
         // when
         sut.invoke(command);
 
         // then
         assertAll(
-                () -> verify(auctionRepository, times(1)).getByIdWithFetchBidder(command.auctionId()),
-                () -> verify(memberRepository, times(1)).getById(command.memberId()),
-
-                // HighestBid Info
+                // Auction - Record
+                () -> assertThat(auction.getHighestBidderId()).isEqualTo(bidderA.getId()),
+                () -> assertThat(auction.getHighestBidPrice()).isEqualTo(newBidPrice),
                 () -> assertThat(auction.getAuctionRecords()).hasSize(1),
                 () -> assertThat(auction.getAuctionRecords())
-                        .map(AuctionRecord::getBidder)
-                        .containsExactly(memberA),
+                        .map(AuctionRecord::getBidderId)
+                        .containsExactly(bidderA.getId()),
                 () -> assertThat(auction.getAuctionRecords())
                         .map(AuctionRecord::getBidPrice)
                         .containsExactly(newBidPrice),
-                () -> assertThat(auction.getHighestBidder()).isEqualTo(memberA),
-                () -> assertThat(auction.getHighestBidPrice()).isEqualTo(newBidPrice),
 
-                // Bidders Info
-                () -> assertThat(memberA.getTotalPoint()).isEqualTo(MEMBER_INIT_POINT),
-                () -> assertThat(memberA.getAvailablePoint()).isEqualTo(MEMBER_INIT_POINT - newBidPrice)
+                // Bidders
+                () -> assertThat(bidderA.getTotalPoint()).isEqualTo(INIT_POINT),
+                () -> assertThat(bidderA.getAvailablePoint()).isEqualTo(INIT_POINT - newBidPrice)
         );
     }
 
     @Test
-    @DisplayName("입찰을 성공한다 [최고 입찰자 존재 O]")
-    void successB() {
+    @DisplayName("5-2. 입찰 프로세스를 진행한다 [최고 입찰자 O]")
+    void executeB() {
         // given
-        final int previousBidPrice = auction.getHighestBidPrice() + 50_000;
-        auction.applyNewBid(memberA, previousBidPrice);
+        final int previousBidPrice = auction.getHighestBidPrice() + 5_000;
+        new BidProcessor(
+                new MemberReader(memberRepository),
+                new AuctionWriter(auctionRepository, auctionRecordRepository)
+        ).execute(auction, bidderA, previousBidPrice);
+        assertAll(
+                // Auction - Record
+                () -> assertThat(auction.getHighestBidderId()).isEqualTo(bidderA.getId()),
+                () -> assertThat(auction.getHighestBidPrice()).isEqualTo(previousBidPrice),
+                () -> assertThat(auction.getAuctionRecords()).hasSize(1),
+                () -> assertThat(auction.getAuctionRecords())
+                        .map(AuctionRecord::getBidderId)
+                        .containsExactly(bidderA.getId()),
+                () -> assertThat(auction.getAuctionRecords())
+                        .map(AuctionRecord::getBidPrice)
+                        .containsExactly(previousBidPrice),
 
-        final int newBidPrice = previousBidPrice + 50_000;
-        final BidCommand command = new BidCommand(memberB.getId(), auction.getId(), newBidPrice);
-        given(auctionRepository.getByIdWithFetchBidder(command.auctionId())).willReturn(auction);
-        given(memberRepository.getById(command.memberId())).willReturn(memberB);
+                // Bidders
+                () -> assertThat(bidderA.getTotalPoint()).isEqualTo(INIT_POINT),
+                () -> assertThat(bidderA.getAvailablePoint()).isEqualTo(INIT_POINT - previousBidPrice),
+                () -> assertThat(bidderB.getTotalPoint()).isEqualTo(INIT_POINT),
+                () -> assertThat(bidderB.getAvailablePoint()).isEqualTo(INIT_POINT)
+        );
+
+
+        final int newBidPrice = previousBidPrice + 5_000;
+        final BidCommand command = new BidCommand(
+                bidderB.getId(),
+                auction.getId(),
+                newBidPrice
+        );
+        given(auctionRepository.findByIdWithRecords(command.auctionId())).willReturn(Optional.of(auction));
+        given(artRepository.findById(auction.getArtId())).willReturn(Optional.of(art));
+        given(memberRepository.findById(command.memberId())).willReturn(Optional.of(bidderB));
+        given(memberRepository.findById(auction.getHighestBidderId())).willReturn(Optional.of(bidderA));
 
         // when
         sut.invoke(command);
 
         // then
         assertAll(
-                () -> verify(auctionRepository, times(1)).getByIdWithFetchBidder(command.auctionId()),
-                () -> verify(memberRepository, times(1)).getById(command.memberId()),
-
-                // Bid Info
+                // Auction - Record
+                () -> assertThat(auction.getHighestBidderId()).isEqualTo(bidderB.getId()),
+                () -> assertThat(auction.getHighestBidPrice()).isEqualTo(newBidPrice),
                 () -> assertThat(auction.getAuctionRecords()).hasSize(2),
                 () -> assertThat(auction.getAuctionRecords())
-                        .map(AuctionRecord::getBidder)
-                        .containsExactly(memberA, memberB),
+                        .map(AuctionRecord::getBidderId)
+                        .containsExactly(bidderA.getId(), bidderB.getId()),
                 () -> assertThat(auction.getAuctionRecords())
                         .map(AuctionRecord::getBidPrice)
                         .containsExactly(previousBidPrice, newBidPrice),
-                () -> assertThat(auction.getHighestBidder()).isEqualTo(memberB),
-                () -> assertThat(auction.getHighestBidPrice()).isEqualTo(newBidPrice),
 
-                // Bidders Info
-                () -> assertThat(memberA.getTotalPoint()).isEqualTo(MEMBER_INIT_POINT),
-                () -> assertThat(memberA.getAvailablePoint()).isEqualTo(MEMBER_INIT_POINT - previousBidPrice + previousBidPrice),
-                () -> assertThat(memberB.getTotalPoint()).isEqualTo(MEMBER_INIT_POINT),
-                () -> assertThat(memberB.getAvailablePoint()).isEqualTo(MEMBER_INIT_POINT - newBidPrice)
+                // Bidders
+                () -> assertThat(bidderA.getTotalPoint()).isEqualTo(INIT_POINT),
+                () -> assertThat(bidderA.getAvailablePoint()).isEqualTo(INIT_POINT),
+                () -> assertThat(bidderB.getTotalPoint()).isEqualTo(INIT_POINT),
+                () -> assertThat(bidderB.getAvailablePoint()).isEqualTo(INIT_POINT - newBidPrice)
         );
     }
 }

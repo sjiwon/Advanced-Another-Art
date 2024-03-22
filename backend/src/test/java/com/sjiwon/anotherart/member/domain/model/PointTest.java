@@ -1,5 +1,6 @@
 package com.sjiwon.anotherart.member.domain.model;
 
+import com.sjiwon.anotherart.common.UnitTest;
 import com.sjiwon.anotherart.member.exception.MemberException;
 import com.sjiwon.anotherart.member.exception.MemberExceptionCode;
 import org.junit.jupiter.api.DisplayName;
@@ -10,8 +11,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-@DisplayName("Member -> 도메인 [Point VO] 테스트")
-class PointTest {
+@DisplayName("Member -> 도메인 [Point] 테스트")
+class PointTest extends UnitTest {
     @Nested
     @DisplayName("전체 포인트 증가 [포인트 충전 / 작품 판매]")
     class IncreaseTotalPoint {

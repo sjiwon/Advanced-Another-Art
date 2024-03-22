@@ -1,6 +1,6 @@
 package com.sjiwon.anotherart.art.domain.repository.query;
 
-import com.sjiwon.anotherart.art.domain.repository.query.dto.AuctionArt;
+import com.sjiwon.anotherart.art.domain.repository.query.response.AuctionArt;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;

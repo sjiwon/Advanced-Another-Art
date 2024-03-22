@@ -28,14 +28,14 @@ class TokenRepositoryTest extends RepositoryTest {
 
     @BeforeEach
     void setUp() {
-        member = memberRepository.save(MEMBER_A.toMember());
+        member = memberRepository.save(MEMBER_A.toDomain());
     }
 
     @Test
     @DisplayName("사용자가 보유하고 있는 RefreshToken을 조회한다")
     void findByMemberId() {
         // given
-        sut.save(Token.issueRefreshToken(member.getId(), REFRESH_TOKEN));
+        sut.save(new Token(member.getId(), REFRESH_TOKEN));
 
         // when
         final Optional<Token> emptyToken = sut.findByMemberId(member.getId() + 10000L);
@@ -53,7 +53,7 @@ class TokenRepositoryTest extends RepositoryTest {
     @DisplayName("사용자가 보유하고 있는 RefreshToken을 재발급한다")
     void updateRefreshToken() {
         // given
-        sut.save(Token.issueRefreshToken(member.getId(), REFRESH_TOKEN));
+        sut.save(new Token(member.getId(), REFRESH_TOKEN));
 
         // when
         final String newRefreshToken = REFRESH_TOKEN + "reissue";
@@ -68,7 +68,7 @@ class TokenRepositoryTest extends RepositoryTest {
     @DisplayName("사용자가 보유하고 있는 RefreshToken인지 확인한다")
     void existsByMemberIdAndRefreshToken() {
         // given
-        sut.save(Token.issueRefreshToken(member.getId(), REFRESH_TOKEN));
+        sut.save(new Token(member.getId(), REFRESH_TOKEN));
 
         // when
         final boolean actual1 = sut.existsByMemberIdAndRefreshToken(member.getId(), REFRESH_TOKEN);
@@ -85,7 +85,7 @@ class TokenRepositoryTest extends RepositoryTest {
     @DisplayName("사용자가 보유하고 있는 RefreshToken을 삭제한다")
     void deleteRefreshToken() {
         // given
-        sut.save(Token.issueRefreshToken(member.getId(), REFRESH_TOKEN));
+        sut.save(new Token(member.getId(), REFRESH_TOKEN));
         assertThat(sut.findByMemberId(member.getId())).isPresent();
 
         // when

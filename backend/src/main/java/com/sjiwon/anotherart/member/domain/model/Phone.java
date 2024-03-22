@@ -18,7 +18,7 @@ public class Phone {
     /**
      * xxx-xxx-xxxx or xxx-xxxx-xxxx
      */
-    private static final Pattern PHONE_PATTERN = Pattern.compile("^\\d{3}-\\d{3,4}-\\d{4}$");
+    private static final Pattern pattern = Pattern.compile("^\\d{3}-\\d{3,4}-\\d{4}$");
 
     @Column(name = "phone", nullable = false, unique = true)
     private String value;
@@ -39,7 +39,7 @@ public class Phone {
     }
 
     private static boolean isNotValidPattern(final String value) {
-        return !PHONE_PATTERN.matcher(value).matches();
+        return !pattern.matcher(value).matches();
     }
 
     @Override

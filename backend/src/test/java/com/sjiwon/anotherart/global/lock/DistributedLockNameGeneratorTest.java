@@ -1,13 +1,14 @@
 package com.sjiwon.anotherart.global.lock;
 
 import com.sjiwon.anotherart.auction.application.usecase.command.BidCommand;
+import com.sjiwon.anotherart.common.UnitTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("Global/Lock -> DistributedLockNameGenerator 테스트")
-public class DistributedLockNameGeneratorTest {
+class DistributedLockNameGeneratorTest extends UnitTest {
     @Test
     @DisplayName("주어진 Key를 파싱한다 - 표현식")
     void caseA() {

@@ -1,8 +1,8 @@
 package com.sjiwon.anotherart.auction.application.usecase.command;
 
 public record BidCommand(
-        Long memberId,
-        Long auctionId,
+        long memberId,
+        long auctionId,
         int bidPrice
 ) {
 }

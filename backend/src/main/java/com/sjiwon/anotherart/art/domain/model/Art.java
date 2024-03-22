@@ -1,24 +1,24 @@
 package com.sjiwon.anotherart.art.domain.model;
 
+import com.sjiwon.anotherart.art.exception.ArtException;
 import com.sjiwon.anotherart.global.base.BaseEntity;
 import com.sjiwon.anotherart.member.domain.model.Member;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
-import static com.sjiwon.anotherart.art.domain.model.ArtStatus.ON_SALE;
-import static com.sjiwon.anotherart.art.domain.model.ArtStatus.SOLD;
-import static com.sjiwon.anotherart.art.domain.model.ArtType.AUCTION;
+import static com.sjiwon.anotherart.art.domain.model.Art.Status.ON_SALE;
+import static com.sjiwon.anotherart.art.domain.model.Art.Status.SOLD;
+import static com.sjiwon.anotherart.art.exception.ArtExceptionCode.INVALID_ART_TYPE;
 import static jakarta.persistence.EnumType.STRING;
 import static lombok.AccessLevel.PROTECTED;
 
@@ -27,6 +27,9 @@ import static lombok.AccessLevel.PROTECTED;
 @Entity
 @Table(name = "art")
 public class Art extends BaseEntity<Art> {
+    @Column(name = "owner_id", nullable = false, updatable = false)
+    private Long ownerId;
+
     @Embedded
     private ArtName name;
 
@@ -35,7 +38,7 @@ public class Art extends BaseEntity<Art> {
 
     @Enumerated(STRING)
     @Column(name = "art_type", nullable = false, updatable = false, columnDefinition = "VARCHAR(30)")
-    private ArtType type;
+    private Type type;
 
     @Column(name = "price", nullable = false, updatable = false)
     private int price;
@@ -45,25 +48,21 @@ public class Art extends BaseEntity<Art> {
 
     @Enumerated(STRING)
     @Column(name = "art_status", nullable = false, columnDefinition = "VARCHAR(30)")
-    private ArtStatus status;
+    private Status status;
 
     @Embedded
     private Hashtags hashtags;
-
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "owner_id", referencedColumnName = "id", nullable = false, updatable = false)
-    private Member owner;
 
     private Art(
             final Member owner,
             final ArtName name,
             final Description description,
-            final ArtType type,
+            final Type type,
             final int price,
             final UploadImage uploadImage,
             final Set<String> hashtags
     ) {
-        this.owner = owner;
+        this.ownerId = owner.getId();
         this.name = name;
         this.description = description;
         this.type = type;
@@ -77,7 +76,7 @@ public class Art extends BaseEntity<Art> {
             final Member owner,
             final ArtName name,
             final Description description,
-            final ArtType type,
+            final Type type,
             final int price,
             final UploadImage uploadImage,
             final Set<String> hashtags
@@ -100,11 +99,11 @@ public class Art extends BaseEntity<Art> {
     }
 
     public boolean isAuctionType() {
-        return this.type == AUCTION;
+        return this.type == Type.AUCTION;
     }
 
-    public boolean isOwner(final Member other) {
-        return owner.isSame(other);
+    public boolean isOwner(final Member compare) {
+        return ownerId.equals(compare.getId());
     }
 
     // Add Getter
@@ -113,5 +112,27 @@ public class Art extends BaseEntity<Art> {
                 .stream()
                 .map(Hashtag::getName)
                 .toList();
+    }
+
+    @Getter
+    @RequiredArgsConstructor
+    public enum Type {
+        GENERAL("일반 작품", "general"),
+        AUCTION("경매 작품", "auction"),
+        ;
+
+        private final String description;
+        private final String label;
+
+        public static Type from(final String label) {
+            return Arrays.stream(values())
+                    .filter(it -> it.label.equals(label))
+                    .findFirst()
+                    .orElseThrow(() -> new ArtException(INVALID_ART_TYPE));
+        }
+    }
+
+    public enum Status {
+        ON_SALE, SOLD
     }
 }

@@ -11,19 +11,19 @@ import com.sjiwon.anotherart.member.application.usecase.command.ConfirmAuthCodeF
 import com.sjiwon.anotherart.member.application.usecase.command.ResetPasswordCommand;
 import com.sjiwon.anotherart.member.domain.model.Email;
 import com.sjiwon.anotherart.member.domain.model.Member;
-import com.sjiwon.anotherart.member.domain.repository.MemberRepository;
+import com.sjiwon.anotherart.member.domain.service.MemberReader;
 import lombok.RequiredArgsConstructor;
 
 @UseCase
 @RequiredArgsConstructor
 public class ResetPasswordUseCase {
-    private final MemberRepository memberRepository;
+    private final MemberReader memberReader;
     private final MailAuthenticationProcessor mailAuthenticationProcessor;
     private final EmailSender emailSender;
     private final Encryptor encryptor;
 
     public void provideAuthCode(final AuthForResetPasswordCommand command) {
-        final Member member = memberRepository.getByNameAndEmailAndLoginId(command.name(), command.email(), command.loginId());
+        final Member member = memberReader.getByNameAndEmailAndLoginId(command.name(), command.email(), command.loginId());
 
         final String key = generateAuthKey(member.getEmail());
         final String authCode = mailAuthenticationProcessor.storeAuthCode(key);
@@ -31,7 +31,7 @@ public class ResetPasswordUseCase {
     }
 
     public void confirmAuthCode(final ConfirmAuthCodeForResetPasswordCommand command) {
-        final Member member = memberRepository.getByNameAndEmailAndLoginId(command.name(), command.email(), command.loginId());
+        final Member member = memberReader.getByNameAndEmailAndLoginId(command.name(), command.email(), command.loginId());
         verifyAuthCode(member, command.authCode());
     }
 
@@ -47,7 +47,7 @@ public class ResetPasswordUseCase {
 
     @AnotherArtWritableTransactional
     public void resetPassword(final ResetPasswordCommand command) {
-        final Member member = memberRepository.getByNameAndEmailAndLoginId(command.name(), command.email(), command.loginId());
+        final Member member = memberReader.getByNameAndEmailAndLoginId(command.name(), command.email(), command.loginId());
         member.updatePassword(command.password(), encryptor);
     }
 }

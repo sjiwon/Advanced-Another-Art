@@ -2,6 +2,7 @@ package com.sjiwon.anotherart.art.domain.model;
 
 import com.sjiwon.anotherart.art.exception.ArtException;
 import com.sjiwon.anotherart.art.exception.ArtExceptionCode;
+import com.sjiwon.anotherart.common.UnitTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -11,8 +12,8 @@ import org.junit.jupiter.params.provider.ValueSource;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-@DisplayName("Art -> 도메인 [ArtName VO] 테스트")
-class ArtNameTest {
+@DisplayName("Art -> 도메인 [ArtName] 테스트")
+class ArtNameTest extends UnitTest {
     @ParameterizedTest
     @NullAndEmptySource
     @DisplayName("ArtName이 null이거나 공백이면 생성에 실패한다")

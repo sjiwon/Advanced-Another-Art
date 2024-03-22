@@ -20,11 +20,11 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 
 @DisplayName("Global/Security -> RdbUserDetailsService 테스트")
-public class RdbUserDetailsServiceTest extends UnitTest {
+class RdbUserDetailsServiceTest extends UnitTest {
     private final MemberRepository memberRepository = mock(MemberRepository.class);
     private final RdbUserDetailsService sut = new RdbUserDetailsService(memberRepository);
 
-    private final Member member = MEMBER_A.toMember().apply(1L);
+    private final Member member = MEMBER_A.toDomain().apply(1L);
 
     @Test
     @DisplayName("로그인 아이디에 해당하는 Member가 없다면 예외가 발생한다")

@@ -14,6 +14,8 @@ import java.lang.annotation.Target;
 @Constraint(validatedBy = ValidAuctionStartDateValidator.class)
 public @interface ValidAuctionStartDate {
     String message() default "경매 시작 날짜는 현재 시간 이후여야 합니다.";
+
     Class<?>[] groups() default {};
+
     Class<? extends Payload>[] payload() default {};
 }

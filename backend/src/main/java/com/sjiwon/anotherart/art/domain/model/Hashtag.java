@@ -30,12 +30,8 @@ public class Hashtag {
     @JoinColumn(name = "art_id", referencedColumnName = "id", nullable = false)
     private Art art;
 
-    private Hashtag(final Art art, final String name) {
+    public Hashtag(final Art art, final String name) {
         this.art = art;
         this.name = name;
-    }
-
-    public static Hashtag applyHashtag(final Art art, final String name) {
-        return new Hashtag(art, name);
     }
 }

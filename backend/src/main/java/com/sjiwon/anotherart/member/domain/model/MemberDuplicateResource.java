@@ -1,11 +1,11 @@
 package com.sjiwon.anotherart.member.domain.model;
 
-import com.sjiwon.anotherart.member.exception.MemberException;
+import com.sjiwon.anotherart.global.exception.GlobalException;
 import lombok.RequiredArgsConstructor;
 
 import java.util.Arrays;
 
-import static com.sjiwon.anotherart.member.exception.MemberExceptionCode.INVALID_DUPLICATE_RESOURCE;
+import static com.sjiwon.anotherart.global.exception.GlobalExceptionCode.VALIDATION_ERROR;
 
 @RequiredArgsConstructor
 public enum MemberDuplicateResource {
@@ -19,8 +19,8 @@ public enum MemberDuplicateResource {
 
     public static MemberDuplicateResource from(final String value) {
         return Arrays.stream(values())
-                .filter(resource -> resource.value.equals(value))
+                .filter(it -> it.value.equals(value))
                 .findFirst()
-                .orElseThrow(() -> new MemberException(INVALID_DUPLICATE_RESOURCE));
+                .orElseThrow(() -> new GlobalException(VALIDATION_ERROR));
     }
 }

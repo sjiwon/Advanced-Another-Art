@@ -24,7 +24,7 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 @Import(RedisMailAuthenticationProcessor.class)
 @DisplayName("Auth -> RedisMailAuthenticationProcessor 테스트")
-public class RedisMailAuthenticationProcessorTest extends RedisTest {
+class RedisMailAuthenticationProcessorTest extends RedisTest {
     @Autowired
     private RedisMailAuthenticationProcessor sut;
 

@@ -1,21 +1,21 @@
 package com.sjiwon.anotherart.member.domain.repository.query;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import com.sjiwon.anotherart.art.domain.model.ArtType;
-import com.sjiwon.anotherart.art.domain.repository.query.dto.HashtagSummary;
-import com.sjiwon.anotherart.art.domain.repository.query.dto.QHashtagSummary;
+import com.sjiwon.anotherart.art.domain.model.Art;
+import com.sjiwon.anotherart.art.domain.repository.query.response.HashtagSummary;
+import com.sjiwon.anotherart.art.domain.repository.query.response.QHashtagSummary;
 import com.sjiwon.anotherart.global.annotation.AnotherArtReadOnlyTransactional;
 import com.sjiwon.anotherart.member.domain.model.QMember;
-import com.sjiwon.anotherart.member.domain.repository.query.dto.MemberInformation;
-import com.sjiwon.anotherart.member.domain.repository.query.dto.MemberPointRecord;
-import com.sjiwon.anotherart.member.domain.repository.query.dto.PurchaseArt;
-import com.sjiwon.anotherart.member.domain.repository.query.dto.QMemberInformation;
-import com.sjiwon.anotherart.member.domain.repository.query.dto.QMemberPointRecord;
-import com.sjiwon.anotherart.member.domain.repository.query.dto.QPurchaseArt;
-import com.sjiwon.anotherart.member.domain.repository.query.dto.QSoldArt;
-import com.sjiwon.anotherart.member.domain.repository.query.dto.QWinningAuctionArt;
-import com.sjiwon.anotherart.member.domain.repository.query.dto.SoldArt;
-import com.sjiwon.anotherart.member.domain.repository.query.dto.WinningAuctionArt;
+import com.sjiwon.anotherart.member.domain.repository.query.response.MemberInformation;
+import com.sjiwon.anotherart.member.domain.repository.query.response.MemberPointRecord;
+import com.sjiwon.anotherart.member.domain.repository.query.response.PurchaseArt;
+import com.sjiwon.anotherart.member.domain.repository.query.response.QMemberInformation;
+import com.sjiwon.anotherart.member.domain.repository.query.response.QMemberPointRecord;
+import com.sjiwon.anotherart.member.domain.repository.query.response.QPurchaseArt;
+import com.sjiwon.anotherart.member.domain.repository.query.response.QSoldArt;
+import com.sjiwon.anotherart.member.domain.repository.query.response.QWinningAuctionArt;
+import com.sjiwon.anotherart.member.domain.repository.query.response.SoldArt;
+import com.sjiwon.anotherart.member.domain.repository.query.response.WinningAuctionArt;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -33,6 +33,9 @@ import static com.sjiwon.anotherart.purchase.domain.model.QPurchase.purchase;
 @AnotherArtReadOnlyTransactional
 @RequiredArgsConstructor
 public class MemberInformationQueryRepositoryImpl implements MemberInformationQueryRepository {
+    private static final QMember owner = new QMember("owner");
+    private static final QMember buyer = new QMember("buyer");
+
     private final JPAQueryFactory query;
 
     @Override
@@ -63,7 +66,7 @@ public class MemberInformationQueryRepositoryImpl implements MemberInformationQu
                         pointRecord.createdAt
                 ))
                 .from(pointRecord)
-                .where(pointRecord.member.id.eq(memberId))
+                .where(pointRecord.memberId.eq(memberId))
                 .orderBy(pointRecord.id.desc())
                 .fetch();
     }
@@ -71,8 +74,6 @@ public class MemberInformationQueryRepositoryImpl implements MemberInformationQu
     @Override
     public List<WinningAuctionArt> fetchWinningAuctionArts(final long memberId) {
         final LocalDateTime now = LocalDateTime.now();
-        final QMember bidder = new QMember("member");
-        final QMember owner = new QMember("owner");
 
         final List<WinningAuctionArt> result = query
                 .select(new QWinningAuctionArt(
@@ -82,14 +83,13 @@ public class MemberInformationQueryRepositoryImpl implements MemberInformationQu
                         art.uploadImage,
                         owner.nickname,
                         owner.school,
-                        auction.highestBid.bidPrice
+                        auction.highestBidPrice
                 ))
                 .from(auction)
-                .innerJoin(auction.highestBid.bidder, bidder)
-                .innerJoin(auction.art, art)
-                .innerJoin(art.owner, owner)
+                .innerJoin(art).on(art.id.eq(auction.artId))
+                .innerJoin(member, owner).on(owner.id.eq(art.ownerId))
                 .where(
-                        bidder.id.eq(memberId),
+                        auction.highestBidderId.eq(memberId),
                         auction.period.endDate.lt(now)
                 )
                 .orderBy(auction.id.desc())
@@ -114,10 +114,7 @@ public class MemberInformationQueryRepositoryImpl implements MemberInformationQu
     }
 
     @Override
-    public List<SoldArt> fetchSoldArtsByType(final long memberId, final ArtType type) {
-        final QMember owner = new QMember("owner");
-        final QMember buyer = new QMember("buyer");
-
+    public List<SoldArt> fetchSoldArtsByType(final long memberId, final Art.Type type) {
         final List<SoldArt> result = query
                 .select(new QSoldArt(
                         art.id,
@@ -129,11 +126,10 @@ public class MemberInformationQueryRepositoryImpl implements MemberInformationQu
                         purchase.price
                 ))
                 .from(purchase)
-                .innerJoin(purchase.art, art)
-                .innerJoin(art.owner, owner)
-                .innerJoin(purchase.buyer, buyer)
+                .innerJoin(member, buyer).on(buyer.id.eq(purchase.buyerId))
+                .innerJoin(art).on(art.id.eq(purchase.artId))
                 .where(
-                        owner.id.eq(memberId),
+                        art.ownerId.eq(memberId),
                         art.type.eq(type)
                 )
                 .orderBy(purchase.id.desc())
@@ -158,10 +154,7 @@ public class MemberInformationQueryRepositoryImpl implements MemberInformationQu
     }
 
     @Override
-    public List<PurchaseArt> fetchPurchaseArtsByType(final long memberId, final ArtType type) {
-        final QMember owner = new QMember("owner");
-        final QMember buyer = new QMember("buyer");
-
+    public List<PurchaseArt> fetchPurchaseArtsByType(final long memberId, final Art.Type type) {
         final List<PurchaseArt> result = query
                 .select(new QPurchaseArt(
                         art.id,
@@ -173,11 +166,10 @@ public class MemberInformationQueryRepositoryImpl implements MemberInformationQu
                         purchase.price
                 ))
                 .from(purchase)
-                .innerJoin(purchase.art, art)
-                .innerJoin(art.owner, owner)
-                .innerJoin(purchase.buyer, buyer)
+                .innerJoin(art).on(art.id.eq(purchase.artId))
+                .innerJoin(member, owner).on(owner.id.eq(art.ownerId))
                 .where(
-                        buyer.id.eq(memberId),
+                        purchase.buyerId.eq(memberId),
                         art.type.eq(type)
                 )
                 .orderBy(purchase.id.desc())
@@ -191,7 +183,7 @@ public class MemberInformationQueryRepositoryImpl implements MemberInformationQu
 
             result.forEach(row -> {
                 final List<String> hashtags = hashtagSummaries.stream()
-                        .filter(hashtag -> hashtag.artId().equals(row.getArtId()))
+                        .filter(it -> it.artId().equals(row.getArtId()))
                         .map(HashtagSummary::name)
                         .toList();
                 row.applyHashtags(hashtags);

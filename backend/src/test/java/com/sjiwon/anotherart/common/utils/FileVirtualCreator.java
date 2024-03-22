@@ -9,7 +9,7 @@ import java.io.IOException;
 public class FileVirtualCreator {
     private static final String FILE_PATH = "src/test/resources/files/";
 
-    public static MultipartFile createSingleMockMultipartFile(final String fileName, final String contentType) {
+    public static MultipartFile createFile(final String fileName, final String contentType) {
         try (final FileInputStream stream = new FileInputStream(FILE_PATH + fileName)) {
             return new MockMultipartFile("file", fileName, contentType, stream);
         } catch (final IOException e) {

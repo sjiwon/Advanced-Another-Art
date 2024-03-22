@@ -18,7 +18,7 @@ class TokenProviderTest extends UnitTest {
 
     private final TokenProvider invalidProvider = new TokenProvider(SECRET_KEY, 0L, 0L);
     private final TokenProvider validProvider = new TokenProvider(SECRET_KEY, 7200L, 7200L);
-    private final Member member = MEMBER_A.toMember().apply(1L);
+    private final Member member = MEMBER_A.toDomain().apply(1L);
 
     @Test
     @DisplayName("AccessToken과 RefreshToken을 발급한다")

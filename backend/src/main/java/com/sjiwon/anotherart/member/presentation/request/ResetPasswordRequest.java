@@ -1,5 +1,6 @@
 package com.sjiwon.anotherart.member.presentation.request;
 
+import com.sjiwon.anotherart.member.application.usecase.command.ResetPasswordCommand;
 import jakarta.validation.constraints.NotBlank;
 
 public record ResetPasswordRequest(
@@ -15,4 +16,12 @@ public record ResetPasswordRequest(
         @NotBlank(message = "변경할 비밀번호는 필수입니다.")
         String password
 ) {
+    public ResetPasswordCommand toCommand() {
+        return new ResetPasswordCommand(
+                name,
+                email,
+                loginId,
+                password
+        );
+    }
 }

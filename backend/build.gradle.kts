@@ -104,6 +104,23 @@ tasks.withType<Test> {
     useJUnitPlatform()
 }
 
+// QueryDsl QClass
+val queryDslTypeDir: String = "src/main/generated"
+
+tasks.withType<JavaCompile>().configureEach {
+    options.generatedSourceOutputDirectory.set(file(queryDslTypeDir))
+}
+
+sourceSets {
+    getByName("main").java.srcDirs(queryDslTypeDir)
+}
+
+tasks.named("clean") {
+    doLast {
+        file(queryDslTypeDir).deleteRecursively()
+    }
+}
+
 // Copy Submodule
 tasks.register<Copy>("copySecret") {
     from("./another-art-secret")

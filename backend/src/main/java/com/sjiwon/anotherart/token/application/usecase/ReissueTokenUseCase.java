@@ -3,7 +3,7 @@ package com.sjiwon.anotherart.token.application.usecase;
 import com.sjiwon.anotherart.global.annotation.UseCase;
 import com.sjiwon.anotherart.global.security.exception.AuthException;
 import com.sjiwon.anotherart.member.domain.model.Member;
-import com.sjiwon.anotherart.member.domain.repository.MemberRepository;
+import com.sjiwon.anotherart.member.domain.service.MemberReader;
 import com.sjiwon.anotherart.token.domain.model.AuthToken;
 import com.sjiwon.anotherart.token.domain.service.TokenIssuer;
 import com.sjiwon.anotherart.token.domain.service.TokenProvider;
@@ -14,12 +14,12 @@ import static com.sjiwon.anotherart.global.security.exception.AuthErrorCode.INVA
 @UseCase
 @RequiredArgsConstructor
 public class ReissueTokenUseCase {
-    private final MemberRepository memberRepository;
+    private final MemberReader memberReader;
     private final TokenProvider tokenProvider;
     private final TokenIssuer tokenIssuer;
 
     public AuthToken invoke(final String refreshToken) {
-        final Member member = memberRepository.getById(tokenProvider.getId(refreshToken));
+        final Member member = memberReader.getById(tokenProvider.getId(refreshToken));
         validateMemberToken(member.getId(), refreshToken);
         return tokenIssuer.reissueAuthorityToken(member.getId(), member.getAuthority());
     }

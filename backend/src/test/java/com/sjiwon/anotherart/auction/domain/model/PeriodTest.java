@@ -2,6 +2,7 @@ package com.sjiwon.anotherart.auction.domain.model;
 
 import com.sjiwon.anotherart.auction.exception.AuctionException;
 import com.sjiwon.anotherart.auction.exception.AuctionExceptionCode;
+import com.sjiwon.anotherart.common.UnitTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -12,7 +13,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 @DisplayName("Auction -> 도메인 [Period VO] 테스트")
-class PeriodTest {
+class PeriodTest extends UnitTest {
     @Test
     @DisplayName("날짜가 입력되지 않으면 Period 생성에 실패한다")
     void throwExceptionByPeriodMustExists() {

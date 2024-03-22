@@ -2,6 +2,7 @@ package com.sjiwon.anotherart.member.application.usecase;
 
 import com.sjiwon.anotherart.auth.application.adapter.MailAuthenticationProcessor;
 import com.sjiwon.anotherart.auth.domain.AuthKey;
+import com.sjiwon.anotherart.common.UnitTest;
 import com.sjiwon.anotherart.common.mock.fake.FakeEncryptor;
 import com.sjiwon.anotherart.global.security.exception.AuthErrorCode;
 import com.sjiwon.anotherart.global.security.exception.AuthException;
@@ -11,10 +12,12 @@ import com.sjiwon.anotherart.member.application.usecase.command.AuthForResetPass
 import com.sjiwon.anotherart.member.application.usecase.command.ConfirmAuthCodeForResetPasswordCommand;
 import com.sjiwon.anotherart.member.application.usecase.command.ResetPasswordCommand;
 import com.sjiwon.anotherart.member.domain.model.Member;
-import com.sjiwon.anotherart.member.domain.repository.MemberRepository;
+import com.sjiwon.anotherart.member.domain.service.MemberReader;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+
+import java.util.Optional;
 
 import static com.sjiwon.anotherart.common.fixture.MemberFixture.MEMBER_A;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -28,23 +31,22 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @DisplayName("Member -> ResetPasswordUseCase 테스트")
-public class ResetPasswordUseCaseTest {
-    private final MemberRepository memberRepository = mock(MemberRepository.class);
+class ResetPasswordUseCaseTest extends UnitTest {
     private final MailAuthenticationProcessor mailAuthenticationProcessor = mock(MailAuthenticationProcessor.class);
     private final EmailSender emailSender = mock(EmailSender.class);
     private final Encryptor encryptor = new FakeEncryptor();
     private final ResetPasswordUseCase sut = new ResetPasswordUseCase(
-            memberRepository,
+            new MemberReader(memberRepository),
             mailAuthenticationProcessor,
             emailSender,
             encryptor
     );
 
-    private final Member member = MEMBER_A.toMember().apply(1L);
+    private final Member member = MEMBER_A.toDomain().apply(1L);
 
     @Nested
     @DisplayName("인증번호 발송")
-    class PprovideAuthCode {
+    class ProvideAuthCode {
         private final AuthForResetPasswordCommand command = new AuthForResetPasswordCommand(
                 member.getName(),
                 member.getEmail().getValue(),
@@ -55,7 +57,7 @@ public class ResetPasswordUseCaseTest {
         @DisplayName("이름 + 이메일 + 로그인 아이디에 해당하는 사용자에게 비밀번호 재설정 인증번호를 발송한다")
         void success() {
             // given
-            given(memberRepository.getByNameAndEmailAndLoginId(command.name(), command.email(), command.loginId())).willReturn(member);
+            given(memberRepository.findByNameAndEmailAndLoginId(command.name(), command.email(), command.loginId())).willReturn(Optional.of(member));
 
             final String key = AuthKey.PASSWORD_AUTH_KEY.generateAuthKey(member.getEmail().getValue());
             final String authCode = "Hello";
@@ -66,7 +68,7 @@ public class ResetPasswordUseCaseTest {
 
             // then
             assertAll(
-                    () -> verify(memberRepository, times(1)).getByNameAndEmailAndLoginId(command.name(), command.email(), command.loginId()),
+                    () -> verify(memberRepository, times(1)).findByNameAndEmailAndLoginId(command.name(), command.email(), command.loginId()),
                     () -> verify(mailAuthenticationProcessor, times(1)).storeAuthCode(key),
                     () -> verify(emailSender, times(1)).sendAuthCodeForPassword(member.getEmail().getValue(), authCode)
             );
@@ -88,7 +90,7 @@ public class ResetPasswordUseCaseTest {
         @DisplayName("인증번호가 일치하지 않으면 사용자 인증에 실패한다")
         void throwExceptionByInvalidAuthCode() {
             // given
-            given(memberRepository.getByNameAndEmailAndLoginId(command.name(), command.email(), command.loginId())).willReturn(member);
+            given(memberRepository.findByNameAndEmailAndLoginId(command.name(), command.email(), command.loginId())).willReturn(Optional.of(member));
 
             final String key = AuthKey.PASSWORD_AUTH_KEY.generateAuthKey(member.getEmail().getValue());
             doThrow(new AuthException(AuthErrorCode.INVALID_AUTH_CODE))
@@ -101,7 +103,7 @@ public class ResetPasswordUseCaseTest {
                     .hasMessage(AuthErrorCode.INVALID_AUTH_CODE.getMessage());
 
             assertAll(
-                    () -> verify(memberRepository, times(1)).getByNameAndEmailAndLoginId(command.name(), command.email(), command.loginId()),
+                    () -> verify(memberRepository, times(1)).findByNameAndEmailAndLoginId(command.name(), command.email(), command.loginId()),
                     () -> verify(mailAuthenticationProcessor, times(1)).verifyAuthCode(key, command.authCode()),
                     () -> verify(mailAuthenticationProcessor, times(0)).deleteAuthCode(key)
             );
@@ -111,7 +113,7 @@ public class ResetPasswordUseCaseTest {
         @DisplayName("인증번호 검증에 성공한다")
         void success() {
             // given
-            given(memberRepository.getByNameAndEmailAndLoginId(command.name(), command.email(), command.loginId())).willReturn(member);
+            given(memberRepository.findByNameAndEmailAndLoginId(command.name(), command.email(), command.loginId())).willReturn(Optional.of(member));
 
             final String key = AuthKey.PASSWORD_AUTH_KEY.generateAuthKey(member.getEmail().getValue());
             doNothing()
@@ -123,7 +125,7 @@ public class ResetPasswordUseCaseTest {
 
             // then
             assertAll(
-                    () -> verify(memberRepository, times(1)).getByNameAndEmailAndLoginId(command.name(), command.email(), command.loginId()),
+                    () -> verify(memberRepository, times(1)).findByNameAndEmailAndLoginId(command.name(), command.email(), command.loginId()),
                     () -> verify(mailAuthenticationProcessor, times(1)).verifyAuthCode(key, command.authCode()),
                     () -> verify(mailAuthenticationProcessor, times(1)).deleteAuthCode(key)
             );
@@ -145,14 +147,14 @@ public class ResetPasswordUseCaseTest {
         @DisplayName("비밀번호를 재설정한다")
         void success() {
             // given
-            given(memberRepository.getByNameAndEmailAndLoginId(command.name(), command.email(), command.loginId())).willReturn(member);
+            given(memberRepository.findByNameAndEmailAndLoginId(command.name(), command.email(), command.loginId())).willReturn(Optional.of(member));
 
             // when
             sut.resetPassword(command);
 
             // then
             assertAll(
-                    () -> verify(memberRepository, times(1)).getByNameAndEmailAndLoginId(command.name(), command.email(), command.loginId()),
+                    () -> verify(memberRepository, times(1)).findByNameAndEmailAndLoginId(command.name(), command.email(), command.loginId()),
                     () -> assertThat(encryptor.matches(NEW_PASSWORD, member.getPassword().getValue())).isTrue()
             );
         }

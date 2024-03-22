@@ -1,6 +1,11 @@
 package com.sjiwon.anotherart.art.presentation.request;
 
+import com.sjiwon.anotherart.art.application.usecase.command.RegisterArtCommand;
+import com.sjiwon.anotherart.art.domain.model.Art;
+import com.sjiwon.anotherart.art.domain.model.ArtName;
+import com.sjiwon.anotherart.art.domain.model.Description;
 import com.sjiwon.anotherart.art.utils.validator.ValidAuctionStartDate;
+import com.sjiwon.anotherart.file.utils.converter.FileConverter;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -35,4 +40,17 @@ public record RegisterArtRequest(
 
         MultipartFile file
 ) {
+    public RegisterArtCommand toCommand(final long memberId) {
+        return new RegisterArtCommand(
+                memberId,
+                ArtName.from(name),
+                Description.from(description),
+                Art.Type.from(type),
+                price,
+                auctionStartDate,
+                auctionEndDate,
+                hashtags,
+                FileConverter.convertImageFile(file)
+        );
+    }
 }

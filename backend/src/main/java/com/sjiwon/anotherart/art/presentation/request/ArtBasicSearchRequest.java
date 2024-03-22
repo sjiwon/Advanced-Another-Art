@@ -1,5 +1,7 @@
 package com.sjiwon.anotherart.art.presentation.request;
 
+import com.sjiwon.anotherart.art.application.usecase.query.GetActiveAuctionArts;
+import com.sjiwon.anotherart.art.domain.repository.query.spec.SortType;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -12,4 +14,10 @@ public record ArtBasicSearchRequest(
         @Min(message = "페이지는 1페이지부터 시작합니다.", value = 1)
         Integer page
 ) {
+    public GetActiveAuctionArts toQuery() {
+        return new GetActiveAuctionArts(
+                SortType.from(sortType),
+                page
+        );
+    }
 }

@@ -1,11 +1,11 @@
 package com.sjiwon.anotherart.member.domain.repository.query;
 
-import com.sjiwon.anotherart.art.domain.model.ArtType;
-import com.sjiwon.anotherart.member.domain.repository.query.dto.MemberInformation;
-import com.sjiwon.anotherart.member.domain.repository.query.dto.MemberPointRecord;
-import com.sjiwon.anotherart.member.domain.repository.query.dto.PurchaseArt;
-import com.sjiwon.anotherart.member.domain.repository.query.dto.SoldArt;
-import com.sjiwon.anotherart.member.domain.repository.query.dto.WinningAuctionArt;
+import com.sjiwon.anotherart.art.domain.model.Art;
+import com.sjiwon.anotherart.member.domain.repository.query.response.MemberInformation;
+import com.sjiwon.anotherart.member.domain.repository.query.response.MemberPointRecord;
+import com.sjiwon.anotherart.member.domain.repository.query.response.PurchaseArt;
+import com.sjiwon.anotherart.member.domain.repository.query.response.SoldArt;
+import com.sjiwon.anotherart.member.domain.repository.query.response.WinningAuctionArt;
 
 import java.util.List;
 
@@ -16,7 +16,7 @@ public interface MemberInformationQueryRepository {
 
     List<WinningAuctionArt> fetchWinningAuctionArts(final long memberId);
 
-    List<SoldArt> fetchSoldArtsByType(final long memberId, final ArtType type);
+    List<SoldArt> fetchSoldArtsByType(final long memberId, final Art.Type type);
 
-    List<PurchaseArt> fetchPurchaseArtsByType(final long memberId, final ArtType type);
+    List<PurchaseArt> fetchPurchaseArtsByType(final long memberId, final Art.Type type);
 }

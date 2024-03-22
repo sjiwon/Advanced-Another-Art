@@ -11,12 +11,11 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.List;
 import java.util.Optional;
 
 import static com.sjiwon.anotherart.common.fixture.ArtFixture.AUCTION_1;
 import static com.sjiwon.anotherart.common.fixture.ArtFixture.AUCTION_2;
-import static com.sjiwon.anotherart.common.fixture.AuctionFixture.AUCTION_OPEN_NOW;
+import static com.sjiwon.anotherart.common.fixture.AuctionFixture.경매_현재_진행;
 import static com.sjiwon.anotherart.common.fixture.MemberFixture.MEMBER_A;
 import static com.sjiwon.anotherart.common.fixture.MemberFixture.MEMBER_B;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -39,83 +38,54 @@ class AuctionRepositoryTest extends RepositoryTest {
 
     @BeforeEach
     void setUp() {
-        bidder = memberRepository.save(MEMBER_A.toMember());
+        bidder = memberRepository.save(MEMBER_A.toDomain());
         bidder.increaseTotalPoint(100_000_000);
 
-        final Member owner = memberRepository.save(MEMBER_B.toMember());
-        artA = artRepository.save(AUCTION_1.toArt(owner));
-        artB = artRepository.save(AUCTION_2.toArt(owner));
+        final Member owner = memberRepository.save(MEMBER_B.toDomain());
+        artA = artRepository.save(AUCTION_1.toDomain(owner));
+        artB = artRepository.save(AUCTION_2.toDomain(owner));
     }
 
     @Test
-    @DisplayName("작품 ID로 경매 정보를 조회한다")
-    void findByArtId() {
+    @DisplayName("작품 & 작품 ID로 경매 ID를 조회한다")
+    void findxxxByArtId() {
         // given
-        sut.save(AUCTION_OPEN_NOW.toAuction(artA));
+        final Auction auction1 = sut.save(경매_현재_진행.toDomain(artA));
+        final Auction auction2 = sut.save(경매_현재_진행.toDomain(artB));
 
         // when
-        final Optional<Auction> auction1 = sut.findByArtId(artA.getId());
-        final Optional<Auction> auction2 = sut.findByArtId(artB.getId());
+        final Long actual1 = sut.findIdByArtId(artA.getId());
+        final Optional<Auction> actual2 = sut.findByArtId(artA.getId());
+        final Long actual3 = sut.findIdByArtId(artB.getId());
+        final Optional<Auction> actual4 = sut.findByArtId(artB.getId());
 
         // then
         assertAll(
-                () -> assertThat(auction1).isPresent(),
-                () -> assertThat(auction2).isEmpty()
+                () -> assertThat(actual1).isEqualTo(auction1.getId()),
+                () -> assertThat(actual2.get()).isEqualTo(auction1),
+                () -> assertThat(actual3).isEqualTo(auction2.getId()),
+                () -> assertThat(actual4.get()).isEqualTo(auction2)
         );
     }
 
     @Test
-    @DisplayName("작품 ID를 통해서 최근 입찰자 ID를 조회하고 입찰 레코드가 존재하는지 확인한다")
-    void getBidderIdByArtId_and_isBidRecordExists() {
-        final Auction auctionA = sut.save(AUCTION_OPEN_NOW.toAuction(artA));
-        final Auction auctionB = sut.save(AUCTION_OPEN_NOW.toAuction(artB));
+    @DisplayName("최고 입찰자 ID를 조회한다")
+    void findHighestBidderIdByArtId() {
+        final Auction auctionA = sut.save(경매_현재_진행.toDomain(artA));
+        final Auction auctionB = sut.save(경매_현재_진행.toDomain(artB));
 
         /* auctionA 입찰 */
-        auctionA.applyNewBid(bidder, auctionA.getHighestBidPrice() + 50_000);
-
-        final Long bidderIdA1 = sut.getBidderIdByArtId(artA.getId());
-        final boolean existsA1 = sut.isBidRecordExists(artA.getId());
-        final Long bidderIdB1 = sut.getBidderIdByArtId(artB.getId());
-        final boolean existsB1 = sut.isBidRecordExists(artB.getId());
-
+        auctionA.updateHighestBid(bidder, auctionA.getHighestBidPrice() + 50_000);
         assertAll(
-                () -> assertThat(bidderIdA1).isEqualTo(bidder.getId()),
-                () -> assertThat(existsA1).isTrue(),
-                () -> assertThat(bidderIdB1).isNull(),
-                () -> assertThat(existsB1).isFalse()
+                () -> assertThat(sut.findHighestBidderIdByArtId(artA.getId())).isEqualTo(bidder.getId()),
+                () -> assertThat(sut.findHighestBidderIdByArtId(artB.getId())).isNull()
         );
 
         /* auctionB 입찰 */
-        auctionB.applyNewBid(bidder, auctionB.getHighestBidPrice() + 50_000);
-
-        final Long bidderIdA2 = sut.getBidderIdByArtId(artA.getId());
-        final boolean existsA2 = sut.isBidRecordExists(artA.getId());
-        final Long bidderIdB2 = sut.getBidderIdByArtId(artB.getId());
-        final boolean existsB2 = sut.isBidRecordExists(artB.getId());
-
+        auctionB.updateHighestBid(bidder, auctionB.getHighestBidPrice() + 50_000);
         assertAll(
-                () -> assertThat(bidderIdA2).isEqualTo(bidder.getId()),
-                () -> assertThat(existsA2).isTrue(),
-                () -> assertThat(bidderIdB2).isEqualTo(bidder.getId()),
-                () -> assertThat(existsB2).isTrue()
+                () -> assertThat(sut.findHighestBidderIdByArtId(artA.getId())).isEqualTo(bidder.getId()),
+                () -> assertThat(sut.findHighestBidderIdByArtId(artB.getId())).isEqualTo(bidder.getId())
         );
-    }
-
-    @Test
-    @DisplayName("작품 ID를 통해서 경매 정보를 삭제한다")
-    void deleteByArtId() {
-        sut.saveAll(List.of(
-                AUCTION_OPEN_NOW.toAuction(artA),
-                AUCTION_OPEN_NOW.toAuction(artB)
-        ));
-        assertThat(sut.findAll()).hasSize(2);
-
-        /* artA에 대한 Auction 제거 */
-        sut.deleteByArtId(artA.getId());
-        assertThat(sut.findAll()).hasSize(1);
-
-        /* artB에 대한 Auction 제거 */
-        sut.deleteByArtId(artB.getId());
-        assertThat(sut.findAll()).hasSize(0);
     }
 }

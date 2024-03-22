@@ -11,5 +11,5 @@ public interface HashtagRepository extends JpaRepository<Hashtag, Long> {
     @AnotherArtWritableTransactional
     @Modifying(flushAutomatically = true, clearAutomatically = true)
     @Query("DELETE FROM Hashtag h WHERE h.art.id = :artId")
-    void deleteByArtId(@Param("artId") Long artId);
+    void deleteArtHashtags(@Param("artId") Long artId);
 }

@@ -20,7 +20,7 @@ public class Password {
     /**
      * 영문 + 숫자 + 특수기호 + 8자 이상 25자 이하
      */
-    private static final Pattern PASSWORD_PATTERN = Pattern.compile("^(?=.*[a-zA-Z])(?=.*[!@#$%^&*+=-])(?=.*[0-9]).{8,25}$");
+    private static final Pattern pattern = Pattern.compile("^(?=.*[a-zA-Z])(?=.*[!@#$%^&*+=-])(?=.*[0-9]).{8,25}$");
 
     @Column(name = "password", nullable = false, length = 200)
     private String value;
@@ -47,7 +47,7 @@ public class Password {
     }
 
     private static boolean isInvalidPattern(final String password) {
-        return !PASSWORD_PATTERN.matcher(password).matches();
+        return !pattern.matcher(password).matches();
     }
 
     private void validatePasswordSameAsBefore(final String value, final Encryptor encryptor) {

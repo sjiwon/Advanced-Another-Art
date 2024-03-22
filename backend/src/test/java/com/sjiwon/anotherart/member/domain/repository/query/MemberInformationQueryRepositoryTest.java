@@ -1,21 +1,18 @@
 package com.sjiwon.anotherart.member.domain.repository.query;
 
 import com.sjiwon.anotherart.art.domain.model.Art;
-import com.sjiwon.anotherart.art.domain.model.ArtType;
 import com.sjiwon.anotherart.art.domain.repository.ArtRepository;
 import com.sjiwon.anotherart.auction.domain.model.Auction;
 import com.sjiwon.anotherart.auction.domain.repository.AuctionRepository;
 import com.sjiwon.anotherart.common.RepositoryTest;
-import com.sjiwon.anotherart.common.fixture.MemberFixture;
 import com.sjiwon.anotherart.member.domain.model.Member;
 import com.sjiwon.anotherart.member.domain.repository.MemberRepository;
-import com.sjiwon.anotherart.member.domain.repository.query.dto.MemberInformation;
-import com.sjiwon.anotherart.member.domain.repository.query.dto.MemberPointRecord;
-import com.sjiwon.anotherart.member.domain.repository.query.dto.PurchaseArt;
-import com.sjiwon.anotherart.member.domain.repository.query.dto.SoldArt;
-import com.sjiwon.anotherart.member.domain.repository.query.dto.WinningAuctionArt;
+import com.sjiwon.anotherart.member.domain.repository.query.response.MemberInformation;
+import com.sjiwon.anotherart.member.domain.repository.query.response.MemberPointRecord;
+import com.sjiwon.anotherart.member.domain.repository.query.response.PurchaseArt;
+import com.sjiwon.anotherart.member.domain.repository.query.response.SoldArt;
+import com.sjiwon.anotherart.member.domain.repository.query.response.WinningAuctionArt;
 import com.sjiwon.anotherart.point.domain.model.PointRecord;
-import com.sjiwon.anotherart.point.domain.model.PointType;
 import com.sjiwon.anotherart.point.domain.repository.PointRecordRepository;
 import com.sjiwon.anotherart.purchase.domain.model.Purchase;
 import com.sjiwon.anotherart.purchase.domain.repository.PurchaseRepository;
@@ -36,7 +33,7 @@ import static com.sjiwon.anotherart.common.fixture.ArtFixture.AUCTION_2;
 import static com.sjiwon.anotherart.common.fixture.ArtFixture.AUCTION_3;
 import static com.sjiwon.anotherart.common.fixture.ArtFixture.GENERAL_1;
 import static com.sjiwon.anotherart.common.fixture.ArtFixture.GENERAL_2;
-import static com.sjiwon.anotherart.common.fixture.AuctionFixture.AUCTION_OPEN_NOW;
+import static com.sjiwon.anotherart.common.fixture.AuctionFixture.경매_현재_진행;
 import static com.sjiwon.anotherart.common.fixture.MemberFixture.MEMBER_A;
 import static com.sjiwon.anotherart.common.fixture.MemberFixture.MEMBER_B;
 import static com.sjiwon.anotherart.common.fixture.MemberFixture.MEMBER_C;
@@ -76,7 +73,7 @@ class MemberInformationQueryRepositoryTest extends RepositoryTest {
         @DisplayName("사용자 기본 정보를 조회한다")
         void success() {
             // given
-            final Member member = createMember(MEMBER_A);
+            final Member member = memberRepository.save(MEMBER_A.toDomain(MEMBER_INIT_POINT));
             member.decreaseAvailablePoint(40_000);
 
             // when
@@ -108,18 +105,18 @@ class MemberInformationQueryRepositoryTest extends RepositoryTest {
         @DisplayName("포인트 활용 내역을 조회한다")
         void success() {
             // given
-            final Member member = memberRepository.save(MEMBER_A.toMember());
-            applyPointRecord(member, PointType.CHARGE, INCREASE_AMOUNT);
-            applyPointRecord(member, PointType.CHARGE, INCREASE_AMOUNT);
-            applyPointRecord(member, PointType.REFUND, DECREASE_AMOUNT);
-            applyPointRecord(member, PointType.CHARGE, INCREASE_AMOUNT);
-            applyPointRecord(member, PointType.PURCHASE, DECREASE_AMOUNT);
-            applyPointRecord(member, PointType.PURCHASE, DECREASE_AMOUNT);
-            applyPointRecord(member, PointType.CHARGE, INCREASE_AMOUNT);
-            applyPointRecord(member, PointType.CHARGE, INCREASE_AMOUNT);
-            applyPointRecord(member, PointType.PURCHASE, DECREASE_AMOUNT);
-            applyPointRecord(member, PointType.SOLD, INCREASE_AMOUNT);
-            applyPointRecord(member, PointType.SOLD, INCREASE_AMOUNT);
+            final Member member = memberRepository.save(MEMBER_A.toDomain());
+            applyPointRecord(member, PointRecord.Type.CHARGE, INCREASE_AMOUNT);
+            applyPointRecord(member, PointRecord.Type.CHARGE, INCREASE_AMOUNT);
+            applyPointRecord(member, PointRecord.Type.REFUND, DECREASE_AMOUNT);
+            applyPointRecord(member, PointRecord.Type.CHARGE, INCREASE_AMOUNT);
+            applyPointRecord(member, PointRecord.Type.PURCHASE, DECREASE_AMOUNT);
+            applyPointRecord(member, PointRecord.Type.PURCHASE, DECREASE_AMOUNT);
+            applyPointRecord(member, PointRecord.Type.CHARGE, INCREASE_AMOUNT);
+            applyPointRecord(member, PointRecord.Type.CHARGE, INCREASE_AMOUNT);
+            applyPointRecord(member, PointRecord.Type.PURCHASE, DECREASE_AMOUNT);
+            applyPointRecord(member, PointRecord.Type.SOLD, INCREASE_AMOUNT);
+            applyPointRecord(member, PointRecord.Type.SOLD, INCREASE_AMOUNT);
 
             // when
             final List<MemberPointRecord> result = sut.fetchPointRecords(member.getId());
@@ -130,17 +127,17 @@ class MemberInformationQueryRepositoryTest extends RepositoryTest {
                     () -> assertThat(result)
                             .map(MemberPointRecord::getPointType)
                             .containsExactly(
-                                    PointType.SOLD.getDescription(),
-                                    PointType.SOLD.getDescription(),
-                                    PointType.PURCHASE.getDescription(),
-                                    PointType.CHARGE.getDescription(),
-                                    PointType.CHARGE.getDescription(),
-                                    PointType.PURCHASE.getDescription(),
-                                    PointType.PURCHASE.getDescription(),
-                                    PointType.CHARGE.getDescription(),
-                                    PointType.REFUND.getDescription(),
-                                    PointType.CHARGE.getDescription(),
-                                    PointType.CHARGE.getDescription()
+                                    PointRecord.Type.SOLD.getDescription(),
+                                    PointRecord.Type.SOLD.getDescription(),
+                                    PointRecord.Type.PURCHASE.getDescription(),
+                                    PointRecord.Type.CHARGE.getDescription(),
+                                    PointRecord.Type.CHARGE.getDescription(),
+                                    PointRecord.Type.PURCHASE.getDescription(),
+                                    PointRecord.Type.PURCHASE.getDescription(),
+                                    PointRecord.Type.CHARGE.getDescription(),
+                                    PointRecord.Type.REFUND.getDescription(),
+                                    PointRecord.Type.CHARGE.getDescription(),
+                                    PointRecord.Type.CHARGE.getDescription()
                             ),
                     () -> assertThat(result)
                             .map(MemberPointRecord::getAmount)
@@ -165,16 +162,25 @@ class MemberInformationQueryRepositoryTest extends RepositoryTest {
             );
         }
 
-        private void applyPointRecord(final Member member, final PointType type, final int amount) {
+        private void applyPointRecord(final Member member, final PointRecord.Type type, final int amount) {
             switch (type) {
-                case CHARGE, SOLD -> {
+                case CHARGE -> {
                     member.increaseTotalPoint(amount);
-                    pointRecordRepository.save(PointRecord.addPointRecord(member, type, amount));
+                    pointRecordRepository.save(PointRecord.addChargeRecord(member, amount));
                 }
-                default -> {
+                case SOLD -> {
+                    member.increaseTotalPoint(amount);
+                    pointRecordRepository.save(PointRecord.addArtSoldRecord(member, amount));
+                }
+                case REFUND -> {
                     member.decreaseTotalPoint(amount);
-                    pointRecordRepository.save(PointRecord.addPointRecord(member, type, amount));
+                    pointRecordRepository.save(PointRecord.addRefundRecord(member, amount));
                 }
+                case PURCHASE -> {
+                    member.decreaseTotalPoint(amount);
+                    pointRecordRepository.save(PointRecord.addArtPurchaseRecord(member, amount));
+                }
+                default -> throw new RuntimeException();
             }
         }
     }
@@ -189,19 +195,19 @@ class MemberInformationQueryRepositoryTest extends RepositoryTest {
 
         @BeforeEach
         void setUp() {
-            bidder = createMember(MEMBER_A);
+            bidder = memberRepository.save(MEMBER_A.toDomain(MEMBER_INIT_POINT));
 
-            final Member owner = createMember(MEMBER_B);
-            artA = artRepository.save(AUCTION_1.toArt(owner));
-            artB = artRepository.save(AUCTION_2.toArt(owner));
-            artC = artRepository.save(AUCTION_3.toArt(owner));
+            final Member owner = memberRepository.save(MEMBER_B.toDomain(MEMBER_INIT_POINT));
+            artA = artRepository.save(AUCTION_1.toDomain(owner));
+            artB = artRepository.save(AUCTION_2.toDomain(owner));
+            artC = artRepository.save(AUCTION_3.toDomain(owner));
 
-            final Auction auctionA = auctionRepository.save(AUCTION_OPEN_NOW.toAuction(artA));
-            final Auction auctionB = auctionRepository.save(AUCTION_OPEN_NOW.toAuction(artB));
-            final Auction auctionC = auctionRepository.save(AUCTION_OPEN_NOW.toAuction(artC));
-            auctionA.applyNewBid(bidder, artA.getPrice());
-            auctionB.applyNewBid(bidder, artB.getPrice());
-            auctionC.applyNewBid(bidder, artC.getPrice());
+            final Auction auctionA = auctionRepository.save(경매_현재_진행.toDomain(artA));
+            final Auction auctionB = auctionRepository.save(경매_현재_진행.toDomain(artB));
+            final Auction auctionC = auctionRepository.save(경매_현재_진행.toDomain(artC));
+            auctionA.updateHighestBid(bidder, artA.getPrice());
+            auctionB.updateHighestBid(bidder, artB.getPrice());
+            auctionC.updateHighestBid(bidder, artC.getPrice());
         }
 
         @Test
@@ -229,7 +235,7 @@ class MemberInformationQueryRepositoryTest extends RepositoryTest {
         private void closeAuction(final Art art) {
             em.createQuery("UPDATE Auction ac" +
                             " SET ac.period.startDate = :startDate, ac.period.endDate = :endDate" +
-                            " WHERE ac.art.id = :artId")
+                            " WHERE ac.artId = :artId")
                     .setParameter("startDate", LocalDateTime.now().minusDays(5))
                     .setParameter("endDate", LocalDateTime.now().minusDays(1))
                     .setParameter("artId", art.getId())
@@ -268,21 +274,21 @@ class MemberInformationQueryRepositoryTest extends RepositoryTest {
 
         @BeforeEach
         void setUp() {
-            member = createMember(MEMBER_A);
-            buyerA = createMember(MEMBER_B);
-            buyerB = createMember(MEMBER_C);
+            member = memberRepository.save(MEMBER_A.toDomain(MEMBER_INIT_POINT));
+            buyerA = memberRepository.save(MEMBER_B.toDomain(MEMBER_INIT_POINT));
+            buyerB = memberRepository.save(MEMBER_C.toDomain(MEMBER_INIT_POINT));
 
-            generalArtA = artRepository.save(GENERAL_1.toArt(member));
-            generalArtB = artRepository.save(GENERAL_2.toArt(member));
-            auctionArtA = artRepository.save(AUCTION_1.toArt(member));
-            auctionArtB = artRepository.save(AUCTION_2.toArt(member));
+            generalArtA = artRepository.save(GENERAL_1.toDomain(member));
+            generalArtB = artRepository.save(GENERAL_2.toDomain(member));
+            auctionArtA = artRepository.save(AUCTION_1.toDomain(member));
+            auctionArtB = artRepository.save(AUCTION_2.toDomain(member));
         }
 
         @Test
         @DisplayName("판매한 작품을 조회한다")
         void success() {
-            final List<SoldArt> soldGeneralArts1 = sut.fetchSoldArtsByType(member.getId(), ArtType.GENERAL);
-            final List<SoldArt> soldAuctionArts1 = sut.fetchSoldArtsByType(member.getId(), ArtType.AUCTION);
+            final List<SoldArt> soldGeneralArts1 = sut.fetchSoldArtsByType(member.getId(), Art.Type.GENERAL);
+            final List<SoldArt> soldAuctionArts1 = sut.fetchSoldArtsByType(member.getId(), Art.Type.AUCTION);
             assertThatSoldArtsMatch(
                     soldGeneralArts1,
                     List.of(),
@@ -295,8 +301,8 @@ class MemberInformationQueryRepositoryTest extends RepositoryTest {
             /* generalArtA 판매 */
             sold(generalArtA, buyerA);
 
-            final List<SoldArt> soldGeneralArts2 = sut.fetchSoldArtsByType(member.getId(), ArtType.GENERAL);
-            final List<SoldArt> soldAuctionArts2 = sut.fetchSoldArtsByType(member.getId(), ArtType.AUCTION);
+            final List<SoldArt> soldGeneralArts2 = sut.fetchSoldArtsByType(member.getId(), Art.Type.GENERAL);
+            final List<SoldArt> soldAuctionArts2 = sut.fetchSoldArtsByType(member.getId(), Art.Type.AUCTION);
             assertThatSoldArtsMatch(
                     soldGeneralArts2,
                     List.of(generalArtA),
@@ -309,8 +315,8 @@ class MemberInformationQueryRepositoryTest extends RepositoryTest {
             /* auctionArtB 판매 */
             sold(auctionArtB, buyerB);
 
-            final List<SoldArt> soldGeneralArts3 = sut.fetchSoldArtsByType(member.getId(), ArtType.GENERAL);
-            final List<SoldArt> soldAuctionArts3 = sut.fetchSoldArtsByType(member.getId(), ArtType.AUCTION);
+            final List<SoldArt> soldGeneralArts3 = sut.fetchSoldArtsByType(member.getId(), Art.Type.GENERAL);
+            final List<SoldArt> soldAuctionArts3 = sut.fetchSoldArtsByType(member.getId(), Art.Type.AUCTION);
             assertThatSoldArtsMatch(
                     soldGeneralArts3,
                     List.of(generalArtA),
@@ -323,8 +329,8 @@ class MemberInformationQueryRepositoryTest extends RepositoryTest {
             /* auctionArtA 판매 */
             sold(auctionArtA, buyerA);
 
-            final List<SoldArt> soldGeneralArts4 = sut.fetchSoldArtsByType(member.getId(), ArtType.GENERAL);
-            final List<SoldArt> soldAuctionArts4 = sut.fetchSoldArtsByType(member.getId(), ArtType.AUCTION);
+            final List<SoldArt> soldGeneralArts4 = sut.fetchSoldArtsByType(member.getId(), Art.Type.GENERAL);
+            final List<SoldArt> soldAuctionArts4 = sut.fetchSoldArtsByType(member.getId(), Art.Type.AUCTION);
             assertThatSoldArtsMatch(
                     soldGeneralArts4,
                     List.of(generalArtA),
@@ -337,8 +343,8 @@ class MemberInformationQueryRepositoryTest extends RepositoryTest {
             /* generalArtB 판매 */
             sold(generalArtB, buyerB);
 
-            final List<SoldArt> soldGeneralArts5 = sut.fetchSoldArtsByType(member.getId(), ArtType.GENERAL);
-            final List<SoldArt> soldAuctionArts5 = sut.fetchSoldArtsByType(member.getId(), ArtType.AUCTION);
+            final List<SoldArt> soldGeneralArts5 = sut.fetchSoldArtsByType(member.getId(), Art.Type.GENERAL);
+            final List<SoldArt> soldAuctionArts5 = sut.fetchSoldArtsByType(member.getId(), Art.Type.AUCTION);
             assertThatSoldArtsMatch(
                     soldGeneralArts5,
                     List.of(generalArtB, generalArtA),
@@ -407,21 +413,19 @@ class MemberInformationQueryRepositoryTest extends RepositoryTest {
 
         @BeforeEach
         void setUp() {
-            member = memberRepository.save(MEMBER_A.toMember());
-            member.increaseTotalPoint(MEMBER_INIT_POINT);
-
-            final Member owner = memberRepository.save(MEMBER_B.toMember());
-            generalArtA = artRepository.save(GENERAL_1.toArt(owner));
-            generalArtB = artRepository.save(GENERAL_2.toArt(owner));
-            auctionArtA = artRepository.save(AUCTION_1.toArt(owner));
-            auctionArtB = artRepository.save(AUCTION_2.toArt(owner));
+            member = memberRepository.save(MEMBER_A.toDomain(MEMBER_INIT_POINT));
+            final Member owner = memberRepository.save(MEMBER_B.toDomain());
+            generalArtA = artRepository.save(GENERAL_1.toDomain(owner));
+            generalArtB = artRepository.save(GENERAL_2.toDomain(owner));
+            auctionArtA = artRepository.save(AUCTION_1.toDomain(owner));
+            auctionArtB = artRepository.save(AUCTION_2.toDomain(owner));
         }
 
         @Test
         @DisplayName("구매한 작품을 조회한다")
         void success() {
-            final List<PurchaseArt> purchaseGeneralArts1 = sut.fetchPurchaseArtsByType(member.getId(), ArtType.GENERAL);
-            final List<PurchaseArt> purchaseAuctionArts1 = sut.fetchPurchaseArtsByType(member.getId(), ArtType.AUCTION);
+            final List<PurchaseArt> purchaseGeneralArts1 = sut.fetchPurchaseArtsByType(member.getId(), Art.Type.GENERAL);
+            final List<PurchaseArt> purchaseAuctionArts1 = sut.fetchPurchaseArtsByType(member.getId(), Art.Type.AUCTION);
             assertThatPurchaseArtsMatch(
                     purchaseGeneralArts1,
                     List.of(),
@@ -432,8 +436,8 @@ class MemberInformationQueryRepositoryTest extends RepositoryTest {
             /* generalArtA 구매 */
             purchase(generalArtA);
 
-            final List<PurchaseArt> purchaseGeneralArts2 = sut.fetchPurchaseArtsByType(member.getId(), ArtType.GENERAL);
-            final List<PurchaseArt> purchaseAuctionArts2 = sut.fetchPurchaseArtsByType(member.getId(), ArtType.AUCTION);
+            final List<PurchaseArt> purchaseGeneralArts2 = sut.fetchPurchaseArtsByType(member.getId(), Art.Type.GENERAL);
+            final List<PurchaseArt> purchaseAuctionArts2 = sut.fetchPurchaseArtsByType(member.getId(), Art.Type.AUCTION);
             assertThatPurchaseArtsMatch(
                     purchaseGeneralArts2,
                     List.of(generalArtA),
@@ -444,8 +448,8 @@ class MemberInformationQueryRepositoryTest extends RepositoryTest {
             /* auctionArtB 구매 */
             purchase(auctionArtB);
 
-            final List<PurchaseArt> purchaseGeneralArts3 = sut.fetchPurchaseArtsByType(member.getId(), ArtType.GENERAL);
-            final List<PurchaseArt> purchaseAuctionArts3 = sut.fetchPurchaseArtsByType(member.getId(), ArtType.AUCTION);
+            final List<PurchaseArt> purchaseGeneralArts3 = sut.fetchPurchaseArtsByType(member.getId(), Art.Type.GENERAL);
+            final List<PurchaseArt> purchaseAuctionArts3 = sut.fetchPurchaseArtsByType(member.getId(), Art.Type.AUCTION);
             assertThatPurchaseArtsMatch(
                     purchaseGeneralArts3,
                     List.of(generalArtA),
@@ -456,8 +460,8 @@ class MemberInformationQueryRepositoryTest extends RepositoryTest {
             /* auctionArtA 구매 */
             purchase(auctionArtA);
 
-            final List<PurchaseArt> purchaseGeneralArts4 = sut.fetchPurchaseArtsByType(member.getId(), ArtType.GENERAL);
-            final List<PurchaseArt> purchaseAuctionArts4 = sut.fetchPurchaseArtsByType(member.getId(), ArtType.AUCTION);
+            final List<PurchaseArt> purchaseGeneralArts4 = sut.fetchPurchaseArtsByType(member.getId(), Art.Type.GENERAL);
+            final List<PurchaseArt> purchaseAuctionArts4 = sut.fetchPurchaseArtsByType(member.getId(), Art.Type.AUCTION);
             assertThatPurchaseArtsMatch(
                     purchaseGeneralArts4,
                     List.of(generalArtA),
@@ -468,8 +472,8 @@ class MemberInformationQueryRepositoryTest extends RepositoryTest {
             /* generalArtB 구매 */
             purchase(generalArtB);
 
-            final List<PurchaseArt> purchaseGeneralArts5 = sut.fetchPurchaseArtsByType(member.getId(), ArtType.GENERAL);
-            final List<PurchaseArt> purchaseAuctionArts5 = sut.fetchPurchaseArtsByType(member.getId(), ArtType.AUCTION);
+            final List<PurchaseArt> purchaseGeneralArts5 = sut.fetchPurchaseArtsByType(member.getId(), Art.Type.GENERAL);
+            final List<PurchaseArt> purchaseAuctionArts5 = sut.fetchPurchaseArtsByType(member.getId(), Art.Type.AUCTION);
             assertThatPurchaseArtsMatch(
                     purchaseGeneralArts5,
                     List.of(generalArtB, generalArtA),
@@ -517,11 +521,5 @@ class MemberInformationQueryRepositoryTest extends RepositoryTest {
                 );
             }
         }
-    }
-
-    private Member createMember(final MemberFixture fixture) {
-        final Member member = fixture.toMember();
-        member.increaseTotalPoint(MEMBER_INIT_POINT);
-        return memberRepository.save(member);
     }
 }

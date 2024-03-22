@@ -2,7 +2,6 @@ package com.sjiwon.anotherart.common.fixture;
 
 import com.sjiwon.anotherart.art.domain.model.Art;
 import com.sjiwon.anotherart.art.domain.model.ArtName;
-import com.sjiwon.anotherart.art.domain.model.ArtType;
 import com.sjiwon.anotherart.art.domain.model.Description;
 import com.sjiwon.anotherart.art.domain.model.UploadImage;
 import com.sjiwon.anotherart.member.domain.model.Member;
@@ -12,8 +11,8 @@ import lombok.RequiredArgsConstructor;
 import java.util.HashSet;
 import java.util.Set;
 
-import static com.sjiwon.anotherart.art.domain.model.ArtType.AUCTION;
-import static com.sjiwon.anotherart.art.domain.model.ArtType.GENERAL;
+import static com.sjiwon.anotherart.art.domain.model.Art.Type.AUCTION;
+import static com.sjiwon.anotherart.art.domain.model.Art.Type.GENERAL;
 
 @Getter
 @RequiredArgsConstructor
@@ -223,12 +222,12 @@ public enum ArtFixture {
 
     private final ArtName name;
     private final Description description;
-    private final ArtType type;
+    private final Art.Type type;
     private final int price;
     private final UploadImage uploadImage;
     private final Set<String> hashtags;
 
-    public Art toArt(final Member owner) {
+    public Art toDomain(final Member owner) {
         return Art.createArt(
                 owner,
                 name,
@@ -240,7 +239,7 @@ public enum ArtFixture {
         );
     }
 
-    public Art toArt(final Member owner, final int price) {
+    public Art toDomain(final Member owner, final int price) {
         return Art.createArt(
                 owner,
                 name,
@@ -252,7 +251,7 @@ public enum ArtFixture {
         );
     }
 
-    public Art toArt(final Member owner, final String keyword, final Set<String> hashtags) {
+    public Art toDomain(final Member owner, final String keyword, final Set<String> hashtags) {
         return Art.createArt(
                 owner,
                 ArtName.from(keyword),
