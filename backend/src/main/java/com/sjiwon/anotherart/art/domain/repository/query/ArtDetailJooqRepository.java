@@ -230,9 +230,9 @@ public class ArtDetailJooqRepository implements ArtDetailQueryRepository {
                         OWNER.ID,
                         OWNER.NICKNAME,
                         OWNER.SCHOOL,
-                        HIGHEST_BIDDER.ID,
-                        HIGHEST_BIDDER.NICKNAME,
-                        HIGHEST_BIDDER.SCHOOL
+                        BUYER.ID,
+                        BUYER.NICKNAME,
+                        BUYER.SCHOOL
                 )
                 .from(ART)
                 .innerJoin(OWNER).on(OWNER.ID.eq(ART.OWNER_ID))
@@ -336,9 +336,9 @@ public class ArtDetailJooqRepository implements ArtDetailQueryRepository {
                 OWNER.ID,
                 OWNER.NICKNAME,
                 OWNER.SCHOOL,
-                HIGHEST_BIDDER.ID,
-                HIGHEST_BIDDER.NICKNAME,
-                HIGHEST_BIDDER.SCHOOL
+                BUYER.ID,
+                BUYER.NICKNAME,
+                BUYER.SCHOOL
         );
     }
 

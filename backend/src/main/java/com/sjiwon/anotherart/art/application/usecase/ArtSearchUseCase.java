@@ -6,7 +6,6 @@ import com.sjiwon.anotherart.art.application.usecase.query.GetArtsByKeyword;
 import com.sjiwon.anotherart.art.application.usecase.query.response.AuctionArtResponse;
 import com.sjiwon.anotherart.art.application.usecase.query.response.GeneralArtResponse;
 import com.sjiwon.anotherart.art.domain.repository.query.ArtDetailQueryRepository;
-import com.sjiwon.anotherart.art.domain.repository.query.response.ArtDetails;
 import com.sjiwon.anotherart.art.domain.repository.query.response.AuctionArt;
 import com.sjiwon.anotherart.art.domain.repository.query.response.GeneralArt;
 import com.sjiwon.anotherart.art.domain.repository.query.spec.ActiveAuctionArtsSearchCondition;
@@ -34,7 +33,7 @@ public class ArtSearchUseCase {
                         .stream()
                         .map(AuctionArtResponse::from)
                         .toList(),
-                createPagination(result, pageable.getPageNumber() + 1)
+                Pagination.of(result.getTotalElements(), result.getTotalPages(), pageable.getPageNumber() + 1)
         );
     }
 
@@ -47,7 +46,7 @@ public class ArtSearchUseCase {
                         .stream()
                         .map(AuctionArtResponse::from)
                         .toList(),
-                createPagination(result, pageable.getPageNumber() + 1)
+                Pagination.of(result.getTotalElements(), result.getTotalPages(), pageable.getPageNumber() + 1)
         );
     }
 
@@ -60,7 +59,7 @@ public class ArtSearchUseCase {
                         .stream()
                         .map(GeneralArtResponse::from)
                         .toList(),
-                createPagination(result, pageable.getPageNumber() + 1)
+                Pagination.of(result.getTotalElements(), result.getTotalPages(), pageable.getPageNumber() + 1)
         );
     }
 
@@ -73,7 +72,7 @@ public class ArtSearchUseCase {
                         .stream()
                         .map(AuctionArtResponse::from)
                         .toList(),
-                createPagination(result, pageable.getPageNumber() + 1)
+                Pagination.of(result.getTotalElements(), result.getTotalPages(), pageable.getPageNumber() + 1)
         );
     }
 
@@ -86,11 +85,7 @@ public class ArtSearchUseCase {
                         .stream()
                         .map(GeneralArtResponse::from)
                         .toList(),
-                createPagination(result, pageable.getPageNumber() + 1)
+                Pagination.of(result.getTotalElements(), result.getTotalPages(), pageable.getPageNumber() + 1)
         );
-    }
-
-    private Pagination createPagination(final Page<? extends ArtDetails> result, final int currentPage) {
-        return Pagination.of(result.getTotalElements(), result.getTotalPages(), currentPage);
     }
 }

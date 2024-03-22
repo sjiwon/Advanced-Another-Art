@@ -8,7 +8,7 @@ import java.util.List;
 
 @Getter
 @AllArgsConstructor
-public class GeneralArt implements ArtDetails {
+public class GeneralArt {
     // Art
     private final Long artId;
     private final String artName;

@@ -2,9 +2,9 @@ package com.sjiwon.anotherart.art.presentation;
 
 import com.sjiwon.anotherart.art.application.usecase.ArtQueryUseCase;
 import com.sjiwon.anotherart.art.application.usecase.ArtSearchUseCase;
+import com.sjiwon.anotherart.art.application.usecase.query.response.ArtResponse;
 import com.sjiwon.anotherart.art.application.usecase.query.response.AuctionArtResponse;
 import com.sjiwon.anotherart.art.application.usecase.query.response.GeneralArtResponse;
-import com.sjiwon.anotherart.art.domain.repository.query.response.ArtDetails;
 import com.sjiwon.anotherart.art.presentation.request.ArtBasicSearchRequest;
 import com.sjiwon.anotherart.art.presentation.request.ArtHashtagSearchRequest;
 import com.sjiwon.anotherart.art.presentation.request.ArtKeywordSearchRequest;
@@ -32,8 +32,8 @@ public class SearchArtApi {
 
     @Operation(summary = "작품 단건 조회 Endpoint")
     @GetMapping("/{artId}")
-    public ResponseEntity<ArtDetails> getArt(@PathVariable final Long artId) {
-        final ArtDetails response = artQueryUseCase.getArtById(artId);
+    public ResponseEntity<ArtResponse> getArt(@PathVariable final Long artId) {
+        final ArtResponse response = artQueryUseCase.getArtById(artId);
         return ResponseEntity.ok(response);
     }
 

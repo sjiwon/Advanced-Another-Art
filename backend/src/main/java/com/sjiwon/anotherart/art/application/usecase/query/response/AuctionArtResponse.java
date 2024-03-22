@@ -7,7 +7,7 @@ public record AuctionArtResponse(
         ArtSummary art,
         UserSummary owner,
         UserSummary highestBidder
-) {
+) implements ArtResponse {
     public static AuctionArtResponse from(final AuctionArt result) {
         return new AuctionArtResponse(
                 new AuctionSummary(

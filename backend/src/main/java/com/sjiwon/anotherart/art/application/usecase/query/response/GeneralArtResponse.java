@@ -6,7 +6,7 @@ public record GeneralArtResponse(
         ArtSummary art,
         UserSummary owner,
         UserSummary buyer
-) {
+) implements ArtResponse {
     public static GeneralArtResponse from(final GeneralArt result) {
         return new GeneralArtResponse(
                 new ArtSummary(

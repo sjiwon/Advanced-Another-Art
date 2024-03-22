@@ -7,9 +7,9 @@ import com.sjiwon.anotherart.art.domain.repository.query.response.GeneralArt;
 import com.sjiwon.anotherart.art.domain.repository.query.spec.ActiveAuctionArtsSearchCondition;
 import com.sjiwon.anotherart.art.domain.repository.query.spec.ArtDetailsSearchCondition;
 import com.sjiwon.anotherart.auction.domain.model.Auction;
+import com.sjiwon.anotherart.auction.domain.model.AuctionRecord;
+import com.sjiwon.anotherart.auction.domain.repository.AuctionRecordRepository;
 import com.sjiwon.anotherart.auction.domain.repository.AuctionRepository;
-import com.sjiwon.anotherart.auction.domain.service.AuctionWriter;
-import com.sjiwon.anotherart.auction.domain.service.BidProcessor;
 import com.sjiwon.anotherart.common.RepositoryTest;
 import com.sjiwon.anotherart.common.fixture.ArtFixture;
 import com.sjiwon.anotherart.common.fixture.AuctionFixture;
@@ -18,7 +18,6 @@ import com.sjiwon.anotherart.like.domain.model.Like;
 import com.sjiwon.anotherart.like.domain.repository.LikeRepository;
 import com.sjiwon.anotherart.member.domain.model.Member;
 import com.sjiwon.anotherart.member.domain.repository.MemberRepository;
-import com.sjiwon.anotherart.member.domain.service.MemberReader;
 import com.sjiwon.anotherart.purchase.domain.model.Purchase;
 import com.sjiwon.anotherart.purchase.domain.repository.PurchaseRepository;
 import jakarta.persistence.EntityManager;
@@ -79,18 +78,10 @@ import static com.sjiwon.anotherart.common.fixture.MemberFixture.MEMBER_A;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-@Import({
-        ArtDetailJooqRepository.class,
-        BidProcessor.class,
-        MemberReader.class,
-        AuctionWriter.class
-})
+@Import(ArtDetailJooqRepository.class)
 public abstract class ArtDetailQueryRepositoryTestSupporter extends RepositoryTest {
     @Autowired
     protected ArtDetailJooqRepository sut;
-
-    @Autowired
-    private BidProcessor bidProcessor;
 
     @Autowired
     private MemberRepository memberRepository;
@@ -103,6 +94,9 @@ public abstract class ArtDetailQueryRepositoryTestSupporter extends RepositoryTe
 
     @Autowired
     private AuctionRepository auctionRepository;
+
+    @Autowired
+    private AuctionRecordRepository auctionRecordRepository;
 
     @Autowired
     private PurchaseRepository purchaseRepository;
@@ -294,7 +288,14 @@ public abstract class ArtDetailQueryRepositoryTestSupporter extends RepositoryTe
         for (int i = 0; i < bidderIndicies.size(); i++) {
             final Member bidder = members[bidderIndicies.get(i)];
             final int bidPrice = bidPrices.get(i);
-            bidProcessor.execute(auction, bidder, bidPrice);
+            em.createQuery("UPDATE Auction ac" +
+                            " SET ac.highestBidderId = :highestBidderId, ac.highestBidPrice = :bidPrice" +
+                            " WHERE ac.id = :id")
+                    .setParameter("highestBidderId", bidder.getId())
+                    .setParameter("bidPrice", bidPrice)
+                    .setParameter("id", auction.getId())
+                    .executeUpdate();
+            auctionRecordRepository.save(new AuctionRecord(auction, bidder, bidPrice));
         }
     }
 

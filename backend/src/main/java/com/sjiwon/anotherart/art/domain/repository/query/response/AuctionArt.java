@@ -8,7 +8,7 @@ import java.util.List;
 
 @Getter
 @AllArgsConstructor
-public class AuctionArt implements ArtDetails {
+public class AuctionArt {
     // Auction
     private final Long auctionId;
     private final int highestBidPrice;
