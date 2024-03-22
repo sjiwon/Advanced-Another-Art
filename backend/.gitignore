@@ -17,7 +17,7 @@ bin/
 !**/src/test/**/bin/
 
 ### IntelliJ IDEA ###
-**/src/main/generated/
+**/src/generated/
 **/src/main/resources/security/
 **/src/main/resources/application-prod.yml
 .idea
