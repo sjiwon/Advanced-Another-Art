@@ -16,7 +16,7 @@
 <br>
 
 ## 🌙 소개
-#### AI 객체탐지 기반 작품 검색과 작품 경매 & 구매가 가능한 웹 애플리케이션
+#### AI 객체탐지 기반 작품 조회 + 작품 경매 및 구매 플랫폼
 
 <br>
 
@@ -45,11 +45,11 @@
 
 ### Backend
 
-![Tech Stack - Backend](https://github.com/sjiwon/Advanced-Another-Art/assets/51479381/7ca09bd5-134c-4c29-9d57-ef72b19d8d0a)
+![Tech Stack - Backend](https://github.com/sjiwon/Advanced-Another-Art/assets/51479381/24d8acf2-86f8-412a-845d-32827e6eb2b6)
 
 ### Infra
 
-![Tech Stack - Infra](https://github.com/sjiwon/Advanced-Another-Art/assets/51479381/337aa49b-f46e-4eb1-b23c-6c87c97c7431)
+![Tech Stack - Infra](https://github.com/sjiwon/Advanced-Another-Art/assets/51479381/4576e3b2-7a1f-4212-9b85-af39374fc1f6)
 
 <br>
 
