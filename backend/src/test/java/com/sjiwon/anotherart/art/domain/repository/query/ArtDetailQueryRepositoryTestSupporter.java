@@ -80,14 +80,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 @Import({
-        ArtDetailQueryRepositoryImpl.class,
+        ArtDetailJooqRepository.class,
         BidProcessor.class,
         MemberReader.class,
         AuctionWriter.class
 })
 public abstract class ArtDetailQueryRepositoryTestSupporter extends RepositoryTest {
     @Autowired
-    protected ArtDetailQueryRepositoryImpl sut;
+    protected ArtDetailJooqRepository sut;
 
     @Autowired
     private BidProcessor bidProcessor;

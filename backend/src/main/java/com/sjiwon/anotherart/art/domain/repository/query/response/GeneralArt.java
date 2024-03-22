@@ -1,11 +1,5 @@
 package com.sjiwon.anotherart.art.domain.repository.query.response;
 
-import com.querydsl.core.annotations.QueryProjection;
-import com.sjiwon.anotherart.art.domain.model.Art;
-import com.sjiwon.anotherart.art.domain.model.ArtName;
-import com.sjiwon.anotherart.art.domain.model.Description;
-import com.sjiwon.anotherart.art.domain.model.UploadImage;
-import com.sjiwon.anotherart.member.domain.model.Nickname;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -36,36 +30,35 @@ public class GeneralArt implements ArtDetails {
     private final String buyerNickname;
     private final String buyerSchool;
 
-    @QueryProjection
     public GeneralArt(
             final Long artId,
-            final ArtName artName,
-            final Description artDescription,
+            final String artName,
+            final String artDescription,
             final int artPrice,
-            final Art.Status artStatus,
-            final UploadImage uploadImage,
+            final String artStatus,
+            final String artStorageUrl,
             final LocalDateTime artRegistrationDate,
             final Long ownerId,
-            final Nickname ownerNickname,
+            final String ownerNickname,
             final String ownerSchool,
             final Long buyerId,
-            final Nickname buyerNickname,
+            final String buyerNickname,
             final String buyerSchool
     ) {
         this.artId = artId;
-        this.artName = artName.getValue();
-        this.artDescription = artDescription.getValue();
+        this.artName = artName;
+        this.artDescription = artDescription;
         this.artPrice = artPrice;
-        this.artStatus = artStatus.name();
-        this.artStorageUrl = uploadImage.getLink();
+        this.artStatus = artStatus;
+        this.artStorageUrl = artStorageUrl;
         this.artRegistrationDate = artRegistrationDate;
         this.ownerId = ownerId;
-        this.ownerNickname = ownerNickname.getValue();
+        this.ownerNickname = ownerNickname;
         this.ownerSchool = ownerSchool;
 
         if (buyerId != null) {
             this.buyerId = buyerId;
-            this.buyerNickname = buyerNickname.getValue();
+            this.buyerNickname = buyerNickname;
             this.buyerSchool = buyerSchool;
         } else {
             this.buyerId = null;

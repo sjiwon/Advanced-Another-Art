@@ -2,9 +2,9 @@ package com.sjiwon.anotherart.art.presentation;
 
 import com.sjiwon.anotherart.art.application.usecase.ArtQueryUseCase;
 import com.sjiwon.anotherart.art.application.usecase.ArtSearchUseCase;
+import com.sjiwon.anotherart.art.application.usecase.query.response.AuctionArtResponse;
+import com.sjiwon.anotherart.art.application.usecase.query.response.GeneralArtResponse;
 import com.sjiwon.anotherart.art.domain.repository.query.response.ArtDetails;
-import com.sjiwon.anotherart.art.domain.repository.query.response.AuctionArt;
-import com.sjiwon.anotherart.art.domain.repository.query.response.GeneralArt;
 import com.sjiwon.anotherart.art.presentation.request.ArtBasicSearchRequest;
 import com.sjiwon.anotherart.art.presentation.request.ArtHashtagSearchRequest;
 import com.sjiwon.anotherart.art.presentation.request.ArtKeywordSearchRequest;
@@ -39,46 +39,46 @@ public class SearchArtApi {
 
     @Operation(summary = "현재 진행중인 경매 작품 리스트 조회 Endpoint")
     @GetMapping("/active-auction")
-    public ResponseEntity<PageResponse<List<AuctionArt>>> getActiveAuctionArts(
+    public ResponseEntity<PageResponse<List<AuctionArtResponse>>> getActiveAuctionArts(
             @ModelAttribute @Valid final ArtBasicSearchRequest request
     ) {
-        final PageResponse<List<AuctionArt>> response = artSearchUseCase.getActiveAuctionArts(request.toQuery());
+        final PageResponse<List<AuctionArtResponse>> response = artSearchUseCase.getActiveAuctionArts(request.toQuery());
         return ResponseEntity.ok(response);
     }
 
     @Operation(summary = "키워드 기반 경매 작품 리스트 조회 Endpoint")
     @GetMapping("/auction/keyword")
-    public ResponseEntity<PageResponse<List<AuctionArt>>> getAuctionArtsByKeyword(
+    public ResponseEntity<PageResponse<List<AuctionArtResponse>>> getAuctionArtsByKeyword(
             @ModelAttribute @Valid final ArtKeywordSearchRequest request
     ) {
-        final PageResponse<List<AuctionArt>> response = artSearchUseCase.getAuctionArtsByKeyword(request.toQuery());
+        final PageResponse<List<AuctionArtResponse>> response = artSearchUseCase.getAuctionArtsByKeyword(request.toQuery());
         return ResponseEntity.ok(response);
     }
 
     @Operation(summary = "키워드 기반 일반 작품 리스트 조회 Endpoint")
     @GetMapping("/general/keyword")
-    public ResponseEntity<PageResponse<List<GeneralArt>>> getGeneralArtsByKeyword(
+    public ResponseEntity<PageResponse<List<GeneralArtResponse>>> getGeneralArtsByKeyword(
             @ModelAttribute @Valid final ArtKeywordSearchRequest request
     ) {
-        final PageResponse<List<GeneralArt>> response = artSearchUseCase.getGeneralArtsByKeyword(request.toQuery());
+        final PageResponse<List<GeneralArtResponse>> response = artSearchUseCase.getGeneralArtsByKeyword(request.toQuery());
         return ResponseEntity.ok(response);
     }
 
     @Operation(summary = "해시태그(객체 탐지) 기반 경매 작품 리스트 조회 Endpoint")
     @GetMapping("/auction/hashtag")
-    public ResponseEntity<PageResponse<List<AuctionArt>>> getAuctionArtsByHashtag(
+    public ResponseEntity<PageResponse<List<AuctionArtResponse>>> getAuctionArtsByHashtag(
             @ModelAttribute @Valid final ArtHashtagSearchRequest request
     ) {
-        final PageResponse<List<AuctionArt>> response = artSearchUseCase.getAuctionArtsByHashtag(request.toQuery());
+        final PageResponse<List<AuctionArtResponse>> response = artSearchUseCase.getAuctionArtsByHashtag(request.toQuery());
         return ResponseEntity.ok(response);
     }
 
     @Operation(summary = "해시태그(객체 탐지) 기반 일반 작품 리스트 조회 Endpoint")
     @GetMapping("/general/hashtag")
-    public ResponseEntity<PageResponse<List<GeneralArt>>> getGeneralArtsByHashtag(
+    public ResponseEntity<PageResponse<List<GeneralArtResponse>>> getGeneralArtsByHashtag(
             @ModelAttribute @Valid final ArtHashtagSearchRequest request
     ) {
-        final PageResponse<List<GeneralArt>> response = artSearchUseCase.getGeneralArtsByHashtag(request.toQuery());
+        final PageResponse<List<GeneralArtResponse>> response = artSearchUseCase.getGeneralArtsByHashtag(request.toQuery());
         return ResponseEntity.ok(response);
     }
 }

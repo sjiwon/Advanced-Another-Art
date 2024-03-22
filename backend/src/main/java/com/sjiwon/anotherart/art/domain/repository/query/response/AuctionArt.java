@@ -1,11 +1,5 @@
 package com.sjiwon.anotherart.art.domain.repository.query.response;
 
-import com.querydsl.core.annotations.QueryProjection;
-import com.sjiwon.anotherart.art.domain.model.Art;
-import com.sjiwon.anotherart.art.domain.model.ArtName;
-import com.sjiwon.anotherart.art.domain.model.Description;
-import com.sjiwon.anotherart.art.domain.model.UploadImage;
-import com.sjiwon.anotherart.member.domain.model.Nickname;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -43,24 +37,23 @@ public class AuctionArt implements ArtDetails {
     private final String highestBidderNickname;
     private final String highestBidderSchool;
 
-    @QueryProjection
     public AuctionArt(
             final Long auctionId,
             final Integer highestBidPrice,
             final LocalDateTime auctionStartDate,
             final LocalDateTime auctionEndDate,
             final Long artId,
-            final ArtName artName,
-            final Description artDescription,
+            final String artName,
+            final String artDescription,
             final int artPrice,
-            final Art.Status artStatus,
-            final UploadImage uploadImage,
+            final String artStatus,
+            final String artStorageUrl,
             final LocalDateTime artRegistrationDate,
             final Long ownerId,
-            final Nickname ownerNickname,
+            final String ownerNickname,
             final String ownerSchool,
             final Long highestBidderId,
-            final Nickname highestBidderNickname,
+            final String highestBidderNickname,
             final String highestBidderSchool
     ) {
         this.auctionId = auctionId;
@@ -68,19 +61,19 @@ public class AuctionArt implements ArtDetails {
         this.auctionStartDate = auctionStartDate;
         this.auctionEndDate = auctionEndDate;
         this.artId = artId;
-        this.artName = artName.getValue();
-        this.artDescription = artDescription.getValue();
+        this.artName = artName;
+        this.artDescription = artDescription;
         this.artPrice = artPrice;
-        this.artStatus = artStatus.name();
-        this.artStorageUrl = uploadImage.getLink();
+        this.artStatus = artStatus;
+        this.artStorageUrl = artStorageUrl;
         this.artRegistrationDate = artRegistrationDate;
         this.ownerId = ownerId;
-        this.ownerNickname = ownerNickname.getValue();
+        this.ownerNickname = ownerNickname;
         this.ownerSchool = ownerSchool;
 
         if (highestBidderId != null) {
             this.highestBidderId = highestBidderId;
-            this.highestBidderNickname = highestBidderNickname.getValue();
+            this.highestBidderNickname = highestBidderNickname;
             this.highestBidderSchool = highestBidderSchool;
         } else {
             this.highestBidderId = null;

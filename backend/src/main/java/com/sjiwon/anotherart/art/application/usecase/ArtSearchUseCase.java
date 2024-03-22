@@ -3,6 +3,8 @@ package com.sjiwon.anotherart.art.application.usecase;
 import com.sjiwon.anotherart.art.application.usecase.query.GetActiveAuctionArts;
 import com.sjiwon.anotherart.art.application.usecase.query.GetArtsByHashtag;
 import com.sjiwon.anotherart.art.application.usecase.query.GetArtsByKeyword;
+import com.sjiwon.anotherart.art.application.usecase.query.response.AuctionArtResponse;
+import com.sjiwon.anotherart.art.application.usecase.query.response.GeneralArtResponse;
 import com.sjiwon.anotherart.art.domain.repository.query.ArtDetailQueryRepository;
 import com.sjiwon.anotherart.art.domain.repository.query.response.ArtDetails;
 import com.sjiwon.anotherart.art.domain.repository.query.response.AuctionArt;
@@ -23,52 +25,67 @@ import java.util.List;
 public class ArtSearchUseCase {
     private final ArtDetailQueryRepository artDetailQueryRepository;
 
-    public PageResponse<List<AuctionArt>> getActiveAuctionArts(final GetActiveAuctionArts query) {
+    public PageResponse<List<AuctionArtResponse>> getActiveAuctionArts(final GetActiveAuctionArts query) {
         final ActiveAuctionArtsSearchCondition condition = query.createCondition();
         final Pageable pageable = query.createPage();
         final Page<AuctionArt> result = artDetailQueryRepository.fetchActiveAuctionArts(condition, pageable);
         return new PageResponse<>(
-                result.getContent(),
+                result.getContent()
+                        .stream()
+                        .map(AuctionArtResponse::from)
+                        .toList(),
                 createPagination(result, pageable.getPageNumber() + 1)
         );
     }
 
-    public PageResponse<List<AuctionArt>> getAuctionArtsByKeyword(final GetArtsByKeyword query) {
+    public PageResponse<List<AuctionArtResponse>> getAuctionArtsByKeyword(final GetArtsByKeyword query) {
         final ArtDetailsSearchCondition condition = query.createCondition();
         final Pageable pageable = query.createPage();
         final Page<AuctionArt> result = artDetailQueryRepository.fetchAuctionArtsByKeyword(condition, pageable);
         return new PageResponse<>(
-                result.getContent(),
+                result.getContent()
+                        .stream()
+                        .map(AuctionArtResponse::from)
+                        .toList(),
                 createPagination(result, pageable.getPageNumber() + 1)
         );
     }
 
-    public PageResponse<List<GeneralArt>> getGeneralArtsByKeyword(final GetArtsByKeyword query) {
+    public PageResponse<List<GeneralArtResponse>> getGeneralArtsByKeyword(final GetArtsByKeyword query) {
         final ArtDetailsSearchCondition condition = query.createCondition();
         final Pageable pageable = query.createPage();
         final Page<GeneralArt> result = artDetailQueryRepository.fetchGeneralArtsByKeyword(condition, pageable);
         return new PageResponse<>(
-                result.getContent(),
+                result.getContent()
+                        .stream()
+                        .map(GeneralArtResponse::from)
+                        .toList(),
                 createPagination(result, pageable.getPageNumber() + 1)
         );
     }
 
-    public PageResponse<List<AuctionArt>> getAuctionArtsByHashtag(final GetArtsByHashtag query) {
+    public PageResponse<List<AuctionArtResponse>> getAuctionArtsByHashtag(final GetArtsByHashtag query) {
         final ArtDetailsSearchCondition condition = query.createCondition();
         final Pageable pageable = query.createPage();
         final Page<AuctionArt> result = artDetailQueryRepository.fetchAuctionArtsByHashtag(condition, pageable);
         return new PageResponse<>(
-                result.getContent(),
+                result.getContent()
+                        .stream()
+                        .map(AuctionArtResponse::from)
+                        .toList(),
                 createPagination(result, pageable.getPageNumber() + 1)
         );
     }
 
-    public PageResponse<List<GeneralArt>> getGeneralArtsByHashtag(final GetArtsByHashtag query) {
+    public PageResponse<List<GeneralArtResponse>> getGeneralArtsByHashtag(final GetArtsByHashtag query) {
         final ArtDetailsSearchCondition condition = query.createCondition();
         final Pageable pageable = query.createPage();
         final Page<GeneralArt> result = artDetailQueryRepository.fetchGeneralArtsByHashtag(condition, pageable);
         return new PageResponse<>(
-                result.getContent(),
+                result.getContent()
+                        .stream()
+                        .map(GeneralArtResponse::from)
+                        .toList(),
                 createPagination(result, pageable.getPageNumber() + 1)
         );
     }
