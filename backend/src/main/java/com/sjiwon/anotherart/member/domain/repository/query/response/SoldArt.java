@@ -1,17 +1,10 @@
 package com.sjiwon.anotherart.member.domain.repository.query.response;
 
-import com.querydsl.core.annotations.QueryProjection;
-import com.sjiwon.anotherart.art.domain.model.ArtName;
-import com.sjiwon.anotherart.art.domain.model.Description;
-import com.sjiwon.anotherart.art.domain.model.UploadImage;
-import com.sjiwon.anotherart.member.domain.model.Nickname;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import java.util.List;
 
 @Getter
-@AllArgsConstructor
 public class SoldArt {
     private final Long artId;
     private final String artName;
@@ -22,21 +15,20 @@ public class SoldArt {
     private final int soldPrice;
     private List<String> artHashtags;
 
-    @QueryProjection
     public SoldArt(
             final Long artId,
-            final ArtName artName,
-            final Description artDescription,
-            final UploadImage uploadImage,
-            final Nickname buyerNickname,
+            final String artName,
+            final String artDescription,
+            final String artStorageUrl,
+            final String buyerNickname,
             final String buyerSchool,
             final int soldPrice
     ) {
         this.artId = artId;
-        this.artName = artName.getValue();
-        this.artDescription = artDescription.getValue();
-        this.artStorageUrl = uploadImage.getLink();
-        this.buyerNickname = buyerNickname.getValue();
+        this.artName = artName;
+        this.artDescription = artDescription;
+        this.artStorageUrl = artStorageUrl;
+        this.buyerNickname = buyerNickname;
         this.buyerSchool = buyerSchool;
         this.soldPrice = soldPrice;
     }

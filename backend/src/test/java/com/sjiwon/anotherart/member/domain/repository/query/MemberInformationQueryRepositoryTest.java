@@ -40,11 +40,11 @@ import static com.sjiwon.anotherart.common.fixture.MemberFixture.MEMBER_C;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-@Import(MemberInformationQueryRepositoryImpl.class)
+@Import(MemberInformationJooqRepository.class)
 @DisplayName("Member -> MemberInformationQueryRepository 테스트")
 class MemberInformationQueryRepositoryTest extends RepositoryTest {
     @Autowired
-    private MemberInformationQueryRepositoryImpl sut;
+    private MemberInformationJooqRepository sut;
 
     @Autowired
     private MemberRepository memberRepository;
@@ -75,22 +75,25 @@ class MemberInformationQueryRepositoryTest extends RepositoryTest {
             // given
             final Member member = memberRepository.save(MEMBER_A.toDomain(MEMBER_INIT_POINT));
             member.decreaseAvailablePoint(40_000);
+            contextClear();
 
             // when
             final MemberInformation result = sut.fetchInformation(member.getId());
 
             // then
             assertAll(
-                    () -> assertThat(result.getId()).isEqualTo(member.getId()),
-                    () -> assertThat(result.getName()).isEqualTo(member.getName()),
-                    () -> assertThat(result.getNickname()).isEqualTo(member.getNickname().getValue()),
-                    () -> assertThat(result.getLoginId()).isEqualTo(member.getLoginId()),
-                    () -> assertThat(result.getSchool()).isEqualTo(member.getSchool()),
-                    () -> assertThat(result.getPhone()).isEqualTo(member.getPhone().getValue()),
-                    () -> assertThat(result.getEmail()).isEqualTo(member.getEmail().getValue()),
-                    () -> assertThat(result.getAddress()).isEqualTo(member.getAddress()),
-                    () -> assertThat(result.getTotalPoint()).isEqualTo(MEMBER_INIT_POINT),
-                    () -> assertThat(result.getAvailablePoint()).isEqualTo(MEMBER_INIT_POINT - 40_000)
+                    () -> assertThat(result.id()).isEqualTo(member.getId()),
+                    () -> assertThat(result.name()).isEqualTo(member.getName()),
+                    () -> assertThat(result.nickname()).isEqualTo(member.getNickname().getValue()),
+                    () -> assertThat(result.loginId()).isEqualTo(member.getLoginId()),
+                    () -> assertThat(result.school()).isEqualTo(member.getSchool()),
+                    () -> assertThat(result.phone()).isEqualTo(member.getPhone().getValue()),
+                    () -> assertThat(result.email()).isEqualTo(member.getEmail().getValue()),
+                    () -> assertThat(result.postCode()).isEqualTo(member.getAddress().getPostcode()),
+                    () -> assertThat(result.defaultAddress()).isEqualTo(member.getAddress().getDefaultAddress()),
+                    () -> assertThat(result.detailAddress()).isEqualTo(member.getAddress().getDetailAddress()),
+                    () -> assertThat(result.totalPoint()).isEqualTo(MEMBER_INIT_POINT),
+                    () -> assertThat(result.availablePoint()).isEqualTo(MEMBER_INIT_POINT - 40_000)
             );
         }
     }
@@ -117,6 +120,7 @@ class MemberInformationQueryRepositoryTest extends RepositoryTest {
             applyPointRecord(member, PointRecord.Type.PURCHASE, DECREASE_AMOUNT);
             applyPointRecord(member, PointRecord.Type.SOLD, INCREASE_AMOUNT);
             applyPointRecord(member, PointRecord.Type.SOLD, INCREASE_AMOUNT);
+            contextClear();
 
             // when
             final List<MemberPointRecord> result = sut.fetchPointRecords(member.getId());
@@ -125,22 +129,22 @@ class MemberInformationQueryRepositoryTest extends RepositoryTest {
             assertAll(
                     () -> assertThat(result).hasSize(11),
                     () -> assertThat(result)
-                            .map(MemberPointRecord::getPointType)
+                            .map(MemberPointRecord::pointType)
                             .containsExactly(
-                                    PointRecord.Type.SOLD.getDescription(),
-                                    PointRecord.Type.SOLD.getDescription(),
-                                    PointRecord.Type.PURCHASE.getDescription(),
-                                    PointRecord.Type.CHARGE.getDescription(),
-                                    PointRecord.Type.CHARGE.getDescription(),
-                                    PointRecord.Type.PURCHASE.getDescription(),
-                                    PointRecord.Type.PURCHASE.getDescription(),
-                                    PointRecord.Type.CHARGE.getDescription(),
-                                    PointRecord.Type.REFUND.getDescription(),
-                                    PointRecord.Type.CHARGE.getDescription(),
-                                    PointRecord.Type.CHARGE.getDescription()
+                                    PointRecord.Type.SOLD.name(),
+                                    PointRecord.Type.SOLD.name(),
+                                    PointRecord.Type.PURCHASE.name(),
+                                    PointRecord.Type.CHARGE.name(),
+                                    PointRecord.Type.CHARGE.name(),
+                                    PointRecord.Type.PURCHASE.name(),
+                                    PointRecord.Type.PURCHASE.name(),
+                                    PointRecord.Type.CHARGE.name(),
+                                    PointRecord.Type.REFUND.name(),
+                                    PointRecord.Type.CHARGE.name(),
+                                    PointRecord.Type.CHARGE.name()
                             ),
                     () -> assertThat(result)
-                            .map(MemberPointRecord::getAmount)
+                            .map(MemberPointRecord::amount)
                             .containsExactly(
                                     INCREASE_AMOUNT,
                                     INCREASE_AMOUNT,
@@ -156,8 +160,8 @@ class MemberInformationQueryRepositoryTest extends RepositoryTest {
                             ),
                     () -> {
                         final MemberInformation memberInformation = sut.fetchInformation(member.getId());
-                        assertThat(memberInformation.getTotalPoint()).isEqualTo(INCREASE_AMOUNT * 7 - DECREASE_AMOUNT * 4);
-                        assertThat(memberInformation.getAvailablePoint()).isEqualTo(INCREASE_AMOUNT * 7 - DECREASE_AMOUNT * 4);
+                        assertThat(memberInformation.totalPoint()).isEqualTo(INCREASE_AMOUNT * 7 - DECREASE_AMOUNT * 4);
+                        assertThat(memberInformation.availablePoint()).isEqualTo(INCREASE_AMOUNT * 7 - DECREASE_AMOUNT * 4);
                     }
             );
         }
@@ -521,5 +525,10 @@ class MemberInformationQueryRepositoryTest extends RepositoryTest {
                 );
             }
         }
+    }
+
+    private void contextClear() {
+        em.flush();
+        em.clear();
     }
 }

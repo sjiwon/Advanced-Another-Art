@@ -9,12 +9,12 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.context.SpringBootTest;
 
 @Tag("Integrate")
-@SpringBootTest
 @ExtendWith({
         DatabaseCleanerEachCallbackExtension.class,
         MySqlTestContainersExtension.class,
         RedisTestContainersExtension.class
 })
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+@SpringBootTest
 public abstract class IntegrateTest {
 }

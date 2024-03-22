@@ -6,7 +6,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.autoconfigure.data.redis.DataRedisTest;
 
 @Tag("Redis")
-@DataRedisTest
 @ExtendWith(RedisTestContainersExtension.class)
+@DataRedisTest
 public abstract class RedisTest {
 }
