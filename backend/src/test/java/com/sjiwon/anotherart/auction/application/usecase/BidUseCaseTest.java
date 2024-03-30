@@ -75,7 +75,7 @@ class BidUseCaseTest extends UnitTest {
                 auction.getId(),
                 newBidPrice
         );
-        given(auctionRepository.findByIdWithRecords(command.auctionId())).willReturn(Optional.of(auction));
+        given(auctionRepository.findById(command.auctionId())).willReturn(Optional.of(auction));
         given(artRepository.findById(auction.getArtId())).willReturn(Optional.of(art));
         given(memberRepository.findById(command.memberId())).willReturn(Optional.of(owner));
 
@@ -96,7 +96,7 @@ class BidUseCaseTest extends UnitTest {
                 auction.getId(),
                 newBidPrice
         );
-        given(auctionRepository.findByIdWithRecords(command.auctionId())).willReturn(Optional.of(auction));
+        given(auctionRepository.findById(command.auctionId())).willReturn(Optional.of(auction));
         given(artRepository.findById(auction.getArtId())).willReturn(Optional.of(art));
         given(memberRepository.findById(command.memberId())).willReturn(Optional.of(bidderA));
 
@@ -117,7 +117,7 @@ class BidUseCaseTest extends UnitTest {
                 auction.getId(),
                 newBidPrice
         );
-        given(auctionRepository.findByIdWithRecords(command.auctionId())).willReturn(Optional.of(auction));
+        given(auctionRepository.findById(command.auctionId())).willReturn(Optional.of(auction));
         given(artRepository.findById(auction.getArtId())).willReturn(Optional.of(art));
         given(memberRepository.findById(command.memberId())).willReturn(Optional.of(bidderA));
 
@@ -139,7 +139,7 @@ class BidUseCaseTest extends UnitTest {
                 auction.getId(),
                 newBidPrice
         );
-        given(auctionRepository.findByIdWithRecords(command.auctionId())).willReturn(Optional.of(auction));
+        given(auctionRepository.findById(command.auctionId())).willReturn(Optional.of(auction));
         given(artRepository.findById(auction.getArtId())).willReturn(Optional.of(art));
         given(memberRepository.findById(command.memberId())).willReturn(Optional.of(bidderA));
 
@@ -159,7 +159,7 @@ class BidUseCaseTest extends UnitTest {
                 auction.getId(),
                 newBidPrice
         );
-        given(auctionRepository.findByIdWithRecords(command.auctionId())).willReturn(Optional.of(auction));
+        given(auctionRepository.findById(command.auctionId())).willReturn(Optional.of(auction));
         given(artRepository.findById(auction.getArtId())).willReturn(Optional.of(art));
         given(memberRepository.findById(command.memberId())).willReturn(Optional.of(bidderA));
 
@@ -181,7 +181,7 @@ class BidUseCaseTest extends UnitTest {
                 auction.getId(),
                 newBidPrice
         );
-        given(auctionRepository.findByIdWithRecords(command.auctionId())).willReturn(Optional.of(auction));
+        given(auctionRepository.findById(command.auctionId())).willReturn(Optional.of(auction));
         given(artRepository.findById(auction.getArtId())).willReturn(Optional.of(art));
         given(memberRepository.findById(command.memberId())).willReturn(Optional.of(bidderB));
 
@@ -203,7 +203,7 @@ class BidUseCaseTest extends UnitTest {
                 auction.getId(),
                 newBidPrice
         );
-        given(auctionRepository.findByIdWithRecords(command.auctionId())).willReturn(Optional.of(auction));
+        given(auctionRepository.findById(command.auctionId())).willReturn(Optional.of(auction));
         given(artRepository.findById(auction.getArtId())).willReturn(Optional.of(art));
         given(memberRepository.findById(command.memberId())).willReturn(Optional.of(bidderB));
 
@@ -234,7 +234,7 @@ class BidUseCaseTest extends UnitTest {
                 auction.getId(),
                 newBidPrice
         );
-        given(auctionRepository.findByIdWithRecords(command.auctionId())).willReturn(Optional.of(auction));
+        given(auctionRepository.findById(command.auctionId())).willReturn(Optional.of(auction));
         given(artRepository.findById(auction.getArtId())).willReturn(Optional.of(art));
         given(memberRepository.findById(command.memberId())).willReturn(Optional.of(bidderA));
 
@@ -295,7 +295,7 @@ class BidUseCaseTest extends UnitTest {
                 auction.getId(),
                 newBidPrice
         );
-        given(auctionRepository.findByIdWithRecords(command.auctionId())).willReturn(Optional.of(auction));
+        given(auctionRepository.findById(command.auctionId())).willReturn(Optional.of(auction));
         given(artRepository.findById(auction.getArtId())).willReturn(Optional.of(art));
         given(memberRepository.findById(command.memberId())).willReturn(Optional.of(bidderB));
         given(memberRepository.findById(auction.getHighestBidderId())).willReturn(Optional.of(bidderA));

@@ -18,8 +18,8 @@ public class AuctionReader {
                 .orElseThrow(() -> new AuctionException(AUCTION_NOT_FOUND));
     }
 
-    public Auction getByIdWithRecords(final Long id) {
-        return auctionRepository.findByIdWithRecords(id)
+    public Auction getByIdWithLock(final Long id) {
+        return auctionRepository.findByIdWithLock(id)
                 .orElseThrow(() -> new AuctionException(AUCTION_NOT_FOUND));
     }
 

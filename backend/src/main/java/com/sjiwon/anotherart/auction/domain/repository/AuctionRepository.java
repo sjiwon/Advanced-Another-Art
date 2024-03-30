@@ -2,7 +2,9 @@ package com.sjiwon.anotherart.auction.domain.repository;
 
 import com.sjiwon.anotherart.auction.domain.model.Auction;
 import com.sjiwon.anotherart.global.annotation.AnotherArtWritableTransactional;
+import jakarta.persistence.LockModeType;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -14,10 +16,10 @@ public interface AuctionRepository extends JpaRepository<Auction, Long> {
     @Query("""
             SELECT ac
             FROM Auction ac
-            LEFT JOIN FETCH ac.auctionRecords
             WHERE ac.id = :id
             """)
-    Optional<Auction> findByIdWithRecords(@Param("id") Long id);
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    Optional<Auction> findByIdWithLock(@Param("id") Long id);
 
     @Query("""
             SELECT ac.id

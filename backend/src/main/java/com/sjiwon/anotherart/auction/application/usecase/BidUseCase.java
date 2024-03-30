@@ -29,7 +29,7 @@ public class BidUseCase {
             withRetry = 3
     )
     public void invoke(final BidCommand command) {
-        final Auction auction = auctionReader.getByIdWithRecords(command.auctionId());
+        final Auction auction = auctionReader.getById(command.auctionId());
         final Art art = artReader.getById(auction.getArtId());
         final Member bidder = memberReader.getById(command.memberId());
 
